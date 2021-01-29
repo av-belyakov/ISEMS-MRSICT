@@ -1,0 +1,37 @@
+{
+    "connectionsDataBase": {
+        "mongoDBSettings": {
+            "isUseSocket": false,
+            "host": "127.0.0.1",
+            "port": 37017,
+            "user": "module-isems-mrsict",
+            "password": "vkL6Zn$jPmt1e1",
+            "nameDB": "isems-mrsict",
+            "unixSocketPath": "../../../../tmp/mongodb.sock"
+        },
+        "mongoDBSettings_comments": "настройки доступа к системе управления базами данных MongoDB"
+    },
+    "connectionsDataBase_comments": "настройки доступа к системам управления базами данных",
+    "moduleAPIRequestProcessingSettings": [{
+            "clientName": "first_isems-ui",
+            "token": "14bb17070e252a0fbcb79c42a0bd7bc0"
+        },
+        {
+            "clientName": "second_isems-ui",
+            "token": "72a55f714434cf3de295e61705085bfa"
+        }
+    ],
+    "moduleAPIRequestProcessingSettings_comments": "настройки сетевых соеденений обеспечивающие доступ к подсистеме isems-mrsict из внешнего программного обеспечения",
+    "moduleAPIInteractionExternalSoftware": {
+
+    },
+    "moduleAPIInteractionExternalSoftware_comments": "настройки доступа к внешнему программному обеспечению являющемуся источником информации о компьютерных угрозах",
+    "cryptography": {
+        "pathRootCA_of_moduleApiRequestProcessingSettings": "keys/rootCA.pem",
+        "pathRootCA_of_moduleApiRequestProcessingSettings_comments": "месторасположение корневого сертификата для сервера модуля 'moduleApiRequestProcessingSettings'"
+    },
+    "cryptography_comments": "настройки связанные с криптографией и защите каналов связи",
+    "pathStorageDownloadedFiles": "место для хранения загруженных файлов",
+    "pathLogFiles": "/var/log/",
+    "pathLogFiles_comments": "место расположение лог-файла приложения"
+}

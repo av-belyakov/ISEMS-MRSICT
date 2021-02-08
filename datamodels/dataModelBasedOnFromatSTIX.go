@@ -93,7 +93,18 @@ type MarkingDefinitionObjectSTIX struct {
 /********** 			Domain Objects STIX 			**********/
 
 //CommonPropertiesObjectSTIX свойства общие, для всех объектов STIX, свойства
-// Type - наименование типа шаблона, для этого типа это поле ДОЛЖНО содержать "attack-pattern" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+// Type - наименование типа шаблона (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+//  Type должен содержать одно из следующих значений:
+//  - "attack-pattern"
+//  - "campaign"
+//  - "course-of-action"
+//  - "grouping"
+//  - "identity"
+//  - "indicator"
+//  - "infrastructure"
+//  - "intrusion-set"
+//  -
+//  -
 // SpecVersion - версия спецификации STIX используемая для представления текущего объекта (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // ID - уникальный идентификатор объекта (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // Created - время создания объекта, в формате "2016-05-12T08:17:27.000Z" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
@@ -113,7 +124,7 @@ type CommonPropertiesObjectSTIX struct {
 	SpecVersion        string                     `json:"spec_version" bson:"spec_version"`
 	ID                 string                     `json:"id" bson:"id"`
 	Created            time.Time                  `json:"created" bson:"created"`
-	Modified           time.Timer                 `json:"modified" bson:"modified"`
+	Modified           time.Time                  `json:"modified" bson:"modified"`
 	CreatedByRef       IdentifierTypeSTIX         `json:"created_by_ref" bson:"created_by_ref"`
 	Labels             []string                   `json:"labels" bson:"labels"`
 	Сonfidence         int                        `json:"confidence" bson:"confidence"`
@@ -195,6 +206,75 @@ type IdentityDomainObjectsSTIX struct {
 	IdentityClass      OpenVocabTypeSTIX    `json:"identity_class" bson:"identity_class"`
 	Sectors            []*OpenVocabTypeSTIX `json:"sectors" bson:"sectors"`
 	ContactInformation string               `json:"contact_information" bson:"contact_information"`
+}
+
+//IndicatorDomainObjectsSTIX объект "Indicator", по терминалогии STIX, содержит шаблон который может быть использован для
+// обнаружения подозрительной или вредоносной киберактивности
+// Name - имя используемое для идентификации "Indicator" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+// Description - более подробное описание
+// IndicatorTypes - заранее определенный (предложенный) перечень категорий индикаторов
+// Pattern - шаблон для обнаружения индикаторов (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+// PatternType - языковой шаблон используемый в этом индикаторе (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+// PatternVersion - версия языка шаблонов
+// ValidFrom - время с которого этот индикатор считается валидным (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+// ValidUntil - время начиная с которого этот индикатор не может считаться валидным
+// KillChainPhases - список цепочки фактов, которые соответствуют индикатору
+type IndicatorDomainObjectsSTIX struct {
+	CommonPropertiesObjectSTIX
+	Name            string                            `json:"name" bson:"name"`
+	Description     string                            `json:"description" bson:"description"`
+	IndicatorTypes  []*OpenVocabTypeSTIX              `json:"indicator_types" bson:"indicator_types"`
+	Pattern         string                            `json:"pattern" bson:"pattern"`
+	PatternType     OpenVocabTypeSTIX                 `json:"pattern_type" bson:"pattern_type"`
+	PatternVersion  string                            `json:"pattern_version" bson:"pattern_version"`
+	ValidFrom       time.Time                         `json:"valid_from" bson:"valid_from"`
+	ValidUntil      time.Time                         `json:"valid_until" bson:"valid_until"`
+	KillChainPhases []*KillChainPhasesTypeElementSTIX `json:"kill_chain_phases" bson:"kill_chain_phases"`
+}
+
+//InfrastructureDomainObjectsSTIX объект "Infrastructure", по терминалогии STIX, содержит описание любых систем,
+//  программных служб, а так же любые связанные с ними физические или виртуальные ресурсы, предназначенные для поддержки какой-либо цели
+// Name - имя используемое для идентификации "Infrastructure" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+// Description - более подробное описание
+// InfrastructureTypes - заранее определенный (предложенный) перечень описываемых инфраструктур
+// Aliases - альтернативные имена используемые для идентификации этой инфраструктуры
+// KillChainPhases - список цепочки фактов, для которых используется эта инфраструктура
+// FirstSeen - время, когда данная инфраструктура была впервые замечена за осуществлением вредоносной активности
+// LastSeen - время, когда данная инфраструктура в последний раз была замечена за осуществлением вредоносной активности
+type InfrastructureDomainObjectsSTIX struct {
+	CommonPropertiesObjectSTIX
+	Name                string                            `json:"name" bson:"name"`
+	Description         string                            `json:"description" bson:"description"`
+	InfrastructureTypes []*OpenVocabTypeSTIX              `json:"infrastructure_types" bson:"infrastructure_types"`
+	Aliases             []string                          `json:"aliases" bson:"aliases"`
+	KillChainPhases     []*KillChainPhasesTypeElementSTIX `json:"kill_chain_phases" bson:"kill_chain_phases"`
+	FirstSeen           time.Time                         `json:"first_seen" bson:"first_seen"`
+	LastSeen            time.Time                         `json:"last_seen" bson:"last_seen"`
+}
+
+//IntrusionSetDomainObjectsSTIX объект "Intrusion Set", по терминалогии STIX, содержит сгруппированный набор враждебного поведения и ресурсов
+//  с общими свойствами, который, как считается, управляется одной организацией
+// Name - имя используемое для идентификации "Intrusion Set" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+// Description - более подробное описание
+// Aliases - альтернативные имена используемые для идентификации набора вторжения
+// FirstSeen - время, когда данный набор вторжения впервые был зафиксирован
+// LastSeen - время, когда данный набор вторжения был зафиксирован в последний раз
+// Goals - высокоуровневые цели этого набора вторжения
+// ResourceLevel - заранее определенный (предложенный) перечень уровней, на которых обычно работает данный набор вторжений, который, в свою очередь,
+//  определяет ресурсы, доступные этому набору вторжений для использования в атаке
+// PrimaryMotivation - заранее определенный (предложенный) перечень причин, мотиваций или целей определяющий данный набор вторжений
+// SecondaryMotivations - заранее определенный (предложенный) вторичный перечень причин, мотиваций или целей определяющий данный набор вторжений
+type IntrusionSetDomainObjectsSTIX struct {
+	CommonPropertiesObjectSTIX
+	Name                 string               `json:"name" bson:"name"`
+	Description          string               `json:"description" bson:"description"`
+	Aliases              []string             `json:"aliases" bson:"aliases"`
+	FirstSeen            time.Time            `json:"first_seen" bson:"first_seen"`
+	LastSeen             time.Time            `json:"last_seen" bson:"last_seen"`
+	Goals                []string             `json:"goals" bson:"goals"`
+	ResourceLevel        OpenVocabTypeSTIX    `json:"resource_level" bson:"resource_level"`
+	PrimaryMotivation    OpenVocabTypeSTIX    `json:"primary_motivation" bson:"primary_motivation"`
+	SecondaryMotivations []*OpenVocabTypeSTIX `json:"secondary_motivations" bson:"secondary_motivations"`
 }
 
 //`json:"" bson:""`

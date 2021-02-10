@@ -108,17 +108,20 @@ type MarkingDefinitionObjectSTIX struct {
 //  - "intrusion-set"
 //  - "location"
 //  - "malware"
-//  - "malware analysis"
+//  - "malware-analysis"
 //  - "note"
-//  - "observed data"
+//  - "observed-data"
 //  - "opinion"
 //  - "report"
-//  - "threat actor"
+//  - "threat-actor"
+//  - "tool"
+//  - "vulnerability"
 // SpecVersion - версия спецификации STIX используемая для представления текущего объекта (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // ID - уникальный идентификатор объекта (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // Created - время создания объекта, в формате "2016-05-12T08:17:27.000Z" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // Modified - время модификации объекта, в формате "2016-05-12T08:17:27.000Z" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // CreatedByRef - содержит идентификатор источника создавшего данный объект
+// Revoked - вернуть к текущему состоянию
 // Labels - определяет набор терминов, используемых для описания данного объекта
 // Сonfidence - определяет уверенность создателя в правильности своих данных. Доверительное значение ДОЛЖНО быть числом
 //  в диапазоне 0-100. Если 0 - значение не определено.
@@ -135,6 +138,7 @@ type CommonPropertiesObjectSTIX struct {
 	Created            time.Time                  `json:"created" bson:"created"`
 	Modified           time.Time                  `json:"modified" bson:"modified"`
 	CreatedByRef       IdentifierTypeSTIX         `json:"created_by_ref" bson:"created_by_ref"`
+	Revoked            bool                       `json:"revoked" bson:"revoked"`
 	Labels             []string                   `json:"labels" bson:"labels"`
 	Сonfidence         int                        `json:"confidence" bson:"confidence"`
 	Lang               string                     `json:"lang" bson:"lang"`
@@ -149,7 +153,7 @@ type CommonPropertiesObjectSTIX struct {
 // Name - имя используемое для идентификации "Attack Pattern" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // Description - более подробное описание атаки
 // Aliases - альтернативные имена
-// KillChainPhases - список цепочки фактов, приведших к урону
+// KillChainPhases - список цепочки фактов, в которых используется этот шаблон атак
 type AttackPatternDomainObjectsSTIX struct {
 	CommonPropertiesObjectSTIX
 	Name            string                            `json:"name" bson:"name"`
@@ -227,7 +231,7 @@ type IdentityDomainObjectsSTIX struct {
 // PatternVersion - версия языка шаблонов
 // ValidFrom - время с которого этот индикатор считается валидным, в формате "2016-05-12T08:17:27.000Z" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // ValidUntil - время начиная с которого этот индикатор не может считаться валидным, в формате "2016-05-12T08:17:27.000Z"
-// KillChainPhases - список цепочки фактов, которые соответствуют индикатору
+// KillChainPhases - список цепочки фактов, к которым можно отнести соответствующте индикаторы
 type IndicatorDomainObjectsSTIX struct {
 	CommonPropertiesObjectSTIX
 	Name            string                            `json:"name" bson:"name"`
@@ -247,7 +251,7 @@ type IndicatorDomainObjectsSTIX struct {
 // Description - более подробное описание
 // InfrastructureTypes - заранее определенный (предложенный) перечень описываемых инфраструктур
 // Aliases - альтернативные имена используемые для идентификации этой инфраструктуры
-// KillChainPhases - список цепочки фактов, для которых используется эта инфраструктура
+// KillChainPhases - список цепочки фактов, к которым может быть отнесена эта инфраструктура
 // FirstSeen - время, в формате "2016-05-12T08:17:27.000Z", когда данная инфраструктура была впервые замечена за осуществлением вредоносной активности
 // LastSeen - время, в формате "2016-05-12T08:17:27.000Z", когда данная инфраструктура в последний раз была замечена за осуществлением вредоносной активности
 type InfrastructureDomainObjectsSTIX struct {
@@ -319,7 +323,7 @@ type LocationDomainObjectsSTIX struct {
 // MalwareTypes - заранее определенный (предложенный) перечень вредоносного ПО
 // IsFamily - представляет ли объект семейство вредоносных программ (если true) или экземпляр вредоносного ПО (если false) (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // Aliases - альтернативные имена используемые для идентификации этого ПО или семейства ПО
-// KillChainPhases - список цепочки фактов, для которых это вредоносное ПО может быть использовано
+// KillChainPhases - список цепочки фактов, к которым может быть отнесено это вредоносное ПО
 // FirstSeen - время, в формате "2016-05-12T08:17:27.000Z", когда вредоносное ПО или семейство вредоносных программ были впервые замечины
 // LastSeen - время, в формате "2016-05-12T08:17:27.000Z", когда вредоносное ПО или семейство вредоносных программ были замечины в последний раз
 // OperatingSystemRefs - перечень идентификаторов ОС в которых может быть выполнено вредоносное ПО или семейство вредоносных программ
@@ -479,4 +483,30 @@ type ThreatActorDomainObjectsSTIX struct {
 	PersonalMotivations  []*OpenVocabTypeSTIX `json:"personal_motivations" bson:"personal_motivations"`
 }
 
-//`json:"" bson:""`
+//ToolDomainObjectsSTIX объект "Tool", по терминалогии STIX, содержит информацию о легитимном ПО которое может быть использованно для реализации
+//  компьютерных угроз
+// Name - имя используемое для идентификации "Tool" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+// Description - более подробное описание
+// ToolTypes - заранее определенный (предложенный) перечень типов инструментов
+// Aliases - альтернативные имена используемые для идентификации инструментов
+// KillChainPhases - список цепочки фактов, к которым может быть отнесен этот инструмент
+// ToolVersion - версия инструмента
+type ToolDomainObjectsSTIX struct {
+	CommonPropertiesObjectSTIX
+	Name            string                            `json:"name" bson:"name"`
+	Description     string                            `json:"description" bson:"description"`
+	ToolTypes       []*OpenVocabTypeSTIX              `json:"tool_types" bson:"tool_types"`
+	Aliases         []string                          `json:"aliases" bson:"aliases"`
+	KillChainPhases []*KillChainPhasesTypeElementSTIX `json:"kill_chain_phases" bson:"kill_chain_phases"`
+	ToolVersion     string                            `json:"tool_version" bson:"tool_version"`
+}
+
+//VulnerabilityDomainObjectsSTIX объект "Vulnerability", по терминалогии STIX, содержит описание уязвимостей полученных в результате неверной формализации
+//  требований, ошибочном проектировании или некорректной реализации программного кода или логики в ПО, а также в компонентах оборудования
+// Name - имя используемое для идентификации "Vulnerability" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+// Description - более подробное описание
+type VulnerabilityDomainObjectsSTIX struct {
+	CommonPropertiesObjectSTIX
+	Name        string `json:"name" bson:"name"`
+	Description string `json:"description" bson:"description"`
+}

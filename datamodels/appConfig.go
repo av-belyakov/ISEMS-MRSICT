@@ -8,7 +8,9 @@ package datamodels
 // ModuleAPIInteractionExternalSoftware - настройки доступа к внешнему программному обеспечению являющемуся источником информации о компьютерных угрозах
 // CryptographySettings - настройки связанные с криптографией и защите каналов связи
 // PathStorageDownloadedFiles - место для хранения загруженных файлов
-// PathLogFiles - место расположение лог-файла приложения
+// LocationLogDirectory - путь по которому находится основная директория для хранения лог-файлов приложения
+// NameLogDirectory - название директории в которой хранятся лог-файлы приложения
+// MaxSizeLogFile - максимальный размер лог-файла (в Мб), при превышении которого выполняется архивация текущего файла и создание нового
 type AppConfig struct {
 	VersionApp                                   string
 	RootDir                                      string
@@ -17,7 +19,9 @@ type AppConfig struct {
 	ModuleAPIInteractionExternalSoftwareSettings ModuleAPIInteractionExternalSoftwareSettings
 	CryptographySettings                         CryptographySettings
 	PathStorageDownloadedFiles                   string
-	PathLogFiles                                 string
+	LocationLogDirectory                         string
+	NameLogDirectory                             string
+	MaxSizeLogFile                               int
 }
 
 //ConnectionsDataBase хранит настройки доступа к системам управления базами данных

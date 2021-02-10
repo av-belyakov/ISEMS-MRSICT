@@ -31,7 +31,12 @@
         "pathRootCA_of_moduleApiRequestProcessingSettings_comments": "месторасположение корневого сертификата для сервера модуля 'moduleApiRequestProcessingSettings'"
     },
     "cryptography_comments": "настройки связанные с криптографией и защите каналов связи",
-    "pathStorageDownloadedFiles": "место для хранения загруженных файлов",
-    "pathLogFiles": "/var/log/",
-    "pathLogFiles_comments": "место расположение лог-файла приложения"
+    "pathStorageDownloadedFiles": "/home/ISEMS-MRSICT/storage_files",
+    "pathStorageDownloadedFiles_comments": "место для хранения загруженных файлов",
+    "locationLogDirectory": "/var/log/",
+    "locationLogDirectory_comments": "путь по которому находится основная директория для хранения лог-файлов приложения",
+    "nameLogDirectory": "isems-mrsict_log",
+    "nameLogDirectory_comments": "название директории в которой хранятся лог-файлы приложения",
+    "maxSizeLogFile": 10,
+    "maxSizeLogFile_comments": "максимальный размер лог-файла (в Мб), при превышении которого выполняется архивация текущего файла и создание нового"
 }

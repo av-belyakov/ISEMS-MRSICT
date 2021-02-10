@@ -12,9 +12,12 @@ import (
 	"strings"
 
 	"ISEMS-MRSICT/datamodels"
+	"ISEMS-MRSICT/modulecoreapplication"
+	"ISEMS-MRSICT/modulelogginginformationerrors"
 )
 
 var appConfig datamodels.AppConfig
+var chanSaveLog chan modulelogginginformationerrors.LogMessageType
 
 //ReadConfig читает конфигурационный файл и сохраняет данные в appConfig
 func readConfigApp(fileName string, appc *datamodels.AppConfig) error {
@@ -79,8 +82,7 @@ func init() {
 	//читаем конфигурационный файл приложения
 	err = readConfigApp(path.Join(dir, "/config.json"), &appConfig)
 	if err != nil {
-		fmt.Println("Error reading configuration file", err)
-		os.Exit(1)
+		log.Fatal("Error! The configuration file cannot be read.")
 	}
 
 	appConfig.RootDir = dir + "/"
@@ -89,10 +91,30 @@ func init() {
 	if err = getVersionApp(&appConfig); err != nil {
 		fmt.Println(err)
 	}
+
+	chanSaveLog, err = modulelogginginformationerrors.New(&modulelogginginformationerrors.MainHandlerLoggingParameters{
+		LocationLogDirectory: appConfig.LocationLogDirectory,
+		NameLogDirectory:     appConfig.NameLogDirectory,
+		MaxSizeLogFile:       appConfig.MaxSizeLogFile,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func main() {
 	fmt.Println("func 'main', START...")
-
 	fmt.Println(appConfig)
+
+	defer func() {
+		if err := recover(); err != nil {
+			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+				TypeMessage: "error",
+				Description: fmt.Sprintf("STOP 'main' function, Error:'%v'", err),
+				FuncName:    "main",
+			}
+		}
+	}()
+
+	modulecoreapplication.MainHandlerCoreApplication(chanSaveLog, &appConfig)
 }

@@ -15,7 +15,7 @@ type AppConfig struct {
 	VersionApp                                   string
 	RootDir                                      string
 	ConnectionsDataBase                          ConnectionsDataBase
-	ModuleAPIRequestProcessingSettings           []ModuleAPIRequestProcessingSetting
+	ModuleAPIRequestProcessingSettings           ModuleAPIRequestProcessingSetting
 	ModuleAPIInteractionExternalSoftwareSettings ModuleAPIInteractionExternalSoftwareSettings
 	CryptographySettings                         CryptographySettings
 	PathStorageDownloadedFiles                   string
@@ -48,9 +48,19 @@ type MongoDBSettings struct {
 }
 
 //ModuleAPIRequestProcessingSetting хранит настройки сетевых соеденений обеспечивающие доступ к подсистеме isems-mrsict из внешнего программного обеспечения
+// Host - ip адрес сервера API
+// Port - сетевой порт сервера API
+// User - перечень токенов пользователей
+type ModuleAPIRequestProcessingSetting struct {
+	Host  string
+	Port  int
+	Users []ModuleAPIRequestProcessingUsersSetting
+}
+
+//ModuleAPIRequestProcessingUsersSetting хранит перечень токенов пользователей которым разрешен доступ к API
 // ClientName - имя клиента
 // Token - уникальный идентификационный токен клиента
-type ModuleAPIRequestProcessingSetting struct {
+type ModuleAPIRequestProcessingUsersSetting struct {
 	ClientName, Token string
 }
 
@@ -60,6 +70,10 @@ type ModuleAPIInteractionExternalSoftwareSettings struct {
 
 //CryptographySettings хранит настройки связанные с криптографией и защите каналов связи
 // PathRootCAModuleAPIRequestProcessingSettings - месторасположение корневого сертификата для сервера модуля 'moduleApiRequestProcessingSettings'
+// PathCertFileModuleApiRequestProcessingSettings - месторасположение файла сертификата для сервера модуля 'moduleApiRequestProcessingSettings'
+// PathPrivateKeyFileModuleApiRequestProcessingSettings - месторасположение файла приватного ключа для сервера модуля 'moduleApiRequestProcessingSettings'
 type CryptographySettings struct {
-	PathRootCAModuleAPIRequestProcessingSettings string `json:"pathRootCA_of_moduleApiRequestProcessingSettings"`
+	PathRootCAModuleAPIRequestProcessingSettings         string `json:"pathRootCA_of_moduleApiRequestProcessingSettings"`
+	PathCertFileModuleAPIRequestProcessingSettings       string `json:"pathCertFile_of_moduleApiRequestProcessingSettings"`
+	PathPrivateKeyFileModuleAPIRequestProcessingSettings string `json:"pathPrivateKeyFile_of_moduleApiRequestProcessingSettings"`
 }

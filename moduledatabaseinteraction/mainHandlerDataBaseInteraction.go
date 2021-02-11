@@ -7,23 +7,27 @@ import (
 	"ISEMS-MRSICT/moduledatabaseinteraction/interactionmongodb"
 )
 
-//ChansDataBaseInteraction описание каналов для взаимодействия с базами данных
-type ChansDataBaseInteraction struct {
-	ChansMongoDB interactionmongodb.ChansMongoDBInteraction
+//ChannelsModuleDataBaseInteraction описание каналов передачи данных между ядром приложения и модулем взаимодействия с базами данных
+type ChannelsModuleDataBaseInteraction struct {
+	ChannelsMongoDB interactionmongodb.ChannelsMongoDBInteraction
+}
+
+var cmdbi ChannelsModuleDataBaseInteraction
+
+func init() {
+	cmdbi = ChannelsModuleDataBaseInteraction{}
 }
 
 //MainHandlerDataBaseInteraction модуль инициализации обработчиков для взаимодействия с базами данных
-func MainHandlerDataBaseInteraction(cdb *datamodels.ConnectionsDataBase) (ChansDataBaseInteraction, error) {
+func MainHandlerDataBaseInteraction(cdb *datamodels.ConnectionsDataBase) (ChannelsModuleDataBaseInteraction, error) {
 	fmt.Println("func 'MainHandlerDataBaseInteraction', START...")
 
-	cdbi := ChansDataBaseInteraction{}
-
+	//инициализируем модуль для взаимодействия с БД MongoDB
 	chanMongoDB, err := interactionmongodb.InteractionMongoDB(&cdb.MongoDBSettings)
 	if err != nil {
-		return cdbi, err
+		return cmdbi, err
 	}
+	cmdbi.ChannelsMongoDB = chanMongoDB
 
-	cdbi.ChansMongoDB = chanMongoDB
-
-	return cdbi, nil
+	return cmdbi, nil
 }

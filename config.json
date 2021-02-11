@@ -12,23 +12,29 @@
         "mongoDBSettings_comments": "настройки доступа к системе управления базами данных MongoDB"
     },
     "connectionsDataBase_comments": "настройки доступа к системам управления базами данных",
-    "moduleAPIRequestProcessingSettings": [{
-            "clientName": "first_isems-ui",
-            "token": "14bb17070e252a0fbcb79c42a0bd7bc0"
-        },
-        {
-            "clientName": "second_isems-ui",
-            "token": "72a55f714434cf3de295e61705085bfa"
-        }
-    ],
-    "moduleAPIRequestProcessingSettings_comments": "настройки сетевых соеденений обеспечивающие доступ к подсистеме isems-mrsict из внешнего программного обеспечения",
-    "moduleAPIInteractionExternalSoftware": {
-
+    "moduleAPIRequestProcessingSettings": {
+        "host": "127.0.0.1",
+        "port": 13000,
+        "users": [{
+                "clientName": "first_isems-ui",
+                "token": "14bb17070e252a0fbcb79c42a0bd7bc0"
+            },
+            {
+                "clientName": "second_isems-ui",
+                "token": "72a55f714434cf3de295e61705085bfa"
+            }
+        ]
     },
+    "moduleAPIRequestProcessingSettings_comments": "настройки сетевых соеденений обеспечивающие доступ к подсистеме isems-mrsict из внешнего программного обеспечения",
+    "moduleAPIInteractionExternalSoftware": {},
     "moduleAPIInteractionExternalSoftware_comments": "настройки доступа к внешнему программному обеспечению являющемуся источником информации о компьютерных угрозах",
     "cryptography": {
         "pathRootCA_of_moduleApiRequestProcessingSettings": "keys/rootCA.pem",
-        "pathRootCA_of_moduleApiRequestProcessingSettings_comments": "месторасположение корневого сертификата для сервера модуля 'moduleApiRequestProcessingSettings'"
+        "pathRootCA_of_moduleApiRequestProcessingSettings_comments": "месторасположение корневого сертификата для сервера модуля 'moduleApiRequestProcessingSettings'",
+        "pathCertFile_of_moduleApiRequestProcessingSettings": "keys/",
+        "pathCertFile_of_moduleApiRequestProcessingSettings_comments": "месторасположение файла сертификата для сервера модуля 'moduleApiRequestProcessingSettings'",
+        "pathPrivateKeyFile_of_moduleApiRequestProcessingSettings": "keys/",
+        "pathPrivateKeyFile_of_moduleApiRequestProcessingSettings_comments": "месторасположение файла приватного ключа для сервера модуля 'moduleApiRequestProcessingSettings'"
     },
     "cryptography_comments": "настройки связанные с криптографией и защите каналов связи",
     "pathStorageDownloadedFiles": "/home/ISEMS-MRSICT/storage_files",

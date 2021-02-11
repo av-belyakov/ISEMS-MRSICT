@@ -92,12 +92,11 @@ func init() {
 		fmt.Println(err)
 	}
 
-	chanSaveLog, err = modulelogginginformationerrors.New(&modulelogginginformationerrors.MainHandlerLoggingParameters{
+	if chanSaveLog, err = modulelogginginformationerrors.New(&modulelogginginformationerrors.MainHandlerLoggingParameters{
 		LocationLogDirectory: appConfig.LocationLogDirectory,
 		NameLogDirectory:     appConfig.NameLogDirectory,
 		MaxSizeLogFile:       appConfig.MaxSizeLogFile,
-	})
-	if err != nil {
+	}); err != nil {
 		log.Fatal(err)
 	}
 }

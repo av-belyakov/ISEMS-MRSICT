@@ -4,24 +4,31 @@ import (
 	"fmt"
 
 	"ISEMS-MRSICT/datamodels"
+	"ISEMS-MRSICT/moduleapirequestprocessing"
 	"ISEMS-MRSICT/moduledatabaseinteraction"
 	"ISEMS-MRSICT/modulelogginginformationerrors"
 )
 
 //ChannelsListInteractingModules содержит список каналов для межмодульного взаимодействия
 type ChannelsListInteractingModules struct {
-	ChansDataBaseInteraction moduledatabaseinteraction.ChansDataBaseInteraction
+	ChannelsModuleDataBaseInteraction  moduledatabaseinteraction.ChannelsModuleDataBaseInteraction
+	ChannelsModuleAPIRequestProcessing moduleapirequestprocessing.ChannelsModuleAPIRequestProcessing
+}
+
+var clim ChannelsListInteractingModules
+
+func init() {
+	clim = ChannelsListInteractingModules{}
 }
 
 //MainHandlerCoreApplication основной обработчик ядра приложения
 func MainHandlerCoreApplication(chanSaveLog chan modulelogginginformationerrors.LogMessageType, appConfig *datamodels.AppConfig) {
 	funcName := "MainHandlerCoreApplication"
-	clim := ChannelsListInteractingModules{}
 
 	fmt.Println("func 'MainHandlerCoreApplication', START...")
 
 	//инициализируем модули взаимодействия с БД
-	chansDataBaseInteraction, err := moduledatabaseinteraction.MainHandlerDataBaseInteraction(&appConfig.ConnectionsDataBase)
+	cdbi, err := moduledatabaseinteraction.MainHandlerDataBaseInteraction(&appConfig.ConnectionsDataBase)
 	if err != nil {
 		chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 			TypeMessage: "error",
@@ -33,9 +40,11 @@ func MainHandlerCoreApplication(chanSaveLog chan modulelogginginformationerrors.
 
 		return
 	}
-	clim.ChansDataBaseInteraction = chansDataBaseInteraction
+	clim.ChannelsModuleDataBaseInteraction = cdbi
 
-	//инициализируем модуль
+	//инициализируем модуль обработки запросов с внешних источников
+	capirp := moduleapirequestprocessing.MainHandlerAPIReguestProcessing(chanSaveLog, &appConfig.ModuleAPIRequestProcessingSettings, &appConfig.CryptographySettings)
+	clim.ChannelsModuleAPIRequestProcessing = capirp
 
 	chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 		TypeMessage: "info",
@@ -43,5 +52,5 @@ func MainHandlerCoreApplication(chanSaveLog chan modulelogginginformationerrors.
 		FuncName:    funcName,
 	}
 
-	Routing(&clim)
+	RoutingCoreApp(appConfig, &clim)
 }

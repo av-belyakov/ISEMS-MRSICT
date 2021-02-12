@@ -73,6 +73,9 @@ func InteractionMongoDB(mdbs *datamodels.MongoDBSettings) (ChannelsMongoDBIntera
 }
 
 func (cdmongodb ConnectionDescriptorMongoDB) createConnection(mdbs *datamodels.MongoDBSettings) error {
+
+	fmt.Println("func 'createConnection' ----------- START ----------")
+
 	clientOption := options.Client()
 	clientOption.SetAuth(options.Credential{
 		AuthMechanism: "SCRAM-SHA-256",
@@ -93,6 +96,8 @@ func (cdmongodb ConnectionDescriptorMongoDB) createConnection(mdbs *datamodels.M
 	}
 
 	cdmongodb.connection = client
+
+	fmt.Println("func 'createConnection' ----------- END ----------")
 
 	return nil
 }

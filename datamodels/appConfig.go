@@ -73,7 +73,7 @@ type ModuleAPIInteractionExternalSoftwareSettings struct {
 // PathCertFileModuleApiRequestProcessingSettings - месторасположение файла сертификата для сервера модуля 'moduleApiRequestProcessingSettings'
 // PathPrivateKeyFileModuleApiRequestProcessingSettings - месторасположение файла приватного ключа для сервера модуля 'moduleApiRequestProcessingSettings'
 type CryptographySettings struct {
-	PathRootCAModuleAPIRequestProcessingSettings         string `json:"pathRootCA_of_moduleApiRequestProcessingSettings"`
-	PathCertFileModuleAPIRequestProcessingSettings       string `json:"pathCertFile_of_moduleApiRequestProcessingSettings"`
-	PathPrivateKeyFileModuleAPIRequestProcessingSettings string `json:"pathPrivateKeyFile_of_moduleApiRequestProcessingSettings"`
+	PathRootCAModuleAPIRequestProcessingSettings         string `json:"pathRootCA_of_moduleAPIRequestProcessingSettings"`
+	PathCertFileModuleAPIRequestProcessingSettings       string `json:"pathCertFile_of_moduleAPIRequestProcessingSettings"`
+	PathPrivateKeyFileModuleAPIRequestProcessingSettings string `json:"pathPrivateKeyFile_of_moduleAPIRequestProcessingSettings"`
 }

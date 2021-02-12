@@ -28,15 +28,15 @@
     "moduleAPIRequestProcessingSettings_comments": "настройки сетевых соеденений обеспечивающие доступ к подсистеме isems-mrsict из внешнего программного обеспечения",
     "moduleAPIInteractionExternalSoftware": {},
     "moduleAPIInteractionExternalSoftware_comments": "настройки доступа к внешнему программному обеспечению являющемуся источником информации о компьютерных угрозах",
-    "cryptography": {
-        "pathRootCA_of_moduleApiRequestProcessingSettings": "keys/rootCA.pem",
-        "pathRootCA_of_moduleApiRequestProcessingSettings_comments": "месторасположение корневого сертификата для сервера модуля 'moduleApiRequestProcessingSettings'",
-        "pathCertFile_of_moduleApiRequestProcessingSettings": "keys/",
-        "pathCertFile_of_moduleApiRequestProcessingSettings_comments": "месторасположение файла сертификата для сервера модуля 'moduleApiRequestProcessingSettings'",
-        "pathPrivateKeyFile_of_moduleApiRequestProcessingSettings": "keys/",
-        "pathPrivateKeyFile_of_moduleApiRequestProcessingSettings_comments": "месторасположение файла приватного ключа для сервера модуля 'moduleApiRequestProcessingSettings'"
+    "CryptographySettings": {
+        "pathRootCA_of_moduleAPIRequestProcessingSettings": "keys/rootCA.pem",
+        "pathRootCA_of_moduleAPIRequestProcessingSettings_comments": "месторасположение корневого сертификата для сервера модуля 'moduleApiRequestProcessingSettings'",
+        "pathCertFile_of_moduleAPIRequestProcessingSettings": "keys/isems_nih_master_api_cert.pem",
+        "pathCertFile_of_moduleAPIRequestProcessingSettings_comments": "месторасположение файла сертификата для сервера модуля 'moduleApiRequestProcessingSettings'",
+        "pathPrivateKeyFile_of_moduleAPIRequestProcessingSettings": "keys/isems_nih_master_api_private_key.pem",
+        "pathPrivateKeyFile_of_moduleAPIRequestProcessingSettings_comments": "месторасположение файла приватного ключа для сервера модуля 'moduleApiRequestProcessingSettings'"
     },
-    "cryptography_comments": "настройки связанные с криптографией и защите каналов связи",
+    "CryptographySettings_comments": "настройки связанные с криптографией и защите каналов связи",
     "pathStorageDownloadedFiles": "/home/ISEMS-MRSICT/storage_files",
     "pathStorageDownloadedFiles_comments": "место для хранения загруженных файлов",
     "locationLogDirectory": "/var/log/",

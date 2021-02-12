@@ -6,21 +6,21 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-//ModReqProcTemporaryStorage используется для хранения параметров клиентов
+//RepositoryStorageUserParametersType используется для хранения параметров клиентов
 // clientSettings - настройки пользователя, КЛЮЧ уникальный идентификатор клиента
 // chanReqParameters - канал для передачи параметров пользователя
-type ModReqProcTemporaryStorage struct {
-	clientSettings    map[string]*ModReqProcTemporaryStorageClientSettings
-	chanReqParameters chan typeChanReqParam
+type RepositoryStorageUserParametersType struct {
+	clientSettings    map[string]*StorageUserParameters
+	chanReqParameters chan typeChanReqParameters
 }
 
-//ModReqProcTemporaryStorageClientSettings параметры подключения клиента
+//StorageUserParameters параметры подключения клиента
 // IP - IP адрес клиента
 // Token - идентификационный токен клиента
 // ClientName - имя клиента из config.json
 // IsAllowed: разрешен ли доступ
 // Connection - дескриптор соединения через websocket
-type ModReqProcTemporaryStorageClientSettings struct {
+type StorageUserParameters struct {
 	IP         string
 	Token      string
 	ClientName string
@@ -29,24 +29,32 @@ type ModReqProcTemporaryStorageClientSettings struct {
 	mu         sync.Mutex
 }
 
-type typeChanReqParam struct {
+type typeChanReqParameters struct {
 	actionType string
 	clientIP   string
 	token      string
 	clientID   string
 	clientName string
-	chanRes    chan typeChanResSetting
-	typeReqResCommonParam
+	chanRes    chan typeChanResParameters
+	typeReqResCommonParameters
 }
 
-type typeChanResSetting struct {
+type typeChanResParameters struct {
 	msgErr     error
 	clientID   string
-	clientList map[string]*ModReqProcTemporaryStorageClientSettings
-	typeReqResCommonParam
+	clientList map[string]*StorageUserParameters
+	typeReqResCommonParameters
 }
 
-type typeReqResCommonParam struct {
-	clientSetting *ModReqProcTemporaryStorageClientSettings
+type typeReqResCommonParameters struct {
+	clientSetting *StorageUserParameters
 	connect       *websocket.Conn
+}
+
+//SendWsMessage используется для отправки сообщений через протокол websocket (применяется Mutex)
+func (sup *StorageUserParameters) SendWsMessage(t int, v []byte) error {
+	sup.mu.Lock()
+	defer sup.mu.Unlock()
+
+	return sup.Connection.WriteMessage(t, v)
 }

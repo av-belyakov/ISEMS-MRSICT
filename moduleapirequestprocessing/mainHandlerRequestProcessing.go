@@ -13,6 +13,7 @@ import (
 	"github.com/gorilla/websocket"
 
 	"ISEMS-MRSICT/datamodels"
+	"ISEMS-MRSICT/moduleapirequestprocessing/temporarystorage"
 	"ISEMS-MRSICT/modulelogginginformationerrors"
 )
 
@@ -28,12 +29,15 @@ type settingsServerAPI struct {
 }
 
 var cmapirp ChannelsModuleAPIRequestProcessing
+var repositoryStorageUserParameters *temporarystorage.RepositoryStorageUserParametersType
 
 func init() {
 	cmapirp = ChannelsModuleAPIRequestProcessing{
 		InputModule:  make(chan datamodels.ModuleReguestProcessingChannel),
 		OutputModule: make(chan datamodels.ModuleReguestProcessingChannel),
 	}
+
+	repositoryStorageUserParameters = temporarystorage.NewRepositoryStorageUserParameters()
 }
 
 //MainHandlerAPIReguestProcessing модуль инициализации обработчика запросов с внешних источников
@@ -70,12 +74,62 @@ func MainHandlerAPIReguestProcessing(
 				FuncName:    funcName,
 			}
 
-			//			fmt.Println("An error when initializing the api module of the request handler from external sources.")
-
 			log.Println(err)
 			os.Exit(1)
 		}
 	}()
+
+	//маршрутизатор ответов изнутри приложения
+	go func() {
+		for msg := range cmapirp.InputModule {
+			if msg.ModuleGeneratorMessage != "module core application" || msg.ModuleReceiverMessage != "module api request processing" {
+				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+					Description: "the name of the source module or the destination module does not correspond to certain values",
+					FuncName:    funcName,
+				}
+
+				continue
+			}
+
+			if msg.DataType > 2 {
+				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+					Description: "the type of data transmitted over the websocket connection is not defined",
+					FuncName:    funcName,
+				}
+
+				continue
+			}
+
+			userParameters, err := repositoryStorageUserParameters.GetClientParametersForID(msg.ClientID)
+			if err != nil {
+				//если клиент с заданным ID не найден, отправляем широковещательное сообщение
+				listUserParameters := repositoryStorageUserParameters.GetClientList()
+				for _, up := range listUserParameters {
+					if up.Connection == nil {
+						continue
+					}
+
+					if err := up.SendWsMessage(msg.DataType, *msg.Data); err != nil {
+						chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+							Description: fmt.Sprint(err),
+							FuncName:    funcName,
+						}
+					}
+				}
+
+				continue
+			}
+
+			if err := userParameters.SendWsMessage(msg.DataType, *msg.Data); err != nil {
+				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+					Description: fmt.Sprint(err),
+					FuncName:    funcName,
+				}
+			}
+		}
+	}()
+
+	log.Printf("\tThe module's API for processing requests from external sources has been successfully activated. The following API parameters are set ip address:%v, port:%v\n", ssapi.host, ssapi.port)
 
 	return cmapirp
 }
@@ -84,19 +138,10 @@ func MainHandlerAPIReguestProcessing(
 func (settingsServerAPI *settingsServerAPI) HandlerRequest(w http.ResponseWriter, req *http.Request) {
 	funcName := "HandlerRequest"
 
-	/*defer func() {
-		if err := recover(); err != nil {
-			settingsServerAPI.SaveMessageApp.LogMessage(savemessageapp.TypeLogMessage{
-				Description: fmt.Sprint(err),
-				FuncName:    funcName,
-			})
-		}
-	}()*/
-
 	bodyHTTPResponseError := []byte(`<!DOCTYPE html>
 		<html lang="en"
 		<head><meta charset="utf-8"><title>Server Nginx</title></head>
-		<body><h1>Access denied. For additional information, please contact the webmaster.</h1></body>
+		<body><h1>Access denied! For additional information, please contact the webmaster.</h1></body>
 		</html>`)
 
 	stringToken := ""
@@ -124,7 +169,7 @@ func (settingsServerAPI *settingsServerAPI) HandlerRequest(w http.ResponseWriter
 
 		settingsServerAPI.chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 			TypeMessage: "error",
-			Description: fmt.Sprintf("missing or incorrect identification token (сlient ipaddress %v), module 'mainAPIApp'", req.RemoteAddr),
+			Description: fmt.Sprintf("missing or incorrect identification token (сlient ipaddress %v)", req.RemoteAddr),
 			FuncName:    funcName,
 		}
 	}
@@ -135,13 +180,8 @@ func (settingsServerAPI *settingsServerAPI) HandlerRequest(w http.ResponseWriter
 			remoteAddr := remoteIPAndPort[0]
 			remotePort := remoteIPAndPort[1]
 
-			/*
-			   Вот здесь нужно ВРЕМЕННОЕ хранилище
-			   Кроме того я не сделал сертификат и приватный ключ
-			*/
-
 			//добавляем нового пользователя которому разрешен доступ
-			_ = storingMemoryAPI.AddNewClient(remoteAddr, remotePort, user.ClientName, stringToken)
+			_ = repositoryStorageUserParameters.AddNewClient(remoteAddr, remotePort, user.ClientName, stringToken)
 
 			http.Redirect(w, req, "https://"+settingsServerAPI.host+":"+settingsServerAPI.port+"/api_wss", 301)
 
@@ -156,7 +196,7 @@ func (settingsServerAPI *settingsServerAPI) HandlerRequest(w http.ResponseWriter
 
 	settingsServerAPI.chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 		TypeMessage: "error",
-		Description: fmt.Sprintf("missing or incorrect identification token (сlient ipaddress %v), module 'mainAPIApp' bodyHTTPResponseError", req.RemoteAddr),
+		Description: fmt.Sprintf("missing or incorrect identification token (сlient ipaddress %v) bodyHTTPResponseError", req.RemoteAddr),
 		FuncName:    funcName,
 	}
 }
@@ -164,21 +204,12 @@ func (settingsServerAPI *settingsServerAPI) HandlerRequest(w http.ResponseWriter
 func (settingsServerAPI *settingsServerAPI) serverWss(w http.ResponseWriter, req *http.Request) {
 	funcName := "serverWss"
 
-	/*defer func() {
-		if err := recover(); err != nil {
-			settingsServerAPI.SaveMessageApp.LogMessage(savemessageapp.TypeLogMessage{
-				Description: fmt.Sprint(err),
-				FuncName:    funcName,
-			})
-		}
-	}()*/
-
 	remoteIPAndPort := strings.Split(req.RemoteAddr, ":")
 	remoteIP := remoteIPAndPort[0]
 	remotePort := remoteIPAndPort[1]
 
 	//проверяем прошел ли клиент аутентификацию
-	clientID, _, ok := storingMemoryAPI.SearchClientForIP(remoteIP, req.Header["Token"][0])
+	clientID, _, ok := repositoryStorageUserParameters.SearchClientForIP(remoteIP, req.Header["Token"][0])
 	if !ok {
 
 		fmt.Println("Client is Unauthorized")
@@ -207,18 +238,18 @@ func (settingsServerAPI *settingsServerAPI) serverWss(w http.ResponseWriter, req
 		c.Close()
 
 		//удаляем информацию о клиенте
-		storingMemoryAPI.DelClientAPI(clientID)
+		repositoryStorageUserParameters.DeleteClient(clientID)
 
 		settingsServerAPI.chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 			Description: fmt.Sprint(err),
 			FuncName:    funcName,
 		}
 
-		log.Printf("Client API (ID %v) whis IP %v is disconnect!\n", clientID, remoteIP)
+		log.Printf("Client API module 'moduleapirequestprocessing' (ID %v) whis IP %v is disconnect!\n", clientID, remoteIP)
 	}
 
 	//получаем настройки клиента
-	clientSettings, err := storingMemoryAPI.GetClientSettings(clientID)
+	cp, err := repositoryStorageUserParameters.GetClientParametersForID(clientID)
 	if err != nil {
 		settingsServerAPI.chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 			Description: fmt.Sprintf("client setup with ID %v not found", clientID),
@@ -228,22 +259,19 @@ func (settingsServerAPI *settingsServerAPI) serverWss(w http.ResponseWriter, req
 		return
 	}
 
-	storingMemoryAPI.SaveWssClientConnection(clientID, c)
+	repositoryStorageUserParameters.SaveWssClientConnection(clientID, c)
 
 	log.Printf("Client API (ID %v) whis IP %v:%v is connect", clientID, remoteIP, remotePort)
-
-	//при подключении клиента отправляем запрос на получение списка источников
-	//	sendMsgGetSourceList(clientID)
 
 	//маршрутизация сообщений приходящих от клиентов API
 	go func() {
 		for {
-			_, message, err := c.ReadMessage()
+			_, msg, err := c.ReadMessage()
 			if err != nil {
 				c.Close()
 
 				//удаляем информацию о клиенте
-				storingMemoryAPI.DelClientAPI(clientID)
+				repositoryStorageUserParameters.DeleteClient(clientID)
 
 				settingsServerAPI.chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 					Description: fmt.Sprintf("client setup with ID %v not found", clientID),
@@ -255,83 +283,15 @@ func (settingsServerAPI *settingsServerAPI) serverWss(w http.ResponseWriter, req
 				break
 			}
 
-			/*			chn.ChanIn <- &configure.MsgBetweenCoreAndAPI{
-						MsgGenerator: "API module",
-						MsgRecipient: "Core module",
-						IDClientAPI:  clientID,
-						ClientName:   clientSettings.ClientName,
-						ClientIP:     remoteIP,
-						MsgJSON:      message,
-					}*/
+			mrpc := datamodels.ModuleReguestProcessingChannel{
+				ClientID:   clientID,
+				ClientName: cp.ClientName,
+				Data:       &msg,
+			}
+			mrpc.ModuleGeneratorMessage = "module api request processing"
+			mrpc.ModuleReceiverMessage = "module core application"
+
+			cmapirp.OutputModule <- mrpc
 		}
 	}()
 }
-
-/*
-settingsServerAPI := settingsServerAPI{
-		IP:             appConfig.ServerAPI.Host,
-		Port:           strconv.Itoa(appConfig.ServerAPI.Port),
-		Tokens:         appConfig.AuthenticationTokenClientsAPI,
-		SaveMessageApp: saveMessageApp,
-	}
-	funcName := "MainAPIApp"
-
-	//сервер WSS для подключения клиентов
-	go func() {
-		http.HandleFunc("/api", settingsServerAPI.HandlerRequest)
-		http.HandleFunc("/api_wss", settingsServerAPI.serverWss)
-
-		err := http.ListenAndServeTLS(settingsServerAPI.IP+":"+settingsServerAPI.Port, appConfig.ServerAPI.PathCertFile, appConfig.ServerAPI.PathPrivateKeyFile, nil)
-		if err != nil {
-			log.Println(err)
-			os.Exit(1)
-		}
-	}()
-
-	//маршрутизатор ответов от Core module
-	go func() {
-		for msg := range chn.ChanOut {
-			if msg.MsgGenerator == "Core module" && msg.MsgRecipient == "API module" {
-				msgjson, ok := msg.MsgJSON.([]byte)
-				if !ok {
-					settingsServerAPI.SaveMessageApp.LogMessage(savemessageapp.TypeLogMessage{
-						Description: "failed to send json message, error while casting type",
-						FuncName:    funcName,
-					})
-
-					continue
-				}
-
-				clientSettings, err := storingMemoryAPI.GetClientSettings(msg.IDClientAPI)
-				//если клиент с таким ID не найден, отправляем широковещательное сообщение
-				if err != nil {
-					cl := storingMemoryAPI.GetClientList()
-					for _, cs := range cl {
-						if cs.Connection == nil {
-							continue
-						}
-						if err := cs.SendWsMessage(1, msgjson); err != nil {
-							settingsServerAPI.SaveMessageApp.LogMessage(savemessageapp.TypeLogMessage{
-								Description: fmt.Sprint(err),
-								FuncName:    funcName,
-							})
-						}
-					}
-
-					continue
-				}
-
-				if clientSettings.Connection == nil {
-					continue
-				}
-
-				if err := clientSettings.SendWsMessage(1, msgjson); err != nil {
-					settingsServerAPI.SaveMessageApp.LogMessage(savemessageapp.TypeLogMessage{
-						Description: fmt.Sprint(err),
-						FuncName:    funcName,
-					})
-				}
-			}
-		}
-	}()
-*/

@@ -2,143 +2,145 @@ package temporarystorage
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/gorilla/websocket"
+
+	"ISEMS-MRSICT/commonlibs"
 )
 
-//NewRepository создание нового репозитория
-func NewRepository() *ModReqProcTemporaryStorage {
-	mrpts := ModReqProcTemporaryStorage{
-		clientSettings:    map[string]*ModReqProcTemporaryStorageClientSettings{},
-		chanReqParameters: make(chan typeChanReqParam),
+//NewRepositoryStorageUserParameters создание нового репозитория
+func NewRepositoryStorageUserParameters() *RepositoryStorageUserParametersType {
+	rsupt := RepositoryStorageUserParametersType{
+		clientSettings:    map[string]*StorageUserParameters{},
+		chanReqParameters: make(chan typeChanReqParameters),
 	}
 
 	go func() {
-		for msg := range mrpts.chanReqParameters {
+		for msg := range rsupt.chanReqParameters {
 			switch msg.actionType {
 			case "add new client":
-				/*				smapi.clientSettings[msg.clientID] = &ClientSettings{
-									IP:         msg.clientIP,
-									Token:      msg.token,
-									ClientName: msg.clientName,
-									IsAllowed:  true,
-								}
+				rsupt.clientSettings[msg.clientID] = &StorageUserParameters{
+					IP:         msg.clientIP,
+					Token:      msg.token,
+					ClientName: msg.clientName,
+					IsAllowed:  true,
+				}
 
-								msg.chanRes <- typeChanResSetting{}*/
+				msg.chanRes <- typeChanResParameters{}
 
 			case "get client list":
-				/*				msg.chanRes <- typeChanResSetting{
-								clientList: smapi.clientSettings,
-							}*/
+				msg.chanRes <- typeChanResParameters{
+					clientList: rsupt.clientSettings,
+				}
 
-			case "get client setting":
-				/*				if err := smapi.searchID(msg.clientID); err != nil {
-									msg.chanRes <- typeChanResSetting{
-										msgErr: err,
-									}
+			case "get client parameters":
+				if err := rsupt.searchID(msg.clientID); err != nil {
+					msg.chanRes <- typeChanResParameters{
+						msgErr: err,
+					}
 
-									continue
-								}
+					continue
+				}
 
-								res := typeChanResSetting{}
-								res.clientSetting = smapi.clientSettings[msg.clientID]
+				res := typeChanResParameters{}
+				res.clientSetting = rsupt.clientSettings[msg.clientID]
 
-								msg.chanRes <- res*/
+				msg.chanRes <- res
 
 			case "search client for ip":
-				/*				if len(smapi.clientSettings) == 0 {
-									msg.chanRes <- typeChanResSetting{
-										msgErr: fmt.Errorf("the client list is empty"),
-									}
+				if len(rsupt.clientSettings) == 0 {
+					msg.chanRes <- typeChanResParameters{
+						msgErr: fmt.Errorf("the client list is empty"),
+					}
 
-									continue
-								}
+					continue
+				}
 
-								res := typeChanResSetting{}
-								for clientID, setting := range smapi.clientSettings {
-									if (msg.clientIP == setting.IP) && (msg.token == setting.Token) {
-										res.clientID = clientID
-										res.clientSetting = setting
-									}
-								}
+				res := typeChanResParameters{}
+				for clientID, setting := range rsupt.clientSettings {
+					if (msg.clientIP == setting.IP) && (msg.token == setting.Token) {
+						res.clientID = clientID
+						res.clientSetting = setting
+					}
+				}
 
-								msg.chanRes <- res*/
+				msg.chanRes <- res
 
 			case "save client connection":
-				/*				if err := smapi.searchID(msg.clientID); err != nil {
-									msg.chanRes <- typeChanResSetting{
-										msgErr: err,
-									}
+				if err := rsupt.searchID(msg.clientID); err != nil {
+					msg.chanRes <- typeChanResParameters{
+						msgErr: err,
+					}
 
-									continue
-								}
+					continue
+				}
 
-								smapi.clientSettings[msg.clientID].Connection = msg.connect
+				rsupt.clientSettings[msg.clientID].Connection = msg.connect
 
-								msg.chanRes <- typeChanResSetting{}*/
+				msg.chanRes <- typeChanResParameters{}
 
 			case "get client connection":
-				/*				if err := smapi.searchID(msg.clientID); err != nil {
-									msg.chanRes <- typeChanResSetting{
-										msgErr: err,
-									}
+				if err := rsupt.searchID(msg.clientID); err != nil {
+					msg.chanRes <- typeChanResParameters{
+						msgErr: err,
+					}
 
-									continue
-								}
-								res := typeChanResSetting{}
-								res.connect = smapi.clientSettings[msg.clientID].Connection
+					continue
+				}
+				res := typeChanResParameters{}
+				res.connect = rsupt.clientSettings[msg.clientID].Connection
 
-								msg.chanRes <- res*/
+				msg.chanRes <- res
 
-			case "del client":
-				/*				delete(smapi.clientSettings, msg.clientID)
+			case "delete client":
+				delete(rsupt.clientSettings, msg.clientID)
 
-								msg.chanRes <- typeChanResSetting{}*/
+				msg.chanRes <- typeChanResParameters{}
 
 			}
 		}
 	}()
 
-	return &mrpts
+	return &rsupt
 }
 
 //AddNewClient добавляет нового клиента
-func (mrpts *ModReqProcTemporaryStorage) AddNewClient(clientIP, port, clientName, token string) string {
+func (rsupt *RepositoryStorageUserParametersType) AddNewClient(clientIP, clientPort, clientName, clientToken string) string {
 
 	fmt.Println("func 'AddNewClient', START...")
-	return ""
 
-	/*	hsum := commonlibs.GetUniqIDFormatMD5(clientIP + "_" + port + "_client API")
+	hsum := commonlibs.GetUniqIDFormatMD5(clientIP + "_" + clientPort + "_" + fmt.Sprint(time.Now().Unix()) + "_client API")
 
-		cr := make(chan typeChanResSetting)
-		defer close(cr)
+	cr := make(chan typeChanResParameters)
+	defer close(cr)
 
-		mrpts.chanReqParameters <- typeChanReqParam{
-			actionType: "add new client",
-			clientIP:   clientIP,
-			token:      token,
-			clientID:   hsum,
-			clientName: clientName,
-			chanRes:    cr,
-		}
+	rsupt.chanReqParameters <- typeChanReqParameters{
+		actionType: "add new client",
+		clientIP:   clientIP,
+		token:      clientToken,
+		clientID:   hsum,
+		clientName: clientName,
+		chanRes:    cr,
+	}
 
-		<-cr
+	<-cr
 
-		return hsum*/
+	return hsum
 }
 
 //SearchClientForIP поиск информации о клиенте по его ip адресу
-func (mrpts *ModReqProcTemporaryStorage) SearchClientForIP(clientIP, token string) /*(string, *ClientSettings, bool)*/ {
+func (rsupt *RepositoryStorageUserParametersType) SearchClientForIP(clientIP, clientToken string) (string, *StorageUserParameters, bool) {
 
 	fmt.Println("func 'SearchClientForIP', START...")
 
-	/*cr := make(chan typeChanResSetting)
+	cr := make(chan typeChanResParameters)
 	defer close(cr)
 
-	mrpts.chanReqParameters <- typeChanReqParam{
+	rsupt.chanReqParameters <- typeChanReqParameters{
 		actionType: "search client for ip",
 		clientIP:   clientIP,
-		token:      token,
+		token:      clientToken,
 		chanRes:    cr,
 	}
 
@@ -148,73 +150,73 @@ func (mrpts *ModReqProcTemporaryStorage) SearchClientForIP(clientIP, token strin
 		return "", nil, false
 	}
 
-	return res.clientID, res.clientSetting, true*/
+	return res.clientID, res.clientSetting, true
 }
 
-//GetClientSettings получить все настройки клиента
-func (mrpts *ModReqProcTemporaryStorage) GetClientSettings(clientID string) /*(*ClientSettings, error)*/ {
+//GetClientParametersForID получить все настройки клиента
+func (rsupt *RepositoryStorageUserParametersType) GetClientParametersForID(clientID string) (*StorageUserParameters, error) {
 
 	fmt.Println("func 'SearchClientForIP', START...")
 
-	/*	cr := make(chan typeChanResSetting)
-		defer close(cr)
+	cr := make(chan typeChanResParameters)
+	defer close(cr)
 
-		mrpts.chanReqParameters <- typeChanReqParam{
-			actionType: "get client setting",
-			clientID:   clientID,
-			chanRes:    cr,
-		}
+	rsupt.chanReqParameters <- typeChanReqParameters{
+		actionType: "get client parameters",
+		clientID:   clientID,
+		chanRes:    cr,
+	}
 
-		res := <-cr
+	res := <-cr
 
-		return res.clientSetting, res.msgErr*/
+	return res.clientSetting, res.msgErr
 }
 
 //GetClientList получить весь список клиентов
-func (mrpts *ModReqProcTemporaryStorage) GetClientList() /*map[string]*ClientSettings*/ {
+func (rsupt *RepositoryStorageUserParametersType) GetClientList() map[string]*StorageUserParameters {
 
 	fmt.Println("func 'GetClientList', START...")
 
-	/*	cr := make(chan typeChanResSetting)
-		defer close(cr)
+	cr := make(chan typeChanResParameters)
+	defer close(cr)
 
-		mrpts.chanReqParameters <- typeChanReqParam{
-			actionType: "get client list",
-			chanRes:    cr,
-		}
+	rsupt.chanReqParameters <- typeChanReqParameters{
+		actionType: "get client list",
+		chanRes:    cr,
+	}
 
-		return (<-cr).clientList*/
+	return (<-cr).clientList
 }
 
 //SaveWssClientConnection сохранить линк соединения с клиентом
-func (mrpts *ModReqProcTemporaryStorage) SaveWssClientConnection(clientID string, conn *websocket.Conn) /*error*/ {
+func (rsupt *RepositoryStorageUserParametersType) SaveWssClientConnection(clientID string, conn *websocket.Conn) error {
 
 	fmt.Println("func 'SaveWssClientConnection', START...")
 
-	/*cr := make(chan typeChanResSetting)
+	cr := make(chan typeChanResParameters)
 	defer close(cr)
 
-	req := typeChanReqSetting{
+	req := typeChanReqParameters{
 		actionType: "save client connection",
 		clientID:   clientID,
 		chanRes:    cr,
 	}
 	req.connect = conn
 
-	smapi.chanReqSetting <- req
+	rsupt.chanReqParameters <- req
 
-	return (<-cr).msgErr*/
+	return (<-cr).msgErr
 }
 
 //GetWssClientConnection получить линк wss соединения
-func (mrpts *ModReqProcTemporaryStorage) GetWssClientConnection(clientID string) /*(*websocket.Conn, error)*/ {
+func (rsupt *RepositoryStorageUserParametersType) GetWssClientConnection(clientID string) (*websocket.Conn, error) {
 
 	fmt.Println("func 'SaveWssClientConnection', START...")
 
-	/*cr := make(chan typeChanResSetting)
+	cr := make(chan typeChanResParameters)
 	defer close(cr)
 
-	smapi.chanReqSetting <- typeChanReqSetting{
+	rsupt.chanReqParameters <- typeChanReqParameters{
 		actionType: "get client connection",
 		clientID:   clientID,
 		chanRes:    cr,
@@ -222,22 +224,30 @@ func (mrpts *ModReqProcTemporaryStorage) GetWssClientConnection(clientID string)
 
 	res := <-cr
 
-	return res.connect, res.msgErr*/
+	return res.connect, res.msgErr
 }
 
-//DelClientAPI удалить всю информацию о клиенте
-func (mrpts *ModReqProcTemporaryStorage) DelClientAPI(clientID string) {
+//DeleteClient удалить всю информацию о клиенте
+func (rsupt *RepositoryStorageUserParametersType) DeleteClient(clientID string) {
 
 	fmt.Println("func 'DelClientAPI', START...")
 
-	/*cr := make(chan typeChanResSetting)
+	cr := make(chan typeChanResParameters)
 	defer close(cr)
 
-	smapi.chanReqSetting <- typeChanReqSetting{
+	rsupt.chanReqParameters <- typeChanReqParameters{
 		actionType: "del client",
 		clientID:   clientID,
 		chanRes:    cr,
 	}
 
-	<-cr*/
+	<-cr
+}
+
+func (rsupt *RepositoryStorageUserParametersType) searchID(clientID string) error {
+	if _, ok := rsupt.clientSettings[clientID]; !ok {
+		return fmt.Errorf("client with specified ID %v not found", clientID)
+	}
+
+	return nil
 }

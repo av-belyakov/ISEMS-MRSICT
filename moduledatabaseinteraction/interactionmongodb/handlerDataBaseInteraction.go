@@ -52,9 +52,6 @@ func InteractionMongoDB(mdbs *datamodels.MongoDBSettings) (ChannelsMongoDBIntera
 	fmt.Printf("func 'InteractionMongoDB', settings db: '%v'\n", mdbs)
 
 	defer func() {
-		close(cmdbi.InputModule)
-		close(cmdbi.OutputModule)
-
 		cdmdb.ctxCancel()
 	}()
 

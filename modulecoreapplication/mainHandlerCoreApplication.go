@@ -7,6 +7,7 @@ import (
 	"ISEMS-MRSICT/moduleapirequestprocessing"
 	"ISEMS-MRSICT/moduledatabaseinteraction"
 	"ISEMS-MRSICT/modulelogginginformationerrors"
+	"ISEMS-MRSICT/moduletemporarymemorycommon"
 )
 
 //ChannelsListInteractingModules содержит список каналов для межмодульного взаимодействия
@@ -16,9 +17,11 @@ type ChannelsListInteractingModules struct {
 }
 
 var clim ChannelsListInteractingModules
+var stmc *moduletemporarymemorycommon.StorageTemporaryMemoryCommonType
 
 func init() {
 	clim = ChannelsListInteractingModules{}
+	stmc = moduletemporarymemorycommon.NewStorageTemporaryMemoryCommon()
 }
 
 //MainHandlerCoreApplication основной обработчик ядра приложения
@@ -26,6 +29,9 @@ func MainHandlerCoreApplication(chanSaveLog chan modulelogginginformationerrors.
 	funcName := "MainHandlerCoreApplication"
 
 	fmt.Println("func 'MainHandlerCoreApplication', START...")
+
+	//добавляем доступ к методам модуля ModuleLoggingInformationOrErrors
+	stmc.SetChanModuleLoggingInformationOrError(chanSaveLog)
 
 	//инициализируем модули взаимодействия с БД
 	cdbi, err := moduledatabaseinteraction.MainHandlerDataBaseInteraction(&appConfig.ConnectionsDataBase)
@@ -43,7 +49,7 @@ func MainHandlerCoreApplication(chanSaveLog chan modulelogginginformationerrors.
 	clim.ChannelsModuleDataBaseInteraction = cdbi
 
 	//инициализируем модуль обработки запросов с внешних источников
-	capirp := moduleapirequestprocessing.MainHandlerAPIReguestProcessing(chanSaveLog, &appConfig.ModuleAPIRequestProcessingSettings, &appConfig.CryptographySettings)
+	capirp := moduleapirequestprocessing.MainHandlerAPIReguestProcessing(stmc, &appConfig.ModuleAPIRequestProcessingSettings, &appConfig.CryptographySettings)
 	clim.ChannelsModuleAPIRequestProcessing = capirp
 
 	chanSaveLog <- modulelogginginformationerrors.LogMessageType{

@@ -56,8 +56,6 @@ func getVersionApp(appc *datamodels.AppConfig) error {
 
 	s := strings.Split(numVersion, " ")
 
-	fmt.Println(s)
-
 	if len(s) < 3 {
 		appc.VersionApp = failureMessage
 
@@ -70,8 +68,6 @@ func getVersionApp(appc *datamodels.AppConfig) error {
 }
 
 func init() {
-	fmt.Println("func 'init', START...")
-
 	var err error
 
 	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
@@ -103,7 +99,7 @@ func init() {
 
 func main() {
 	fmt.Println("func 'main', START...")
-	fmt.Println(appConfig)
+	fmt.Printf("func 'main', application config '%v'\n", appConfig)
 
 	defer func() {
 		if err := recover(); err != nil {

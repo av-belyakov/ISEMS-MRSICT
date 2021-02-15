@@ -31,9 +31,9 @@
     "CryptographySettings": {
         "pathRootCA_of_moduleAPIRequestProcessingSettings": "keys/rootCA.pem",
         "pathRootCA_of_moduleAPIRequestProcessingSettings_comments": "месторасположение корневого сертификата для сервера модуля 'moduleApiRequestProcessingSettings'",
-        "pathCertFile_of_moduleAPIRequestProcessingSettings": "keys/isems_nih_master_api_cert.pem",
+        "pathCertFile_of_moduleAPIRequestProcessingSettings": "keys/isems_mrsict_cert.pem",
         "pathCertFile_of_moduleAPIRequestProcessingSettings_comments": "месторасположение файла сертификата для сервера модуля 'moduleApiRequestProcessingSettings'",
-        "pathPrivateKeyFile_of_moduleAPIRequestProcessingSettings": "keys/isems_nih_master_api_private_key.pem",
+        "pathPrivateKeyFile_of_moduleAPIRequestProcessingSettings": "keys/isems_mrsict_private_key.pem",
         "pathPrivateKeyFile_of_moduleAPIRequestProcessingSettings_comments": "месторасположение файла приватного ключа для сервера модуля 'moduleApiRequestProcessingSettings'"
     },
     "CryptographySettings_comments": "настройки связанные с криптографией и защите каналов связи",

@@ -47,7 +47,47 @@ type KillChainPhasesTypeElementSTIX struct {
 //OpenVocabTypeSTIX тип "open-vocab", по терминалогии STIX, содержащий заранее определенное (предложенное) значение
 type OpenVocabTypeSTIX string
 
-/********** 			Data Markings STIX 			**********/
+/********** 			Meta Object STIX 			**********/
+
+/***	 			Language Content STIX 				***/
+
+//LanguageContentSTIX тип "language content", по терминалогии STIX, представляет собой текстовое содержимое для
+// объектов STIX, представленных на языках, отличных от языка исходного объекта
+// Type - наименование типа объекта, для этого типа это поле ДОЛЖНО содержать "language-content" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+// ID - уникальный идентификатор объекта (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+// SpecVersion - версия спецификации STIX используемая для представления текущего объекта (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+// Created - время создания объекта, в формате "2016-05-12T08:17:27.000Z" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+// Modified - время создания объекта, в формате "2016-05-12T08:17:27.000Z" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+// ObjectRef - определяет идентификатор объекта "language content" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+// ObjectModified - время изменения объекта, к которому применяется данное значение, в формате "2016-05-12T08:17:27.000Z"
+// Contents - (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+// CreatedByRef - содержит идентификатор источника создавшего данный объект
+// Revoked - вернуть к текущему состоянию
+// Labels - определяет набор терминов, используемых для описания данного объекта
+// Сonfidence - определяет уверенность создателя в правильности своих данных. Доверительное значение ДОЛЖНО быть числом
+//  в диапазоне 0-100. Если 0 - значение не определено.
+// ExternalReferences - список внешних ссылок не относящихся к STIX информации
+// ObjectMarkingRefs - определяет список ID ссылающиеся на объект "marking-definition", по терминалогии STIX, в котором содержатся значения применяющиеся к этому объекту
+// GranularMarkings - определяет список "гранулярных меток" (granular_markings) относящихся к этому объекту
+type LanguageContentSTIX struct {
+	Type               string                     `json:"type" bson:"type"`
+	ID                 string                     `json:"id" bson:"id"`
+	SpecVersion        string                     `json:"spec_version" bson:"spec_version"`
+	Created            time.Time                  `json:"created" bson:"created"`
+	Modified           time.Time                  `json:"modified" bson:"modified"`
+	ObjectRef          IdentifierTypeSTIX         `json:"object_ref" bson:"object_ref"`
+	ObjectModified     time.Time                  `json:"object_modified" bson:"object_modified"`
+	Contents           map[string]string          `json:"contents" bson:"contents"`
+	CreatedByRef       IdentifierTypeSTIX         `json:"created_by_ref" bson:"created_by_ref"`
+	Revoked            bool                       `json:"revoked" bson:"revoked"`
+	Labels             []string                   `json:"labels" bson:"labels"`
+	Сonfidence         int                        `json:"confidence" bson:"confidence"`
+	ExternalReferences ExternalReferencesTypeSTIX `json:"external_references" bson:"external_references"`
+	ObjectMarkingRefs  []*IdentifierTypeSTIX      `json:"object_marking_refs" bson:"object_marking_refs"`
+	GranularMarkings   GranularMarkingsTypeSTIX   `json:"granular_markings" bson:"granular_markings"`
+}
+
+/***	 			Data Markings STIX 				***/
 
 //CommonDataMarkingsTypeSTIX общие свойства меток данных
 // SpecVersion - версия спецификации STIX используемая для представления текущего объекта (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)

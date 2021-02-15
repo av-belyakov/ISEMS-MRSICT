@@ -9,7 +9,7 @@ import (
 	"ISEMS-MRSICT/commonlibs"
 )
 
-//NewRepositoryStorageUserParameters создание нового репозитория
+//NewRepositoryStorageUserParameters создание нового репозитория для хранения параметров пользователя
 func NewRepositoryStorageUserParameters() *RepositoryStorageUserParametersType {
 	rsupt := RepositoryStorageUserParametersType{
 		clientSettings:    map[string]*StorageUserParameters{},

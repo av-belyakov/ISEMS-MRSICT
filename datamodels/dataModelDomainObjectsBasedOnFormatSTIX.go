@@ -4,138 +4,9 @@ import (
 	"time"
 )
 
-/**********			 Некоторые примитивные типы STIX			 **********/
-
-//EnumTypeSTIX тип "enum", по терминалогии STIX, является жестко заданным списком терминов, который представлен в виде строки
-type EnumTypeSTIX string
-
-//ExternalReferencesTypeSTIX тип "external-reference", по терминалогии STIX, является списком с информацией о внешних ссылках не относящихся к STIX информации
-type ExternalReferencesTypeSTIX []*ExternalReferenceTypeElementSTIX
-
-//ExternalReferenceTypeElementSTIX тип содержащий подробную информацию о внешних ссылках, таких как URL, ID и т.д.
-// SourceName - имя источника (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
-// Description - описание
-// URL - URL ссылка на внешних источниках
-// Hashes - содержит словарь хэшей для содержимого URL-адреса. Это ДОЛЖНО быть предусмотрено при наличии свойства url
-// ExternalID - идентификатор на внешних источниках
-type ExternalReferenceTypeElementSTIX struct {
-	SourceName  string         `json:"source_name" bson:"source_name"`
-	Description string         `json:"description" bson:"description"`
-	URL         string         `json:"url" bson:"url"`
-	Hashes      HashesTypeSTIX `json:"hashes" bson:"hashes"`
-	ExternalID  string         `json:"external_id" bson:"external_id"`
-}
-
-//HashesTypeSTIX тип "hashes", по терминалогии STIX, содержащий хеш хначения, где <тип_хеша>:<хеш>
-type HashesTypeSTIX map[string]string
-
-//IdentifierTypeSTIX тип "identifier", по терминалогии STIX, содержащий уникальный идентификатор UUID, преимущественно версии 4 при этом ID должен
-//начинаться с наименования организации или программного обеспечения сгенерировавшего его. Например, <example-source--ff26c055-6336-5bc5-b98d-13d6226742dd> (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
-type IdentifierTypeSTIX string
-
-//KillChainPhasesTypeSTIX тип "kill-chain-phases", по терминалогии STIX, содержащий цепочки фактов, приведших к какому либо урону
-type KillChainPhasesTypeSTIX []*KillChainPhasesTypeElementSTIX
-
-//KillChainPhasesTypeElementSTIX тип содержащий набор элементов цепочки фактов, приведших к какому либо урону
-// KillChainName - имя цепочки (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
-// PhaseName - наименование фазы из спецификации STIX, например, "reconnaissance", "pre-attack" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
-type KillChainPhasesTypeElementSTIX struct {
-	KillChainName string `json:"kill_chain_name" bson:"kill_chain_name"`
-	PhaseName     string `json:"phase_name" bson:"phase_name"`
-}
-
-//OpenVocabTypeSTIX тип "open-vocab", по терминалогии STIX, содержащий заранее определенное (предложенное) значение
-type OpenVocabTypeSTIX string
-
-/********** 			Meta Object STIX 			**********/
-
-/***	 			Language Content STIX 				***/
-
-//LanguageContentSTIX тип "language content", по терминалогии STIX, представляет собой текстовое содержимое для
-// объектов STIX, представленных на языках, отличных от языка исходного объекта
-// Type - наименование типа объекта, для этого типа это поле ДОЛЖНО содержать "language-content" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
-// ID - уникальный идентификатор объекта (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
-// SpecVersion - версия спецификации STIX используемая для представления текущего объекта (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
-// Created - время создания объекта, в формате "2016-05-12T08:17:27.000Z" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
-// Modified - время создания объекта, в формате "2016-05-12T08:17:27.000Z" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
-// ObjectRef - определяет идентификатор объекта "language content" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
-// ObjectModified - время изменения объекта, к которому применяется данное значение, в формате "2016-05-12T08:17:27.000Z"
-// Contents - (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
-// CreatedByRef - содержит идентификатор источника создавшего данный объект
-// Revoked - вернуть к текущему состоянию
-// Labels - определяет набор терминов, используемых для описания данного объекта
-// Сonfidence - определяет уверенность создателя в правильности своих данных. Доверительное значение ДОЛЖНО быть числом
-//  в диапазоне 0-100. Если 0 - значение не определено.
-// ExternalReferences - список внешних ссылок не относящихся к STIX информации
-// ObjectMarkingRefs - определяет список ID ссылающиеся на объект "marking-definition", по терминалогии STIX, в котором содержатся значения применяющиеся к этому объекту
-// GranularMarkings - определяет список "гранулярных меток" (granular_markings) относящихся к этому объекту
-type LanguageContentSTIX struct {
-	Type               string                     `json:"type" bson:"type"`
-	ID                 string                     `json:"id" bson:"id"`
-	SpecVersion        string                     `json:"spec_version" bson:"spec_version"`
-	Created            time.Time                  `json:"created" bson:"created"`
-	Modified           time.Time                  `json:"modified" bson:"modified"`
-	ObjectRef          IdentifierTypeSTIX         `json:"object_ref" bson:"object_ref"`
-	ObjectModified     time.Time                  `json:"object_modified" bson:"object_modified"`
-	Contents           map[string]string          `json:"contents" bson:"contents"`
-	CreatedByRef       IdentifierTypeSTIX         `json:"created_by_ref" bson:"created_by_ref"`
-	Revoked            bool                       `json:"revoked" bson:"revoked"`
-	Labels             []string                   `json:"labels" bson:"labels"`
-	Сonfidence         int                        `json:"confidence" bson:"confidence"`
-	ExternalReferences ExternalReferencesTypeSTIX `json:"external_references" bson:"external_references"`
-	ObjectMarkingRefs  []*IdentifierTypeSTIX      `json:"object_marking_refs" bson:"object_marking_refs"`
-	GranularMarkings   GranularMarkingsTypeSTIX   `json:"granular_markings" bson:"granular_markings"`
-}
-
-/***	 			Data Markings STIX 				***/
-
-//CommonDataMarkingsTypeSTIX общие свойства меток данных
-// SpecVersion - версия спецификации STIX используемая для представления текущего объекта (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
-// ID - уникальный идентификатор объекта (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
-// Created - время создания объекта, в формате "2016-05-12T08:17:27.000Z" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
-type CommonDataMarkingsTypeSTIX struct {
-	Type        string    `json:"type" bson:"type"`
-	SpecVersion string    `json:"spec_version" bson:"spec_version"`
-	ID          string    `json:"id" bson:"id"`
-	Created     time.Time `json:"created" bson:"created"`
-}
-
-//GranularMarkingsTypeSTIX тип "granular_markings", по терминалогии STIX, представляет собой набор маркеров ссылающихся на свойства "marking_ref" и "lang"
-// Lang - идентифицирует язык соответствующим маркером
-// MarkingRef - определяет идентификатор объекта "marking-definition"
-// Selectors - определяет список селекторов для содержимого объекта STIX, к которому применяется это свойство
-type GranularMarkingsTypeSTIX struct {
-	Lang       string             `json:"lang" bson:"lang"`
-	MarkingRef IdentifierTypeSTIX `json:"marking_ref" bson:"marking_ref"`
-	Selectors  []string           `json:"selectors" bson:"selectors"`
-}
-
-//MarkingDefinitionObjectSTIX объект "marking-definition", по терминалогии STIX, содержит метки данных ссылающиеся на требования к обработке или совместному использованию данных
-// Type - наименование типа объекта, для этого типа это поле ДОЛЖНО содержать "marking-definition" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
-// Name - наименование маркера
-// DefinitionType - определение типа, должно содержать "statement" или "tlp"
-// Definition - содержит маркер в виде объекта вида или { "statement": "Copyright 2019, Example Corp" } или { "tlp": "white" }, где
-//  "white" может быть заменен на "green", "amber", "red"
-// CreatedByRef - содержит идентификатор источника создавшего данный объект
-// ExternalReferences - список внешних ссылок не относящихся к STIX информации
-// ObjectMarkingRefs - определяет список свойств идентификаторов объектов определения маркировки, которые применяются к этому объекту
-//  хотя оно и является списком типа IdentifierTypeSTIX, но тот в свою очередь ССЫЛАЕТСЯ на объект типа MarkingDefinitionObjectSTIX (marking-definition)
-// GranularMarkings - определяет список "гранулярных меток" (granular_markings) относящихся к этому объекту
-type MarkingDefinitionObjectSTIX struct {
-	CommonDataMarkingsTypeSTIX
-	Type               string                     `json:"type" bson:"type"`
-	Name               string                     `json:"name" bson:"name"`
-	DefinitionType     string                     `json:"definition_type" bson:"definition_type"`
-	Definition         map[string]string          `json:"definition" bson:"definition"`
-	CreatedByRef       IdentifierTypeSTIX         `json:"created_by_ref" bson:"created_by_ref"`
-	ExternalReferences ExternalReferencesTypeSTIX `json:"external_references" bson:"external_references"`
-	ObjectMarkingRefs  []*IdentifierTypeSTIX      `json:"object_marking_refs" bson:"object_marking_refs"`
-	GranularMarkings   GranularMarkingsTypeSTIX   `json:"granular_markings" bson:"granular_markings"`
-}
-
 /********** 			Domain Objects STIX 			**********/
 
-//CommonPropertiesObjectSTIX свойства общие, для всех объектов STIX
+//CommonPropertiesDomainObjectSTIX свойства общие, для всех объектов STIX
 // Type - наименование типа шаблона (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 //  Type должен содержать одно из следующих значений:
 //  - "attack-pattern"
@@ -171,7 +42,7 @@ type MarkingDefinitionObjectSTIX struct {
 // GranularMarkings - определяет список "гранулярных меток" (granular_markings) относящихся к этому объекту
 // Defanged - определяет были ли определены данные содержащиеся в объекте
 // Extensions - может содержать дополнительную информацию, относящуюся к объекту
-type CommonPropertiesObjectSTIX struct {
+type CommonPropertiesDomainObjectSTIX struct {
 	Type               string                     `json:"type" bson:"type"`
 	SpecVersion        string                     `json:"spec_version" bson:"spec_version"`
 	ID                 string                     `json:"id" bson:"id"`
@@ -195,7 +66,7 @@ type CommonPropertiesObjectSTIX struct {
 // Aliases - альтернативные имена
 // KillChainPhases - список цепочки фактов, в которых используется этот шаблон атак
 type AttackPatternDomainObjectsSTIX struct {
-	CommonPropertiesObjectSTIX
+	CommonPropertiesDomainObjectSTIX
 	Name            string                            `json:"name" bson:"name"`
 	Description     string                            `json:"description" bson:"description"`
 	Aliases         []string                          `json:"aliases" bson:"aliases"`
@@ -210,7 +81,7 @@ type AttackPatternDomainObjectsSTIX struct {
 // LastSeen - время когда компания была зафиксирована в последний раз, в формате "2016-05-12T08:17:27.000Z"
 // Objective - основная цель, желаемый результат или предполагаемый эффект
 type CampaignDomainObjectsSTIX struct {
-	CommonPropertiesObjectSTIX
+	CommonPropertiesDomainObjectSTIX
 	Name        string    `json:"name" bson:"name"`
 	Description string    `json:"description" bson:"description"`
 	Aliases     []string  `json:"aliases" bson:"aliases"`
@@ -225,7 +96,7 @@ type CampaignDomainObjectsSTIX struct {
 // Description - более подробное описание
 // Action - ЗАРЕЗЕРВИРОВАНО
 type CourseOfActionDomainObjectsSTIX struct {
-	CommonPropertiesObjectSTIX
+	CommonPropertiesDomainObjectSTIX
 	Name        string      `json:"name" bson:"name"`
 	Description string      `json:"description" bson:"description"`
 	Action      interface{} `json:"action" bson:"action"`
@@ -237,7 +108,7 @@ type CourseOfActionDomainObjectsSTIX struct {
 // Context - одно, из заранее определенных (предложенных) значений (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // ObjectRefs - указывает объекты STIX, на которые ссылается эта группировка (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 type GroupingDomainObjectsSTIX struct {
-	CommonPropertiesObjectSTIX
+	CommonPropertiesDomainObjectSTIX
 	Name        string                `json:"name" bson:"name"`
 	Description string                `json:"description" bson:"description"`
 	Context     OpenVocabTypeSTIX     `json:"context" bson:"context"`
@@ -252,7 +123,7 @@ type GroupingDomainObjectsSTIX struct {
 // Sectors - заранее определенный (предложенный) перечень отраслей промышленности, к которой принадлежит физическое лицо или организация
 // ContactInformation -
 type IdentityDomainObjectsSTIX struct {
-	CommonPropertiesObjectSTIX
+	CommonPropertiesDomainObjectSTIX
 	Name               string               `json:"name" bson:"name"`
 	Description        string               `json:"description" bson:"description"`
 	Roles              []string             `json:"roles" bson:"roles"`
@@ -273,7 +144,7 @@ type IdentityDomainObjectsSTIX struct {
 // ValidUntil - время начиная с которого этот индикатор не может считаться валидным, в формате "2016-05-12T08:17:27.000Z"
 // KillChainPhases - список цепочки фактов, к которым можно отнести соответствующте индикаторы
 type IndicatorDomainObjectsSTIX struct {
-	CommonPropertiesObjectSTIX
+	CommonPropertiesDomainObjectSTIX
 	Name            string                            `json:"name" bson:"name"`
 	Description     string                            `json:"description" bson:"description"`
 	IndicatorTypes  []*OpenVocabTypeSTIX              `json:"indicator_types" bson:"indicator_types"`
@@ -295,7 +166,7 @@ type IndicatorDomainObjectsSTIX struct {
 // FirstSeen - время, в формате "2016-05-12T08:17:27.000Z", когда данная инфраструктура была впервые замечена за осуществлением вредоносной активности
 // LastSeen - время, в формате "2016-05-12T08:17:27.000Z", когда данная инфраструктура в последний раз была замечена за осуществлением вредоносной активности
 type InfrastructureDomainObjectsSTIX struct {
-	CommonPropertiesObjectSTIX
+	CommonPropertiesDomainObjectSTIX
 	Name                string                            `json:"name" bson:"name"`
 	Description         string                            `json:"description" bson:"description"`
 	InfrastructureTypes []*OpenVocabTypeSTIX              `json:"infrastructure_types" bson:"infrastructure_types"`
@@ -318,7 +189,7 @@ type InfrastructureDomainObjectsSTIX struct {
 // PrimaryMotivation - одно, из заранее определенных (предложенных) перечней причин, мотиваций или целей определяющий данный набор вторжения
 // SecondaryMotivations - заранее определенный (предложенный) вторичный перечень причин, мотиваций или целей определяющий данный набор вторжений
 type IntrusionSetDomainObjectsSTIX struct {
-	CommonPropertiesObjectSTIX
+	CommonPropertiesDomainObjectSTIX
 	Name                 string               `json:"name" bson:"name"`
 	Description          string               `json:"description" bson:"description"`
 	Aliases              []string             `json:"aliases" bson:"aliases"`
@@ -343,7 +214,7 @@ type IntrusionSetDomainObjectsSTIX struct {
 // StreetAddress - физический адрес
 // PostalCode - почтовый адрес
 type LocationDomainObjectsSTIX struct {
-	CommonPropertiesObjectSTIX
+	CommonPropertiesDomainObjectSTIX
 	Name               string            `json:"name" bson:"name"`
 	Description        string            `json:"description" bson:"description"`
 	Latitude           float32           `json:"latitude" bson:"latitude"`
@@ -375,7 +246,7 @@ type LocationDomainObjectsSTIX struct {
 //  программ
 // SampleRefs - определяет список идентификаторов файлов или объектов ассоциируемых с вредоносным ПО или семейством вредоносных программ
 type MalwareDomainObjectsSTIX struct {
-	CommonPropertiesObjectSTIX
+	CommonPropertiesDomainObjectSTIX
 	Name                      string                            `json:"name" bson:"name"`
 	Description               string                            `json:"description" bson:"description"`
 	MalwareTypes              []*OpenVocabTypeSTIX              `json:"malware_types" bson:"malware_types"`
@@ -411,7 +282,7 @@ type MalwareDomainObjectsSTIX struct {
 // AnalysisScoRefs - список идентификаторов на другие наблюдаемые Domain Objects STIX которые были захвачены в процессе наблюдения
 // SampleRef - содержит ссылку на файл, сетевой трафик или объект на основе которого был выполнен анализ вредоносного ПО
 type MalwareAnalysisDomainObjectsSTIX struct {
-	CommonPropertiesObjectSTIX
+	CommonPropertiesDomainObjectSTIX
 	Product                   string                `json:"product" bson:"product"`
 	Version                   string                `json:"version" bson:"version"`
 	HostVMRef                 IdentifierTypeSTIX    `json:"host_vm_ref" bson:"host_vm_ref"`
@@ -437,7 +308,7 @@ type MalwareAnalysisDomainObjectsSTIX struct {
 // Authors - список авторов
 // ObjectRefs - список идентификаторов на другие наблюдаемые Domain Objects STIX (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 type NoteDomainObjectsSTIX struct {
-	CommonPropertiesObjectSTIX
+	CommonPropertiesDomainObjectSTIX
 	Abstract   string                `json:"abstract" bson:"abstract"`
 	Content    string                `json:"content" bson:"content"`
 	Authors    []string              `json:"authors" bson:"authors"`
@@ -451,7 +322,7 @@ type NoteDomainObjectsSTIX struct {
 // NumberObserved - количество раз, когда фиксировался каждый наблюдаемый кибер объект SCO, представленный в свойстве ObjectRef (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // ObjectRefs - список идентификаторов на другие наблюдаемые кибер объекты SCO
 type ObservedDataDomainObjectsSTIX struct {
-	CommonPropertiesObjectSTIX
+	CommonPropertiesDomainObjectSTIX
 	FirstObserved  time.Time             `json:"first_observed" bson:"first_observed"`
 	LastObserved   time.Time             `json:"last_observed" bson:"last_observed"`
 	NumberObserved int                   `json:"number_observed" bson:"number_observed"`
@@ -465,7 +336,7 @@ type ObservedDataDomainObjectsSTIX struct {
 // Opinion - мнение обо всех STIX объектах перечисленных в ObjectRefs (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // ObjectRefs - список идентификаторов на другие STIX объекты (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 type OpinionDomainObjectsSTIX struct {
-	CommonPropertiesObjectSTIX
+	CommonPropertiesDomainObjectSTIX
 	Explanation string                `json:"explanation" bson:"explanation"`
 	Authors     []string              `json:"authors" bson:"authors"`
 	Opinion     EnumTypeSTIX          `json:"opinion" bson:"opinion"`
@@ -481,7 +352,7 @@ type OpinionDomainObjectsSTIX struct {
 // Published - время, в формате "2016-05-12T08:17:27.000Z", когда данный отчет был официально опубликован (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // ObjectRefs - список идентификаторов STIX объектов, которые ссылаются на этот отчет (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 type ReportDomainObjectsSTIX struct {
-	CommonPropertiesObjectSTIX
+	CommonPropertiesDomainObjectSTIX
 	Name        string                `json:"name" bson:"name"`
 	Description string                `json:"description" bson:"description"`
 	ReportTypes []*OpenVocabTypeSTIX  `json:"report_types" bson:"report_types"`
@@ -507,7 +378,7 @@ type ReportDomainObjectsSTIX struct {
 // SecondaryMotivations - заранее определенный (предложенный) перечень возможных вторичных причин, мотиваций или целей стоящих за этим субъектом угрозы
 // PersonalMotivations - заранее определенный (предложенный) перечень возможных персональных причин, мотиваций или целей стоящих за этим субъектом угрозы
 type ThreatActorDomainObjectsSTIX struct {
-	CommonPropertiesObjectSTIX
+	CommonPropertiesDomainObjectSTIX
 	Name                 string               `json:"name" bson:"name"`
 	Description          string               `json:"description" bson:"description"`
 	ThreatActorTypes     []*OpenVocabTypeSTIX `json:"threat_actor_types" bson:"threat_actor_types"`
@@ -532,7 +403,7 @@ type ThreatActorDomainObjectsSTIX struct {
 // KillChainPhases - список цепочки фактов, к которым может быть отнесен этот инструмент
 // ToolVersion - версия инструмента
 type ToolDomainObjectsSTIX struct {
-	CommonPropertiesObjectSTIX
+	CommonPropertiesDomainObjectSTIX
 	Name            string                            `json:"name" bson:"name"`
 	Description     string                            `json:"description" bson:"description"`
 	ToolTypes       []*OpenVocabTypeSTIX              `json:"tool_types" bson:"tool_types"`
@@ -546,7 +417,7 @@ type ToolDomainObjectsSTIX struct {
 // Name - имя используемое для идентификации "Vulnerability" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // Description - более подробное описание
 type VulnerabilityDomainObjectsSTIX struct {
-	CommonPropertiesObjectSTIX
+	CommonPropertiesDomainObjectSTIX
 	Name        string `json:"name" bson:"name"`
 	Description string `json:"description" bson:"description"`
 }

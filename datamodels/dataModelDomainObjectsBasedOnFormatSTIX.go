@@ -106,7 +106,7 @@ type CourseOfActionDomainObjectsSTIX struct {
 // Name - имя используемое для идентификации "Course of Action" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // Description - более подробное описание
 // Context - одно, из заранее определенных (предложенных) значений (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
-// ObjectRefs - указывает объекты STIX, на которые ссылается эта группировка (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+// ObjectRefs - указывает на список объектов STIX, на которые ссылается эта группировка (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 type GroupingDomainObjectsSTIX struct {
 	CommonPropertiesDomainObjectSTIX
 	Name        string                `json:"name" bson:"name"`

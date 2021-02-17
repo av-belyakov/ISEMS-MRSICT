@@ -6,6 +6,9 @@ import (
 
 /**********			 Некоторые примитивные типы STIX			 **********/
 
+//DictionaryTypeSTIX тип "dictionary", по терминалогии STIX, является словарем где 'ключ' должен удовлетворять определенным требованиям
+type DictionaryTypeSTIX map[string]string
+
 //EnumTypeSTIX тип "enum", по терминалогии STIX, является жестко заданным списком терминов, который представлен в виде строки
 type EnumTypeSTIX string
 

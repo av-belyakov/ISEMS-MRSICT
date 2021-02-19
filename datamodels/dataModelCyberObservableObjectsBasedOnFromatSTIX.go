@@ -86,7 +86,7 @@ type ArtifactObjectSTIX struct {
 //AutonomousSystemObjectSTIX объект "Autonomous System", по терминалогии STIX, содержит параметры Автономной системы
 // Number - содержит номер присвоенный Автономной системе (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // Name - название Автономной системы
-// RIR - содержит название регионального Интернет-реестра (Regional Internet Registry) которым было дано имя Автономной системы
+// RIR - содержит название регионального Интернет-реестра (Regional Internet Registry) которым было дано имя Автономной системыs
 type AutonomousSystemObjectSTIX struct {
 	CommonPropertiesCyberObservableObjectSTIX
 	Number int    `json:"number" bson:"number"`

@@ -65,7 +65,7 @@ type CommonPropertiesCyberObservableObjectSTIX struct {
 }
 
 //ArtifactObjectSTIX объект "Artifact", по терминалогии STIX, позволяет захватывать массив байтов (8 бит) в виде строки в кодировке base64
-// или связывать его с полезной нагрузкой, подобной файлу. Обязательно должен быть заполнено одно из полей PayloadBin или URL
+//  или связывать его с полезной нагрузкой, подобной файлу. Обязательно должен быть заполнено одно из полей PayloadBin или URL
 // MimeType - по возможности это значение ДОЛЖНО быть одним из значений, определенных в реестре типов носителей IANA. В универсальном каталоге
 //  всех существующих типов файлов.
 // PayloadBin - бинарные данные в base64
@@ -162,7 +162,7 @@ type EmailMessageObjectSTIX struct {
 	MessageID              string                   `json:"message_id" bson:"message_id"`
 	Subject                string                   `json:"subject" bson:"subject"`
 	ReceivedLines          []string                 `json:"received_lines" bson:"received_lines"`
-	AdditionalHeaderFields DictionaryTypeSTIX       `json:"additional_header_fields" bson:"additional_header_fields"`
+	AdditionalHeaderFields map[string]string        `json:"additional_header_fields" bson:"additional_header_fields"`
 	Body                   string                   `json:"body" bson:"body"`
 	BodyMultipart          []*EmailMIMEPartTypeSTIX `json:"body_multipart" bson:"body_multipart"`
 	RawEmailRef            IdentifierTypeSTIX       `json:"raw_email_ref" bson:"raw_email_ref"`

@@ -91,7 +91,7 @@ type CampaignDomainObjectsSTIX struct {
 }
 
 //CourseOfActionDomainObjectsSTIX объект "Course of Action", по терминалогии STIX, описывающий совокупность действий направленных
-// на предотвращение (защиту) либо реагирование на текущую атаку
+//  на предотвращение (защиту) либо реагирование на текущую атаку
 // Name - имя используемое для идентификации "Course of Action" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // Description - более подробное описание
 // Action - ЗАРЕЗЕРВИРОВАНО
@@ -121,7 +121,7 @@ type GroupingDomainObjectsSTIX struct {
 // Roles - список ролей для идентификации действий
 // IdentityClass - одно, из заранее определенных (предложенных) значений физического лица или организации
 // Sectors - заранее определенный (предложенный) перечень отраслей промышленности, к которой принадлежит физическое лицо или организация
-// ContactInformation -
+// ContactInformation - любая контактная информация (email, phone number and etc.)
 type IdentityDomainObjectsSTIX struct {
 	CommonPropertiesDomainObjectSTIX
 	Name               string               `json:"name" bson:"name"`
@@ -133,7 +133,7 @@ type IdentityDomainObjectsSTIX struct {
 }
 
 //IndicatorDomainObjectsSTIX объект "Indicator", по терминалогии STIX, содержит шаблон который может быть использован для
-// обнаружения подозрительной или вредоносной киберактивности
+//  обнаружения подозрительной или вредоносной киберактивности
 // Name - имя используемое для идентификации "Indicator" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // Description - более подробное описание
 // IndicatorTypes - заранее определенный (предложенный) перечень категорий индикаторов

@@ -412,7 +412,7 @@ type ToolDomainObjectsSTIX struct {
 	ToolVersion     string                            `json:"tool_version" bson:"tool_version"`
 }
 
-//VulnerabilityDomainObjectsSTIX объект "Vulnerability", по терминалогии STIX, содержит описание уязвимостей полученных в результате неверной формализации
+//VulnerabilityDomainObjectsSTIX объект "Vulnerability", по терминологии STIX, содержит описание уязвимостей полученных в результате неверной формализации
 //  требований, ошибочном проектировании или некорректной реализации программного кода или логики в ПО, а также в компонентах оборудования
 // Name - имя используемое для идентификации "Vulnerability" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // Description - более подробное описание

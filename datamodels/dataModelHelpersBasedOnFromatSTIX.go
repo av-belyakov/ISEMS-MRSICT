@@ -6,7 +6,7 @@ import (
 
 /**********			 Некоторые примитивные типы STIX			 **********/
 
-//EnumTypeSTIX тип "enum", по терминалогии STIX, является жестко заданным списком терминов, который представлен в виде строки
+//EnumTypeSTIX тип "enum", по терминологии STIX, является жестко заданным списком терминов, который представлен в виде строки
 type EnumTypeSTIX string
 
 //ExternalReferencesTypeSTIX тип "external-reference", по терминалогии STIX, является списком с информацией о внешних ссылках не относящихся к STIX информации
@@ -26,7 +26,7 @@ type ExternalReferenceTypeElementSTIX struct {
 	ExternalID  string         `json:"external_id" bson:"external_id"`
 }
 
-//HashesTypeSTIX тип "hashes", по терминалогии STIX, содержащий хеш хначения, где <тип_хеша>:<хеш>
+//HashesTypeSTIX тип "hashes", по терминологии STIX, содержащий хеш значения, где <тип_хеша>:<хеш>
 type HashesTypeSTIX map[string]string
 
 //IdentifierTypeSTIX тип "identifier", по терминалогии STIX, содержащий уникальный идентификатор UUID, преимущественно версии 4 при этом ID должен

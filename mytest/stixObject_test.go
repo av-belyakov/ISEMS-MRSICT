@@ -3,10 +3,13 @@ package mytest_test
 import (
 	"encoding/json"
 	"fmt"
+	"reflect"
+	"strings"
+
+	"ISEMS-MRSICT/datamodels"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	//	. "ISEMS-MRSICT/mytest"
 )
 
 type testTypeOne struct {
@@ -29,7 +32,7 @@ type testTypeTwo struct {
 
 type testTypeCommon struct {
 	HttpRequestExt testTypeCommanHTTP `json:"http-request-ext"`
-	SocketExt      testTypeSocketExt  `json:"socket-ext"`
+	SocketExt      testTypeSocketExt  `json:"socket-ext" bson:"socket-ext" required:"true" minValue:"3" maxValue:"10"`
 	TcpExt         testTypeTCPExt     `json:"tcp-ext"`
 	Rdsv           testRdsv           `json:"rdsv"`
 }
@@ -68,38 +71,38 @@ type testTypeTCPExt struct {
 //`json:""`
 
 var _ = Describe("StixObject", func() {
-	Context("Тест №1. Тест парсинга STIX объекта", func() {
-		objInfo := []byte(`{
-			"type": "network-traffic",
-			"spec_version": "2.1",
-			"id": "network-traffic--f8ae967a-3dc3-5cdf-8f94-8505abff00c2",
-			"dst_ref": "ipv4-addr--6da8dad3-4de3-5f8e-ab23-45d0b8f12f16",
-			"protocols": [
-				"tcp", "http"
-			],
-			"extensions": {
-				"http-request-ext": {
-					"request_method": "get",
-					"request_value": "/download.html",
-					"request_version": "http/1.1",
-					"request_header": {
-						"Accept-Encoding": "gzip,deflate",
-						"User-Agent": "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.6) Gecko/20040113",
-						"Host": "www.example.com"
-					}
-				},
-				"socket-ext": {
-					"is_listening": true,
-					"address_family": "AF_INET",
-					"socket_type": "SOCK_STREAM"
-				},
-				"tcp-ext": {
-					"src_flags_hex": "00000002"
-				},
-				"undef_type_test": "test string"
-			}
-		}`)
+	objInfo := []byte(`{
+		"type": "network-traffic",
+		"spec_version": "2.1",
+		"id": "network-traffic--f8ae967a-3dc3-5cdf-8f94-8505abff00c2",
+		"dst_ref": "ipv4-addr--6da8dad3-4de3-5f8e-ab23-45d0b8f12f16",
+		"protocols": [
+			"tcp", "http"
+		],
+		"extensions": {
+			"http-request-ext": {
+				"request_method": "get",
+				"request_value": "/download.html",
+				"request_version": "http/1.1",
+				"request_header": {
+					"Accept-Encoding": "gzip,deflate",
+					"User-Agent": "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.6) Gecko/20040113",
+					"Host": "www.example.com"
+				}
+			},
+			"socket-ext": {
+				"is_listening": true,
+				"address_family": "AF_INET",
+				"socket_type": "SOCK_STREAM"
+			},
+			"tcp-ext": {
+				"src_flags_hex": "00000002"
+			},
+			"undef_type_test": "test string"
+		}
+	}`)
 
+	Context("Тест №1. Тест парсинга STIX объекта", func() {
 		/*
 			"tcp-ext": {
 				"src_flags_hex": "00000002"
@@ -173,6 +176,37 @@ var _ = Describe("StixObject", func() {
 
 						//fmt.Printf("'%v'\n    '%v'\n", n, v)
 					}*/
+
+			Expect(true).Should(BeTrue())
+		})
+	})
+
+	Context("Тест 2. Проверка получения параметров (флагов) JSON сообщения", func() {
+		It("Должен быть получен параметр", func() {
+			tessst := datamodels.MalwareAnalysisDomainObjectsSTIX{
+				Product: "os product",
+				Version: "v12.3.2",
+			}
+
+			fmt.Println(tessst)
+
+			var testTypeOne testTypeOne
+			var err error
+
+			err = json.Unmarshal(objInfo, &testTypeOne)
+			Expect(err).ShouldNot(HaveOccurred())
+
+			rtype := reflect.TypeOf(testTypeOne.Extensions)
+
+			fmt.Println("================")
+			if sfield, ok := rtype.FieldByName("SocketExt"); ok {
+				fmt.Printf("Name: %v, Type: %v, Value: %v, Tag: %v\n", sfield.Name, sfield.Type, testTypeOne.Extensions.SocketExt, sfield.Tag)
+
+				listValue := strings.Split(string(sfield.Tag), " ")
+
+				fmt.Printf("result: %v\n", listValue)
+			}
+			fmt.Println("================")
 
 			Expect(true).Should(BeTrue())
 		})

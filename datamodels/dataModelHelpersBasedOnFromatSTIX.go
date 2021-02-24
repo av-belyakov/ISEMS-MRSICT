@@ -19,7 +19,7 @@ type ExternalReferencesTypeSTIX []*ExternalReferenceTypeElementSTIX
 // Hashes - содержит словарь хэшей для содержимого URL-адреса. Это ДОЛЖНО быть предусмотрено при наличии свойства url
 // ExternalID - идентификатор на внешних источниках
 type ExternalReferenceTypeElementSTIX struct {
-	SourceName  string         `json:"source_name" bson:"source_name"`
+	SourceName  string         `json:"source_name" bson:"source_name" required:"true"`
 	Description string         `json:"description" bson:"description"`
 	URL         string         `json:"url" bson:"url"`
 	Hashes      HashesTypeSTIX `json:"hashes" bson:"hashes"`
@@ -40,8 +40,8 @@ type KillChainPhasesTypeSTIX []*KillChainPhasesTypeElementSTIX
 // KillChainName - имя цепочки (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // PhaseName - наименование фазы из спецификации STIX, например, "reconnaissance", "pre-attack" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 type KillChainPhasesTypeElementSTIX struct {
-	KillChainName string `json:"kill_chain_name" bson:"kill_chain_name"`
-	PhaseName     string `json:"phase_name" bson:"phase_name"`
+	KillChainName string `json:"kill_chain_name" bson:"kill_chain_name" required:"true"`
+	PhaseName     string `json:"phase_name" bson:"phase_name" required:"true"`
 }
 
 //OpenVocabTypeSTIX тип "open-vocab", по терминалогии STIX, содержащий заранее определенное (предложенное) значение
@@ -70,14 +70,14 @@ type OpenVocabTypeSTIX string
 // ObjectMarkingRefs - определяет список ID ссылающиеся на объект "marking-definition", по терминалогии STIX, в котором содержатся значения применяющиеся к этому объекту
 // GranularMarkings - определяет список "гранулярных меток" (granular_markings) относящихся к этому объекту
 type LanguageContentTypeSTIX struct {
-	Type               string                     `json:"type" bson:"type"`
-	ID                 string                     `json:"id" bson:"id"`
-	SpecVersion        string                     `json:"spec_version" bson:"spec_version"`
-	Created            time.Time                  `json:"created" bson:"created"`
-	Modified           time.Time                  `json:"modified" bson:"modified"`
-	ObjectRef          IdentifierTypeSTIX         `json:"object_ref" bson:"object_ref"`
+	Type               string                     `json:"type" bson:"type" required:"true"`
+	ID                 string                     `json:"id" bson:"id" required:"true"`
+	SpecVersion        string                     `json:"spec_version" bson:"spec_version" required:"true"`
+	Created            time.Time                  `json:"created" bson:"created" required:"true"`
+	Modified           time.Time                  `json:"modified" bson:"modified" required:"true"`
+	ObjectRef          IdentifierTypeSTIX         `json:"object_ref" bson:"object_ref" required:"true"`
 	ObjectModified     time.Time                  `json:"object_modified" bson:"object_modified"`
-	Contents           map[string]string          `json:"contents" bson:"contents"`
+	Contents           map[string]string          `json:"contents" bson:"contents" required:"true"`
 	CreatedByRef       IdentifierTypeSTIX         `json:"created_by_ref" bson:"created_by_ref"`
 	Revoked            bool                       `json:"revoked" bson:"revoked"`
 	Labels             []string                   `json:"labels" bson:"labels"`
@@ -94,9 +94,9 @@ type LanguageContentTypeSTIX struct {
 // ID - уникальный идентификатор объекта (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // Created - время создания объекта, в формате "2016-05-12T08:17:27.000Z" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 type CommonDataMarkingsTypeSTIX struct {
-	SpecVersion string    `json:"spec_version" bson:"spec_version"`
-	ID          string    `json:"id" bson:"id"`
-	Created     time.Time `json:"created" bson:"created"`
+	SpecVersion string    `json:"spec_version" bson:"spec_version" required:"true"`
+	ID          string    `json:"id" bson:"id" required:"true"`
+	Created     time.Time `json:"created" bson:"created" required:"true"`
 }
 
 //GranularMarkingsTypeSTIX тип "granular_markings", по терминалогии STIX, представляет собой набор маркеров ссылающихся на свойства "marking_ref" и "lang"
@@ -123,7 +123,7 @@ type GranularMarkingsTypeSTIX struct {
 // GranularMarkings - определяет список "гранулярных меток" (granular_markings) относящихся к этому объекту
 type MarkingDefinitionObjectSTIX struct {
 	CommonDataMarkingsTypeSTIX
-	Type               string                     `json:"type" bson:"type"`
+	Type               string                     `json:"type" bson:"type" required:"true"`
 	Name               string                     `json:"name" bson:"name"`
 	DefinitionType     string                     `json:"definition_type" bson:"definition_type"`
 	Definition         map[string]string          `json:"definition" bson:"definition"`
@@ -141,7 +141,7 @@ type MarkingDefinitionObjectSTIX struct {
 // ID - уникальный идентификатор объекта (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // Objects - содержит список любых STIX объектов
 type BundleObjectSTIX struct {
-	Type    string        `json:"" bson:""`
-	ID      string        `json:"" bson:""`
+	Type    string        `json:"type" bson:"type" required:"true"`
+	ID      string        `json:"id" bson:"id" required:"true"`
 	Objects []interface{} `json:"objects" bson:"objects"`
 }

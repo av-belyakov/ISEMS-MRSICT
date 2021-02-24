@@ -124,8 +124,8 @@ type X509V3ExtensionsTypeSTIX struct {
 // - "x509-v3-extensions-type"
 // ID - уникальный идентификатор объекта (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 type CommonPropertiesCyberObservableObjectSTIX struct {
-	Type string `json:"type" bson:"type"`
-	ID   string `json:"id" bson:"id"`
+	Type string `json:"type" bson:"type" required:"true"`
+	ID   string `json:"id" bson:"id" required:"true"`
 }
 
 //ArtifactObjectSTIX объект "Artifact", по терминалогии STIX, позволяет захватывать массив байтов (8 бит) в виде строки в кодировке base64
@@ -153,7 +153,7 @@ type ArtifactObjectSTIX struct {
 // RIR - содержит название регионального Интернет-реестра (Regional Internet Registry) которым было дано имя Автономной системы
 type AutonomousSystemObjectSTIX struct {
 	CommonPropertiesCyberObservableObjectSTIX
-	Number int    `json:"number" bson:"number"`
+	Number int    `json:"number" bson:"number" required:"true"`
 	Name   string `json:"name" bson:"name"`
 	RIR    string `json:"rir" bson:"rir"`
 }
@@ -167,7 +167,7 @@ type AutonomousSystemObjectSTIX struct {
 // ContainsRefs - содержит список файловых объектов или директорий содержащихся внутри директории
 type DirectoryObjectSTIX struct {
 	CommonPropertiesCyberObservableObjectSTIX
-	Path         string                `json:"path" bson:"path"`
+	Path         string                `json:"path" bson:"path" required:"true"`
 	PathEnc      string                `json:"path_enc" bson:"path_enc"`
 	Ctime        time.Time             `json:"ctime" bson:"ctime"`
 	Mtime        time.Time             `json:"mtime" bson:"mtime"`
@@ -180,7 +180,7 @@ type DirectoryObjectSTIX struct {
 // ResolvesToRefs - список ссылок на один или несколько IP-адресов или доменных имен, на которые разрешается доменное имя
 type DomainNameObjectSTIX struct {
 	CommonPropertiesCyberObservableObjectSTIX
-	Value          string                `json:"value" bson:"value"`
+	Value          string                `json:"value" bson:"value" required:"true"`
 	ResolvesToRefs []*IdentifierTypeSTIX `json:"resolves_to_refs" bson:"resolves_to_refs"`
 }
 
@@ -215,7 +215,7 @@ type EmailAddressObjectSTIX struct {
 // RawEmailRef - содержит 'сырое' бинарное содержимое email сообщения
 type EmailMessageObjectSTIX struct {
 	CommonPropertiesCyberObservableObjectSTIX
-	IsMultipart            bool                     `json:"is_multipart" bson:"is_multipart"`
+	IsMultipart            bool                     `json:"is_multipart" bson:"is_multipart" required:"true"`
 	Date                   time.Time                `json:"date" bson:"date"`
 	ContentType            string                   `json:"content_type" bson:"content_type"`
 	FromRef                IdentifierTypeSTIX       `json:"from_ref" bson:"from_ref"`

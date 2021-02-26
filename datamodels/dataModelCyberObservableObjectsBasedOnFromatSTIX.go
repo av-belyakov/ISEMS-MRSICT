@@ -17,6 +17,18 @@ type EmailMIMEPartTypeSTIX struct {
 	ContentDisposition string             `json:"content_disposition" bson:"content_disposition"`
 }
 
+//WindowsRegistryValueTypeSTIX объект "Windows Registry Value Type", по терминалогии STIX. Данный тип фиксирует
+//  значения свойств находящихся в разделе реестра Windows. Поскольку все свойства этого типа являются необязательными,
+// по крайней мере одно из свойств, определенных ниже, должно быть инициализировано при использовании этого типа.
+// Name - содержит название параметра реестра. Для указания значения ключа реестра по умолчанию необходимо использовать пустую строку.
+// Data - содержит данные, содержащиеся в значении реестра.
+// DataType - содержит тип данных реестра (REG_*), используемый в значении реестра. Значения этого свойства должны быть получены из перечисления windows-registry-datatype enum.
+type WindowsRegistryValueTypeSTIX struct {
+	Name     string       `json:"name" bson:"name"`
+	Data     string       `json:"data" bson:"data"`
+	DataType EnumTypeSTIX `json:"data_type" bson:"data_type"`
+}
+
 //UNIXAccountExtensionSTIX тип "unix-account-ext", по терминалогии STIX, содержит рассширения 'по умолчанию' захваченной дополнительной информации
 // предназначенной для аккаунтов UNIX систем.
 // GID - содержит первичный групповой ID аккаунта
@@ -83,51 +95,6 @@ type X509V3ExtensionsTypeSTIX struct {
 
 /********** 			Cyber-observable Objects STIX 			**********/
 
-//CommonPropertiesCyberObservableObjectSTIX содержит общие свойства для объекта Cyber-observable Objects STIX
-// Type - наименование типа шаблона (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
-//  Type должен содержать одно из следующих значений:
-// - "artifact"
-// - "autonomous-system"
-// - "directory"
-// - "domain-name"
-// - "email-addr"
-// - "email-message"
-// - "email-mime-part-type"
-// - "file"
-// - "archive-ext"
-// - "ntfs-ext"
-// - "alternate-data-stream-type"
-// - "pdf-ext"
-// - "raster-image-ext"
-// - "windows-pebinary-ext"
-// - "windows-pe-optional-header-type"
-// - "windows-pe-section-type"
-// - "ipv4-addr"
-// - "ipv6-addr"
-// - "mac-addr"
-// - "mutex"
-// - "network-traffic"
-// - "http-request-ext"
-// - "icmp-ext"
-// - "socket-ext"
-// - "tcp-ext"
-// - "process"
-// - "windows-process-ext"
-// - "windows-service-ext"
-// - "software"
-// - "url"
-// - "user-account"
-// - "unix-account-ext"
-// - "windows-registry-key"
-// - "windows-registry-value-type"
-// - "x509-certificate"
-// - "x509-v3-extensions-type"
-// ID - уникальный идентификатор объекта (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
-type CommonPropertiesCyberObservableObjectSTIX struct {
-	Type string `json:"type" bson:"type" required:"true"`
-	ID   string `json:"id" bson:"id" required:"true"`
-}
-
 //ArtifactObjectSTIX объект "Artifact", по терминалогии STIX, позволяет захватывать массив байтов (8 бит) в виде строки в кодировке base64
 //  или связывать его с полезной нагрузкой, подобной файлу. Обязательно должен быть заполнено одно из полей PayloadBin или URL
 // MimeType - по возможности это значение ДОЛЖНО быть одним из значений, определенных в реестре типов носителей IANA. В универсальном каталоге
@@ -137,8 +104,8 @@ type CommonPropertiesCyberObservableObjectSTIX struct {
 // Hashes - словарь хешей для URL или PayloadBin
 // EncryptionAlgorithm - тип алгоритма шифрования для бинарных данных
 // DecryptionKey - определяет ключ для дешифрования зашифрованных данных
-type ArtifactObjectSTIX struct {
-	CommonPropertiesCyberObservableObjectSTIX
+type ArtifactCyberObservableObjectSTIX struct {
+	CommonPropertiesObjectSTIX
 	MimeType            string         `json:"mime_type" bson:"mime_type"`
 	PayloadBin          string         `json:"payload_bin" bson:"payload_bin"`
 	URL                 string         `json:"url" bson:"url"`
@@ -151,8 +118,8 @@ type ArtifactObjectSTIX struct {
 // Number - содержит номер присвоенный Автономной системе (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // Name - название Автономной системы
 // RIR - содержит название регионального Интернет-реестра (Regional Internet Registry) которым было дано имя Автономной системы
-type AutonomousSystemObjectSTIX struct {
-	CommonPropertiesCyberObservableObjectSTIX
+type AutonomousSystemCyberObservableObjectSTIX struct {
+	CommonPropertiesObjectSTIX
 	Number int    `json:"number" bson:"number" required:"true"`
 	Name   string `json:"name" bson:"name"`
 	RIR    string `json:"rir" bson:"rir"`
@@ -165,8 +132,8 @@ type AutonomousSystemObjectSTIX struct {
 // Mtime - время, в формате "2016-05-12T08:17:27.000Z", модификации или записи в директорию
 // Atime - время, в формате "2016-05-12T08:17:27.000Z", последнего обращения к директории
 // ContainsRefs - содержит список файловых объектов или директорий содержащихся внутри директории
-type DirectoryObjectSTIX struct {
-	CommonPropertiesCyberObservableObjectSTIX
+type DirectoryCyberObservableObjectSTIX struct {
+	CommonPropertiesObjectSTIX
 	Path         string                `json:"path" bson:"path" required:"true"`
 	PathEnc      string                `json:"path_enc" bson:"path_enc"`
 	Ctime        time.Time             `json:"ctime" bson:"ctime"`
@@ -178,8 +145,8 @@ type DirectoryObjectSTIX struct {
 //DomainNameObjectSTIX объект "Domain Name", по терминалогии STIX, содержит сетевое доменное имя
 // Value - сетевое доменное имя (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // ResolvesToRefs - список ссылок на один или несколько IP-адресов или доменных имен, на которые разрешается доменное имя
-type DomainNameObjectSTIX struct {
-	CommonPropertiesCyberObservableObjectSTIX
+type DomainNameCyberObservableObjectSTIX struct {
+	CommonPropertiesObjectSTIX
 	Value          string                `json:"value" bson:"value" required:"true"`
 	ResolvesToRefs []*IdentifierTypeSTIX `json:"resolves_to_refs" bson:"resolves_to_refs"`
 }
@@ -188,8 +155,8 @@ type DomainNameObjectSTIX struct {
 // Value - email адрес (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // DisplayName - содержит единственное почтовое имя которое видит человек при просмотре письма
 // BelongsToRef - учетная запись пользователя, которой принадлежит адрес электронной почты, в качестве ссылки на объект учетной записи пользователя
-type EmailAddressObjectSTIX struct {
-	CommonPropertiesCyberObservableObjectSTIX
+type EmailAddressCyberObservableObjectSTIX struct {
+	CommonPropertiesObjectSTIX
 	Value        string             `json:"value" bson:"value"`
 	DisplayName  string             `json:"display_name" bson:"display_name"`
 	BelongsToRef IdentifierTypeSTIX `json:"belongs_to_ref" bson:"belongs_to_ref"`
@@ -213,8 +180,8 @@ type EmailAddressObjectSTIX struct {
 // BodyMultipart - содержит адает список MIME-части, которые составляют тело email. Это свойство НЕ ДОЛЖНО использоваться, если
 //  is_multipart имеет значение false
 // RawEmailRef - содержит 'сырое' бинарное содержимое email сообщения
-type EmailMessageObjectSTIX struct {
-	CommonPropertiesCyberObservableObjectSTIX
+type EmailMessageCyberObservableObjectSTIX struct {
+	CommonPropertiesObjectSTIX
 	IsMultipart            bool                     `json:"is_multipart" bson:"is_multipart" required:"true"`
 	Date                   time.Time                `json:"date" bson:"date"`
 	ContentType            string                   `json:"content_type" bson:"content_type"`
@@ -250,8 +217,8 @@ type EmailMessageObjectSTIX struct {
 // Languages -содержит языки, поддерживаемые программным обеспечением. Значение каждого елемента списка ДОЛЖНО быть кодом языка ISO 639-2 [ISO639 -2]
 // Vendor - содержит название производителя программного обеспечения
 // Version - содержит версию ПО
-type SoftwareObjectSTIX struct {
-	CommonPropertiesCyberObservableObjectSTIX
+type SoftwareCyberObservableObjectSTIX struct {
+	CommonPropertiesObjectSTIX
 	Name      string   `json:"name" bson:"name"`
 	CPE       string   `json:"cpe" bson:"cpe"`
 	SwID      string   `json:"swid" bson:"swid"`
@@ -291,8 +258,8 @@ type SoftwareObjectSTIX struct {
 // CredentialLastChanged - время, в формате "2016-05-12T08:17:27.000Z", когда учетные данные учетной записи были изменены в последний раз.
 // AccountFirstLogin - время, в формате "2016-05-12T08:17:27.000Z", первого доступа к учетной записи
 // AccountLastLogin - время, в формате "2016-05-12T08:17:27.000Z", когда к учетной записи был последний доступ.
-type UserAccountObjectSTIX struct {
-	CommonPropertiesCyberObservableObjectSTIX
+type UserAccountCyberObservableObjectSTIX struct {
+	CommonPropertiesObjectSTIX
 	Extensions            map[string]UNIXAccountExtensionSTIX `json:"" bson:""`
 	UserID                string                              `json:"user_id" bson:"user_id"`
 	Credential            string                              `json:"credential" bson:"credential"`
@@ -319,25 +286,13 @@ type UserAccountObjectSTIX struct {
 // ModifiedTime - время, в формате "2016-05-12T08:17:27.000Z", последнего изменения раздела реестра.
 // CreatorUserRef - содержит ссылку на учетную запись пользователя, из под которой создан раздел реестра. Объект, на который ссылается это свойство, должен иметь тип user-account.
 // NumberOfSubkeys - Указывает количество подразделов, содержащихся в разделе реестра.
-type WindowsRegistryKeyObjectSTIX struct {
-	CommonPropertiesCyberObservableObjectSTIX
+type WindowsRegistryKeyCyberObservableObjectSTIX struct {
+	CommonPropertiesObjectSTIX
 	Key             string                         `json:"key" bson:"key"`
 	Values          []WindowsRegistryValueTypeSTIX `json:"values" bson:"values"`
 	ModifiedTime    time.Time                      `json:"modified_time" bson:"modified_time"`
 	CreatorUserRef  IdentifierTypeSTIX             `json:"creator_user_ref" bson:"creator_user_ref"`
 	NumberOfSubkeys int                            `json:"number_of_subkeys" bson:"number_of_subkeys"`
-}
-
-//WindowsRegistryValueTypeSTIX объект "Windows Registry Value Type", по терминалогии STIX. Данный тип фиксирует
-//  значения свойств находящихся в разделе реестра Windows. Поскольку все свойства этого типа являются необязательными,
-// по крайней мере одно из свойств, определенных ниже, должно быть инициализировано при использовании этого типа.
-// Name - содержит название параметра реестра. Для указания значения ключа реестра по умолчанию необходимо использовать пустую строку.
-// Data - содержит данные, содержащиеся в значении реестра.
-// DataType - содержит тип данных реестра (REG_*), используемый в значении реестра. Значения этого свойства должны быть получены из перечисления windows-registry-datatype enum.
-type WindowsRegistryValueTypeSTIX struct {
-	Name     string       `json:"name" bson:"name"`
-	Data     string       `json:"data" bson:"data"`
-	DataType EnumTypeSTIX `json:"data_type" bson:"data_type"`
 }
 
 //X509CertificateObjectSTIX объект "X.509 Certificate Object", по терминологии STIX, представлет свойства сертификата X.509, определенные в рекомендациях
@@ -356,8 +311,8 @@ type WindowsRegistryValueTypeSTIX struct {
 // SubjectPublicKeyModulus - указывает модульную часть открытого ключа RSA.
 // SubjectPublicKeyExponent - указывает экспоненциальную часть открытого ключа RSA субъекта в виде целого числа.
 // X509V3Extension - указывает любые стандартные расширения X.509 v3, которые могут использоваться в сертификате.
-type X509CertificateObjectSTIX struct {
-	CommonPropertiesCyberObservableObjectSTIX
+type X509CertificateCyberObservableObjectSTIX struct {
+	CommonPropertiesObjectSTIX
 	IsSelfSigned              bool                     `json:"is_self_signed" bson:"is_self_signed"`
 	Hashes                    HashesTypeSTIX           `json:"hashes" bson:"hashes"`
 	Version                   string                   `json:"version" bson:"version"`

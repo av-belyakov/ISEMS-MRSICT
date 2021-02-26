@@ -3,185 +3,160 @@ package mytest_test
 import (
 	"encoding/json"
 	"fmt"
-	"reflect"
-	"strings"
 
+	"ISEMS-MRSICT/commonlibs"
 	"ISEMS-MRSICT/datamodels"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
-type testTypeOne struct {
-	Type        string         `json:"type"`
-	SpecVersion string         `json:"spec_version"`
-	ID          string         `json:"id"`
-	DstRef      string         `json:"dst_ref"`
-	Protocols   []string       `json:"protocols"`
-	Extensions  testTypeCommon `json:"extensions"`
-}
-
-type testTypeTwo struct {
-	Type        string                 `json:"type"`
-	SpecVersion string                 `json:"spec_version"`
-	ID          string                 `json:"id"`
-	DstRef      string                 `json:"dst_ref"`
-	Protocols   []string               `json:"protocols"`
-	Extensions  map[string]interface{} `json:"extensions"`
-}
-
-type testTypeCommon struct {
-	HttpRequestExt testTypeCommanHTTP `json:"http-request-ext"`
-	SocketExt      testTypeSocketExt  `json:"socket-ext" bson:"socket-ext" required:"true" minValue:"3" maxValue:"10"`
-	TcpExt         testTypeTCPExt     `json:"tcp-ext"`
-	Rdsv           testRdsv           `json:"rdsv"`
-}
-
-type testRdsv struct {
-	A string `json:"a"`
-	B string `json:"b"`
-	C string `json:"c"`
-}
-
-type testTypeCommanHTTP struct {
-	RequestMethod  string                `json:"request_method"`
-	RequestValue   string                `json:"request_value"`
-	RequestVersion string                `json:"request_version"`
-	RequestHeader  testTypeHTTPReqHeader `json:"request_header"`
-}
-
-type testTypeHTTPReqHeader struct {
-	AcceptEncoding string `json:"Accept-Encoding"`
-	UserAgent      string `json:"User-Agent"`
-	Host           string `json:"Host"`
-}
-
-type testTypeSocketExt struct {
-	AddressFamily string `json:"address_family" bson:"address_family"`
-	IsBlocking    bool   `json:"is_blocking" bson:"is_blocking"`
-	IsListening   bool   `json:"is_listening" bson:"is_listening"`
-	SocketType    string `json:"socket_type" bson:"socket_type"`
-}
-
-type testTypeTCPExt struct {
-	SrcFlagsHex string `json:"src_flags_hex"`
-	DstFlagsHex string `json:"dst_flags_hex"`
-}
-
-//`json:""`
-
 var _ = Describe("StixObject", func() {
-	objInfo := []byte(`{
-		"type": "network-traffic",
-		"spec_version": "2.1",
-		"id": "network-traffic--f8ae967a-3dc3-5cdf-8f94-8505abff00c2",
-		"dst_ref": "ipv4-addr--6da8dad3-4de3-5f8e-ab23-45d0b8f12f16",
-		"protocols": [
-			"tcp", "http"
-		],
-		"extensions": {
-			"http-request-ext": {
-				"request_method": "get",
-				"request_value": "/download.html",
-				"request_version": "http/1.1",
-				"request_header": {
-					"Accept-Encoding": "gzip,deflate",
-					"User-Agent": "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.6) Gecko/20040113",
-					"Host": "www.example.com"
-				}
+	reqJSON := []byte(`{
+		"task_id": "ni883f838ggr8h9ehr3rgr38rg8f8g8wgd8g38",
+		"section": "handling stix object",
+		"task_was_generated_automatically": true,
+		"user_name_generated_task": "Иванов Петр Васильевич",
+		"request_details":	[
+			{
+				"type": "attack-pattern",
+				"spec_version": "2.1",
+				"id": "attack-pattern--7e33a43e-e34b-40ec-89da-36c9bb2cacd5",
+				"created": "2016-05-12T08:17:27.000Z",
+				"modified": "2016-05-12T08:17:27.000Z",
+				"name": "Spear Phishing as Practiced by Adversary X",
+				"description": "A particular form of spear phishing where the attacker claims that the target had won a contest, including personal details, to get them to click on a link.",
+				"external_references": [{ "source_name": "capec", "external_id": "CAPEC-163" }]
 			},
-			"socket-ext": {
-				"is_listening": true,
-				"address_family": "AF_INET",
-				"socket_type": "SOCK_STREAM"
+			{
+				"type": "course-of-action",
+				"spec_version": "2.1",
+				"id": "course-of-action--8e2e2d2b-17d4-4cbf-938f-98ee46b3cd3f",
+				"created_by_ref": "identity--f431f809-377b-45e0-aa1c-6a4751cae5ff",
+				"created": "2016-04-06T20:03:48.000Z",
+				"modified": "2016-04-06T20:03:48.000Z",
+				"name": "Add TCP port 80 Filter Rule to the existing Block UDP 1434 Filter",
+				"description": "This is how to add a filter rule to block inbound access to TCP port 80 to the existing UDP 1434 filter ..."
 			},
-			"tcp-ext": {
-				"src_flags_hex": "00000002"
-			},
-			"undef_type_test": "test string"
-		}
-	}`)
+			{
+				"type": "indicator",
+				"spec_version": "2.1",
+				"id": "indicator--8e2e2d2b-17d4-4cbf-938f-98ee46b3cd3f",
+				"created_by_ref": "identity--f431f809-377b-45e0-aa1c-6a4751cae5ff",
+				"created": "2016-04-06T20:03:48.000Z",
+				"modified": "2016-04-06T20:03:48.000Z",
+				"indicator_types": ["malicious-activity"],
+				"name": "Poison Ivy Malware",
+				"description": "This file is part of Poison Ivy",
+				"pattern": "[ file:hashes.'SHA-256' = '4bac27393bdd9777ce02453256c5577cd02275510b2227f473d03f533924f877' ]",
+				"pattern_type": "stix",
+				"valid_from": "2016-01-01T00:00:00Z"
+			}
+		]}`)
 
 	Context("Тест №1. Тест парсинга STIX объекта", func() {
-		/*
-			"tcp-ext": {
-				"src_flags_hex": "00000002"
-			},
-		*/
-
 		It("При чтении объекта не должно быть ошибок", func() {
-			var testTypeOne testTypeOne
-			//var testTypeTwo testTypeTwo
+			var (
+				modAPIRequestProcessingReqJSON datamodels.ModAPIRequestProcessingReqJSON
+				commonPropertiesObjectSTIX     datamodels.CommonPropertiesObjectSTIX
+			)
 			var err error
 
-			err = json.Unmarshal(objInfo, &testTypeOne)
+			err = json.Unmarshal(reqJSON, &modAPIRequestProcessingReqJSON)
 			Expect(err).ShouldNot(HaveOccurred())
 
-			//err = json.Unmarshal(objInfo, &testTypeTwo)
-			//Expect(err).ShouldNot(HaveOccurred())
+			fmt.Printf("Task ID: '%s'\nSection: '%s'\nTask was generated automatically: '%v'\nUser name generated task: '%s'\n", modAPIRequestProcessingReqJSON.TaskID, modAPIRequestProcessingReqJSON.Section, modAPIRequestProcessingReqJSON.TaskWasGeneratedAutomatically, modAPIRequestProcessingReqJSON.UserNameGeneratedTask)
 
-			/*			fmt.Println(testTypeOne)
-						fmt.Println("--------------- Extensions Before Processing ----------------")
+			type ResultProcessingListSTIXObject struct {
+				DataType string
+				Data     interface{}
+			}
 
-						for n, v := range testTypeOne.Extensions {
-							fmt.Printf("'%v'\n    '%v'\n", n, v)
-						}*/
+			switch modAPIRequestProcessingReqJSON.Section {
+			case "handling stix object":
+				fmt.Printf("Request Section:'%s'\n", modAPIRequestProcessingReqJSON.Section)
 
-			fmt.Printf("+++ '%v' +++\n", testTypeOne.Extensions)
+				var listSTIXObjectJSON datamodels.ModAPIRequestProcessingReqHandlingSTIXObjectJSON
+				if err := json.Unmarshal(modAPIRequestProcessingReqJSON.RequestDetails, &listSTIXObjectJSON); err != nil {
+					Expect(err).ShouldNot(HaveOccurred())
+				}
 
-			fmt.Println("--------------- Extensions After Processing ----------------")
+				for _, item := range listSTIXObjectJSON {
+					err := json.Unmarshal(*item, &commonPropertiesObjectSTIX)
+					if err != nil {
+						Expect(err).ShouldNot(HaveOccurred())
+					}
 
-			/*			for n, v := range testTypeOne.Extensions {
+					resultDecodingSTIXObject, err := commonlibs.DecoderFromJSONToSTIXObject(commonPropertiesObjectSTIX.Type, item)
+					if err != nil {
+						Expect(err).ShouldNot(HaveOccurred())
+					}
 
-						switch n {
-						case "http-request-ext":
-							fmt.Println("****** TypeName:http-request-ext ******")
-							fmt.Println(v)
+					switch data := (resultDecodingSTIXObject).(type) {
+					case datamodels.AttackPatternDomainObjectsSTIX:
+						fmt.Printf("\nType:'%s'\nID:'%s'\nVersion:'%s'\nName:'%s'\nObject:'%v' |\n", data.Type, data.ID, data.SpecVersion, data.Name, resultDecodingSTIXObject)
 
-							newMsg := testTypeCommanHTTP{}
-							err = json.Unmarshal(*v, &newMsg)
-							if err != nil {
-								fmt.Println(err)
-							}
+					case datamodels.CampaignDomainObjectsSTIX:
+						fmt.Printf("\nType:'%s'\nID:'%s'\nVersion:'%s'\nName:'%s'\nObject:'%v' |\n", data.Type, data.ID, data.SpecVersion, data.Name, resultDecodingSTIXObject)
 
-							fmt.Println(newMsg)
+					case datamodels.CourseOfActionDomainObjectsSTIX:
+						fmt.Printf("\nType:'%s'\nID:'%s'\nVersion:'%s'\nName:'%s'\nObject:'%v' |\n", data.Type, data.ID, data.SpecVersion, data.Name, resultDecodingSTIXObject)
 
-							//if result, ok := v.(testTypeCommanHTTP); ok {
-							//	fmt.Printf("'%v'\n    '%v'\n", n, result)
-							//	fmt.Printf("        Method:%v\n", result.RequestMethod)
-							//	fmt.Printf("        Value:%v\n", result.RequestValue)
-							//	fmt.Printf("        Version:%v\n", result.RequestVersion)
-							//	fmt.Printf("        Host:%v\n", result.RequestHeader.Host)
-							//	fmt.Printf("        AcceptEncoding:%v\n", result.RequestHeader.AcceptEncoding)
-							//	fmt.Printf("        UserAgent:%v\n", result.RequestHeader.UserAgent)
-							//}
-						case "socket-ext":
-							fmt.Println("****** TypeName:socket-ext ******")
-							fmt.Println(v)
+					case datamodels.IndicatorDomainObjectsSTIX:
+						fmt.Printf("\nType:'%s'\nID:'%s'\nVersion:'%s'\nName:'%s'\nObject:'%v' |\n", data.Type, data.ID, data.SpecVersion, data.Name, resultDecodingSTIXObject)
+					}
+				}
 
-							//if result, ok := v.(testTypeSocketExt); ok {
-							//	fmt.Printf("'%v'\n    '%v'\n", n, result)
-							//}
-						case "tcp-ext":
-							fmt.Println("****** TypeName:tcp-ext ******")
-							fmt.Println(v)
+			case "handling search requests":
+				fmt.Printf("Request Section:'%s'\n", modAPIRequestProcessingReqJSON.Section)
 
-							//if result, ok := v.(testTypeTCPExt); ok {
-							//	fmt.Printf("'%v'\n    '%v'\n", n, result)
-							//}
+			case "generating reports":
+				fmt.Printf("Request Section:'%s'\n", modAPIRequestProcessingReqJSON.Section)
 
-						default:
-							fmt.Printf("Undefined type: '%v'!!!\n", n)
-						}
+			case "formation final documents":
+				fmt.Printf("Request Section:'%s'\n", modAPIRequestProcessingReqJSON.Section)
 
-						//fmt.Printf("'%v'\n    '%v'\n", n, v)
-					}*/
+			}
+
+			/*for _, item := range modAPIRequestProcessingReqJSON.DetailedInformation {
+				fmt.Printf("Action type: '%v'\n", item.ActionType)
+				//fmt.Println(item.MessageParameters)
+
+				if strings.Contains(item.ActionType, "STIX object") {
+					err := json.Unmarshal(item.MessageParameters, &commonPropertiesObjectSTIX)
+					if err != nil {
+						fmt.Println(err)
+					}
+
+					fmt.Println("_____ Processing STIX object ______")
+					fmt.Printf("------- Type STIX object is '%s' -------\n", commonPropertiesObjectSTIX.Type)
+
+					resultDecodingSTIXObject, err := listDecoderSTIXObject[commonPropertiesObjectSTIX.Type](commonPropertiesObjectSTIX.Type, &item.MessageParameters)
+					if err != nil {
+						Expect(err).ShouldNot(HaveOccurred())
+					}
+
+					switch data := (resultDecodingSTIXObject.Data).(type) {
+					case datamodels.AttackPatternDomainObjectsSTIX:
+						fmt.Printf("| Type:'%s', Version:'%s', Name:'%s', Object:'%v' |\n", data.Type, data.SpecVersion, data.Name, resultDecodingSTIXObject.Data)
+
+					case datamodels.CampaignDomainObjectsSTIX:
+						fmt.Printf("| Type:'%s', Version:'%s', Name:'%s', Object:'%v' |\n", data.Type, data.SpecVersion, data.Name, resultDecodingSTIXObject.Data)
+
+					case datamodels.CourseOfActionDomainObjectsSTIX:
+						fmt.Printf("| Type:'%s', Version:'%s', Name:'%s', Object:'%v' |\n", data.Type, data.SpecVersion, data.Name, resultDecodingSTIXObject.Data)
+
+					case datamodels.IndicatorDomainObjectsSTIX:
+						fmt.Printf("| Type:'%s', Version:'%s', Name:'%s', Object:'%v' |\n", data.Type, data.SpecVersion, data.Name, resultDecodingSTIXObject.Data)
+					}
+				}
+			}*/
 
 			Expect(true).Should(BeTrue())
 		})
 	})
 
-	Context("Тест 2. Проверка получения параметров (флагов) JSON сообщения", func() {
+	/*Context("Тест 2. Проверка получения параметров (флагов) JSON сообщения", func() {
 		It("Должен быть получен параметр", func() {
 			tessst := datamodels.MalwareAnalysisDomainObjectsSTIX{
 				Product: "os product",
@@ -210,5 +185,5 @@ var _ = Describe("StixObject", func() {
 
 			Expect(true).Should(BeTrue())
 		})
-	})
+	})*/
 })

@@ -154,55 +154,54 @@ func DecoderFromJSONToSTIXObject(objectType string, rawMessage *json.RawMessage)
 
 			return object, nil
 		},
-				/* *** Relationship Objects *** */
-				/*"relationship": func(msg *json.RawMessage) (interface{}, error) {
-					var object datamodels.
-					if err := json.Unmarshal(*msg, &object); err != nil {
-						return nil, err
-					}
-		
-					return object, nil
-				},
-				"sighting": func(msg *json.RawMessage) (interface{}, error) {
-					var object datamodels.
-					if err := json.Unmarshal(*msg, &object); err != nil {
-						return nil, err
-					}
-		
-					return object, nil
-				},*/
+		/* *** Relationship Objects *** */
+		/*"relationship": func(msg *json.RawMessage) (interface{}, error) {
+			var object datamodels.
+			if err := json.Unmarshal(*msg, &object); err != nil {
+				return nil, err
+			}
+
+			return object, nil
+		},
+		"sighting": func(msg *json.RawMessage) (interface{}, error) {
+			var object datamodels.
+			if err := json.Unmarshal(*msg, &object); err != nil {
+				return nil, err
+			}
+
+			return object, nil
+		},*/
 		/* *** Cyber-observable Objects STIX *** */
 
-
-// - "file"
-// - "archive-ext"
-// - "ntfs-ext"
-// - "alternate-data-stream-type"
-// - "pdf-ext"
-// - "raster-image-ext"
-// - "windows-pebinary-ext"
-// - "windows-pe-optional-header-type"
-// - "windows-pe-section-type"
-// - "ipv4-addr"
-// - "ipv6-addr"
-// - "mac-addr"
-// - "mutex"
-// - "network-traffic"
-// - "http-request-ext"
-// - "icmp-ext"
-// - "socket-ext"
-// - "tcp-ext"
-// - "process"
-// - "windows-process-ext"
-// - "windows-service-ext"
-// - "software"
-// - "url"
-// - "user-account"
-// - "unix-account-ext"
-// - "windows-registry-key"
-// - "windows-registry-value-type"
-// - "x509-certificate"
-// - "x509-v3-extensions-type"
+		// - "file"
+		// - "archive-ext"
+		// - "ntfs-ext"
+		// - "alternate-data-stream-type"
+		// - "pdf-ext"
+		// - "raster-image-ext"
+		// - "windows-pebinary-ext"
+		// - "windows-pe-optional-header-type"
+		// - "windows-pe-section-type"
+		// - "ipv4-addr"
+		// - "ipv6-addr"
+		// - "mac-addr"
+		// - "mutex"
+		// - "network-traffic"
+		// - "http-request-ext"
+		// - "icmp-ext"
+		// - "socket-ext"
+		// - "tcp-ext"
+		// - "process"
+		// - "windows-process-ext"
+		// - "windows-service-ext"
+		// - "software"
+		// - "url"
+		// - "user-account"
+		// - "unix-account-ext"
+		// - "windows-registry-key"
+		// - "windows-registry-value-type"
+		// - "x509-certificate"
+		// - "x509-v3-extensions-type"
 		"artifact": func(msg *json.RawMessage) (interface{}, error) {
 			var object datamodels.ArtifactCyberObservableObjectSTIX
 			if err := json.Unmarshal(*msg, &object); err != nil {
@@ -259,54 +258,54 @@ func DecoderFromJSONToSTIXObject(objectType string, rawMessage *json.RawMessage)
 
 			return object, nil
 		},
-		"": func(msg *json.RawMessage) (interface{}, error) {
-			var object datamodels.
-			if err := json.Unmarshal(*msg, &object); err != nil {
-				return nil, err
-			}
+		/*		"": func(msg *json.RawMessage) (interface{}, error) {
+					var object datamodels.
+					if err := json.Unmarshal(*msg, &object); err != nil {
+						return nil, err
+					}
 
-			return object, nil
-		},
-		"": func(msg *json.RawMessage) (interface{}, error) {
-			var object datamodels.
-			if err := json.Unmarshal(*msg, &object); err != nil {
-				return nil, err
-			}
+					return object, nil
+				},
+				"": func(msg *json.RawMessage) (interface{}, error) {
+					var object datamodels.
+					if err := json.Unmarshal(*msg, &object); err != nil {
+						return nil, err
+					}
 
-			return object, nil
-		},
-		"": func(msg *json.RawMessage) (interface{}, error) {
-			var object datamodels.
-			if err := json.Unmarshal(*msg, &object); err != nil {
-				return nil, err
-			}
+					return object, nil
+				},
+				"": func(msg *json.RawMessage) (interface{}, error) {
+					var object datamodels.
+					if err := json.Unmarshal(*msg, &object); err != nil {
+						return nil, err
+					}
 
-			return object, nil
-		},
-		"": func(msg *json.RawMessage) (interface{}, error) {
-			var object datamodels.
-			if err := json.Unmarshal(*msg, &object); err != nil {
-				return nil, err
-			}
+					return object, nil
+				},
+				"": func(msg *json.RawMessage) (interface{}, error) {
+					var object datamodels.
+					if err := json.Unmarshal(*msg, &object); err != nil {
+						return nil, err
+					}
 
-			return object, nil
-		},
-		"": func(msg *json.RawMessage) (interface{}, error) {
-			var object datamodels.
-			if err := json.Unmarshal(*msg, &object); err != nil {
-				return nil, err
-			}
+					return object, nil
+				},
+				"": func(msg *json.RawMessage) (interface{}, error) {
+					var object datamodels.
+					if err := json.Unmarshal(*msg, &object); err != nil {
+						return nil, err
+					}
 
-			return object, nil
-		},
-		"": func(msg *json.RawMessage) (interface{}, error) {
-			var object datamodels.
-			if err := json.Unmarshal(*msg, &object); err != nil {
-				return nil, err
-			}
+					return object, nil
+				},
+				"": func(msg *json.RawMessage) (interface{}, error) {
+					var object datamodels.
+					if err := json.Unmarshal(*msg, &object); err != nil {
+						return nil, err
+					}
 
-			return object, nil
-		},
+					return object, nil
+				},*/
 	}
 
 	return ListFuncDecoderFromJSONToSTIXObject[objectType](rawMessage)

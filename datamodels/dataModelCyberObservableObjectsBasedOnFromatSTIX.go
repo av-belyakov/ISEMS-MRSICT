@@ -1,12 +1,103 @@
 package datamodels
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 /********** 			Некоторые 'сложные' типы относящиеся к Cyber-observable Objects STIX 			**********/
 
+//AlternateDataStreamTypeSTIX тип "alternate-data-stream-type", по терминалогии STIX, содержит альтернативные потоки данных для NTFS
+// Name - определяет имя альтернативного потока данных (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+// Hashes - задает словарь хэшей для данных, содержащихся в альтернативном потоке данных. Ключи для данного свойства ДОЛЖНЫ братся из открытого словоря hash-algorithm-ov.
+// Size - определяет размер альтернативного потока данных, в байтах
+type AlternateDataStreamTypeSTIX struct {
+	Name   string         `json:"name" bson:"name"`
+	Hashes HashesTypeSTIX `json:"hashes" bson:"hashes"`
+	Size   uint64         `json:"size" bson:"size"`
+}
+
+//WindowsPEOptionalHeaderTypeSTIX тип "windows-pe-optional-header-type", по терминалогии STIX, содержит свойства опциональные для PE файла
+// MagicHex - хеш значение информирующее о типе PE файла
+// MajorLinkerVersion - указывает основной номер версии компоновщика.
+// MinorLinkerVersion - указывает номер младшей версии компоновщика.
+// SizeOfCode - указывает размер кода (текста) секции.
+// SizeOfInitializedData - задает размер инициализированного раздела данных.
+// SizeOfUninitializedData - задает размер раздела неинициализированных данных.
+// AddressOfEntryPoint - указывает адрес точки входа относительно базы изображения при загрузке исполняемого файла в память.
+// BaseOfCode - указывает адрес, который находится относительно базы изображений раздела начала кода при его загрузке в память.
+// BaseOfData - указывает адрес, который находится относительно базы изображений раздела beginning-of-data при его загрузке в память.
+// ImageBase - задает предпочтительный адрес первого байта изображения при загрузке в память.
+// SectionAlignment - задает выравнивание (в байтах) PE-секций при их загрузке в память.
+// FileAlignment - задает коэффициент (в байтах), который используется для выравнивания необработанных данных разделов в файле изображения.
+// MajorOSVersion - указывает основной номер версии требуемой операционной системы.
+// MinorOSVersion - указывает младший номер версии требуемой операционной системы.
+// MajorImageVersion - указывает основной номер версии образа.
+// MinorImageVersion - Указывает младший номер версии образа.
+// MajorSubsystemVersion - указывает основной номер версии подсистемы.
+// MinorSubsystemVersion - указывает младший номер версии подсистемы.
+// Win32VersionValueHex - указывает зарезервированное значение версии win32.
+// SizeOfImage - задает размер изображения в байтах, включая все заголовки, по мере загрузки изображения в память.
+// SizeOfHeaders - задает комбинированный размер заголовков MS-DOS, PE и разделов, округленный до кратного значения, указанного в заголовке file_alignment.
+// ChecksumHex - задает контрольную сумму двоичного файла PE.
+// SubsystemHex - указывает подсистему (например, графический интерфейс, драйвер устройства и т.д.), необходимую для запуска этого образа.
+// DllCharacteristicsHex - задает флаги, характеризующие двоичный файл PE.
+// SizeOfStackReserve -указывает размер стека для резервирования в байтах.
+// SizeOfStackCommit - указывает размер стека для фиксации в байтах.
+// SizeOfHeapReserve - задает размер локального пространства кучи для резервирования в байтах.
+// SizeOfHeapCommit - указывает размер локального пространства кучи для фиксации в байтах.
+// LoaderFlagsHex - указывает зарезервированные флаги загрузчика.
+// NumberOfRvaAndSizes - указывает количество записей каталога данных в оставшейся части необязательного заголовка.
+// Hashes - указывает все хэши, которые были вычислены для необязательного заголовка.
+type WindowsPEOptionalHeaderTypeSTIX struct {
+	MagicHex                string            `json:"magic_hex" bson:"magic_hex"`
+	MajorLinkerVersion      int               `json:"major_linker_version" bson:"major_linker_version"`
+	MinorLinkerVersion      int               `json:"minor_linker_version" bson:"minor_linker_version"`
+	SizeOfCode              int               `json:"size_of_code" bson:"size_of_code"`
+	SizeOfInitializedData   int               `json:"size_of_initialized_data" bson:"size_of_initialized_data"`
+	SizeOfUninitializedData int               `json:"size_of_uninitialized_data" bson:"size_of_uninitialized_data"`
+	AddressOfEntryPoint     int               `json:"address_of_entry_point" bson:"address_of_entry_point"`
+	BaseOfCode              int               `json:"base_of_code" bson:"base_of_code"`
+	BaseOfData              int               `json:"base_of_data" bson:"base_of_data"`
+	ImageBase               int               `json:"image_base" bson:"image_base"`
+	SectionAlignment        int               `json:"section_alignment" bson:"section_alignment"`
+	FileAlignment           int               `json:"file_alignment" bson:"file_alignment"`
+	MajorOSVersion          int               `json:"major_os_version" bson:"major_os_version"`
+	MinorOSVersion          int               `json:"minor_os_version" bson:"minor_os_version"`
+	MajorImageVersion       int               `json:"major_image_version" bson:"major_image_version"`
+	MinorImageVersion       int               `json:"minor_image_version" bson:"minor_image_version"`
+	MajorSubsystemVersion   int               `json:"major_subsystem_version" bson:"major_subsystem_version"`
+	MinorSubsystemVersion   int               `json:"minor_subsystem_version" bson:"minor_subsystem_version"`
+	Win32VersionValueHex    string            `json:"win32_version_value_hex" bson:"win32_version_value_hex"`
+	SizeOfImage             int               `json:"size_of_image" bson:"size_of_image"`
+	SizeOfHeaders           int               `json:"size_of_headers" bson:"size_of_headers"`
+	ChecksumHex             string            `json:"checksum_hex" bson:"checksum_hex"`
+	SubsystemHex            string            `json:"subsystem_hex" bson:"subsystem_hex"`
+	DllCharacteristicsHex   string            `json:"dll_characteristics_hex" bson:"dll_characteristics_hex"`
+	SizeOfStackReserve      int               `json:"size_of_stack_reserve" bson:"size_of_stack_reserve"`
+	SizeOfStackCommit       int               `json:"size_of_stack_commit" bson:"size_of_stack_commit"`
+	SizeOfHeapReserve       int               `json:"size_of_heap_reserve" bson:"size_of_heap_reserve"`
+	SizeOfHeapCommit        int               `json:"size_of_heap_commit" bson:"size_of_heap_commit"`
+	LoaderFlagsHex          string            `json:"loader_flags_hex" bson:"loader_flags_hex"`
+	NumberOfRvaAndSizes     int               `json:"number_of_rva_and_sizes" bson:"number_of_rva_and_sizes"`
+	Hashes                  []*HashesTypeSTIX `json:"hashes" bson:"hashes"`
+}
+
+//WindowsPESectionTypeSTIX тип "windows-pe-section-type", по терминалогии STIX, определяет методанные PE-секции файла
+// Name - определяет имя секции (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+// Size - размер секции в байтах.
+// Entropy - задает вычисленную энтропию для сечения, рассчитанную с использованием алгоритма Шеннона.
+// Hashes - задает любые хэши, вычисляемые по разделу. Свойство ДОЛЖНО содержать ключи из открытого словаря hash-algorithm-ov
+type WindowsPESectionTypeSTIX struct {
+	Name    string         `json:"name" bson:"name"`
+	Size    uint64         `json:"size" bson:"size"`
+	Entropy float64        `json:"entropy" bson:"entropy"`
+	Hashes  HashesTypeSTIX `json:"hashes" bson:"hashes"`
+}
+
 //EmailMIMEPartTypeSTIX тип "email-mime-part-type", по терминалогии STIX, содержит один компонент тела email из нескольких частей
 // Body - содержит содержимое части MIME, если content_type не указан или начинается с text/ (например, в случае обычного текста или HTML-письма)
-// BodyRawRef - содержит содержимое нетекстовых частей MIME, то есть тех, чей content_type не начинается с text/, в качестве
+// BodyRawRef - содержит содержимое нетекстовых частей MIME, то есть тех, чей content_type не начинается с text, в качестве
 //  ссылки на объект артефакта или Файловый объект
 // ContentType - содержимое поля 'Content-Type' заголовка MIME части email
 // ContentDisposition - содержимое поля 'Content-Disposition' заголовка MIME части email
@@ -27,6 +118,127 @@ type WindowsRegistryValueTypeSTIX struct {
 	Name     string       `json:"name" bson:"name"`
 	Data     string       `json:"data" bson:"data"`
 	DataType EnumTypeSTIX `json:"data_type" bson:"data_type"`
+}
+
+/********** 			Некоторые расширения, относящиеся к Cyber-observable Objects STIX 			**********/
+
+//ArchiveFileExtensionSTIX тип "archive-ext", по терминалогии STIX, содержит рассширение архивного файла. В ней задается расширение по умолчанию для захвата свойств,
+//  специфичных для архивных файлов
+// ContainsRefs - данное свойство определяет файлы содержащиеся в архиве. ДОЛЖНО содержать список типа file или directory (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+// Comment - определяет комментарий включенный как часть архивного файла
+type ArchiveFileExtensionSTIX struct {
+	ContainsRefs []IdentifierTypeSTIX `json:"contains_refs" bson:"contains_refs"`
+	Comment      string               `json:"comment" bson:"comment"`
+}
+
+//NTFSFileExtensionSTIX  тип "ntfs-ext", по терминалогии STIX, содержит расширение определяющее значения свойств, характерные для файловой системы NTFS
+// SID - опреляет безопасный идентификатор, связанный с файлом
+// AlternateDataStreams - определяет список альтернативных NTFS потоков данных связанных с файлом
+type NTFSFileExtensionSTIX struct {
+	SID                  string                         `json:"sid" bson:"sid"`
+	AlternateDataStreams []*AlternateDataStreamTypeSTIX `json:"alternate_data_streams" bson:"alternate_data_streams"`
+}
+
+//PDFFileExtensionSTIX тип "pdf-ext", по терминалогии STIX, содержит свойства специфичные для файлов в формате PDF
+// Version - номер версии, берется из заголовка PDF документа
+// IsOptimized - определяетс был ли PDF файл оптимизирован
+// DocumentInfoDict - содержит информацию полученную из document information dictionary (DID) PDF документа
+// Pdfid0 - определяет первый файловый идентификатор найденный в PDF файле
+// Pdfid1 - определяет второй файловый идентификатор найденный в PDF файле
+type PDFFileExtensionSTIX struct {
+	Version          string            `json:"version" bson:"version"`
+	IsOptimized      bool              `json:"is_optimized" bson:"is_optimized"`
+	DocumentInfoDict map[string]string `json:"document_info_dict" bson:"document_info_dict"`
+	Pdfid0           string            `json:"pdfid0" bson:"pdfid0"`
+	Pdfid1           string            `json:"pdfid1" bson:"pdfid1"`
+}
+
+//RasterImageFileExtensionSTIX тип "raster-image-ext", по терминалогии STIX, определяет специфичные расширения для растровых, графических файлов
+// ImageHeight - определяет высоту изображения в файле, в пикселях
+// ImageWidth - определяет ширину изображения в файле, в пикселях
+// BitsPerPixel - определяет сумму бит для каждого цветового туннеля в файлес изображением, а также общее количество пикселей, используемых для выражения глубины цвета изображения.
+// ExifTags - задает набор тегов EXIF, найденных в файле изображения, в виде словаря. Каждая пара ключ/значение в словаре представляет имя/значение одного тега EXIF.
+//  Соответственно, каждый ключ словаря ДОЛЖЕН быть сохраненной в регистре версией имени тега EXIF, например . Каждое значение словаря ДОЛЖНО быть либо (для типов данных int* EXIF),
+//  либо строкой (для всех других типов данных EXIF).
+type RasterImageFileExtensionSTIX struct {
+	ImageHeight  int               `json:"image_height" bson:"image_height"`
+	ImageWidth   int               `json:"image_width" bson:"image_width"`
+	BitsPerPixel int               `json:"bits_per_pixel" bson:"bits_per_pixel"`
+	ExifTags     map[string]string `json:"exif_tags" bson:"exif_tags"`
+}
+
+//HTTPRequestExtensionSTIX тип "http-request-ext", по терминалогии STIX, определяет специфичное расширение HTTP-запроса, задает расширение по умолчанию для захвата свойств
+//  сетевого трафика, специфичных для HTTP-запросов. Ключ для этого расширения при использовании в словаре расширений ДОЛЖЕН быть http-request-ext.
+// RequestMethod - указывает часть HTTP-метода строки HTTP - запроса в виде строчной строки. (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ).
+// RequestValue - указывает часть значения (обычно путь к ресурсу) строки HTTP-запроса. (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ).
+// RequestVersion - указывает часть HTTP-версии строки HTTP - запроса в виде строчной строки.
+// RequestHeader - задает все поля заголовка HTTP, которые могут быть найдены в запросе клиента HTTP, в виде словаря.
+// MessageBodyLength - указывает длину тела HTTP-сообщения, если оно включено, в байтах.
+// MessageBodyDataRef - указывает данные, содержащиеся в теле HTTP-сообщения, если они включены. Объект, на который ссылается это свойство, ДОЛЖЕН иметь тип artifact.
+type HTTPRequestExtensionSTIX struct {
+	RequestMethod      string             `json:"request_method" bson:"request_method"`
+	RequestValue       string             `json:"request_value" bson:"request_value"`
+	RequestVersion     string             `json:"request_version" bson:"request_version"`
+	RequestHeader      map[string]string  `json:"request_header" bson:"request_header"`
+	MessageBodyLength  int                `json:"message_body_length" bson:"message_body_length"`
+	MessageBodyDataRef IdentifierTypeSTIX `json:"message_body_data_ref" bson:"message_body_data_ref"`
+}
+
+//ICMPExtensionSTIX тип "icmp-ext", по терминалогии STIX, определяет специфичное расширение по умолчанию для захвата свойств сетевого трафика, специфичных для ICMP. Ключ для этого
+//  расширения при использовании в словаре расширений ДОЛЖЕН быть icmp-ext.
+// ICMPTypeHex - указывает тип ICMP байт.
+// ICMPCodeHex - задает байт кода ICMP.
+type ICMPExtensionSTIX struct {
+	ICMPTypeHex string `json:"icmp_type_hex" bson:"icmp_type_hex"`
+	ICMPCodeHex string `json:"icmp_code_hex" bson:"icmp_code_hex"`
+}
+
+//NetworkSocketExtensionSTIX тип "socket-ext", по терминалогии STIX, определяет специфичное расширение по умолчанию для захвата свойств сетевого трафика, связанных с сетевыми сокетами.
+//  Ключ для этого расширения при использовании в словаре расширений ДОЛЖЕН быть socket-ext.
+// AddressFamily -  указывает семейство адресов (AF_*), для которого настроен сокет. Значения этого свойства ДОЛЖНЫ быть получены из network-socket-address-family-enum. (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ).
+// IsBlocking - указывает, находится ли сокет в режиме блокировки.
+// IsListening - указывает, находится ли сокет в режиме прослушивания.
+// Options - указывает любые параметры (например, SO_*), которые могут использоваться сокетом в качестве словаря. Каждый ключ в словаре ДОЛЖЕН быть сохраненной в регистре версией имени
+//  параметра, например SO_ACCEPTCONN. Каждое значение ключа в словаре ДОЛЖНО быть значением для соответствующего ключа опций. Каждое значение словаря ДОЛЖНО быть целым числом.
+// SocketType - указывает тип сокета. Значения этого свойства ДОЛЖНЫ быть получены из network-socket-type-enum.
+// SocketDescriptor - указывается значение дескриптора файла сокета, связанное с сокетом, как неотрицательное целое число.
+// SocketHandle - указывает значение дескриптора или индекса, связанное с сокетом.
+type NetworkSocketExtensionSTIX struct {
+	AddressFamily    EnumTypeSTIX   `json:"address_family" bson:"address_family"`
+	IsBlocking       bool           `json:"is_blocking" bson:"is_blocking"`
+	IsListening      bool           `json:"is_listening" bson:"is_listening"`
+	Options          map[string]int `json:"options" bson:"options"`
+	SocketType       EnumTypeSTIX   `json:"socket_type" bson:"socket_type"`
+	SocketDescriptor int            `json:"socket_descriptor" bson:"socket_descriptor"`
+	SocketHandle     int            `json:"socket_handle" bson:"socket_handle"`
+}
+
+//WindowsPEBinaryFileExtensionSTIX тип "windows-pebinary-ext", по терминалогии STIX, определяет специфичные свойства для Windows portable executable (PE) файлов
+// PeType - определяет тип PE binary, в данном поле СЛЕДУЕТ использовать значение из открытого словаря windows-pebinary-type-ov (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ).
+// Imphash - определяет специальный 'импортируемый' хеш или imphash подсчитываемый для основанных на PE Binary импортируемых библиотек и функций.
+// MachineHex - определяет специфичный, машинный хеш.
+// NumberOfSections - определяет количество секций в PE Binary
+// TimeDateStamp - время, в формате "2016-05-12T08:17:27.000Z", когда PE Binary был создан.
+// PointerToSymbolTableHex - задает смещение файла таблицы символов COFF.
+// NumberOfSymbols - задает номер записи в таблице символов PE binary.
+// SizeOfOptionalHeader - задает размер заголовка в PE binary.
+// CharacteristicsHex - задает флаги, определяющие характеристики файла.
+// FileHeaderHashes - определяет любой, подсчитанный для этого файла, хеш.
+// OptionalHeader - задает заголовок PE binary файла. Должно использоватся свойство из windows-pe-optional-header-type.
+// Sections - задает список методанных касательно секций PE файла.
+type WindowsPEBinaryFileExtensionSTIX struct {
+	PeType                  OpenVocabTypeSTIX               `json:"pe_type" bson:"pe_type"`
+	Imphash                 string                          `json:"imphash" bson:"imphash"`
+	MachineHex              string                          `json:"machine_hex" bson:"machine_hex"`
+	NumberOfSections        int                             `json:"number_of_sections" bson:"number_of_sections"`
+	TimeDateStamp           time.Time                       `json:"time_date_stamp" bson:"time_date_stamp"`
+	PointerToSymbolTableHex string                          `json:"pointer_to_symbol_table_hex" bson:"pointer_to_symbol_table_hex"`
+	NumberOfSymbols         int                             `json:"number_of_symbols" bson:"number_of_symbols"`
+	SizeOfOptionalHeader    int                             `json:"size_of_optional_header" bson:"size_of_optional_header"`
+	CharacteristicsHex      string                          `json:"characteristics_hex" bson:"characteristics_hex"`
+	FileHeaderHashes        HashesTypeSTIX                  `json:"file_header_hashes" bson:"file_header_hashes"`
+	OptionalHeader          WindowsPEOptionalHeaderTypeSTIX `json:"optional_header" bson:"optional_header"`
+	Sections                []*WindowsPESectionTypeSTIX     `json:"sections" bson:"sections"`
 }
 
 //UNIXAccountExtensionSTIX тип "unix-account-ext", по терминалогии STIX, содержит рассширения 'по умолчанию' захваченной дополнительной информации
@@ -95,7 +307,21 @@ type X509V3ExtensionsTypeSTIX struct {
 
 /********** 			Cyber-observable Objects STIX 			**********/
 
-//ArtifactObjectSTIX объект "Artifact", по терминалогии STIX, позволяет захватывать массив байтов (8 бит) в виде строки в кодировке base64
+//OptionalCommonPropertiesCyberObservableObjectSTIX содержит опциональные общие свойства для Cyber-observable Objects STIX
+// SpecVersion -
+// ObjectMarkingRefs - определяет список ID ссылающиеся на объект "marking-definition", по терминалогии STIX, в котором содержатся значения применяющиеся к этому объекту
+// GranularMarkings - определяет список "гранулярных меток" (granular_markings) относящихся к этому объекту
+// Defanged - определяет были ли определены данные содержащиеся в объекте
+// Extensions - может содержать дополнительную информацию, относящуюся к объекту
+type OptionalCommonPropertiesCyberObservableObjectSTIX struct {
+	SpecVersion       string                   `json:"spec_version" bson:"spec_version"`
+	ObjectMarkingRefs []*IdentifierTypeSTIX    `json:"object_marking_refs" bson:"object_marking_refs"`
+	GranularMarkings  GranularMarkingsTypeSTIX `json:"granular_markings" bson:"granular_markings"`
+	Defanged          bool                     `json:"defanged" bson:"defanged"`
+	Extensions        map[string]string        `json:"extensions" bson:"extensions"`
+}
+
+//ArtifactCyberObservableObjectSTIX объект "Artifact", по терминалогии STIX, позволяет захватывать массив байтов (8 бит) в виде строки в кодировке base64
 //  или связывать его с полезной нагрузкой, подобной файлу. Обязательно должен быть заполнено одно из полей PayloadBin или URL
 // MimeType - по возможности это значение ДОЛЖНО быть одним из значений, определенных в реестре типов носителей IANA. В универсальном каталоге
 //  всех существующих типов файлов.
@@ -106,6 +332,7 @@ type X509V3ExtensionsTypeSTIX struct {
 // DecryptionKey - определяет ключ для дешифрования зашифрованных данных
 type ArtifactCyberObservableObjectSTIX struct {
 	CommonPropertiesObjectSTIX
+	OptionalCommonPropertiesCyberObservableObjectSTIX
 	MimeType            string         `json:"mime_type" bson:"mime_type"`
 	PayloadBin          string         `json:"payload_bin" bson:"payload_bin"`
 	URL                 string         `json:"url" bson:"url"`
@@ -114,18 +341,19 @@ type ArtifactCyberObservableObjectSTIX struct {
 	DecryptionKey       string         `json:"decryption_key" bson:"decryption_key"`
 }
 
-//AutonomousSystemObjectSTIX объект "Autonomous System", по терминалогии STIX, содержит параметры Автономной системы
+//AutonomousSystemCyberObservableObjectSTIX объект "Autonomous System", по терминалогии STIX, содержит параметры Автономной системы
 // Number - содержит номер присвоенный Автономной системе (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // Name - название Автономной системы
 // RIR - содержит название регионального Интернет-реестра (Regional Internet Registry) которым было дано имя Автономной системы
 type AutonomousSystemCyberObservableObjectSTIX struct {
 	CommonPropertiesObjectSTIX
+	OptionalCommonPropertiesCyberObservableObjectSTIX
 	Number int    `json:"number" bson:"number" required:"true"`
 	Name   string `json:"name" bson:"name"`
 	RIR    string `json:"rir" bson:"rir"`
 }
 
-//DirectoryObjectSTIX объект "Directory", по терминалогии STIX, содержит свойства, общие для каталога файловой системы
+//DirectoryCyberObservableObjectSTIX объект "Directory", по терминалогии STIX, содержит свойства, общие для каталога файловой системы
 // Path - указывает путь, как было первоначально замечено, к каталогу в файловой системе (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // PathEnc - указывает наблюдаемую кодировку для пути. Значение ДОЛЖНО быть указано, если путь хранится в кодировке, отличной от Unicode.
 // Ctime - время, в формате "2016-05-12T08:17:27.000Z", создания директории
@@ -134,6 +362,7 @@ type AutonomousSystemCyberObservableObjectSTIX struct {
 // ContainsRefs - содержит список файловых объектов или директорий содержащихся внутри директории
 type DirectoryCyberObservableObjectSTIX struct {
 	CommonPropertiesObjectSTIX
+	OptionalCommonPropertiesCyberObservableObjectSTIX
 	Path         string                `json:"path" bson:"path" required:"true"`
 	PathEnc      string                `json:"path_enc" bson:"path_enc"`
 	Ctime        time.Time             `json:"ctime" bson:"ctime"`
@@ -142,27 +371,29 @@ type DirectoryCyberObservableObjectSTIX struct {
 	ContainsRefs []*IdentifierTypeSTIX `json:"contains_refs" bson:"contains_refs"`
 }
 
-//DomainNameObjectSTIX объект "Domain Name", по терминалогии STIX, содержит сетевое доменное имя
+//DomainNameCyberObservableObjectSTIX объект "Domain Name", по терминалогии STIX, содержит сетевое доменное имя
 // Value - сетевое доменное имя (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // ResolvesToRefs - список ссылок на один или несколько IP-адресов или доменных имен, на которые разрешается доменное имя
 type DomainNameCyberObservableObjectSTIX struct {
 	CommonPropertiesObjectSTIX
+	OptionalCommonPropertiesCyberObservableObjectSTIX
 	Value          string                `json:"value" bson:"value" required:"true"`
 	ResolvesToRefs []*IdentifierTypeSTIX `json:"resolves_to_refs" bson:"resolves_to_refs"`
 }
 
-//EmailAddressObjectSTIX объект "Email Address", по терминалогии STIX, содержит представление единственного email адреса
+//EmailAddressCyberObservableObjectSTIX объект "Email Address", по терминалогии STIX, содержит представление единственного email адреса
 // Value - email адрес (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // DisplayName - содержит единственное почтовое имя которое видит человек при просмотре письма
 // BelongsToRef - учетная запись пользователя, которой принадлежит адрес электронной почты, в качестве ссылки на объект учетной записи пользователя
 type EmailAddressCyberObservableObjectSTIX struct {
 	CommonPropertiesObjectSTIX
+	OptionalCommonPropertiesCyberObservableObjectSTIX
 	Value        string             `json:"value" bson:"value"`
 	DisplayName  string             `json:"display_name" bson:"display_name"`
 	BelongsToRef IdentifierTypeSTIX `json:"belongs_to_ref" bson:"belongs_to_ref"`
 }
 
-//EmailMessageObjectSTIX объект "Email Message", по терминалогии STIX, содержит экземпляр email сообщения
+//EmailMessageCyberObservableObjectSTIX объект "Email Message", по терминалогии STIX, содержит экземпляр email сообщения
 // IsMultipart - информирует содержит ли 'тело' email множественные MIME части (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // Date - время, в формате "2016-05-12T08:17:27.000Z", когда email сообщение было отправлено
 // ContentType - содержит содержимое 'Content-Type' заголовка email сообщения
@@ -182,6 +413,7 @@ type EmailAddressCyberObservableObjectSTIX struct {
 // RawEmailRef - содержит 'сырое' бинарное содержимое email сообщения
 type EmailMessageCyberObservableObjectSTIX struct {
 	CommonPropertiesObjectSTIX
+	OptionalCommonPropertiesCyberObservableObjectSTIX
 	IsMultipart            bool                     `json:"is_multipart" bson:"is_multipart" required:"true"`
 	Date                   time.Time                `json:"date" bson:"date"`
 	ContentType            string                   `json:"content_type" bson:"content_type"`
@@ -199,6 +431,133 @@ type EmailMessageCyberObservableObjectSTIX struct {
 	RawEmailRef            IdentifierTypeSTIX       `json:"raw_email_ref" bson:"raw_email_ref"`
 }
 
+//FileObjectCyberObservableObjectSTIX объект "File Object", по терминалогии STIX, содержит объект со свойствами файла
+// Extensions - определяет следующие расширения pdf-ext, archive-ext, ntfs-ext, raster-image-ext, windows-pebinary-ext. В дополнении к ним пользователь может создавать
+//  свои расширения. При этом ключ словаря должен однозначно идентифицировать тип расширения.
+// Hashes - определяет словарь хешей для файла. При этом ДОЛЖНЫ использоватся ключи из открытого словаря hash-algorithm- ov.
+// Size - содержит размер файла в байтах
+// Name - содержит имя файла
+// NameEnc - определяет кодировку имени файла. Содержимое должно соответствовать ревизии IANA от 2013-12-20.
+// MagicNumberHex - указывает шестнадцатеричную константу (“магическое число”), связанную с определенным форматом файла, который соответствует этому файлу, если это применимо.
+// MimeType - определяет MIME имени файла, например, application/msword.
+// Ctime - время, в формате "2016-05-12T08:17:27.000Z", создания файла
+// Mtime - время, в формате "2016-05-12T08:17:27.000Z", модификации файла
+// Atime - время, в формате "2016-05-12T08:17:27.000Z", обращения к файлу
+// ParentDirectoryRef - определяет родительскую директорию для файла. Объект ссылающийся на это свойство ДОЛЖЕН быть типом directory
+// ContainsRefs - содержит ссылки на другие Cyber-observable Objects STIX, содержащиеся в файле, например другой файл, добавленный в конец файла, или IP-адрес, содержащийся где-то в файле.
+// ContentRef - определяет контент файла. Данное значение ДОЛЖНО иметь тип artifact, то есть ссылатся на ArtifactCyberObservableObjectSTIX
+type FileObjectCyberObservableObjectSTIX struct {
+	CommonPropertiesObjectSTIX
+	OptionalCommonPropertiesCyberObservableObjectSTIX
+	Extensions         *json.RawMessage      `json:"extensions" bson:"extensions"`
+	Hashes             HashesTypeSTIX        `json:"hashes" bson:"hashes"`
+	size               uint64                `json:"size" bson:"size"`
+	Name               string                `json:"name" bson:"name"`
+	NameEnc            string                `json:"name_enc" bson:"name_enc"`
+	MagicNumberHex     string                `json:"magic_number_hex" bson:"magic_number_hex"`
+	MimeType           string                `json:"mime_type" bson:"mime_type"`
+	Ctime              time.Time             `json:"ctime" bson:"ctime"`
+	Mtime              time.Time             `json:"mtime" bson:"mtime"`
+	Atime              time.Time             `json:"atime" bson:"atime"`
+	ParentDirectoryRef IdentifierTypeSTIX    `json:"parent_directory_ref" bson:"parent_directory_ref"`
+	ContainsRefs       []*IdentifierTypeSTIX `json:"contains_refs" bson:"contains_refs"`
+	ContentRef         IdentifierTypeSTIX    `json:"content_ref" bson:"content_ref"`
+}
+
+//IPv4AddressObjectCyberObservableObjectSTIX объект "IPv4 Address Object", по терминалогии STIX, содержит один или более IPv4 адресов, выраженных с помощью нотации CIDR.
+// Value - указывает значения одного или нескольких IPv4-адресов, выраженные с помощью нотации CIDR. Если данный объект IPv6-адреса представляет собой один IPv6-адрес,
+//  суффикс CIDR /128 МОЖЕТ быть опущен. (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+// ResolvesToRefs - указывает список ссылок на один или несколько MAC-адресов управления доступом к носителям уровня 2, на которые разрешается IPv6-адрес. Объекты,
+//  на которые ссылается этот список, ДОЛЖНЫ иметь тип macaddr.
+// BelongsToRefs - указывает список ссылок на одну или несколько автономных систем (AS), к которым принадлежит IPv6-адрес. Объекты, на которые ссылается этот список,
+//  ДОЛЖНЫ быть типа autonomous-system.
+type IPv4AddressObjectCyberObservableObjectSTIX struct {
+	CommonPropertiesObjectSTIX
+	OptionalCommonPropertiesCyberObservableObjectSTIX
+	Value          string                `json:"value" bson:"value"`
+	ResolvesToRefs []*IdentifierTypeSTIX `json:"resolves_to_refs" bson:"resolves_to_refs"`
+	BelongsToRefs  []*IdentifierTypeSTIX `json:"belongs_to_refs" bson:"belongs_to_refs"`
+}
+
+//IPv6AddressObjectCyberObservableObjectSTIX объект "IPv6 Address Object", по терминалогии STIX, содержит один или более IPv6 адресов, выраженных с помощью нотации CIDR.
+// Value - указывает значения одного или нескольких IPv6-адресов, выраженные с помощью нотации CIDR. Если данный объект IPv4-адреса представляет собой один IPv4-адрес,
+//  суффикс CIDR /32 МОЖЕТ быть опущен. Пример: 10.2.4.5/24 (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+// ResolvesToRefs - указывает список ссылок на один или несколько MAC-адресов управления доступом к носителям уровня 2, на которые разрешается IPv4-адрес. Объекты,
+//  на которые ссылается этот список, ДОЛЖНЫ иметь тип macaddr.
+// BelongsToRefs - указывает список ссылок на одну или несколько автономных систем (AS), к которым принадлежит IPv4-адрес. Объекты, на которые ссылается этот список,
+//  ДОЛЖНЫ быть типа autonomous-system.
+type IPv6AddressObjectCyberObservableObjectSTIX struct {
+	CommonPropertiesObjectSTIX
+	OptionalCommonPropertiesCyberObservableObjectSTIX
+	Value          string                `json:"value" bson:"value"`
+	ResolvesToRefs []*IdentifierTypeSTIX `json:"resolves_to_refs" bson:"resolves_to_refs"`
+	BelongsToRefs  []*IdentifierTypeSTIX `json:"belongs_to_refs" bson:"belongs_to_refs"`
+}
+
+//MACAddressObjectCyberObservableObjectSTIX объект "MAC Address Object", по терминалогии STIX, содержит объект MAC-адрес, представляющий собой один адрес управления доступом к среде (MAC).
+// Value - Задает значение одного MAC-адреса. Значение MAC - адреса ДОЛЖНО быть представлено в виде одного строчного MAC-48 address, разделенного двоеточием,
+//  который ДОЛЖЕН включать начальные нули для каждого октета. Пример: 00:00:ab:cd:ef:01. (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+type MACAddressObjectCyberObservableObjectSTIX struct {
+	CommonPropertiesObjectSTIX
+	OptionalCommonPropertiesCyberObservableObjectSTIX
+	Value string `json:"value" bson:"value"`
+}
+
+//MutexObjectCyberObservableObjectSTIX объект "Mutex Object", по терминалогии STIX, содержит свойства объекта взаимного исключения (mutex).
+// Name - указывает имя объекта мьютекса (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ).
+type MutexObjectCyberObservableObjectSTIX struct {
+	CommonPropertiesObjectSTIX
+	OptionalCommonPropertiesCyberObservableObjectSTIX
+	Name string `json:"name" bson:"name"`
+}
+
+//NetworkTrafficObjectCyberObservableObjectSTIX объект "Network Traffic Object", по терминалогии STIX, содержит объект Сетевого трафика представляющий собой произвольный сетевой трафик,
+//  который исходит из источника и адресуется адресату.
+// Extensions - объект Сетевого трафика определяет следующие расширения. В дополнение к ним производители МОГУТ создавать свои собственные. ключи словаря http-request-ext, cp-ext,
+//  icmp-ext, socket-ext ДОЛЖНЫ идентифицировать тип расширения по имени. Соответствующие значения словаря ДОЛЖНЫ содержать содержимое экземпляра расширения.
+// Start - время, в формате "2016-05-12T08:17:27.000Z", инициирования сетевого трафика, если он известен.
+// End - время, в формате "2016-05-12T08:17:27.000Z", окончания сетевого трафика, если он известен.
+// IsActive - указывает, продолжается ли сетевой трафик. Если задано свойство end, то это свойство ДОЛЖНО быть false.
+// SrcRef - указывает источник сетевого трафика в качестве ссылки на кибернаблюдаемый объект. Объект, на который ссылается ссылка, ДОЛЖЕН быть типа ipv4-addr, ipv6 - addr, mac-addr
+//  или domain-name (для случаев, когда IP-адрес для доменного имени неизвестен).
+// DstRef - указывает место назначения сетевого трафика в качестве ссылки на кибернаблюдаемый объект. Объект, на который ссылается ссылка, ДОЛЖЕН быть типа ipv4-addr, ipv6 - addr,
+//  mac-addr или domain-name (для случаев, когда IP-адрес для доменного имени неизвестен).
+// SrcPort - задает исходный порт, используемый в сетевом трафике, в виде целого числа. Значение порта ДОЛЖНО находиться в диапазоне от 0 до 65535.
+// DstPort - задает порт назначения, используемый в сетевом трафике, в виде целого числа. Значение порта ДОЛЖНО находиться в диапазоне от 0 до 65535.
+// Protocols - указывает протоколы, наблюдаемые в сетевом трафике, а также их соответствующее состояние.
+// SrcByteCount - задает число байтов в виде положительного целого числа, отправленных от источника к месту назначения.
+// DstByteCount - задает число байтов в виде положительного целого числа, отправленных из пункта назначения в источник.
+// SrcPackets - задает количество пакетов в виде положительного целого числа, отправленных от источника к месту назначения.
+// DstPackets - задает количество пакетов в виде положительного целого числа, отправленных от пункта назначения к источнику
+// IPfix - указывает любые данные Экспорта информации IP-потока [IPFIX] для трафика в виде словаря. Каждая пара ключ/значение в словаре представляет имя/значение одного элемента IPFIX.
+//  Соответственно, каждый ключ словаря ДОЛЖЕН быть сохраненной в регистре версией имени элемента IPFIX.
+// SrcPayloadRef - указывает байты, отправленные из источника в пункт назначения. Объект, на который ссылается это свойство, ДОЛЖЕН иметь тип artifact.
+// DstPayloadRef - указывает байты, отправленные из пункта назначения в источник. Объект, на который ссылается это свойство, ДОЛЖЕН иметь тип artifact.
+// EncapsulatesRefs - ссылки на другие объекты, инкапсулированные этим объектом. Объекты, на которые ссылается это свойство, ДОЛЖНЫ иметь тип network-traffic.
+// EncapsulatedByRef - ссылки на другой объект сетевого трафика, который инкапсулирует этот объект. Объекты, на которые ссылается это свойство, ДОЛЖНЫ иметь тип network-traffic.
+type NetworkTrafficObjectCyberObservableObjectSTIX struct {
+	CommonPropertiesObjectSTIX
+	OptionalCommonPropertiesCyberObservableObjectSTIX
+	Extensions        map[string]string    `json:"extensions" bson:"extensions"`
+	Start             time.Time            `json:"start" bson:"start"`
+	End               time.Time            `json:"end" bson:"end"`
+	IsActive          bool                 `json:"is_active" bson:"is_active"`
+	SrcRef            IdentifierTypeSTIX   `json:"src_ref" bson:"src_ref"`
+	DstRef            IdentifierTypeSTIX   `json:"dst_ref" bson:"dst_ref"`
+	SrcPort           int                  `json:"src_port" bson:"src_port"`
+	DstPort           int                  `json:"dst_port" bson:"dst_port"`
+	Protocols         []string             `json:"protocols" bson:"protocols"`
+	SrcByteCount      uint64               `json:"src_byte_count" bson:"src_byte_count"`
+	DstByteCount      uint64               `json:"dst_byte_count" bson:"dst_byte_count"`
+	SrcPackets        int                  `json:"src_packets" bson:"src_packets"`
+	DstPackets        int                  `json:"dst_packets" bson:"dst_packets"`
+	IPfix             map[string]string    `json:"ipfix" bson:"ipfix"`
+	SrcPayloadRef     IdentifierTypeSTIX   `json:"src_payload_ref" bson:"src_payload_ref"`
+	DstPayloadRef     IdentifierTypeSTIX   `json:"dst_payload_ref" bson:"dst_payload_ref"`
+	EncapsulatesRefs  []IdentifierTypeSTIX `json:"encapsulates_refs" bson:"encapsulates_refs"`
+	EncapsulatedByRef IdentifierTypeSTIX   `json:"encapsulated_by_ref" bson:"encapsulated_by_ref"`
+}
+
 /*
 	`json:"" bson:""`
 	`json:"" bson:""`
@@ -208,7 +567,7 @@ type EmailMessageCyberObservableObjectSTIX struct {
 	`json:"" bson:""`
 */
 
-//SoftwareObjectSTIX объект "Software Object", по терминологии STIX, содержит свойства, связанные с программным обеспечением, включая программные продукты.
+//SoftwareCyberObservableObjectSTIX объект "Software Object", по терминологии STIX, содержит свойства, связанные с программным обеспечением, включая программные продукты.
 // Name - назвыание программного обеспечения
 // CPE - содержит запись Common Platform Enumeration (CPE) для программного обеспечения, если она доступна. Значение этого свойства должно быть значением
 // CPE v2.3 из официального словаря NVD CPE [NVD]
@@ -227,7 +586,7 @@ type SoftwareCyberObservableObjectSTIX struct {
 	Version   string   `json:"version" bson:"version"`
 }
 
-//UserAccountObjectSTIX объект "User Account Object", по терминалогии STIX, содержит экземпляр любого типа учетной записи пользователя, включая,
+//UserAccountCyberObservableObjectSTIX объект "User Account Object", по терминалогии STIX, содержит экземпляр любого типа учетной записи пользователя, включая,
 // учетные записи операционной системы, устройства, службы обмена сообщениями и платформы социальных сетей и других прочих учетных записей
 // Поскольку все свойства этого объекта являются необязательными, по крайней мере одно из свойств, определенных ниже, ДОЛЖНО быть инициализировано
 // при использовании этого объекта
@@ -277,7 +636,7 @@ type UserAccountCyberObservableObjectSTIX struct {
 	AccountLastLogin      time.Time                           `json:"account_last_login" bson:"account_last_login"`
 }
 
-//WindowsRegistryKeyObjectSTIX объект "Windows Registry Key Object", по терминалогии STIX. Содержит описание значений полей раздела реестра Windows.
+//WindowsRegistryKeyCyberObservableObjectSTIX объект "Windows Registry Key Object", по терминалогии STIX. Содержит описание значений полей раздела реестра Windows.
 //  Поскольку все свойства этого объекта являются необязательными, по крайней мере одно из свойств,определенных ниже, должно быть инициализировано при
 //  использовании этого объекта.
 // Key - содержит полный путь к разделу реестра. Значение ключа,должно быть сохранено в регистре. В название ключа все сокращения должны быть раскрыты.
@@ -295,7 +654,7 @@ type WindowsRegistryKeyCyberObservableObjectSTIX struct {
 	NumberOfSubkeys int                            `json:"number_of_subkeys" bson:"number_of_subkeys"`
 }
 
-//X509CertificateObjectSTIX объект "X.509 Certificate Object", по терминологии STIX, представлет свойства сертификата X.509, определенные в рекомендациях
+//X509CertificateCyberObservableObjectSTIX объект "X.509 Certificate Object", по терминологии STIX, представлет свойства сертификата X.509, определенные в рекомендациях
 //  ITU X.509 [X.509]. X.509  Certificate объект должен содержать по крайней мере одно cвойство специфичное для этого объекта (помимо type).
 // IsSelfSigned - содержит индикатор, является ли сертификат самоподписным, то есть подписан ли он тем же субъектом, личность которого он удостоверяет.
 // Hashes - содержит любые хэши, которые были вычислены для всего содержимого сертификата. Является типом данных словар, значения ключей которого должны

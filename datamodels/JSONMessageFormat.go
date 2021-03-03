@@ -20,11 +20,10 @@ type ModAPIRequestProcessingCommonJSON struct {
 // DetailedInformation - подбробная информация о запросе
 type ModAPIRequestProcessingReqJSON struct {
 	ModAPIRequestProcessingCommonJSON
-	Section                       string                                               `json:"section"`
-	TaskWasGeneratedAutomatically bool                                                 `json:"task_was_generated_automatically"`
-	UserNameGeneratedTask         string                                               `json:"user_name_generated_task"`
-	RequestDetails                json.RawMessage                                      `json:"request_details"`
-	DetailedInformation           []*DetailedInformationModAPIRequestProcessingReqJSON `json:"detailed_information"`
+	Section                       string           `json:"section"`
+	TaskWasGeneratedAutomatically bool             `json:"task_was_generated_automatically"`
+	UserNameGeneratedTask         string           `json:"user_name_generated_task"`
+	RequestDetails                *json.RawMessage `json:"request_details"`
 }
 
 //ModAPIRequestProcessingReqHandlingSTIXObjectJSON содержит список произвольных объектов STIX
@@ -41,8 +40,8 @@ type ModAPIRequestProcessingReqHandlingSTIXObjectJSON []*json.RawMessage
 //  - "generate a report", сформировать отчет (ЭТО ТО ЧТО УЖЕ НЕ ОТНОСИТСЯ К STIX объектам)
 // MessageParameters - параметры сообщения
 type DetailedInformationModAPIRequestProcessingReqJSON struct {
-	ActionType        string          `json:"action_type"`
-	MessageParameters json.RawMessage `json:"message_parameters"`
+	ActionType        string           `json:"action_type"`
+	MessageParameters *json.RawMessage `json:"message_parameters"`
 }
 
 //ModAPIRequestProcessingResJSON содержит описание формата JSON ответа, передаваемого через модуль ModuleAPIRequestProcessing

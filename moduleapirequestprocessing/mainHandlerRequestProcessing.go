@@ -83,7 +83,7 @@ func MainHandlerAPIReguestProcessing(
 		}
 	}()
 
-	//маршрутизатор ответов изнутри приложения
+	//маршрутизатор ответов поступающих от Ядра приложения
 	go func() {
 		for msg := range cmapirp.InputModule {
 			if msg.ModuleGeneratorMessage != "module core application" || msg.ModuleReceiverMessage != "module api request processing" {

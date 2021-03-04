@@ -5,27 +5,22 @@ import (
 
 	"ISEMS-MRSICT/datamodels"
 	"ISEMS-MRSICT/moduleapirequestprocessing"
+	moddatamodels "ISEMS-MRSICT/modulecoreapplication/datamodels"
 	"ISEMS-MRSICT/moduledatabaseinteraction"
 	"ISEMS-MRSICT/modulelogginginformationerrors"
 	"ISEMS-MRSICT/moduletemporarymemorycommon"
 )
 
-//ChannelsListInteractingModules содержит список каналов для межмодульного взаимодействия
-type ChannelsListInteractingModules struct {
-	ChannelsModuleDataBaseInteraction  moduledatabaseinteraction.ChannelsModuleDataBaseInteraction
-	ChannelsModuleAPIRequestProcessing moduleapirequestprocessing.ChannelsModuleAPIRequestProcessing
-}
-
-var clim ChannelsListInteractingModules
+var clim moddatamodels.ChannelsListInteractingModules
 var stmc *moduletemporarymemorycommon.StorageTemporaryMemoryCommonType
 
 func init() {
-	clim = ChannelsListInteractingModules{}
+	clim = moddatamodels.ChannelsListInteractingModules{}
 	stmc = moduletemporarymemorycommon.NewStorageTemporaryMemoryCommon()
 }
 
 //MainHandlerCoreApplication основной обработчик ядра приложения
-func MainHandlerCoreApplication(chanSaveLog chan modulelogginginformationerrors.LogMessageType, appConfig *datamodels.AppConfig) {
+func MainHandlerCoreApplication(chanSaveLog chan<- modulelogginginformationerrors.LogMessageType, appConfig *datamodels.AppConfig) {
 	funcName := "MainHandlerCoreApplication"
 
 	fmt.Println("func 'MainHandlerCoreApplication', START...")
@@ -58,5 +53,5 @@ func MainHandlerCoreApplication(chanSaveLog chan modulelogginginformationerrors.
 		FuncName:    funcName,
 	}
 
-	RoutingCoreApp(appConfig, &clim)
+	RoutingCoreApp(chanSaveLog, appConfig, &clim)
 }

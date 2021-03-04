@@ -5,12 +5,16 @@ import (
 	"log"
 
 	"ISEMS-MRSICT/datamodels"
-	"ISEMS-MRSICT/modulecoreapplication/requesthandlers"
+	moddatamodels "ISEMS-MRSICT/modulecoreapplication/datamodels"
+	"ISEMS-MRSICT/modulecoreapplication/routingflowsmoduleapirequestprocessing"
+	"ISEMS-MRSICT/modulelogginginformationerrors"
 )
 
 //RoutingCoreApp обеспечивает маршрутизацию всех данных циркулирующих внутри приложения
-func RoutingCoreApp(appConfig *datamodels.AppConfig, clim *ChannelsListInteractingModules) {
-	fmt.Println("ModuleCoreApplication - func 'RoutingCoreApp', START...")
+func RoutingCoreApp(
+	chanSaveLog chan<- modulelogginginformationerrors.LogMessageType,
+	appConfig *datamodels.AppConfig,
+	clim *moddatamodels.ChannelsListInteractingModules) {
 
 	log.Printf("Start application ISEMS-MRSICT, version '%q'\n", appConfig.VersionApp)
 
@@ -21,27 +25,7 @@ func RoutingCoreApp(appConfig *datamodels.AppConfig, clim *ChannelsListInteracti
 		case data := <-clim.ChannelsModuleAPIRequestProcessing.OutputModule:
 			fmt.Printf("func 'Routing', Input data from 'moduleAPIRequestProcessing'. Reseived data: '%v'\n", data)
 
-			commonMsgReq, err := requesthandlers.UnmarshalJSONCommonReq(data.Data)
-			if err != nil {
-				//здесь отправляем информационное сообщение клиенту API
-
-				continue
-			}
-
-			switch commonMsgReq.Section {
-			case "handling stix object":
-				err := requesthandlers.UnmarshalJSONObjectSTIXReq(*commonMsgReq)
-				if err != nil {
-					//здесь отправляем информационное сообщение клиенту API
-
-					continue
-				}
-
-			case "handling search requests":
-
-			case "":
-
-			}
+			go routingflowsmoduleapirequestprocessing.HandlerAssigmentsModuleAPIRequestProcessing(chanSaveLog, &data, clim)
 		}
 	}
 }

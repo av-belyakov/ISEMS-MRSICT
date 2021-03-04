@@ -9,7 +9,7 @@ import (
 /*** методы относящиеся к хранилищу модуля moduleLoggingInformationOrErrors ***/
 
 //SetChanModuleLoggingInformationOrError при инициализации приложения сохраняет канал доступа к модулю moduleLoggingInformationOrErrors
-func (stmc *StorageTemporaryMemoryCommonType) SetChanModuleLoggingInformationOrError(logMessage chan modulelogginginformationerrors.LogMessageType) {
+func (stmc *StorageTemporaryMemoryCommonType) SetChanModuleLoggingInformationOrError(logMessage chan<- modulelogginginformationerrors.LogMessageType) {
 	fmt.Println("func 'SetChanModuleLoggingInformationOrError', START...")
 
 	chanRes := make(chan parametersResponseModuleLoggingInformationOrErrors)
@@ -34,7 +34,7 @@ func (stmc *StorageTemporaryMemoryCommonType) SetChanModuleLoggingInformationOrE
 }
 
 //GetChanModuleLoggingInformationOrError при инициализации приложения возвращает канал доступа к модулю moduleLoggingInformationOrErrors
-func (stmc *StorageTemporaryMemoryCommonType) GetChanModuleLoggingInformationOrError() (logMessage chan modulelogginginformationerrors.LogMessageType) {
+func (stmc *StorageTemporaryMemoryCommonType) GetChanModuleLoggingInformationOrError() (logMessage chan<- modulelogginginformationerrors.LogMessageType) {
 	fmt.Println("func 'GetChanModuleLoggingInformationOrError', START...")
 
 	chanRes := make(chan parametersResponseModuleLoggingInformationOrErrors)

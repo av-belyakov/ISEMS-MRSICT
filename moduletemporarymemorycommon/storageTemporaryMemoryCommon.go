@@ -17,7 +17,7 @@ type StorageTemporaryMemoryCommonType struct {
 //StorageModuleLoggingInformationOrErrors хранилище модуля ModuleLoggingInformationOrErrors
 // chanLogMessage - канал для взаимодействия с модулем ModuleLoggingInformationOrErrors
 type StorageModuleLoggingInformationOrErrors struct {
-	chanLogMessage chan modulelogginginformationerrors.LogMessageType
+	chanLogMessage chan<- modulelogginginformationerrors.LogMessageType
 }
 
 //channelStorageTemporaryMemoryCommonRequest канал для передачи запросов, управляющих хранилищем временной информации
@@ -53,7 +53,7 @@ type channelStorageTemporaryMemoryCommonResponse struct {
 }
 
 type parametersResponseModuleLoggingInformationOrErrors struct {
-	chanLogMessage chan modulelogginginformationerrors.LogMessageType
+	chanLogMessage chan<- modulelogginginformationerrors.LogMessageType
 }
 
 //NewStorageTemporaryMemoryCommon создание нового репозитория для хранения общей информации, необходимой для работы приложения

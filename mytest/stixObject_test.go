@@ -8,6 +8,8 @@ import (
 	"ISEMS-MRSICT/commonlibs"
 	"ISEMS-MRSICT/datamodels"
 
+	"github.com/google/uuid"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -173,6 +175,16 @@ var _ = Describe("StixObject", func() {
 			}*/
 
 			Expect(true).Should(BeTrue())
+		})
+	})
+
+	Context("Тест 2. Генерация UUID", func() {
+		It("Должен быть получен UUID, ошибки быть не должно", func() {
+			uuid := uuid.NewString()
+
+			fmt.Printf("========================= UUID '%v'\n", uuid)
+
+			Expect(nil).ShouldNot(HaveOccurred())
 		})
 	})
 

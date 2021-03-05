@@ -86,7 +86,7 @@ func MainHandlerAPIReguestProcessing(
 	//маршрутизатор ответов поступающих от Ядра приложения
 	go func() {
 		for msg := range cmapirp.InputModule {
-			if msg.ModuleGeneratorMessage != "module core application" || msg.ModuleReceiverMessage != "module api request processing" {
+			if msg.ModuleReceiverMessage != "module api request processing" {
 				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 					Description: "the name of the source module or the destination module does not correspond to certain values",
 					FuncName:    funcName,

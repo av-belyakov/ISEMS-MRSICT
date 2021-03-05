@@ -7,28 +7,35 @@ import (
 	"ISEMS-MRSICT/datamodels"
 )
 
-//CriticalErrorMessageType  тип содержащий описание сообщения, информирующего о возникновении критической ошибки
+//ErrorMessageType  тип содержащий описание сообщения, информирующего о возникновении критической ошибки
+// ClientID - идентификатор клиента moduleapirequestprocessing
 // TaskID - ID задачи
 // Section - секция, в которой возникла ошибка
 // Error - ошибка
-type CriticalErrorMessageType struct {
-	TaskID  string
-	Section string
-	Error   error
+type ErrorMessageType struct {
+	ClientID string
+	TaskID   string
+	Section  string
+	Error    error
+	C        chan<- datamodels.ModuleReguestProcessingChannel
 }
 
-//CreateCriticalErrorMessageJSON формирует информационное сообщение в формате JSON о возникшей критической ошибке
-func CreateCriticalErrorMessageJSON(cem *CriticalErrorMessageType) (*[]byte, error) {
-	msg, err := json.Marshal(datamodels.ModAPIRequestProcessingResJSON{
-		MessageType: datamodels.ModAPIRequestProcessingResJSONMessageType{
-			CriticalError:       true,
-			TaskExecutionResult: false,
-			DataTransfer:        false,
-		},
-		DetailedInformation: datamodels.ModAPIRequestProcessingResJSONCriticalError{
-			Description: fmt.Sprint(cem.Error),
-		},
-	})
+//SendCriticalErrorMessageJSON формирует информационное сообщение в формате JSON о возникшей критической ошибке
+func SendCriticalErrorMessageJSON(cem *ErrorMessageType) error {
+	msg, err := json.Marshal(datamodels.ModAPIRequestProcessingResJSON{Description: fmt.Sprint(cem.Error)})
+	if err != nil {
+		return err
+	}
 
-	return &msg, err
+	cem.C <- datamodels.ModuleReguestProcessingChannel{
+		CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+			ModuleGeneratorMessage: "module core application",
+			ModuleReceiverMessage:  "module api request processing",
+		},
+		ClientID: cem.ClientID,
+		DataType: 1,
+		Data:     &msg,
+	}
+
+	return nil
 }

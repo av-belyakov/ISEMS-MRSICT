@@ -4,19 +4,21 @@ import (
 	"fmt"
 
 	"ISEMS-MRSICT/datamodels"
+	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
 	"ISEMS-MRSICT/moduleapirequestprocessing"
 	moddatamodels "ISEMS-MRSICT/modulecoreapplication/datamodels"
 	"ISEMS-MRSICT/moduledatabaseinteraction"
 	"ISEMS-MRSICT/modulelogginginformationerrors"
-	"ISEMS-MRSICT/moduletemporarymemorycommon"
 )
 
 var clim moddatamodels.ChannelsListInteractingModules
-var stmc *moduletemporarymemorycommon.StorageTemporaryMemoryCommonType
+var tst *memorytemporarystoragecommoninformation.TemporaryStorageType
 
 func init() {
 	clim = moddatamodels.ChannelsListInteractingModules{}
-	stmc = moduletemporarymemorycommon.NewStorageTemporaryMemoryCommon()
+
+	//инициализируем временное хранилище
+	tst = memorytemporarystoragecommoninformation.NewTemporaryStorage()
 }
 
 //MainHandlerCoreApplication основной обработчик ядра приложения
@@ -25,11 +27,8 @@ func MainHandlerCoreApplication(chanSaveLog chan<- modulelogginginformationerror
 
 	fmt.Println("func 'MainHandlerCoreApplication', START...")
 
-	//добавляем доступ к методам модуля ModuleLoggingInformationOrErrors
-	stmc.SetChanModuleLoggingInformationOrError(chanSaveLog)
-
 	//инициализируем модули взаимодействия с БД
-	cdbi, err := moduledatabaseinteraction.MainHandlerDataBaseInteraction(&appConfig.ConnectionsDataBase)
+	cdbi, err := moduledatabaseinteraction.MainHandlerDataBaseInteraction(&appConfig.ConnectionsDataBase, tst)
 	if err != nil {
 		chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 			TypeMessage: "error",
@@ -53,5 +52,5 @@ func MainHandlerCoreApplication(chanSaveLog chan<- modulelogginginformationerror
 		FuncName:    funcName,
 	}
 
-	RoutingCoreApp(chanSaveLog, appConfig, &clim)
+	RoutingCoreApp(chanSaveLog, appConfig, tst, &clim)
 }

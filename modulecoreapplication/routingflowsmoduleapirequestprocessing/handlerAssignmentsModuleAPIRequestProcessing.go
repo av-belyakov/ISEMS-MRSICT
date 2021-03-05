@@ -6,6 +6,7 @@ import (
 
 	"ISEMS-MRSICT/commonlibs"
 	"ISEMS-MRSICT/datamodels"
+	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
 	"ISEMS-MRSICT/moduleapirequestprocessing/auxiliaryfunctions"
 	moddatamodels "ISEMS-MRSICT/modulecoreapplication/datamodels"
 	"ISEMS-MRSICT/modulelogginginformationerrors"
@@ -15,20 +16,22 @@ import (
 func HandlerAssigmentsModuleAPIRequestProcessing(
 	chanSaveLog chan<- modulelogginginformationerrors.LogMessageType,
 	data *datamodels.ModuleReguestProcessingChannel,
+	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
 	clim *moddatamodels.ChannelsListInteractingModules) {
 
 	commonMsgReq, err := unmarshalJSONCommonReq(data.Data)
 	if err != nil {
-		//запись информации в лог-файл
 		chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 			TypeMessage: "error",
 			Description: fmt.Sprint(err),
 			FuncName:    "unmarshalJSONCommonReq",
 		}
 
-		em, e := auxiliaryfunctions.CreateCriticalErrorMessageJSON(&auxiliaryfunctions.CriticalErrorMessageType{Error: err})
-		if e != nil {
-			//запись информации в лог-файл
+		if err := auxiliaryfunctions.SendCriticalErrorMessageJSON(&auxiliaryfunctions.ErrorMessageType{
+			ClientID: data.ClientID,
+			Error:    fmt.Errorf("Error: error when decoding a JSON document"),
+			C:        clim.ChannelsModuleAPIRequestProcessing.InputModule,
+		}); err != nil {
 			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 				TypeMessage: "error",
 				Description: fmt.Sprint(err),
@@ -38,39 +41,25 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 			return
 		}
 
-		//здесь отправляем информационное сообщение через канал клиенту API
-		clim.ChannelsModuleAPIRequestProcessing.InputModule <- datamodels.ModuleReguestProcessingChannel{
-			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
-				ModuleGeneratorMessage: "module core application",
-				ModuleReceiverMessage:  "module api request processing",
-			},
-			ClientID: data.ClientID,
-			DataType: 1,
-			Data:     em,
-		}
-
 		return
 	}
 
 	switch commonMsgReq.Section {
 	case "handling stix object":
-		l, ok, err := unmarshalJSONObjectSTIXReq(*commonMsgReq)
+		l, success, err := unmarshalJSONObjectSTIXReq(*commonMsgReq)
 		//если полностью не возможно декодировать список STIX объектов
 		if err != nil {
-			//запись информации в лог-файл
 			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 				TypeMessage: "error",
 				Description: fmt.Sprint(err),
-				FuncName:    "unmarshalJSONCommonReq",
+				FuncName:    "unmarshalJSONObjectSTIXReq",
 			}
 
-			em, e := auxiliaryfunctions.CreateCriticalErrorMessageJSON(&auxiliaryfunctions.CriticalErrorMessageType{
-				TaskID:  commonMsgReq.TaskID,
-				Section: commonMsgReq.Section,
-				Error:   err,
-			})
-			if e != nil {
-				//запись информации в лог-файл
+			if err := auxiliaryfunctions.SendCriticalErrorMessageJSON(&auxiliaryfunctions.ErrorMessageType{
+				ClientID: data.ClientID,
+				Error:    fmt.Errorf("Error: error when decoding a JSON document. Section: '%v'", commonMsgReq.Section),
+				C:        clim.ChannelsModuleAPIRequestProcessing.InputModule,
+			}); err != nil {
 				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 					TypeMessage: "error",
 					Description: fmt.Sprint(err),
@@ -80,29 +69,50 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 				return
 			}
 
-			//здесь отправляем информационное сообщение через канал клиенту API
-			clim.ChannelsModuleAPIRequestProcessing.InputModule <- datamodels.ModuleReguestProcessingChannel{
-				CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
-					ModuleGeneratorMessage: "module core application",
-					ModuleReceiverMessage:  "module api request processing",
-				},
+			return
+		}
+
+		if success.Unsuccess != 0 {
+			errStr := fmt.Sprintf("Error: error when decoding a JSON document, only %d out of %d elements of the document were successfully decoded. Section: '%s'", (success.All - success.Unsuccess), success.All, commonMsgReq.Section)
+			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+				TypeMessage: "error",
+				Description: errStr,
+				FuncName:    "unmarshalJSONObjectSTIXReq",
+			}
+
+			if err := auxiliaryfunctions.SendCriticalErrorMessageJSON(&auxiliaryfunctions.ErrorMessageType{
 				ClientID: data.ClientID,
-				DataType: 1,
-				Data:     em,
+				Error:    fmt.Errorf(errStr),
+				C:        clim.ChannelsModuleAPIRequestProcessing.InputModule,
+			}); err != nil {
+				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+					TypeMessage: "error",
+					Description: fmt.Sprint(err),
+					FuncName:    "unmarshalJSONObjectSTIXReq",
+				}
+
+				return
 			}
 
 			return
 		}
 
-		if !ok {
-			//не все stix объекты были успешно декодированны
-			//отправляем сообщение с флагом PartiallySuccessful true
-		}
+		fmt.Println(success.All)
+		fmt.Println(success.Unsuccess)
 
 		//выполняем дальнейшую обработку
 		//зоздаем внутренний task ID приложения
 		//добавляем информацию о задаче в хранилище задач
+		appTaskID, err := tst.AddNewTask()
+		if err != nil {
+			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+				TypeMessage: "error",
+				Description: fmt.Sprint(err),
+				FuncName:    "unmarshalJSONObjectSTIXReq",
+			}
+		}
 		fmt.Println(l)
+		fmt.Printf("Application task ID: '%s'\n", appTaskID)
 
 	case "handling search requests":
 
@@ -120,28 +130,27 @@ func unmarshalJSONCommonReq(msgReq *[]byte) (*datamodels.ModAPIRequestProcessing
 }
 
 //unmarshalJSONObjectSTIXReq декодирует JSON документ, поступающий от модуля 'moduleapirequestprocessing', который содержит список объектов STIX
-func unmarshalJSONObjectSTIXReq(msgReq datamodels.ModAPIRequestProcessingReqJSON) ([]*datamodels.ListSTIXObject, bool, error) {
+func unmarshalJSONObjectSTIXReq(msgReq datamodels.ModAPIRequestProcessingReqJSON) ([]*datamodels.ListSTIXObject, struct{ All, Unsuccess int }, error) {
 	var (
-		isFail                             bool
-		listResults                        []*datamodels.ListSTIXObject
-		listSTIXObjectJSON                 datamodels.ModAPIRequestProcessingReqHandlingSTIXObjectJSON
-		commonPropertiesObjectSTIX         datamodels.CommonPropertiesObjectSTIX
-		numberSuccessfullyProcessedObjects int
+		listResults                []*datamodels.ListSTIXObject
+		listSTIXObjectJSON         datamodels.ModAPIRequestProcessingReqHandlingSTIXObjectJSON
+		commonPropertiesObjectSTIX datamodels.CommonPropertiesObjectSTIX
+		numberUnsuccessfullyProc   int
 	)
 
 	if err := json.Unmarshal(*msgReq.RequestDetails, &listSTIXObjectJSON); err != nil {
-		return nil, isFail, err
+		return nil, struct{ All, Unsuccess int }{0, 0}, err
 	}
 
 	for _, item := range listSTIXObjectJSON {
 		err := json.Unmarshal(*item, &commonPropertiesObjectSTIX)
 		if err != nil {
-			numberSuccessfullyProcessedObjects++
+			numberUnsuccessfullyProc++
 		}
 
 		r, t, err := commonlibs.DecoderFromJSONToSTIXObject(commonPropertiesObjectSTIX.Type, item)
 		if err != nil {
-			numberSuccessfullyProcessedObjects++
+			numberUnsuccessfullyProc++
 		}
 
 		listResults = append(listResults, &datamodels.ListSTIXObject{
@@ -150,9 +159,5 @@ func unmarshalJSONObjectSTIXReq(msgReq datamodels.ModAPIRequestProcessingReqJSON
 		})
 	}
 
-	if len(listSTIXObjectJSON) == numberSuccessfullyProcessedObjects {
-		isFail = true
-	}
-
-	return listResults, isFail, nil
+	return listResults, struct{ All, Unsuccess int }{len(listSTIXObjectJSON), numberUnsuccessfullyProc}, nil
 }

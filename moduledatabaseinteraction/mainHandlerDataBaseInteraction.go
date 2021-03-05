@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"ISEMS-MRSICT/datamodels"
+	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
 	"ISEMS-MRSICT/moduledatabaseinteraction/interactionmongodb"
 )
 
@@ -19,7 +20,7 @@ func init() {
 }
 
 //MainHandlerDataBaseInteraction модуль инициализации обработчиков для взаимодействия с базами данных
-func MainHandlerDataBaseInteraction(cdb *datamodels.ConnectionsDataBase) (ChannelsModuleDataBaseInteraction, error) {
+func MainHandlerDataBaseInteraction(cdb *datamodels.ConnectionsDataBase, tst *memorytemporarystoragecommoninformation.TemporaryStorageType) (ChannelsModuleDataBaseInteraction, error) {
 	fmt.Println("func 'MainHandlerDataBaseInteraction', START...")
 
 	//инициализируем модуль для взаимодействия с БД MongoDB

@@ -43,7 +43,7 @@ func MainHandlerCoreApplication(chanSaveLog chan<- modulelogginginformationerror
 	clim.ChannelsModuleDataBaseInteraction = cdbi
 
 	//инициализируем модуль обработки запросов с внешних источников
-	capirp := moduleapirequestprocessing.MainHandlerAPIReguestProcessing(stmc, &appConfig.ModuleAPIRequestProcessingSettings, &appConfig.CryptographySettings)
+	capirp := moduleapirequestprocessing.MainHandlerAPIReguestProcessing(chanSaveLog, &appConfig.ModuleAPIRequestProcessingSettings, &appConfig.CryptographySettings)
 	clim.ChannelsModuleAPIRequestProcessing = capirp
 
 	chanSaveLog <- modulelogginginformationerrors.LogMessageType{

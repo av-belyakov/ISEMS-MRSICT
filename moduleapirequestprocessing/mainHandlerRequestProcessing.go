@@ -15,7 +15,7 @@ import (
 	"ISEMS-MRSICT/datamodels"
 	"ISEMS-MRSICT/moduleapirequestprocessing/temporarystorage"
 	"ISEMS-MRSICT/modulelogginginformationerrors"
-	"ISEMS-MRSICT/moduletemporarymemorycommon"
+	//"ISEMS-MRSICT/moduletemporarymemorycommon"
 )
 
 //ChannelsModuleAPIRequestProcessing описание каналов передачи данных между ядром приложения и модулем обрабатывающем запросы с внешних источников
@@ -43,7 +43,7 @@ func init() {
 
 //MainHandlerAPIReguestProcessing модуль инициализации обработчика запросов с внешних источников
 func MainHandlerAPIReguestProcessing(
-	stmc *moduletemporarymemorycommon.StorageTemporaryMemoryCommonType,
+	chanSaveLog chan<- modulelogginginformationerrors.LogMessageType,
 	//chanSaveLog chan<- modulelogginginformationerrors.LogMessageType,
 	mcs *datamodels.ModuleAPIRequestProcessingSetting,
 	criptoSet *datamodels.CryptographySettings) ChannelsModuleAPIRequestProcessing {
@@ -52,8 +52,6 @@ func MainHandlerAPIReguestProcessing(
 
 	fmt.Println("func 'MainHandlerReguestProcessing', START...")
 	fmt.Printf("func 'MainHandlerReguestProcessing', module connection settings: '%v'\n", mcs)
-
-	chanSaveLog := stmc.GetChanModuleLoggingInformationOrError()
 
 	ssapi := settingsServerAPI{
 		host:        mcs.Host,

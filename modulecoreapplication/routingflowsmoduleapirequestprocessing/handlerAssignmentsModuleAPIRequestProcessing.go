@@ -103,7 +103,16 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 		//выполняем дальнейшую обработку
 		//зоздаем внутренний task ID приложения
 		//добавляем информацию о задаче в хранилище задач
-		appTaskID, err := tst.AddNewTask()
+		appTaskID, err := tst.AddNewTask(&memorytemporarystoragecommoninformation.TemporaryStorageTaskType{
+			TaskGenerator:        data.ModuleGeneratorMessage,
+			ClientID:             data.ClientID,
+			ClientName:           data.ClientName,
+			ClientTaskID:         commonMsgReq.TaskID,
+			AdditionalClientName: commonMsgReq.UserNameGeneratedTask,
+			Section:              commonMsgReq.Section,
+			Command:              "", //в случае с объектами STIX команда не указывается (автоматически подразумевается добавление или обновление объектов STIX)
+			TaskParameters:       commonMsgReq.RequestDetails,
+		})
 		if err != nil {
 			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 				TypeMessage: "error",

@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"ISEMS-MRSICT/datamodels"
+	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
 	"ISEMS-MRSICT/moduleapirequestprocessing/auxiliaryfunctions"
 	moddatamodels "ISEMS-MRSICT/modulecoreapplication/datamodels"
 	"ISEMS-MRSICT/modulecoreapplication/routingflowsmoduleapirequestprocessing"
@@ -15,6 +16,7 @@ import (
 func RoutingCoreApp(
 	chanSaveLog chan<- modulelogginginformationerrors.LogMessageType,
 	appConfig *datamodels.AppConfig,
+	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
 	clim *moddatamodels.ChannelsListInteractingModules) {
 
 	log.Printf("Start application ISEMS-MRSICT, version '%q'\n", appConfig.VersionApp)
@@ -69,7 +71,7 @@ func RoutingCoreApp(
 		case data := <-clim.ChannelsModuleAPIRequestProcessing.OutputModule:
 			fmt.Printf("func 'Routing', Input data from 'moduleAPIRequestProcessing'. Reseived data: '%v'\n", data)
 
-			go routingflowsmoduleapirequestprocessing.HandlerAssigmentsModuleAPIRequestProcessing(chanSaveLog, &data, clim)
+			go routingflowsmoduleapirequestprocessing.HandlerAssigmentsModuleAPIRequestProcessing(chanSaveLog, &data, tst, clim)
 
 		}
 	}

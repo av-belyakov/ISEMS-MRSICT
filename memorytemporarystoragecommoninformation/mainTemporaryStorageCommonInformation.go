@@ -125,12 +125,7 @@ func NewTemporaryStorage() *TemporaryStorageType {
 	}
 
 	go func() {
-		var num int
 		for {
-
-			fmt.Printf("Num: %d\n", num)
-			num++
-
 			select {
 			case msg := <-chanReqTask:
 				switch msg.actionType {

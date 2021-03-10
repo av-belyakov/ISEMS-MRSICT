@@ -4,6 +4,6 @@ import (
 	"fmt"
 )
 
-func mainHandlerInternalTimer() {
+func mainHandlerModuleScheduler() {
 	fmt.Println("func 'mainHandlerInternalTimer', START...")
 }

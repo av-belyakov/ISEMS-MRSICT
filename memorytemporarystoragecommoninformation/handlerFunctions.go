@@ -9,8 +9,6 @@ import (
 
 //addNewTask добавляет новую задачу в хранилище задач
 func (tst *TemporaryStorageType) addNewTask(appTaskID string, taskInfo *TemporaryStorageTaskType) error {
-	fmt.Println("addNewTask добавляет новую задачу в хранилище задач")
-
 	if ok := tst.taskIsExist(appTaskID); ok {
 		return fmt.Errorf("the task with the ID '%s' already exists in the repository 'taskStorage'", appTaskID)
 	}
@@ -37,8 +35,6 @@ func (tst *TemporaryStorageType) addNewTask(appTaskID string, taskInfo *Temporar
 
 //getOneTask возвращает информацию об одной задаче найденной по её ID
 func (tst *TemporaryStorageType) getTaskByID(appTaskID string) (*TemporaryStorageTaskInDetailType, error) {
-	fmt.Println("getOneTask возвращает информацию об одной задаче найденной по её ID")
-
 	if ok := tst.taskIsExist(appTaskID); !ok {
 		return nil, fmt.Errorf("no tasks with an ID '%s' were found in the repository 'taskStorage'", appTaskID)
 	}

@@ -1,6 +1,9 @@
 package memorytemporarystoragecommoninformation
 
 import (
+	"fmt"
+	"time"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -10,6 +13,7 @@ var _ = Describe("MainTemporaryStorageCommonInformation", func() {
 		var (
 			appTaskIDOne    string
 			errorAddTaskOne error
+			dateTime        time.Time
 		)
 		tempStorage := NewTemporaryStorage()
 
@@ -43,6 +47,9 @@ var _ = Describe("MainTemporaryStorageCommonInformation", func() {
 				Command:        "create",
 				TaskParameters: 4100,
 			})
+
+			_, taskInfo, _ := tempStorage.GetTaskByID(appTaskIDOne)
+			dateTime = taskInfo.DateTaskModification
 		})
 
 		Context("Тест 1. Проверяем наличие задач", func() {
@@ -70,9 +77,14 @@ var _ = Describe("MainTemporaryStorageCommonInformation", func() {
 
 		Context("Тест 2. Проверяем возможность управления задачами", func() {
 			It("Должна быть успешная модификация статуса задачи", func(done Done) {
-				err := tempStorage.ChangeTaskStatus(appTaskIDOne, "ex")
+				err := tempStorage.ChangeTaskStatus(appTaskIDOne, "in progress")
 
 				Expect(err).ShouldNot(HaveOccurred())
+
+				_, taskInfo, err := tempStorage.GetTaskByID(appTaskIDOne)
+
+				Expect(err).ShouldNot(HaveOccurred())
+				Expect(taskInfo.TaskStatus).To(Equal("in progress"))
 
 				close(done)
 			})
@@ -88,7 +100,30 @@ var _ = Describe("MainTemporaryStorageCommonInformation", func() {
 
 				close(done)
 			})
-			It("Должно успешно изменятся время модификации информации о задачи", func() {
+
+			Context("Тест 2.1. Проверяем время модификации задачи", func() {
+				It("Время модификации задачи полученной ранее и текущей должно отличаться", func() {
+					err := tempStorage.ChangeDateTaskModification(appTaskIDOne)
+
+					Expect(err).ShouldNot(HaveOccurred())
+
+					_, taskInfo, err := tempStorage.GetTaskByID(appTaskIDOne)
+
+					fmt.Printf("date time defore: '%v', after: '%v'\n", dateTime, taskInfo.DateTaskModification)
+
+					Expect(err).ShouldNot(HaveOccurred())
+					Expect(taskInfo.DateTaskModification).ShouldNot(Equal(dateTime))
+				})
+			})
+		})
+
+		Context("Тест 3. Удаление задачи по заданному ID приложения", func() {
+			It("После удаления задачи по ее ID, задачи с таким ID найдено быть не должно", func() {
+				tempStorage.DeletingTaskByID(appTaskIDOne)
+
+				_, _, err := tempStorage.GetTaskByID(appTaskIDOne)
+
+				Expect(err).Should(HaveOccurred())
 			})
 		})
 	})

@@ -2,15 +2,12 @@ package memorytemporarystoragecommoninformation
 
 import (
 	"fmt"
-	"sort"
 )
 
 /*** МЕТОДЫ ОТНОСЯЩИЕСЯ К ХРАНИЛИЩУ ЗАДАЧ ***/
 
 //AddNewTask метод добавляющий новую задачу в хранилище задач
 func (tst *TemporaryStorageType) AddNewTask(taskInfo *TemporaryStorageTaskType) (string, error) {
-	fmt.Println("func 'AddNewTask', START...")
-
 	chanRes := make(chan channelResponseTaskStorage)
 	defer func() {
 		close(chanRes)
@@ -28,8 +25,6 @@ func (tst *TemporaryStorageType) AddNewTask(taskInfo *TemporaryStorageTaskType) 
 
 //GetTaskByID метод возвращающий всю информацию о задаче, по ее ID
 func (tst *TemporaryStorageType) GetTaskByID(appTaskID string) (string, *TemporaryStorageTaskInDetailType, error) {
-	fmt.Println("func 'GetTaskByID', START...")
-
 	chanRes := make(chan channelResponseTaskStorage)
 	defer func() {
 		close(chanRes)
@@ -42,15 +37,11 @@ func (tst *TemporaryStorageType) GetTaskByID(appTaskID string) (string, *Tempora
 	}
 	result := <-chanRes
 
-	fmt.Println("func 'GetTaskByID', END")
-
 	return appTaskID, result.detailedDescriptionTask, result.errMsg
 }
 
 //GetTasksByClientID метод возвращающий список задач принадлежащих клиенту с определенным ID
 func (tst *TemporaryStorageType) GetTasksByClientID(clientID string) []string {
-	fmt.Println("func 'GetTasksByClientID', START...")
-
 	chanRes := make(chan channelResponseTaskStorage)
 	defer func() {
 		close(chanRes)
@@ -67,8 +58,6 @@ func (tst *TemporaryStorageType) GetTasksByClientID(clientID string) []string {
 
 //ChangeRemovalRequiredParameter метод устанавливает параметр RemovalRequired в TRUE
 func (tst *TemporaryStorageType) ChangeRemovalRequiredParameter(appTaskID string) error {
-	fmt.Println("func 'ChangeRemovalRequiredParameter', START...")
-
 	chanRes := make(chan channelResponseTaskStorage)
 	defer func() {
 		close(chanRes)
@@ -87,8 +76,6 @@ func (tst *TemporaryStorageType) ChangeRemovalRequiredParameter(appTaskID string
 
 //ChangeDateTaskModification метод меняющий время модификации задачи
 func (tst *TemporaryStorageType) ChangeDateTaskModification(appTaskID string) error {
-	fmt.Println("func 'ChangeDateTaskModification', START...")
-
 	chanRes := make(chan channelResponseTaskStorage)
 	defer func() {
 		close(chanRes)
@@ -107,11 +94,17 @@ func (tst *TemporaryStorageType) ChangeDateTaskModification(appTaskID string) er
 
 //ChangeTaskStatus метод меняющий статус выполнения задачи
 func (tst *TemporaryStorageType) ChangeTaskStatus(appTaskID, taskStatus string) error {
-	fmt.Println("func 'ChangeTaskStatus', START...")
-
+	var isExist bool
 	statuses := []string{"wait", "in progress", "completed"}
-	i := sort.Search(len(statuses), func(i int) bool { return statuses[i] == taskStatus })
-	if i < len(statuses) && statuses[i] != taskStatus {
+	for key := range statuses {
+		if statuses[key] == taskStatus {
+			isExist = true
+
+			break
+		}
+	}
+
+	if !isExist {
 		return fmt.Errorf("the undefined status of the task is accepted")
 	}
 
@@ -134,14 +127,13 @@ func (tst *TemporaryStorageType) ChangeTaskStatus(appTaskID, taskStatus string) 
 
 //DeletingTaskByID удаление задачи по ее ID
 func (tst *TemporaryStorageType) DeletingTaskByID(appTaskID string) {
-	fmt.Println("func 'DeletingTaskByID', START...")
-
 	chanRes := make(chan channelResponseTaskStorage)
 	defer func() {
 		close(chanRes)
 	}()
 
 	tst.chanReqTaskStorage <- channelRequestTaskStorage{
+		actionType:               "deleting task by id",
 		commanChannelTaskStorage: commanChannelTaskStorage{appTaskID: appTaskID},
 		chanRes:                  chanRes,
 	}

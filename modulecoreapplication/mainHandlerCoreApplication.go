@@ -4,37 +4,31 @@ import (
 	"fmt"
 
 	"ISEMS-MRSICT/datamodels"
+	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
 	"ISEMS-MRSICT/moduleapirequestprocessing"
+	moddatamodels "ISEMS-MRSICT/modulecoreapplication/datamodels"
 	"ISEMS-MRSICT/moduledatabaseinteraction"
 	"ISEMS-MRSICT/modulelogginginformationerrors"
-	"ISEMS-MRSICT/moduletemporarymemorycommon"
 )
 
-//ChannelsListInteractingModules содержит список каналов для межмодульного взаимодействия
-type ChannelsListInteractingModules struct {
-	ChannelsModuleDataBaseInteraction  moduledatabaseinteraction.ChannelsModuleDataBaseInteraction
-	ChannelsModuleAPIRequestProcessing moduleapirequestprocessing.ChannelsModuleAPIRequestProcessing
-}
-
-var clim ChannelsListInteractingModules
-var stmc *moduletemporarymemorycommon.StorageTemporaryMemoryCommonType
+var clim moddatamodels.ChannelsListInteractingModules
+var tst *memorytemporarystoragecommoninformation.TemporaryStorageType
 
 func init() {
-	clim = ChannelsListInteractingModules{}
-	stmc = moduletemporarymemorycommon.NewStorageTemporaryMemoryCommon()
+	clim = moddatamodels.ChannelsListInteractingModules{}
+
+	//инициализируем временное хранилище
+	tst = memorytemporarystoragecommoninformation.NewTemporaryStorage()
 }
 
 //MainHandlerCoreApplication основной обработчик ядра приложения
-func MainHandlerCoreApplication(chanSaveLog chan modulelogginginformationerrors.LogMessageType, appConfig *datamodels.AppConfig) {
+func MainHandlerCoreApplication(chanSaveLog chan<- modulelogginginformationerrors.LogMessageType, appConfig *datamodels.AppConfig) {
 	funcName := "MainHandlerCoreApplication"
 
 	fmt.Println("func 'MainHandlerCoreApplication', START...")
 
-	//добавляем доступ к методам модуля ModuleLoggingInformationOrErrors
-	stmc.SetChanModuleLoggingInformationOrError(chanSaveLog)
-
 	//инициализируем модули взаимодействия с БД
-	cdbi, err := moduledatabaseinteraction.MainHandlerDataBaseInteraction(&appConfig.ConnectionsDataBase)
+	cdbi, err := moduledatabaseinteraction.MainHandlerDataBaseInteraction(&appConfig.ConnectionsDataBase, tst)
 	if err != nil {
 		chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 			TypeMessage: "error",
@@ -49,7 +43,7 @@ func MainHandlerCoreApplication(chanSaveLog chan modulelogginginformationerrors.
 	clim.ChannelsModuleDataBaseInteraction = cdbi
 
 	//инициализируем модуль обработки запросов с внешних источников
-	capirp := moduleapirequestprocessing.MainHandlerAPIReguestProcessing(stmc, &appConfig.ModuleAPIRequestProcessingSettings, &appConfig.CryptographySettings)
+	capirp := moduleapirequestprocessing.MainHandlerAPIReguestProcessing(chanSaveLog, &appConfig.ModuleAPIRequestProcessingSettings, &appConfig.CryptographySettings)
 	clim.ChannelsModuleAPIRequestProcessing = capirp
 
 	chanSaveLog <- modulelogginginformationerrors.LogMessageType{
@@ -58,5 +52,5 @@ func MainHandlerCoreApplication(chanSaveLog chan modulelogginginformationerrors.
 		FuncName:    funcName,
 	}
 
-	RoutingCoreApp(appConfig, &clim)
+	RoutingCoreApp(chanSaveLog, appConfig, tst, &clim)
 }

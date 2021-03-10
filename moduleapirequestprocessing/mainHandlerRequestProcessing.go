@@ -15,7 +15,7 @@ import (
 	"ISEMS-MRSICT/datamodels"
 	"ISEMS-MRSICT/moduleapirequestprocessing/temporarystorage"
 	"ISEMS-MRSICT/modulelogginginformationerrors"
-	"ISEMS-MRSICT/moduletemporarymemorycommon"
+	//"ISEMS-MRSICT/moduletemporarymemorycommon"
 )
 
 //ChannelsModuleAPIRequestProcessing описание каналов передачи данных между ядром приложения и модулем обрабатывающем запросы с внешних источников
@@ -43,7 +43,7 @@ func init() {
 
 //MainHandlerAPIReguestProcessing модуль инициализации обработчика запросов с внешних источников
 func MainHandlerAPIReguestProcessing(
-	stmc *moduletemporarymemorycommon.StorageTemporaryMemoryCommonType,
+	chanSaveLog chan<- modulelogginginformationerrors.LogMessageType,
 	//chanSaveLog chan<- modulelogginginformationerrors.LogMessageType,
 	mcs *datamodels.ModuleAPIRequestProcessingSetting,
 	criptoSet *datamodels.CryptographySettings) ChannelsModuleAPIRequestProcessing {
@@ -52,8 +52,6 @@ func MainHandlerAPIReguestProcessing(
 
 	fmt.Println("func 'MainHandlerReguestProcessing', START...")
 	fmt.Printf("func 'MainHandlerReguestProcessing', module connection settings: '%v'\n", mcs)
-
-	chanSaveLog := stmc.GetChanModuleLoggingInformationOrError()
 
 	ssapi := settingsServerAPI{
 		host:        mcs.Host,
@@ -83,10 +81,10 @@ func MainHandlerAPIReguestProcessing(
 		}
 	}()
 
-	//маршрутизатор ответов изнутри приложения
+	//маршрутизатор ответов поступающих от Ядра приложения
 	go func() {
 		for msg := range cmapirp.InputModule {
-			if msg.ModuleGeneratorMessage != "module core application" || msg.ModuleReceiverMessage != "module api request processing" {
+			if msg.ModuleReceiverMessage != "module api request processing" {
 				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 					Description: "the name of the source module or the destination module does not correspond to certain values",
 					FuncName:    funcName,
@@ -288,12 +286,14 @@ func (settingsServerAPI *settingsServerAPI) serverWss(w http.ResponseWriter, req
 			}
 
 			mrpc := datamodels.ModuleReguestProcessingChannel{
+				CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+					ModuleGeneratorMessage: "module api request processing",
+					ModuleReceiverMessage:  "module core application",
+				},
 				ClientID:   clientID,
 				ClientName: cp.ClientName,
 				Data:       &msg,
 			}
-			mrpc.ModuleGeneratorMessage = "module api request processing"
-			mrpc.ModuleReceiverMessage = "module core application"
 
 			cmapirp.OutputModule <- mrpc
 		}

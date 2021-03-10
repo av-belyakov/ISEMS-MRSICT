@@ -19,7 +19,7 @@ type ExternalReferencesTypeSTIX []*ExternalReferenceTypeElementSTIX
 // Hashes - содержит словарь хэшей для содержимого URL-адреса. Это ДОЛЖНО быть предусмотрено при наличии свойства url
 // ExternalID - идентификатор на внешних источниках
 type ExternalReferenceTypeElementSTIX struct {
-	SourceName  string         `json:"source_name" bson:"source_name"`
+	SourceName  string         `json:"source_name" bson:"source_name" required:"true"`
 	Description string         `json:"description" bson:"description"`
 	URL         string         `json:"url" bson:"url"`
 	Hashes      HashesTypeSTIX `json:"hashes" bson:"hashes"`
@@ -40,8 +40,8 @@ type KillChainPhasesTypeSTIX []*KillChainPhasesTypeElementSTIX
 // KillChainName - имя цепочки (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // PhaseName - наименование фазы из спецификации STIX, например, "reconnaissance", "pre-attack" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 type KillChainPhasesTypeElementSTIX struct {
-	KillChainName string `json:"kill_chain_name" bson:"kill_chain_name"`
-	PhaseName     string `json:"phase_name" bson:"phase_name"`
+	KillChainName string `json:"kill_chain_name" bson:"kill_chain_name" required:"true"`
+	PhaseName     string `json:"phase_name" bson:"phase_name" required:"true"`
 }
 
 //OpenVocabTypeSTIX тип "open-vocab", по терминалогии STIX, содержащий заранее определенное (предложенное) значение
@@ -70,14 +70,14 @@ type OpenVocabTypeSTIX string
 // ObjectMarkingRefs - определяет список ID ссылающиеся на объект "marking-definition", по терминалогии STIX, в котором содержатся значения применяющиеся к этому объекту
 // GranularMarkings - определяет список "гранулярных меток" (granular_markings) относящихся к этому объекту
 type LanguageContentTypeSTIX struct {
-	Type               string                     `json:"type" bson:"type"`
-	ID                 string                     `json:"id" bson:"id"`
-	SpecVersion        string                     `json:"spec_version" bson:"spec_version"`
-	Created            time.Time                  `json:"created" bson:"created"`
-	Modified           time.Time                  `json:"modified" bson:"modified"`
-	ObjectRef          IdentifierTypeSTIX         `json:"object_ref" bson:"object_ref"`
+	Type               string                     `json:"type" bson:"type" required:"true"`
+	ID                 string                     `json:"id" bson:"id" required:"true"`
+	SpecVersion        string                     `json:"spec_version" bson:"spec_version" required:"true"`
+	Created            time.Time                  `json:"created" bson:"created" required:"true"`
+	Modified           time.Time                  `json:"modified" bson:"modified" required:"true"`
+	ObjectRef          IdentifierTypeSTIX         `json:"object_ref" bson:"object_ref" required:"true"`
 	ObjectModified     time.Time                  `json:"object_modified" bson:"object_modified"`
-	Contents           map[string]string          `json:"contents" bson:"contents"`
+	Contents           map[string]string          `json:"contents" bson:"contents" required:"true"`
 	CreatedByRef       IdentifierTypeSTIX         `json:"created_by_ref" bson:"created_by_ref"`
 	Revoked            bool                       `json:"revoked" bson:"revoked"`
 	Labels             []string                   `json:"labels" bson:"labels"`
@@ -94,9 +94,9 @@ type LanguageContentTypeSTIX struct {
 // ID - уникальный идентификатор объекта (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // Created - время создания объекта, в формате "2016-05-12T08:17:27.000Z" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 type CommonDataMarkingsTypeSTIX struct {
-	SpecVersion string    `json:"spec_version" bson:"spec_version"`
-	ID          string    `json:"id" bson:"id"`
-	Created     time.Time `json:"created" bson:"created"`
+	SpecVersion string    `json:"spec_version" bson:"spec_version" required:"true"`
+	ID          string    `json:"id" bson:"id" required:"true"`
+	Created     time.Time `json:"created" bson:"created" required:"true"`
 }
 
 //GranularMarkingsTypeSTIX тип "granular_markings", по терминалогии STIX, представляет собой набор маркеров ссылающихся на свойства "marking_ref" и "lang"
@@ -123,7 +123,7 @@ type GranularMarkingsTypeSTIX struct {
 // GranularMarkings - определяет список "гранулярных меток" (granular_markings) относящихся к этому объекту
 type MarkingDefinitionObjectSTIX struct {
 	CommonDataMarkingsTypeSTIX
-	Type               string                     `json:"type" bson:"type"`
+	Type               string                     `json:"type" bson:"type" required:"true"`
 	Name               string                     `json:"name" bson:"name"`
 	DefinitionType     string                     `json:"definition_type" bson:"definition_type"`
 	Definition         map[string]string          `json:"definition" bson:"definition"`
@@ -141,7 +141,115 @@ type MarkingDefinitionObjectSTIX struct {
 // ID - уникальный идентификатор объекта (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // Objects - содержит список любых STIX объектов
 type BundleObjectSTIX struct {
-	Type    string        `json:"" bson:""`
-	ID      string        `json:"" bson:""`
+	Type    string        `json:"type" bson:"type" required:"true"`
+	ID      string        `json:"id" bson:"id" required:"true"`
 	Objects []interface{} `json:"objects" bson:"objects"`
+}
+
+/********** 			Свойства общие, для всех объектов STIX 			**********/
+
+//CommonPropertiesObjectSTIX свойства общие, для всех объектов STIX
+// Type - наименование типа шаблона (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+//  Type должен содержать одно из следующих значений:
+//  1. Для Domain Objects STIX
+// - "attack-pattern"
+// - "campaign"
+// - "course-of-action"
+// - "grouping"
+// - "identity"
+// - "indicator"
+// - "infrastructure"
+// - "intrusion-set"
+// - "location"
+// - "malware"
+// - "malware-analysis"
+// - "note"
+// - "observed-data"
+// - "opinion"
+// - "report"
+// - "threat-actor"
+// - "tool"
+// - "vulnerability"
+//  2. Для Relationship Objects STIX
+// - "relationship"
+// - "sighting"
+//  3. Для Cyber-observable Objects STIX
+// - "artifact"
+// - "autonomous-system"
+// - "directory"
+// - "domain-name"
+// - "email-addr"
+// - "email-message"
+// - "file"
+// - "ipv4-addr"
+// - "ipv6-addr"
+// - "mac-addr"
+// - "mutex"
+// - "network-traffic"
+// - "process"
+// - "software"
+// - "url"
+// - "user-account"
+// - "windows-registry-key"
+// - "x509-certificate"
+// ID - уникальный идентификатор объекта (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+type CommonPropertiesObjectSTIX struct {
+	Type string `json:"type" bson:"type" required:"true"`
+	ID   string `json:"id" bson:"id" required:"true"`
+}
+
+/********** 			Relationship Objects STIX 			**********/
+
+//OptionalCommonPropertiesRelationshipObjectSTIX общие, опциональные свойства для все объектов STIX типа Relationship Objects
+// SpecVersion - версия STIX спецификации (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ).
+// Created - время создания объекта, в формате "2016-05-12T08:17:27.000Z" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ).
+// Modified - время создания объекта, в формате "2016-05-12T08:17:27.000Z" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ).
+type OptionalCommonPropertiesRelationshipObjectSTIX struct {
+	SpecVersion string    `json:"spec_version" bson:"spec_version"`
+	Created     time.Time `json:"created" bson:"created"`
+	Modified    time.Time `json:"modified" bson:"modified"`
+}
+
+//RelationshipObjectSTIX объект "Relationship", по терминалогии STIX, используется для связывания двух Domain Object STIX (SDO) или Cyber-observable Objects STIX
+//  (SCO), чтобы описать, как они связаны друг с другом. Если SDOS и SCOS считаются "узлами" или "вершинами" в графе, то Объекты отношений (SRO)
+//  представляют собой "ребра".
+// RelationshipType - содержит наименование, используемое для идентификации объекта (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ).
+// Description - содержит описание более подробной информации об объекте.
+// SourceRef - устанавливает идентификатор исходного (исходящего) объекта. Значение ДОЛЖНО быть идентификатором ссылки на SDO или SCO (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ).
+// TargetRef - определяет идентификатор целевого (to) объекта. Значение ДОЛЖНО быть идентификатором ссылки на SDO или SCO(ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ).
+// StartTime - время, в формате "2016-05-12T08:17:27.000Z". Эта необязательная временная метка представляет собой самое раннее время, в которое существует
+//  связь между объектами.
+// StopTime - время, в формате "2016-05-12T08:17:27.000Z". Последнее время, в которое существует связь между объектами.
+type RelationshipObjectSTIX struct {
+	CommonPropertiesObjectSTIX
+	OptionalCommonPropertiesRelationshipObjectSTIX
+	RelationshipType string             `json:"relationship_type" bson:"relationship_type"`
+	Description      string             `json:"description" bson:"description"`
+	SourceRef        IdentifierTypeSTIX `json:"source_ref" bson:"source_ref"`
+	TargetRef        IdentifierTypeSTIX `json:"target_ref" bson:"target_ref"`
+	StartTime        time.Time          `json:"start_time" bson:"start_time"`
+	StopTime         time.Time          `json:"stop_time" bson:"stop_time"`
+}
+
+//SightingObjectSTIX объект "Sighting", по терминалогии STIX, это особый тип SRO. Отношение, которое содержит дополнительные свойства, отсутствующие в объекте Relationship.
+// Description - содержит более детальную информацию об объекте.
+// FirstSeen - время, в формате "2016-05-12T08:17:27.000Z". Определяет начало временного окна, в течение которого был замечен SDO, на который ссылается свойство sighting_of_ref.
+// LastSeen - время, в формате "2016-05-12T08:17:27.000Z". Определяет конец временного окна, в течение которого был замечен SDO, на который ссылается свойство sighting_of_ref.
+// Count - определяет количество раз, когда SDO, на которое ссылается свойство sighting_of_ref, был замечен.
+// SightingOfRef - содержит ссылку на объект Domain Object STIX (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ).
+// ObservedDataRefs - содержит список идентификационных ссылок на Наблюдаемые объекты данных, содержащие необработанные киберданные для данного наблюдения.
+// WhereSightedRefs - содержит список идентификационных ссылок на объекты идентификации или местоположения, описывающие сущности или типы сущностей.
+// Summary - содержит индикатор информаирующий о том, следует ли считеть данный объект совокупностью сводных данных. Сводные данные представляют собой совокупность предыдущих отчетов
+//  о наблюдениях и не должны рассматриваться как первичные исходные данные.
+type SightingObjectSTIX struct {
+	CommonPropertiesObjectSTIX
+	OptionalCommonPropertiesRelationshipObjectSTIX
+	Description      string                `json:"description" bson:"description"`
+	FirstSeen        time.Time             `json:"first_seen" bson:"first_seen"`
+	LastSeen         time.Time             `json:"last_seen" bson:"last_seen"`
+	Count            int                   `json:"count" bson:"count"`
+	SightingOfRef    IdentifierTypeSTIX    `json:"sighting_of_ref" bson:"sighting_of_ref"`
+	ObservedDataRefs []*IdentifierTypeSTIX `json:"observed_data_refs" bson:"observed_data_refs"`
+	WhereSightedRefs []*IdentifierTypeSTIX `json:"where_sighted_refs" bson:"where_sighted_refs"`
+	Summary          bool                  `json:"summary" bson:"summary"`
 }

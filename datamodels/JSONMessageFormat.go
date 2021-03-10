@@ -1,64 +1,48 @@
 package datamodels
 
+import "encoding/json"
+
 //ModAPIRequestProcessingCommonJSON содержит описание общих полей формата JSON для запросов и ответов модуля ModuleAPIRequestProcessing
 // TaskID - ID задачи
+// Section - секция, предназначена для разграничения запросов по типам обработчиков. Например, используются следующие типы обработчиков:
+//  - "handling stix object" (обработка объектов STIX)
+//  - "handling search requests" (обработка поисковых запросов)
+//  - "generating reports" (генерирование отчетов)
+//  - "formation final documents" (генерирование итоговых документов)
 type ModAPIRequestProcessingCommonJSON struct {
-	TaskID string `json:"task_id"`
+	TaskID  string `json:"task_id"`
+	Section string `json:"section"`
 }
 
 //ModAPIRequestProcessingReqJSON содержит описание формата JSON запроса получаемого через модуль ModuleAPIRequestProcessing
 // TaskWasGeneratedAutomatically - задача была сгенерирована автоматически (true - да)
 // UserNameGeneratedTask - имя пользователя сгенерировавшего задачу
-// MessageType - тип сообщения
-//  - "set info", добавить информацию
-//  - "get info", получить информацию
+// RequestDetails - подробности запроса
 // DetailedInformation - подбробная информация о запросе
 type ModAPIRequestProcessingReqJSON struct {
 	ModAPIRequestProcessingCommonJSON
-	TaskWasGeneratedAutomatically bool          `json:"task_was_generated_automatically"`
-	UserNameGeneratedTask         string        `json:"user_name_generated_task"`
-	MessageType                   string        `json:"message_type"`
-	DetailedInformation           []interface{} `json:"detailed_information"`
+	TaskWasGeneratedAutomatically bool             `json:"task_was_generated_automatically"`
+	UserNameGeneratedTask         string           `json:"user_name_generated_task"`
+	RequestDetails                *json.RawMessage `json:"request_details"`
 }
+
+//ModAPIRequestProcessingReqHandlingSTIXObjectJSON содержит список произвольных объектов STIX. Информация из данных списков добавляется в
+// базу данных, если ее там нет или обновляется, если она там есть. Данный тип применяется ТОЛЬКО при Section:"handling stix object"
+type ModAPIRequestProcessingReqHandlingSTIXObjectJSON []*json.RawMessage
 
 //ModAPIRequestProcessingResJSON содержит описание формата JSON ответа, передаваемого через модуль ModuleAPIRequestProcessing
-// DetailedInformation - подбробная информация о запросе
-// MessageType - тип сообщения
+// Description - дополнительное детальное описание. При возникновении ошибки, сюда пишется максимально подробное описание ошибки.
+// IsSuccessful - индикатор успешности выполнения задачи (false - неуспешно, true - успешно).
+// AdditionalParameters - дополнительные параметры связанные с выполняемой задачей.
 type ModAPIRequestProcessingResJSON struct {
 	ModAPIRequestProcessingCommonJSON
-	MessageType         MessageTypeModAPIRequestProcessingResJSON `json:"message_type"`
-	DetailedInformation interface{}                               `json:"detailed_information"`
+	IsSuccessful         bool        `json:"is_successful"`
+	Description          string      `json:"description"`
+	AdditionalParameters interface{} `json:"additional_parameters"`
 }
 
-//MessageTypeModAPIRequestProcessingResJSON содержит описание типа ответа, передаваемого через модуль ModuleAPIRequestProcessing
-// UserInformation - сообщения предназначенные пользователю: сообщения об успешном выполнении задачи, об ошибках и т.д.). В этом случае используется
-//  тип NotificationModAPIRequestProcessingUserJSON
-// PerformanceTasks - информация связанная с ходом выполнения задачи но не предназначенная для пользователя. В этом случае используется
-//  тип PerformanceTasksModAPIRequestProcessingJSON
-// TransmittingRequestedInformation - передача запрошенной информации. В этом случае используется
-//  тип TransmittingRequestedInformationModAPIRequestProcessingResJSON
-type MessageTypeModAPIRequestProcessingResJSON struct {
-	UserInformation                  bool `json:"user_information"`
-	PerformanceTasks                 bool `json:"performance_tasks"`
-	TransmittingRequestedInformation bool `json:"transmitting_requested_information"`
-}
-
-//NotificationModAPIRequestProcessingUserJSON содержит информационное сообщение предназначенное пользователю и передаваемого
-// через модуль ModuleAPIRequestProcessing
-// Данное сообщение применяется когда MessageType основного сообщения равно "information message"
-// MessageType - тип сообщения (success, warning, info, danger)
-// Description - описание сообщения
-type NotificationModAPIRequestProcessingUserJSON struct {
-	ModAPIRequestProcessingCommonJSON
-	MessageType string `json:"message_type"`
-	Description string `json:"description"`
-}
-
-//PerformanceTasksModAPIRequestProcessingResJSON содержит информацию, связанную с ходом выполнения задачи и передаваемую через
-// модуль ModuleAPIRequestProcessing. Данная информация предназначенна исключительно для передачи пользователю.
-type PerformanceTasksModAPIRequestProcessingResJSON struct {
-}
-
+/*
+	Example!!! для передачи информации частями
 //TransmittingRequestedInformationModAPIRequestProcessingResJSON содержит информацию передаваемую в ответ на запрашиваемые данные
 // TotalNumberParts - общее количество частей
 // GivenSizePart - заданный размер части
@@ -70,3 +54,4 @@ type TransmittingRequestedInformationModAPIRequestProcessingResJSON struct {
 	NumberTransmittedPart int         `json:"number_transmitted_part"`
 	TransmittedData       interface{} `json:"transmitted_data"` // пока 'interface{}' так как не знаю тип передаваемых данных
 }
+*/

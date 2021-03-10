@@ -125,7 +125,12 @@ func NewTemporaryStorage() *TemporaryStorageType {
 	}
 
 	go func() {
+		var num int
 		for {
+
+			fmt.Printf("Num: %d\n", num)
+			num++
+
 			select {
 			case msg := <-chanReqTask:
 				switch msg.actionType {
@@ -142,15 +147,10 @@ func NewTemporaryStorage() *TemporaryStorageType {
 				case "get task by id":
 					taskInfo, err := stmc.getTaskByID(msg.appTaskID)
 
-					fmt.Println("sqsqsqsqqsqsqsqsqsqsq")
-					fmt.Println(taskInfo)
-
 					msg.chanRes <- channelResponseTaskStorage{
 						detailedDescriptionTask: taskInfo,
 						errMsg:                  err,
 					}
-
-					fmt.Println("vvvvvvvvvvvvvvv")
 
 				case "get tasks by client id":
 					msg.chanRes <- channelResponseTaskStorage{listAppTasksID: stmc.getTasksByClientID(msg.detailedDescriptionTask.ClientID)}

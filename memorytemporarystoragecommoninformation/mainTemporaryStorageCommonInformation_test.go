@@ -33,6 +33,16 @@ var _ = Describe("MainTemporaryStorageCommonInformation", func() {
 				Command:        "none",
 				TaskParameters: 42,
 			})
+
+			_, _ = tempStorage.AddNewTask(&TemporaryStorageTaskType{
+				TaskGenerator:  "task generated test module",
+				ClientID:       "19293hdh8883g827g7dg7373747",
+				ClientName:     "client_name_2",
+				ClientTaskID:   "nduncuuhf4fh84fh8h48fh48f",
+				Section:        "stix object test",
+				Command:        "create",
+				TaskParameters: 4100,
+			})
 		})
 
 		Context("Тест 1. Проверяем наличие задач", func() {
@@ -49,9 +59,37 @@ var _ = Describe("MainTemporaryStorageCommonInformation", func() {
 
 				close(done)
 			})
-			/*It("Хранилище taskStorage должно содержать не менее 2 задач", func() {
+			It("Хранилище taskStorage должно содержать 2 задачи полученные от клиента с ID '19293hdh8883g827g7dg7373747'", func(done Done) {
+				listTaskID := tempStorage.GetTasksByClientID("19293hdh8883g827g7dg7373747")
 
-			})*/
+				Expect(len(listTaskID)).To(Equal(2))
+
+				close(done)
+			})
+		})
+
+		Context("Тест 2. Проверяем возможность управления задачами", func() {
+			It("Должна быть успешная модификация статуса задачи", func(done Done) {
+				err := tempStorage.ChangeTaskStatus(appTaskIDOne, "ex")
+
+				Expect(err).ShouldNot(HaveOccurred())
+
+				close(done)
+			})
+			It("Должна быть успешная модификация параметра RemovalRequired задачи, при модификации параметра ошибки быть не должно", func(done Done) {
+				err := tempStorage.ChangeRemovalRequiredParameter(appTaskIDOne)
+
+				Expect(err).ShouldNot(HaveOccurred())
+
+				_, taskInfo, err := tempStorage.GetTaskByID(appTaskIDOne)
+
+				Expect(err).ShouldNot(HaveOccurred())
+				Expect(taskInfo.RemovalRequired).Should(BeTrue())
+
+				close(done)
+			})
+			It("Должно успешно изменятся время модификации информации о задачи", func() {
+			})
 		})
 	})
 })

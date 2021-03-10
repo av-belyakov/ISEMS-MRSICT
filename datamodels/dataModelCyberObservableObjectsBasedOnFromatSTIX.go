@@ -86,6 +86,96 @@ type AutonomousSystemObjectSTIX struct {
 	`json:"" bson:""`
 	`json:"" bson:""`
 */
+// ProcessObjectSTIX объект "Process Object", по терминологии STIX.
+// ProcessObjectSTIX представляет основные свойства экземпляра приложения запущенного в контексте операционой системы.
+// В ProcessObjectSTIX должно быть поределено  хотя бы одно из его свойств помимо type .
+// Extentions - Объект Process определяет следующие расширения (windows-process-ext, windows-service-ext).
+// 				В дополнение к ним производители МОГУТ создавать свои собственные. Ключи словаря ДОЛЖНЫ идентифицировать тип расширения по имени.
+// ISHidden - Указывает, является ли процесс скрытым.
+// PID - Указывает идентификатор или PID процесса.
+// CreatedTime - Указывает дату и время создания процесса.
+// CWD - Указывает текущий рабочий каталог процесса.
+// CommandLine - Указывает полную командную строку, используемую при выполнении процесса, включая имя процесса (которое может быть
+//			     указано индивидуально через image_ref.name  cвойство) и любые аргументы.
+// EnvironmentVariables - Задает список переменных среды, связанных с процессом в виде словаря. Каждый ключ в словаре ДОЛЖЕН быть сохраненной в регистре версией
+//                        имени переменной окружения, и каждое соответствующее значение ДОЛЖНО быть значением переменной окружения в виде строки.
+// OpenedConnectionRefs - Указывает список сетевых подключений, открытых процессом, в качестве ссылки на один или несколько объектов сетевого трафика.
+//                        Объекты, на который в этом списке хранятся ссылки должены быть типа NetworkTrafficObjectSTIX.
+// CreatorUserRef - Указывает пользователя, создавшего процесс, в качестве ссылки на объект учетной записи пользователя.
+//                  Объект, на который ссылается это свойство, ДОЛЖЕН иметь тип UserAccountObjectSTIX.
+// ImageRef - Указывает исполняемый двоичный файл, который был выполнен как образ процесса, как ссылка на файловый объект.
+//            Объект, на который ссылается это свойство, ДОЛЖЕН иметь тип FileObjectSTIX.
+// ParentRef - Указывает другой процесс, который породил (т. е. является родителем) этот процесс,
+//             как ссылку на объект процесса. Объект, на который ссылается это свойство, ДОЛЖЕН иметь тип ProcessObjectSTIX.
+// ChildRefs - Указывает другие процессы, которые были порождены (т. е. дочерние) этим процессом, в качестве ссылки на один или несколько других объектов процесса.
+//             Объекты, на которые ссылается этот список, ДОЛЖНЫ иметь тип ProcessObjectSTIX.
+type ProcessObjectSTIX struct {
+	CommonPropertiesCyberObservableObjectSTIX
+	Extentions           ProcessObjectExtensionsSTIX `json:"extensions" bson:"extensions"`
+	ISHidden             bool                        `json:"is_hidden" bson:"is_hidden"`
+	PID                  int                         `json:"pid" bson:"pid"`
+	CreatedTime          time.Time                   `json:"created_time" bson:"created_time"`
+	CWD                  string                      `json:"cwd" bson:"cwd"`
+	CommandLine          string                      `json:"command_line" bson:"command_line"`
+	EnvironmentVariables map[string]string           `json:"environment_variables" bson:"environment_variables"`
+	OpenedConnectionRefs []string                    `json:"opened_connection_refs" bson:"opened_connection_refs"`
+	CreatorUserRef       string                      `json:"creator_user_ref" bson:"creator_user_ref"`
+	ImageRef             string                      `json:"image_ref" bson:"image_ref"`
+	ParentRef            string                      `json:"parent_ref" bson:"parent_ref"`
+	ChildRefs            string                      `json:"child_refs" bson:"child_refs"`
+}
+
+type ProcessObjectExtensionsSTIX struct {
+	WindowsProcessExtSTIX
+	WindowsServiceExtSTIX
+}
+
+// WindowsProcessExtSTIX  объект "Windows Process Extension", по терминологии STIX.
+// WindowsProcessExtSTIX задает расширение по умолчанию для захвата свойств, специфичных для процессов Windows.
+// Ключ для этого расширения при использовании в словаре расширений ДОЛЖЕН быть windows-process-ext.
+// Объект, использующий расширение процесса Windows, должен содержать хотя бы одно свойство из этого расширения.
+// AslrEnabled - Указывает если для этого процесса включен, Address Space Layout Randomization.
+// DepEnabled - Указывает, включено ли для процесса Data Execution Prevention (DEP).
+// Priority - Указывает текущий класс приоритета процесса в Windows. Это значение должно быть строкой, которая заканчивается на "_CLASS"
+// OwnerSid - Указывает значение идентификатора безопасности (SID) владельца процесса.
+// WindowTitle - Задает заголовок главного окна процесса.
+// StartupInfo - Указывает структуру STARTUP_INFO, используемую процессом в качестве словаря. Каждая пара ключ/значение в STARTUP_INFO ДОЛЖНА быть представлена как пара ключ/значение в словаре, где каждый ключ ДОЛЖЕН быть сохраненной в регистре версией исходного имени.
+//               Например, учитывая имя "lpDesktop", соответствующий ключ будет lpDesktop. Тип занчений в оригенале данной структуры разнороден ...
+// IntegrityLevel - Указывает уровень целостности Windows или надежность процесса. Значения этого свойства ДОЛЖНЫ быть получены из перечисления windows-integrity-level-enum.
+type WindowsProcessExtSTIX struct {
+	AslrEnabled bool   `json:"aslr_enabled" bson:"aslr_enabled"`
+	DepEnabled  bool   `json:"dep_enabled" bson:"dep_enabled"`
+	Priority    string `json:"priority" bson:"priority"`
+	OwnerSid    string `json:"owner_sid" bson:"owner_sid"`
+	WindowTitle string `json:"window_title" bson:"window_title"`
+	//StartupInfo dictionary `json:"startup_info" bson:"startup_info"`
+	IntegrityLevel EnumTypeSTIX `json:"integrity_level" bson:"integrity_level"`
+}
+
+// WindowsServiceExtSTIX  объект "Windows Service Extension", по терминологии STIX.
+// WindowsServiceExtSTIX расширяет объект описанием свойств, специфичных для служб Windows.
+// Ключ для этого расширения при использовании в словаре расширений ДОЛЖЕН быть windows-service-ext.
+// Т.к. все свойства данного типа необязательные то должно быть определено хотябы одно из них.
+// ServiceName - указывает название службы
+// Descriptions - указывает список описаний для сулжбы
+// DisplayName - указывает имя службы отображаемое в элементах управления графического интерфейса Windows (Windows GUI controls).
+// GroupName - указывает имя группы порядка загрузки, членом которой является служба.
+// StartType - указывает параметры запуска, определенные для службы.
+//             Значения этого свойства ДОЛЖНЫ быть получены из перечисления windows-service-start-type-enum
+// ServiceDllRefs - Указывает загруженные службой библиотеки DLL, как ссылки на один или несколько объектов,
+//                  типа данных объектов должен быть FileObjectSTIX.
+// ServiceType - Указывает тип службы. Значения этого свойства ДОЛЖНЫ быть получены из перечисления windows-service-type-enum.
+// ServiceStatus - Указывает текущее состояние службы.Значения этого свойства ДОЛЖНЫ быть получены из перечисления windows-service-status-enum.
+type WindowsServiceExtSTIX struct {
+	ServiceName    string       `json:"service_name" bson:"service_name"`
+	Descriptions   []string     `json:"descriptions" bson:"descriptions"`
+	DisplayName    string       `json:"display_name" bson:"display_name"`
+	GroupName      string       `json:"group_name" bson:"group_name"`
+	StartType      EnumTypeSTIX `json:"start_type" bson:"start_type"`
+	ServiceDllRefs string       `json:"service_dll_refs" bson:"service_dll_refs"`
+	ServiceType    EnumTypeSTIX `json:"service_type" bson:"service_type"`
+	ServiceStatus  EnumTypeSTIX `json:"service_status" bson:"service_status"`
+}
 
 //ivi
 // SoftwareObject объект "Software Object", по терминологии STIX.

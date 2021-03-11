@@ -12,7 +12,7 @@ import (
 	"ISEMS-MRSICT/modulelogginginformationerrors"
 )
 
-//HandlerAssigmentsModuleAPIRequestProcessing является обработчиком JSON  приходящих
+//HandlerAssigmentsModuleAPIRequestProcessing является обработчиком приходящих JSON сообщений
 func HandlerAssigmentsModuleAPIRequestProcessing(
 	chanSaveLog chan<- modulelogginginformationerrors.LogMessageType,
 	data *datamodels.ModuleReguestProcessingChannel,
@@ -46,6 +46,9 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 
 	switch commonMsgReq.Section {
 	case "handling stix object":
+
+		/* *** обработчик JSON сообщений со STIX объектами *** */
+
 		l, success, err := unmarshalJSONObjectSTIXReq(*commonMsgReq)
 		//если полностью не возможно декодировать список STIX объектов
 		if err != nil {
@@ -100,8 +103,8 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 		fmt.Println(success.All)
 		fmt.Println(success.Unsuccess)
 
-		//выполняем дальнейшую обработку
-		//зоздаем внутренний task ID приложения
+		//выполняем валидацию полученных STIX объектов
+
 		//добавляем информацию о задаче в хранилище задач
 		appTaskID, err := tst.AddNewTask(&memorytemporarystoragecommoninformation.TemporaryStorageTaskType{
 			TaskGenerator:        data.ModuleGeneratorMessage,
@@ -125,7 +128,11 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 
 	case "handling search requests":
 
+		/* *** обработчик JSON сообщений с запросами к поисковой машине приложения *** */
+
 	case "":
+
+		/* *** обработчик JSON сообщений с иными запросами  *** */
 
 	}
 }

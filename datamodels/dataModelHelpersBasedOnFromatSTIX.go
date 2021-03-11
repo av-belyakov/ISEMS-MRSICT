@@ -1,6 +1,8 @@
 package datamodels
 
 import (
+	"encoding/json"
+	"fmt"
 	"time"
 )
 
@@ -46,6 +48,64 @@ type KillChainPhasesTypeElementSTIX struct {
 
 //OpenVocabTypeSTIX тип "open-vocab", по терминалогии STIX, содержащий заранее определенное (предложенное) значение
 type OpenVocabTypeSTIX string
+
+//DictionaryTypeSTIX тип "dictionary", по терминалогии STIX, содержащий значения любых типов
+type DictionaryTypeSTIX struct {
+	dictionary interface{}
+}
+
+//UnmarshalJSON дополнительный метод декодирования
+func (dtstix *DictionaryTypeSTIX) UnmarshalJSON(data []byte) error {
+	var (
+		err       error
+		str       string
+		num       int
+		listStr   []string
+		listInt   []int
+		mapStrStr map[string]string
+		mapStrInt map[string]int
+		mapIntInt map[int]int
+		mapIntStr map[int]string
+	)
+
+	if err = json.Unmarshal(data, &str); err == nil {
+		dtstix.dictionary = str
+
+		return nil
+	}
+	if err = json.Unmarshal(data, &num); err == nil {
+		dtstix.dictionary = num
+		return nil
+	}
+	if err = json.Unmarshal(data, &listStr); err == nil {
+		dtstix.dictionary = listStr
+		return nil
+	}
+	if err = json.Unmarshal(data, &listInt); err == nil {
+		dtstix.dictionary = listInt
+		return nil
+	}
+	if err = json.Unmarshal(data, &mapStrStr); err == nil {
+		dtstix.dictionary = mapStrStr
+		return nil
+	}
+	if err = json.Unmarshal(data, &mapStrInt); err == nil {
+		dtstix.dictionary = mapStrInt
+		return nil
+	}
+	if err = json.Unmarshal(data, &mapIntInt); err == nil {
+		dtstix.dictionary = mapIntInt
+		return nil
+	}
+	if err = json.Unmarshal(data, &mapIntStr); err == nil {
+		dtstix.dictionary = mapIntStr
+		return nil
+	}
+	//		dtstix.dictionary = fmt.Sprintln(mapIntStr)
+	dtstix.dictionary = data
+
+	return fmt.Errorf("JSON message parsing error, undefined value found in the DictionaryTypeSTIX type")
+}
 
 /********** 			Meta Object STIX 			**********/
 

@@ -142,8 +142,8 @@
             "created_by_ref": "identity--f431f809-377b-45e0-aa1c-6a4751cae5ff",
             "created": "2016-04-06T20:03:00.000Z",
             "modified": "2016-04-06T20:03:00.000Z",
-            "latitude": "48.8566",
-            "longitude": "2.3522"
+            "latitude": 48.8566,
+            "longitude": 2.3522
         },
         {
             "type": "malware",
@@ -330,10 +330,7 @@
             "date": "2004-04-19T12:22:23.000Z",
             "subject": "Did you see this?",
             "additional_header_fields": {
-            "Reply-To": [
-                "steve@example.com",
-                "jane@example.com"
-                ]
+                "Reply-To": ["steve@example.com", "jane@example.com"]
             }
         },
         {

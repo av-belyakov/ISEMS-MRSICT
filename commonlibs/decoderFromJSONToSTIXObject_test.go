@@ -22,6 +22,44 @@ type fieldTypeSTIXObject struct {
 	Type string `json:"type"`
 }
 
+func GetListSTIXObject(list *[]json.RawMessage) ([]datamodels.ListSTIXObject, error) {
+	result := []datamodels.ListSTIXObject{}
+	var (
+		commonPropertiesObjectSTIX datamodels.CommonPropertiesObjectSTIX
+	)
+
+	for _, item := range *list {
+		err := json.Unmarshal(item, &commonPropertiesObjectSTIX)
+		if err != nil {
+			return result, nil
+		}
+
+		switch commonPropertiesObjectSTIX.Type {
+		case "attack-pattern":
+			var ap datamodels.AttackPatternDomainObjectsSTIX
+			elem, err := ap.DecoderJSON(&item)
+			if err != nil {
+				return result, err
+			}
+
+			newElem, ok := elem.(datamodels.AttackPatternDomainObjectsSTIX)
+			if !ok {
+				return result, fmt.Errorf("Error: type conversion error")
+			}
+
+			result = append(result, datamodels.ListSTIXObject{
+				DataType: commonPropertiesObjectSTIX.Type,
+				Data:     newElem,
+			})
+		case "campaign":
+
+		case "course-of-action":
+
+		}
+	}
+	return result, nil
+}
+
 var _ = Describe("DecoderFromJSONToSTIXObject", func() {
 	var (
 		docJSON                        []byte

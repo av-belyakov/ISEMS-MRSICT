@@ -1,12 +1,29 @@
 package datamodels
 
 import (
-	"github.com/asaskevich/govalidator"
+	"encoding/json"
+	"fmt"
 )
+
+//DecoderJSON выполняет декодирование JSON объекта
+func (apdostix *AttackPatternDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
+	if err := json.Unmarshal(*raw, apdostix); err != nil {
+		return nil, err
+	}
+
+	return apdostix, nil
+}
+
+//EncoderJSON выполняет кодирование в JSON объект
+func (apdostix *AttackPatternDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error) {
+	return &[]byte{}, nil
+}
 
 //CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
 func (apdostix *AttackPatternDomainObjectsSTIX) CheckingTypeFields() bool {
-	if !apdostix.checkingTypeFields() {
+	fmt.Println("func 'CheckingTypeFields', START...")
+
+	if !apdostix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -47,8 +64,8 @@ type CommonPropertiesDomainObjectSTIX struct {
 	Extensions         map[string]string          `json:"extensions" bson:"extensions"`
 }
 */
-func (cpdostix *CommonPropertiesDomainObjectSTIX) checkingTypeFields() bool {
-	println(govalidator.IsURL(`http://user@pass:domain.com/path/page`))
+func (cpdostix *CommonPropertiesDomainObjectSTIX) checkingTypeCommonFields() bool {
+	fmt.Println("func 'checkingTypeCommonFields', START...")
 
 	//rtype := reflect.TypeOf(testTypeOne.Extensions)
 	/*

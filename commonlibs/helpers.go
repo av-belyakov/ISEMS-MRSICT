@@ -3,13 +3,11 @@ package commonlibs
 import (
 	"crypto/md5"
 	"encoding/hex"
-	"errors"
 	"fmt"
 	"io"
 	"math"
 	"math/rand"
 	"os"
-	"regexp"
 	"strconv"
 	"time"
 )
@@ -18,28 +16,6 @@ import (
 type TypePatternUserMessage struct {
 	SourceID                      int
 	TaskType, TaskAction, Message string
-}
-
-var regexpPatterns = map[string]string{
-	"IPAddress":                        `^((25[0-5]|2[0-4]\d|[01]?\d\d?)[.]){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$`,
-	"Network":                          `^((25[0-5]|2[0-4]\d|[01]?\d\d?)[.]){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)/[0-9]{1,2}$`,
-	"fileName":                         `^(\w|_)+\.(tdp|pcap)$`,
-	"pathDirectoryStoryFilesFiltering": `^(\w|_|/)+$`,
-}
-
-//CheckFileName проверяет имя файла на соответствие регулярному выражению
-func CheckFileName(fileName, patternName string) error {
-	pattern, found := regexpPatterns[patternName]
-	if !found {
-		return errors.New("function 'CheckFileName': not found the pattern for the regular expression")
-	}
-
-	patterCheckFileName := regexp.MustCompile(pattern)
-	if ok := patterCheckFileName.MatchString(fileName); ok {
-		return nil
-	}
-
-	return errors.New("file name does not match the specified regular expression")
 }
 
 //GetUniqIDFormatMD5 генерирует уникальный идентификатор в формате md5

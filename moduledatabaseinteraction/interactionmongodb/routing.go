@@ -12,5 +12,14 @@ func Routing(cdmdb ConnectionDescriptorMongoDB, chanInput <-chan datamodels.Modu
 
 	for data := range chanInput {
 		fmt.Printf("func 'Routing', received data from chan: '%v'\n", data)
+
+		switch data.Section {
+		case "handling stix object":
+
+		case "handling search requests":
+
+		case "handling reference book":
+
+		}
 	}
 }

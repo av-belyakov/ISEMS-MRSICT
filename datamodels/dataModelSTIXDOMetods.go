@@ -51,6 +51,12 @@ func (cpdostix *CommonPropertiesDomainObjectSTIX) checkingTypeFields() bool {
 	println(govalidator.IsURL(`http://user@pass:domain.com/path/page`))
 
 	//rtype := reflect.TypeOf(testTypeOne.Extensions)
+	/*
+		валидация строк:
+		- удаление (замена) нежелательных символов или вырожений
+		- проверка строк на наличие ключевых строк в начале строки (для некоторых строк).
+		 Например для поля ID строка должна начинатся с названия типа и _ 'location_ggeg777d377377e7f'
+	*/
 
 	return true
 }

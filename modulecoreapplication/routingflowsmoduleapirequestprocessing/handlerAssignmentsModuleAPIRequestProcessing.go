@@ -130,6 +130,10 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 
 		/* *** обработчик JSON сообщений с запросами к поисковой машине приложения *** */
 
+	case "handling reference book":
+
+		/* *** обработчик JSON сообщений с параметрами связанными со справочниками *** */
+
 	case "":
 
 		/* *** обработчик JSON сообщений с иными запросами  *** */

@@ -7,6 +7,7 @@ import "encoding/json"
 // Section - секция, предназначена для разграничения запросов по типам обработчиков. Например, используются следующие типы обработчиков:
 //  - "handling stix object" (обработка объектов STIX)
 //  - "handling search requests" (обработка поисковых запросов)
+//  - "handling reference book" (обработка запросов связанных со справочниками)
 //  - "generating reports" (генерирование отчетов)
 //  - "formation final documents" (генерирование итоговых документов)
 type ModAPIRequestProcessingCommonJSON struct {

@@ -355,7 +355,7 @@ type UNIXAccountExtensionSTIX struct {
 	Shell   string   `json:"shell" bson:"shell"`
 }
 
-/********** 			Cyber-observable Objects STIX 			**********/
+/********** 			Cyber-observable Objects STIX (ТИПЫ)			**********/
 
 //OptionalCommonPropertiesCyberObservableObjectSTIX содержит опциональные общие свойства для Cyber-observable Objects STIX
 // SpecVersion - версия STIX спецификации.

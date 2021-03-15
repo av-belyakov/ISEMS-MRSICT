@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-/********** 			Domain Objects STIX 			**********/
+/********** 			Domain Objects STIX (ТИПЫ)			**********/
 
 //CommonPropertiesDomainObjectSTIX свойства общие, для всех объектов STIX
 // SpecVersion - версия спецификации STIX используемая для представления текущего объекта (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)

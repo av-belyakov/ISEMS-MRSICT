@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-/********** 			Relationship Objects STIX 			**********/
+/********** 			Relationship Objects STIX (ТИПЫ)			**********/
 
 //OptionalCommonPropertiesRelationshipObjectSTIX общие, опциональные свойства для все объектов STIX типа Relationship Objects
 // SpecVersion - версия STIX спецификации (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ).

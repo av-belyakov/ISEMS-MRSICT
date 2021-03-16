@@ -2,6 +2,7 @@ package memorytemporarystoragecommoninformation
 
 import (
 	"fmt"
+	"sync"
 	"time"
 
 	"github.com/google/uuid"
@@ -107,74 +108,79 @@ type channelResponseParameterStorage struct {
 type channelRequestFoundInformationStorage struct{}
 type channelResponseFoundInformationStorage struct{}
 
+var once sync.Once
+var stmc TemporaryStorageType
+
 //NewTemporaryStorage конструктор инициализирующий временное хранилище общей информации
 func NewTemporaryStorage() *TemporaryStorageType {
 	fmt.Println("fun 'NewStorageTemporaryMemoryCommon', START...")
 
-	chanReqTask := make(chan channelRequestTaskStorage)
-	chanReqParameter := make(chan channelRequestParameterStorage)
-	chanReqFoundInfo := make(chan channelRequestFoundInformationStorage)
+	once.Do(func() {
+		chanReqTask := make(chan channelRequestTaskStorage)
+		chanReqParameter := make(chan channelRequestParameterStorage)
+		chanReqFoundInfo := make(chan channelRequestFoundInformationStorage)
 
-	stmc := TemporaryStorageType{
-		taskStorage:                    map[string]TemporaryStorageTaskInDetailType{},
-		chanReqTaskStorage:             chanReqTask,
-		foundInformationStorage:        map[string]interface{}{},
-		chanReqFoundInformationStorage: chanReqFoundInfo,
-		storageApplicationParameters:   storageApplicationParametersType{},
-		chanReqParameterStorage:        chanReqParameter,
-	}
+		stmc = TemporaryStorageType{
+			taskStorage:                    map[string]TemporaryStorageTaskInDetailType{},
+			chanReqTaskStorage:             chanReqTask,
+			foundInformationStorage:        map[string]interface{}{},
+			chanReqFoundInformationStorage: chanReqFoundInfo,
+			storageApplicationParameters:   storageApplicationParametersType{},
+			chanReqParameterStorage:        chanReqParameter,
+		}
 
-	go func() {
-		for {
-			select {
-			case msg := <-chanReqTask:
-				switch msg.actionType {
-				case "add new task":
-					uuid := uuid.NewString()
-					err := stmc.addNewTask(uuid, msg.detailedDescriptionTask)
-					msg.chanRes <- channelResponseTaskStorage{
-						commanChannelTaskStorage: commanChannelTaskStorage{
-							appTaskID: uuid,
-						},
-						errMsg: err,
+		go func() {
+			for {
+				select {
+				case msg := <-chanReqTask:
+					switch msg.actionType {
+					case "add new task":
+						uuid := uuid.NewString()
+						err := stmc.addNewTask(uuid, msg.detailedDescriptionTask)
+						msg.chanRes <- channelResponseTaskStorage{
+							commanChannelTaskStorage: commanChannelTaskStorage{
+								appTaskID: uuid,
+							},
+							errMsg: err,
+						}
+
+					case "get task by id":
+						taskInfo, err := stmc.getTaskByID(msg.appTaskID)
+
+						msg.chanRes <- channelResponseTaskStorage{
+							detailedDescriptionTask: taskInfo,
+							errMsg:                  err,
+						}
+
+					case "get tasks by client id":
+						msg.chanRes <- channelResponseTaskStorage{listAppTasksID: stmc.getTasksByClientID(msg.detailedDescriptionTask.ClientID)}
+
+					case "change task status":
+						msg.chanRes <- channelResponseTaskStorage{errMsg: stmc.changeTaskStatus(msg.appTaskID, msg.detailedDescriptionTask.TaskStatus)}
+
+					case "change removal required parameter":
+						msg.chanRes <- channelResponseTaskStorage{errMsg: stmc.changeRemovalRequiredParameter(msg.appTaskID)}
+
+					case "change date task modification":
+						msg.chanRes <- channelResponseTaskStorage{errMsg: stmc.changeDateTaskModification(msg.appTaskID)}
+
+					case "deleting task by id":
+						stmc.deletingTaskByID(msg.appTaskID)
+
+						msg.chanRes <- channelResponseTaskStorage{}
+
 					}
 
-				case "get task by id":
-					taskInfo, err := stmc.getTaskByID(msg.appTaskID)
+				case msg := <-chanReqFoundInfo:
+					fmt.Println(msg)
 
-					msg.chanRes <- channelResponseTaskStorage{
-						detailedDescriptionTask: taskInfo,
-						errMsg:                  err,
-					}
-
-				case "get tasks by client id":
-					msg.chanRes <- channelResponseTaskStorage{listAppTasksID: stmc.getTasksByClientID(msg.detailedDescriptionTask.ClientID)}
-
-				case "change task status":
-					msg.chanRes <- channelResponseTaskStorage{errMsg: stmc.changeTaskStatus(msg.appTaskID, msg.detailedDescriptionTask.TaskStatus)}
-
-				case "change removal required parameter":
-					msg.chanRes <- channelResponseTaskStorage{errMsg: stmc.changeRemovalRequiredParameter(msg.appTaskID)}
-
-				case "change date task modification":
-					msg.chanRes <- channelResponseTaskStorage{errMsg: stmc.changeDateTaskModification(msg.appTaskID)}
-
-				case "deleting task by id":
-					stmc.deletingTaskByID(msg.appTaskID)
-
-					msg.chanRes <- channelResponseTaskStorage{}
+				case msg := <-chanReqParameter:
+					fmt.Println(msg)
 
 				}
-
-			case msg := <-chanReqFoundInfo:
-				fmt.Println(msg)
-
-			case msg := <-chanReqParameter:
-				fmt.Println(msg)
-
 			}
-		}
-	}()
+		}()
+	})
 
 	return &stmc
 }

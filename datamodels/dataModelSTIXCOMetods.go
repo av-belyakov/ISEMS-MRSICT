@@ -248,6 +248,11 @@ func (fstix FileCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte, er
 	return &result, err
 }
 
+//GetFileCyberObservableObjectSTIX выполняет кодирование в JSON объект
+func (fstix *FileCyberObservableObjectSTIX) GetFileCyberObservableObjectSTIX() *FileCyberObservableObjectSTIX {
+	return fstix
+}
+
 //CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
 func (fstix FileCyberObservableObjectSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
@@ -275,6 +280,11 @@ func (ip4stix IPv4AddressCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[
 	result, err := json.Marshal(ip4stix)
 
 	return &result, err
+}
+
+//GetIPv4AddressCyberObservableObjectSTIX выполняет кодирование в JSON объект
+func (fstix *IPv4AddressCyberObservableObjectSTIX) GetIPv4AddressCyberObservableObjectSTIX() *IPv4AddressCyberObservableObjectSTIX {
+	return fstix
 }
 
 //CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX

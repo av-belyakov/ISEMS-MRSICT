@@ -512,8 +512,8 @@ func DecoderFromJSONToSTIXObject(objectType string, rawMessage *json.RawMessage)
 	return ListFuncDecoderFromJSONToSTIXObject[objectType](rawMessage)
 }
 
-func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXObject, error) {
-	var result []*datamodels.ListSTIXObject = make([]*datamodels.ListSTIXObject, 0, len(list))
+func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ElementSTIXObject, error) {
+	var result []*datamodels.ElementSTIXObject = make([]*datamodels.ElementSTIXObject, 0, len(list))
 	var commonPropertiesObjectSTIX datamodels.CommonPropertiesObjectSTIX
 
 	for _, item := range list {
@@ -536,7 +536,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -552,7 +552,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -569,7 +569,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -586,7 +586,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -603,7 +603,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -620,7 +620,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -637,7 +637,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -654,7 +654,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -671,7 +671,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -688,7 +688,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -705,7 +705,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -722,7 +722,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -739,7 +739,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -756,7 +756,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -773,7 +773,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -790,7 +790,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -807,7 +807,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -824,7 +824,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -842,7 +842,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -859,7 +859,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -877,7 +877,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -894,7 +894,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -911,7 +911,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -928,7 +928,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -945,7 +945,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -962,7 +962,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -979,7 +979,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -996,7 +996,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -1013,7 +1013,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -1030,7 +1030,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -1047,7 +1047,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -1064,7 +1064,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -1081,7 +1081,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -1098,7 +1098,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -1115,7 +1115,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -1132,7 +1132,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -1149,7 +1149,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})
@@ -1166,7 +1166,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ListSTIXO
 				return result, fmt.Errorf("Error: type conversion error")
 			}
 
-			result = append(result, &datamodels.ListSTIXObject{
+			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
 				Data:     e,
 			})

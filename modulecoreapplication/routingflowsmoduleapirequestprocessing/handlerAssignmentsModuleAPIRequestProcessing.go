@@ -48,7 +48,7 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 
 		/* *** обработчик JSON сообщений со STIX объектами *** */
 
-		l, success, err := unmarshalJSONObjectSTIXReq(*commonMsgReq)
+		l, err := UnmarshalJSONObjectSTIXReq(*commonMsgReq)
 		//если полностью не возможно декодировать список STIX объектов
 		if err != nil {
 			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
@@ -74,34 +74,6 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 			return
 		}
 
-		if success.Unsuccess != 0 {
-			errStr := fmt.Sprintf("Error: error when decoding a JSON document, only %d out of %d elements of the document were successfully decoded. Section: '%s'", (success.All - success.Unsuccess), success.All, commonMsgReq.Section)
-			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
-				TypeMessage: "error",
-				Description: errStr,
-				FuncName:    "unmarshalJSONObjectSTIXReq",
-			}
-
-			if err := auxiliaryfunctions.SendCriticalErrorMessageJSON(&auxiliaryfunctions.ErrorMessageType{
-				ClientID: data.ClientID,
-				Error:    fmt.Errorf(errStr),
-				C:        clim.ChannelsModuleAPIRequestProcessing.InputModule,
-			}); err != nil {
-				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
-					TypeMessage: "error",
-					Description: fmt.Sprint(err),
-					FuncName:    "unmarshalJSONObjectSTIXReq",
-				}
-
-				return
-			}
-
-			return
-		}
-
-		fmt.Println(success.All)
-		fmt.Println(success.Unsuccess)
-
 		//выполняем валидацию полученных STIX объектов
 
 		//добавляем информацию о задаче в хранилище задач
@@ -113,7 +85,7 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 			AdditionalClientName: commonMsgReq.UserNameGeneratedTask,
 			Section:              commonMsgReq.Section,
 			Command:              "", //в случае с объектами STIX команда не указывается (автоматически подразумевается добавление или обновление объектов STIX)
-			TaskParameters:       commonMsgReq.RequestDetails,
+			TaskParameters:       l,
 		})
 		if err != nil {
 			chanSaveLog <- modulelogginginformationerrors.LogMessageType{

@@ -7,6 +7,8 @@ import (
 	"time"
 
 	"ISEMS-MRSICT/datamodels"
+	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
+	"ISEMS-MRSICT/modulelogginginformationerrors"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -47,7 +49,11 @@ func init() {
 }
 
 //InteractionMongoDB модуль взаимодействия с БД MongoDB
-func InteractionMongoDB(mdbs *datamodels.MongoDBSettings) (ChannelsMongoDBInteraction, error) {
+func InteractionMongoDB(
+	chanSaveLog chan<- modulelogginginformationerrors.LogMessageType,
+	mdbs *datamodels.MongoDBSettings,
+	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) (ChannelsMongoDBInteraction, error) {
+
 	fmt.Println("func 'InteractionMongoDB', START...")
 	fmt.Printf("func 'InteractionMongoDB', settings db: '%v'\n", mdbs)
 
@@ -57,14 +63,17 @@ func InteractionMongoDB(mdbs *datamodels.MongoDBSettings) (ChannelsMongoDBIntera
 
 	//подключаемся к базе данных MongoDB
 	if err := cdmdb.createConnection(mdbs); err != nil {
-
-		fmt.Println(err)
+		chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+			TypeMessage: "error",
+			Description: fmt.Sprint(err),
+			FuncName:    "InteractionMongoDB",
+		}
 
 		return cmdbi, err
 	}
 
 	//инициализируем маршрутизатор запросов
-	go Routing(cdmdb, cmdbi.InputModule)
+	go Routing(chanSaveLog, cmdbi.OutputModule, mdbs.NameDB, cdmdb, tst, cmdbi.InputModule)
 
 	return cmdbi, nil
 }

@@ -22,7 +22,6 @@ var _ = Describe("StixObject", func() {
 		if err != nil {
 			fmt.Println(err)
 		}
-
 	})
 
 	Context("Тест №1. Тест парсинга STIX объекта", func() {

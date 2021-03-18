@@ -102,6 +102,8 @@ func IsaAlpha(value string) bool {
 func IsAlphaNumeric(value string) bool {
 	patterCheckFileName := regexp.MustCompile(alphanumeric)
 
+
+	
 	return patterCheckFileName.MatchString(value)
 }
 

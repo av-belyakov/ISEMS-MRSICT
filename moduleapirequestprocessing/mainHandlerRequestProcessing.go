@@ -44,7 +44,6 @@ func init() {
 //MainHandlerAPIReguestProcessing модуль инициализации обработчика запросов с внешних источников
 func MainHandlerAPIReguestProcessing(
 	chanSaveLog chan<- modulelogginginformationerrors.LogMessageType,
-	//chanSaveLog chan<- modulelogginginformationerrors.LogMessageType,
 	mcs *datamodels.ModuleAPIRequestProcessingSetting,
 	criptoSet *datamodels.CryptographySettings) ChannelsModuleAPIRequestProcessing {
 

@@ -28,14 +28,8 @@ func MainHandlerCoreApplication(chanSaveLog chan<- modulelogginginformationerror
 	fmt.Println("func 'MainHandlerCoreApplication', START...")
 
 	//инициализируем модули взаимодействия с БД
-	cdbi, err := moduledatabaseinteraction.MainHandlerDataBaseInteraction(&appConfig.ConnectionsDataBase, tst)
+	cdbi, err := moduledatabaseinteraction.MainHandlerDataBaseInteraction(chanSaveLog, &appConfig.ConnectionsDataBase, tst)
 	if err != nil {
-		chanSaveLog <- modulelogginginformationerrors.LogMessageType{
-			TypeMessage: "error",
-			Description: fmt.Sprint(err),
-			FuncName:    funcName,
-		}
-
 		fmt.Println("An error occurred while initializing the database connection module.")
 
 		return

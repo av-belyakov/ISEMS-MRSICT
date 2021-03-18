@@ -6,6 +6,7 @@ import (
 	"ISEMS-MRSICT/datamodels"
 	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
 	"ISEMS-MRSICT/moduledatabaseinteraction/interactionmongodb"
+	"ISEMS-MRSICT/modulelogginginformationerrors"
 )
 
 //ChannelsModuleDataBaseInteraction описание каналов передачи данных между ядром приложения и модулем взаимодействия с базами данных
@@ -20,11 +21,15 @@ func init() {
 }
 
 //MainHandlerDataBaseInteraction модуль инициализации обработчиков для взаимодействия с базами данных
-func MainHandlerDataBaseInteraction(cdb *datamodels.ConnectionsDataBase, tst *memorytemporarystoragecommoninformation.TemporaryStorageType) (ChannelsModuleDataBaseInteraction, error) {
+func MainHandlerDataBaseInteraction(
+	chanSaveLog chan<- modulelogginginformationerrors.LogMessageType,
+	cdb *datamodels.ConnectionsDataBase,
+	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) (ChannelsModuleDataBaseInteraction, error) {
+
 	fmt.Println("func 'MainHandlerDataBaseInteraction', START...")
 
 	//инициализируем модуль для взаимодействия с БД MongoDB
-	chanMongoDB, err := interactionmongodb.InteractionMongoDB(&cdb.MongoDBSettings)
+	chanMongoDB, err := interactionmongodb.InteractionMongoDB(chanSaveLog, &cdb.MongoDBSettings, tst)
 	if err != nil {
 		return cmdbi, err
 	}

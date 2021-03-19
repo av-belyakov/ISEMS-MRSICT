@@ -35,6 +35,10 @@ type HashesTypeSTIX map[string]string
 //начинаться с наименования организации или программного обеспечения сгенерировавшего его. Например, <example-source--ff26c055-6336-5bc5-b98d-13d6226742dd> (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 type IdentifierTypeSTIX string
 
+func (itstix *IdentifierTypeSTIX) String() string {
+	return fmt.Sprintln(itstix)
+}
+
 //KillChainPhasesTypeSTIX тип "kill-chain-phases", по терминалогии STIX, содержащий цепочки фактов, приведших к какому либо урону
 type KillChainPhasesTypeSTIX []*KillChainPhasesTypeElementSTIX
 

@@ -8,27 +8,28 @@ const (
 	ip                   string = `^((25[0-5]|2[0-4]\d|[01]?\d\d?)[.]){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$`
 	computerNetAddrRange string = `^((25[0-5]|2[0-4]\d|[01]?\d\d?)[.]){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)/[0-9]{1,2}$`
 	tcpDumpFileName      string = `^(\w|_)+\.(tdp|pcap)$`
-	uuid3                string = "^[0-9a-f]{8}-[0-9a-f]{4}-3[0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}$"
-	uuid4                string = "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
-	uuid5                string = "^[0-9a-f]{8}-[0-9a-f]{4}-5[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
-	uuid                 string = "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
-	alpha                string = "^[a-zA-Z]+$"
-	alphanumeric         string = "^[a-zA-Z0-9]+$"
-	numeric              string = "^[0-9]+$"
-	integer              string = "^(?:[-+]?(?:0|[1-9][0-9]*))$"
-	float                string = "^(?:[-+]?(?:[0-9]+))?(?:\\.[0-9]*)?(?:[eE][\\+\\-]?(?:[0-9]+))?$"
-	hexadecimal          string = "^[0-9a-fA-F]+$"
-	hexcolor             string = "^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$"
-	ascii                string = "^[\x00-\x7F]+$"
-	multibyte            string = "[^\x00-\x7F]"
-	fullWidth            string = "[^\u0020-\u007E\uFF61-\uFF9F\uFFA0-\uFFDC\uFFE8-\uFFEE0-9a-zA-Z]"
-	halfWidth            string = "[\u0020-\u007E\uFF61-\uFF9F\uFFA0-\uFFDC\uFFE8-\uFFEE0-9a-zA-Z]"
-	base64               string = "^(?:[A-Za-z0-9+\\/]{4})*(?:[A-Za-z0-9+\\/]{2}==|[A-Za-z0-9+\\/]{3}=|[A-Za-z0-9+\\/]{4})$"
-	printableASCII       string = "^[\x20-\x7E]+$"
-	dataURI              string = "^data:.+\\/(.+);base64$"
-	magnetURI            string = "^magnet:\\?xt=urn:[a-zA-Z0-9]+:[a-zA-Z0-9]{32,40}&dn=.+&tr=.+$"
-	latitude             string = "^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?)$"
-	longitude            string = "^[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)$"
+	uuid3                string = `^[0-9a-f]{8}-[0-9a-f]{4}-3[0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}$`
+	uuid4                string = `^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`
+	uuid5                string = `^[0-9a-f]{8}-[0-9a-f]{4}-5[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`
+	uuid                 string = `^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$`
+	alpha                string = `^[a-zA-Z]+$`
+	alphanumeric         string = `^[a-zA-Z0-9]+$`
+	literaryline         string = `^[a-zA-Z0-9.,-_()!]+$`
+	numeric              string = `^[0-9]+$`
+	integer              string = `^(?:[-+]?(?:0|[1-9][0-9]*))$`
+	float                string = `^(?:[-+]?(?:[0-9]+))?(?:\\.[0-9]*)?(?:[eE][\\+\\-]?(?:[0-9]+))?$`
+	hexadecimal          string = `^[0-9a-fA-F]+$`
+	hexcolor             string = `^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$`
+	ascii                string = `^[\x00-\x7F]+$`
+	multibyte            string = `[^\x00-\x7F]`
+	fullWidth            string = `[^\u0020-\u007E\uFF61-\uFF9F\uFFA0-\uFFDC\uFFE8-\uFFEE0-9a-zA-Z]`
+	halfWidth            string = `[\u0020-\u007E\uFF61-\uFF9F\uFFA0-\uFFDC\uFFE8-\uFFEE0-9a-zA-Z]`
+	base64               string = `^(?:[A-Za-z0-9+\\/]{4})*(?:[A-Za-z0-9+\\/]{2}==|[A-Za-z0-9+\\/]{3}=|[A-Za-z0-9+\\/]{4})$`
+	printableASCII       string = `^[\x20-\x7E]+$`
+	dataURI              string = `^data:.+\\/(.+);base64$`
+	magnetURI            string = `^magnet:\\?xt=urn:[a-zA-Z0-9]+:[a-zA-Z0-9]{32,40}&dn=.+&tr=.+$`
+	latitude             string = `^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?)$`
+	longitude            string = `^[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)$`
 	dnsName              string = `^([a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62}){1}(\.[a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62})*[\._]?$`
 	urlSchema            string = `((ftp|tcp|udp|wss?|https?):\/\/)`
 	urlUsername          string = `(\S+(:\S*)?@)`
@@ -91,8 +92,8 @@ func IsUUID(value string) bool {
 	return patterCheckFileName.MatchString(value)
 }
 
-//IsaAlpha проверяет, содержит ли значение только буквенные символы
-func IsaAlpha(value string) bool {
+//IsAlpha проверяет, содержит ли значение только буквенные символы
+func IsAlpha(value string) bool {
 	patterCheckFileName := regexp.MustCompile(alpha)
 
 	return patterCheckFileName.MatchString(value)
@@ -102,8 +103,13 @@ func IsaAlpha(value string) bool {
 func IsAlphaNumeric(value string) bool {
 	patterCheckFileName := regexp.MustCompile(alphanumeric)
 
+	return patterCheckFileName.MatchString(value)
+}
 
-	
+//IsAlphaNumeric проверяет, содержит ли значение только буквенные или цифровые символы
+func IsLiteraryLine(value string) bool {
+	patterCheckFileName := regexp.MustCompile(literaryline)
+
 	return patterCheckFileName.MatchString(value)
 }
 

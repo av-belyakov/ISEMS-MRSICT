@@ -13,15 +13,6 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-type resultProcessingListSTIXObject struct {
-	DataType string
-	Data     interface{}
-}
-
-type fieldTypeSTIXObject struct {
-	Type string `json:"type"`
-}
-
 var _ = Describe("DecoderFromJSONToSTIXObject", func() {
 	var (
 		docJSON                        []byte
@@ -30,82 +21,16 @@ var _ = Describe("DecoderFromJSONToSTIXObject", func() {
 		errUnmarchalReq                error
 		errUnmarchalList               error
 		modAPIRequestProcessingReqJSON datamodels.ModAPIRequestProcessingReqJSON
-		commonPropertiesObjectSTIX     datamodels.CommonPropertiesObjectSTIX
 		listSTIXObjectJSON             datamodels.ModAPIRequestProcessingReqHandlingSTIXObjectJSON
-		listResult                     []*resultProcessingListSTIXObject
-		fieldTypeSTIXObject            fieldTypeSTIXObject
 		listSTIXObj                    []*datamodels.ElementSTIXObject
 	)
 
-	numSTIXObj := map[string]int{}
-	numSTIXType := map[string]int{}
 	countSTIXObj := map[string]int{}
 
 	var _ = BeforeSuite(func() {
 		docJSON, errReadFile = ioutil.ReadFile("../mytest/jsonSTIXExample.json")
 		errUnmarchalReq = json.Unmarshal(docJSON, &modAPIRequestProcessingReqJSON)
 		errUnmarchalList = json.Unmarshal(*modAPIRequestProcessingReqJSON.RequestDetails, &listSTIXObjectJSON)
-
-		for _, item := range listSTIXObjectJSON {
-			numCurrent := 1
-
-			err := json.Unmarshal(*item, &commonPropertiesObjectSTIX)
-			if err != nil {
-				continue
-			}
-
-			resultDecodingSTIXObject, typeSTIXObject, err := commonlibs.DecoderFromJSONToSTIXObject(commonPropertiesObjectSTIX.Type, item)
-			if err != nil {
-				fmt.Println(err)
-
-				continue
-			}
-
-			listResult = append(listResult, &resultProcessingListSTIXObject{
-				DataType: typeSTIXObject,
-				Data:     resultDecodingSTIXObject,
-			})
-
-			if num, ok := numSTIXObj[typeSTIXObject]; ok {
-				numCurrent = numCurrent + num
-			}
-
-			numSTIXObj[typeSTIXObject] = numCurrent
-
-			numType := 1
-			err = json.Unmarshal(*item, &fieldTypeSTIXObject)
-			if err != nil {
-				fmt.Println(err)
-
-				continue
-			}
-
-			if n, ok := numSTIXType[fieldTypeSTIXObject.Type]; ok {
-				numType = numType + n
-			}
-
-			numSTIXType[fieldTypeSTIXObject.Type] = numType
-		}
-		/*
-			fmt.Println("----------- STIX objects -----------")
-			for k, v := range numSTIXObj {
-				fmt.Printf("Key: '%s', Value: '%d'\n", k, v)
-			}
-
-			listTypeKeys := make([]string, 0, len(numSTIXType))
-
-			fmt.Println("----------- STIX types -----------")
-			for k := range numSTIXType {
-				listTypeKeys = append(listTypeKeys, k)
-			}
-
-			sort.Strings(listTypeKeys)
-
-			for _, k := range listTypeKeys {
-				fmt.Printf("Key: '%s', Value: '%d'\n", k, numSTIXType[k])
-			}*/
-
-		/* ________________________________________ */
 
 		listSTIXObj, errso = commonlibs.GetListSTIXObjectFromJSON(listSTIXObjectJSON)
 
@@ -275,30 +200,6 @@ var _ = Describe("DecoderFromJSONToSTIXObject", func() {
 
 		It("При декодировании списка STIX объектов в тип interface{} не должно быть ошибок", func() {
 			Expect(errUnmarchalList).ShouldNot(HaveOccurred())
-		})
-
-		It("Должно быть получено определенное количество STIX объектов", func() {
-			Expect(len(listResult)).Should(Equal(64))
-		})
-
-		It("Должен быть найден 1 объект типа 'relationship'", func() {
-			Expect(numSTIXType["relationship"]).Should(Equal(1))
-		})
-
-		It("Должен быть найден 3 объекта типа 'location'", func() {
-			Expect(numSTIXType["location"]).Should(Equal(3))
-		})
-
-		It("Должен быть найден 2 объекта типа 'malware'", func() {
-			Expect(numSTIXType["malware"]).Should(Equal(2))
-		})
-
-		It("Должен быть найден 3 объекта типа 'email-addr'", func() {
-			Expect(numSTIXType["email-addr"]).Should(Equal(3))
-		})
-
-		It("Должен быть найден 8 объектов типа 'file'", func() {
-			Expect(numSTIXType["file"]).Should(Equal(8))
 		})
 	})
 

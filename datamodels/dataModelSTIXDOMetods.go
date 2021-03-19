@@ -3,6 +3,8 @@ package datamodels
 import (
 	"encoding/json"
 	"fmt"
+	"regexp"
+	"strings"
 )
 
 /********** 			Domain Objects STIX (МЕТОДЫ)			**********/
@@ -40,15 +42,53 @@ type CommonPropertiesDomainObjectSTIX struct {
 }
 */
 
+//ReplacingCharactersString заменяет символы в строке
+func ReplacingCharactersString(s string) string {
+	/*
+	   Надо сделать замену некоторых символов и определенных слов типа $set, $merge, $limit
+	   или выполнять замену всех символов '$'
+
+	   надо посмотреть более подробно strings.ReplaceAll
+	   нужно заменить несколько символов включая '" на один
+	*/
+
+	return strings.ReplaceAll(s, "$", "8")
+}
+
 func (cpdostix *CommonPropertiesDomainObjectSTIX) checkingTypeCommonFields() bool {
 	fmt.Println("func 'checkingTypeCommonFields', START...")
 
-	//rtype := reflect.TypeOf(testTypeOne.Extensions)
+	if len(cpdostix.CreatedByRef.String()) > 0 {
+		if !(regexp.MustCompile(`^[0-9a-zA-Z]+(--)[0-9a-f|-]+$`).MatchString(cpdostix.CreatedByRef.String())) {
+			return false
+		}
+	}
+
+	if len(cpdostix.Labels) > 0 {
+		nl := make([]string, len(cpdostix.Labels))
+
+		for _, l := range cpdostix.Labels {
+			nl = append(nl, ReplacingCharactersString(l))
+		}
+
+		cpdostix.Labels = nl
+	}
+
+	if !(regexp.MustCompile("^[0-9]{1,}.[0-9]{1,}$")).MatchString(cpdostix.SpecVersion) {
+		return false
+	}
+
 	/*
-		валидация строк:
-		- удаление (замена) нежелательных символов или вырожений
-		- проверка строк на наличие ключевых строк в начале строки (для некоторых строк).
-		 Например для поля ID строка должна начинатся с названия типа и _ 'location_ggeg777d377377e7f'
+		if cpdostix.CreatedByRef {
+			return false
+		}*
+
+			//rtype := reflect.TypeOf(testTypeOne.Extensions)
+			/*
+				валидация строк:
+				- удаление (замена) нежелательных символов или вырожений
+				- проверка строк на наличие ключевых строк в начале строки (для некоторых строк).
+				 Например для поля ID строка должна начинатся с названия типа и _ 'location_ggeg777d377377e7f'
 	*/
 
 	return true

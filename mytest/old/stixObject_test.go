@@ -3,6 +3,7 @@ package mytest_test
 import (
 	"fmt"
 	"regexp"
+	"sort"
 
 	"github.com/google/uuid"
 
@@ -40,6 +41,50 @@ var _ = Describe("StixObject", func() {
 		It("На НЕ валидную строку FALSE", func() {
 			Expect((regexp.MustCompile(`^[0-9a-zA-Z]+(--)[0-9a-f|-]+$`)).MatchString(invalidStr)).Should(BeFalse())
 		})
+	})
+
+	Context("Тест 3. Поиск строки в массиве", func() {
+		listTypeAreaNetwork := []string{"ip", "pppoe", "pppoe/vlan", "vlan/pppoe"}
+
+		It("Должна быть найденна строка", func() {
+			//typeAreaNetwork := "ip"
+			a := "pppoe"
+
+			var isExist bool
+			for i := range listTypeAreaNetwork {
+
+				fmt.Printf("listTypeAreaNetwork[i] '%v' == '%v' a", listTypeAreaNetwork[i], a)
+
+				if listTypeAreaNetwork[i] == a {
+					isExist = true
+
+					fmt.Println("_____________")
+
+					break
+				}
+			}
+
+			Expect(isExist).Should(BeTrue())
+		})
+		It("Должна быть НЕ найденна строка", func() {
+			//Expect(sort.SearchStrings(listTypeAreaNetwork, "vlan/ppp")).Should(Equal(-1))
+			Expect(sort.Search(len(listTypeAreaNetwork), func(i int) bool {
+				return listTypeAreaNetwork[i] == "pppoe/v"
+			})).Should(Equal(4))
+		})
+		It("Должна быть НЕ найденна строка 111", func() {
+			var isExist bool
+			for i := range listTypeAreaNetwork {
+				if listTypeAreaNetwork[i] == "ppp/vlan" {
+					isExist = true
+
+					break
+				}
+
+				Expect(isExist).Should(BeFalse())
+			}
+		})
+
 	})
 
 	/*Context("Тест 2. Проверка получения параметров (флагов) JSON сообщения", func() {

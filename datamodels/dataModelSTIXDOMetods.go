@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"regexp"
-	"strings"
 )
 
 /********** 			Domain Objects STIX (МЕТОДЫ)			**********/
@@ -26,55 +25,50 @@ import (
 // Defanged - определяет были ли определены данные содержащиеся в объекте
 // Extensions - может содержать дополнительную информацию, относящуюся к объекту
 type CommonPropertiesDomainObjectSTIX struct {
-	SpecVersion        string                     `json:"spec_version" bson:"spec_version" required:"true"`
-	Created            time.Time                  `json:"created" bson:"created" required:"true"`
-	Modified           time.Time                  `json:"modified" bson:"modified" required:"true"`
-	CreatedByRef       IdentifierTypeSTIX         `json:"created_by_ref" bson:"created_by_ref"`
-	Revoked            bool                       `json:"revoked" bson:"revoked"`
-	Labels             []string                   `json:"labels" bson:"labels"`
-	Сonfidence         int                        `json:"confidence" bson:"confidence"`
-	Lang               string                     `json:"lang" bson:"lang"`
-	ExternalReferences ExternalReferencesTypeSTIX `json:"external_references" bson:"external_references"`
-	ObjectMarkingRefs  []*IdentifierTypeSTIX      `json:"object_marking_refs" bson:"object_marking_refs"`
-	GranularMarkings   GranularMarkingsTypeSTIX   `json:"granular_markings" bson:"granular_markings"`
-	Defanged           bool                       `json:"defanged" bson:"defanged"`
-	Extensions         map[string]string          `json:"extensions" bson:"extensions"`
+	+ SpecVersion        string                     `json:"spec_version" bson:"spec_version" required:"true"`
+	no Created            time.Time                  `json:"created" bson:"created" required:"true"`
+	no Modified           time.Time                  `json:"modified" bson:"modified" required:"true"`
+	+ CreatedByRef       IdentifierTypeSTIX         `json:"created_by_ref" bson:"created_by_ref"`
+	no Revoked            bool                       `json:"revoked" bson:"revoked"`
+	- Labels             []string                   `json:"labels" bson:"labels"`
+	no Сonfidence         int                        `json:"confidence" bson:"confidence"`
+	+ Lang               string                     `json:"lang" bson:"lang"`
+	hisself ExternalReferences ExternalReferencesTypeSTIX `json:"external_references" bson:"external_references"`
+	hisself ObjectMarkingRefs  []*IdentifierTypeSTIX      `json:"object_marking_refs" bson:"object_marking_refs"`
+	hisself GranularMarkings   GranularMarkingsTypeSTIX   `json:"granular_markings" bson:"granular_markings"`
+	no Defanged           bool                       `json:"defanged" bson:"defanged"`
+	- Extensions         map[string]string          `json:"extensions" bson:"extensions"`
 }
 */
-
-//ReplacingCharactersString заменяет символы в строке
-func ReplacingCharactersString(s string) string {
-	/*
-	   Надо сделать замену некоторых символов и определенных слов типа $set, $merge, $limit
-	   или выполнять замену всех символов '$'
-
-	   надо посмотреть более подробно strings.ReplaceAll
-	   нужно заменить несколько символов включая '" на один
-	*/
-
-	return strings.ReplaceAll(s, "$", "8")
-}
 
 func (cpdostix *CommonPropertiesDomainObjectSTIX) checkingTypeCommonFields() bool {
 	fmt.Println("func 'checkingTypeCommonFields', START...")
 
+	//для поля SpecVersion
+	if !(regexp.MustCompile(`^[0-9a-z.]+$`).MatchString(cpdostix.SpecVersion)) {
+		return false
+	}
+
+	//для поля CreatedByRef
 	if len(cpdostix.CreatedByRef.String()) > 0 {
 		if !(regexp.MustCompile(`^[0-9a-zA-Z]+(--)[0-9a-f|-]+$`).MatchString(cpdostix.CreatedByRef.String())) {
 			return false
 		}
 	}
 
+	//дезинфекция содержимого списка поля Labels
 	if len(cpdostix.Labels) > 0 {
 		nl := make([]string, len(cpdostix.Labels))
 
-		for _, l := range cpdostix.Labels {
-			nl = append(nl, ReplacingCharactersString(l))
-		}
+		/*for _, l := range cpdostix.Labels {
+			nl = append(nl, validation.ReplacingCharactersString(l))
+		}*/
 
 		cpdostix.Labels = nl
 	}
 
-	if !(regexp.MustCompile("^[0-9]{1,}.[0-9]{1,}$")).MatchString(cpdostix.SpecVersion) {
+	//для поля Lang
+	if !(regexp.MustCompile(`^[a-zA-Z]+$`)).MatchString(cpdostix.Lang) {
 		return false
 	}
 

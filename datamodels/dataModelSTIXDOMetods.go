@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"regexp"
+
+	"ISEMS-MRSICT/commonlibs"
 )
 
 /********** 			Domain Objects STIX (МЕТОДЫ)			**********/
@@ -30,39 +32,39 @@ type CommonPropertiesDomainObjectSTIX struct {
 	no Modified           time.Time                  `json:"modified" bson:"modified" required:"true"`
 	+ CreatedByRef       IdentifierTypeSTIX         `json:"created_by_ref" bson:"created_by_ref"`
 	no Revoked            bool                       `json:"revoked" bson:"revoked"`
-	- Labels             []string                   `json:"labels" bson:"labels"`
+	+ Labels             []string                   `json:"labels" bson:"labels"`
 	no Сonfidence         int                        `json:"confidence" bson:"confidence"`
 	+ Lang               string                     `json:"lang" bson:"lang"`
 	hisself ExternalReferences ExternalReferencesTypeSTIX `json:"external_references" bson:"external_references"`
 	hisself ObjectMarkingRefs  []*IdentifierTypeSTIX      `json:"object_marking_refs" bson:"object_marking_refs"`
 	hisself GranularMarkings   GranularMarkingsTypeSTIX   `json:"granular_markings" bson:"granular_markings"`
 	no Defanged           bool                       `json:"defanged" bson:"defanged"`
-	- Extensions         map[string]string          `json:"extensions" bson:"extensions"`
+	+ Extensions         map[string]string          `json:"extensions" bson:"extensions"`
 }
 */
 
 func (cpdostix *CommonPropertiesDomainObjectSTIX) checkingTypeCommonFields() bool {
 	fmt.Println("func 'checkingTypeCommonFields', START...")
 
-	//для поля SpecVersion
+	//валидация содержимого поля SpecVersion
 	if !(regexp.MustCompile(`^[0-9a-z.]+$`).MatchString(cpdostix.SpecVersion)) {
 		return false
 	}
 
-	//для поля CreatedByRef
+	//валидация содержимого поля CreatedByRef
 	if len(cpdostix.CreatedByRef.String()) > 0 {
 		if !(regexp.MustCompile(`^[0-9a-zA-Z]+(--)[0-9a-f|-]+$`).MatchString(cpdostix.CreatedByRef.String())) {
 			return false
 		}
 	}
 
-	//дезинфекция содержимого списка поля Labels
+	//обработка содержимого списка поля Labels
 	if len(cpdostix.Labels) > 0 {
 		nl := make([]string, len(cpdostix.Labels))
 
-		/*for _, l := range cpdostix.Labels {
-			nl = append(nl, validation.ReplacingCharactersString(l))
-		}*/
+		for _, l := range cpdostix.Labels {
+			nl = append(nl, commonlibs.StringSanitize(l))
+		}
 
 		cpdostix.Labels = nl
 	}
@@ -72,18 +74,33 @@ func (cpdostix *CommonPropertiesDomainObjectSTIX) checkingTypeCommonFields() boo
 		return false
 	}
 
-	/*
-		if cpdostix.CreatedByRef {
-			return false
-		}*
+	//вызываем метод проверки полей типа ExternalReferences
+	if ok := cpdostix.ExternalReferences.CheckExternalReferencesTypeSTIX(); !ok {
+		return false
+	}
 
-			//rtype := reflect.TypeOf(testTypeOne.Extensions)
-			/*
-				валидация строк:
-				- удаление (замена) нежелательных символов или вырожений
-				- проверка строк на наличие ключевых строк в начале строки (для некоторых строк).
-				 Например для поля ID строка должна начинатся с названия типа и _ 'location_ggeg777d377377e7f'
+	//проверяем поле ObjectMarkingRefs
+	newObjectMarkingRefs := make([]*IdentifierTypeSTIX, len(cpdostix.ObjectMarkingRefs))
+	for _, value := range cpdostix.ObjectMarkingRefs {
+		tmpRes := commonlibs.StringSanitize(value.String())
+		value.AddValue(tmpRes)
+		newObjectMarkingRefs = append(newObjectMarkingRefs, value)
+	}
+	cpdostix.ObjectMarkingRefs = newObjectMarkingRefs
+
+	//вызываем метод проверки полей типа GranularMarkingsTypeSTIX
+	/*
+
+	   Нужно сделать проверку поля GranularMarkingsTypeSTIX, то есть описать метод проверки для типа GranularMarkingsTypeSTIX
+
 	*/
+
+	//обработка содержимого списка поля Extension
+	newExtension := make(map[string]string, len(cpdostix.Extensions))
+	for extKey, extValue := range cpdostix.Extensions {
+		newExtension[extKey] = commonlibs.StringSanitize(extValue)
+	}
+	cpdostix.Extensions = newExtension
 
 	return true
 }

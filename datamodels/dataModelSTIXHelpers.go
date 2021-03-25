@@ -3,7 +3,12 @@ package datamodels
 import (
 	"encoding/json"
 	"fmt"
+	"regexp"
 	"time"
+
+	govalidator "github.com/asaskevich/govalidator"
+
+	"ISEMS-MRSICT/commonlibs"
 )
 
 /**********			 Некоторые примитивные типы STIX			 **********/
@@ -13,6 +18,23 @@ type EnumTypeSTIX string
 
 //ExternalReferencesTypeSTIX тип "external-reference", по терминалогии STIX, является списком с информацией о внешних ссылках не относящихся к STIX информации
 type ExternalReferencesTypeSTIX []*ExternalReferenceTypeElementSTIX
+
+//CheckExternalReferencesTypeSTIX выполняет проверку значений типа ExternalReferencesTypeSTIX
+func (ertstix *ExternalReferencesTypeSTIX) CheckExternalReferencesTypeSTIX() bool {
+	ertstixTmp := make([]*ExternalReferenceTypeElementSTIX, len(*ertstix))
+
+	for _, v := range *ertstix {
+		if result, ok := v.CheckExternalReferenceTypeElementSTIX(); ok {
+			ertstixTmp = append(ertstixTmp, result)
+		} else {
+			return false
+		}
+	}
+
+	ertstix = (*ExternalReferencesTypeSTIX)(&ertstixTmp)
+
+	return true
+}
 
 //ExternalReferenceTypeElementSTIX тип содержащий подробную информацию о внешних ссылках, таких как URL, ID и т.д.
 // SourceName - имя источника (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
@@ -28,15 +50,48 @@ type ExternalReferenceTypeElementSTIX struct {
 	ExternalID  string         `json:"external_id" bson:"external_id"`
 }
 
+//CheckExternalReferenceTypeElementSTIX выполняет проверку значений типа ExternalReferenceTypeElementSTIX
+func (ertestix *ExternalReferenceTypeElementSTIX) CheckExternalReferenceTypeElementSTIX() (*ExternalReferenceTypeElementSTIX, bool) {
+	ertestix.SourceName = commonlibs.StringSanitize(ertestix.SourceName)
+	ertestix.Description = commonlibs.StringSanitize(ertestix.Description)
+	if !govalidator.IsURL(ertestix.URL) {
+		return ertestix, false
+	}
+
+	ertestix.ExternalID = commonlibs.StringSanitize(ertestix.ExternalID)
+
+	return ertestix, true
+}
+
 //HashesTypeSTIX тип "hashes", по терминологии STIX, содержащий хеш значения, где <тип_хеша>:<хеш>
 type HashesTypeSTIX map[string]string
+
+//CheckHashesTypeSTIX выполняет проверку значений типа HashesTypeSTIX
+func (htstix *HashesTypeSTIX) CheckHashesTypeSTIX() *HashesTypeSTIX {
+	var htstixTmp HashesTypeSTIX = make(HashesTypeSTIX)
+
+	for k, v := range *htstix {
+		if (regexp.MustCompile(`^[0-9a-zA-Z|-|_]+$`)).MatchString(v) {
+			htstixTmp[k] = v
+		}
+	}
+
+	return &htstixTmp
+}
 
 //IdentifierTypeSTIX тип "identifier", по терминалогии STIX, содержащий уникальный идентификатор UUID, преимущественно версии 4 при этом ID должен
 //начинаться с наименования организации или программного обеспечения сгенерировавшего его. Например, <example-source--ff26c055-6336-5bc5-b98d-13d6226742dd> (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 type IdentifierTypeSTIX string
 
+//String перобразует тип IdentifierTypeSTIX в строку
 func (itstix *IdentifierTypeSTIX) String() string {
 	return fmt.Sprintln(itstix)
+}
+
+//AddValue добавляет значение в тип IdentifierTypeSTIX
+func (itstix *IdentifierTypeSTIX) AddValue(str string) {
+	var i IdentifierTypeSTIX = IdentifierTypeSTIX(str)
+	itstix = &i
 }
 
 //KillChainPhasesTypeSTIX тип "kill-chain-phases", по терминалогии STIX, содержащий цепочки фактов, приведших к какому либо урону

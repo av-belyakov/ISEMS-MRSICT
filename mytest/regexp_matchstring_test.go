@@ -1,6 +1,7 @@
 package mytest_test
 
 import (
+	"ISEMS-MRSICT/commonlibs"
 	"fmt"
 	"regexp"
 	"strings"
@@ -54,7 +55,7 @@ var _ = Describe("RegexpMatchstring", func() {
 		})
 	})
 
-	Context("Тест 4. С помощбю sanitize Проверяем функцию выполняющую 'очистку' строк от нежелательных символов или вырожений", func() {
+	Context("Тест 4. С помощью sanitize Проверяем функцию выполняющую 'очистку' строк от нежелательных символов или вырожений", func() {
 		str := "Mozilla/5.0 (Windows; U; Windows NT 5.1; <' \nen-US; rv:1.6)Gecko/20040113"
 		resultStr := sanitize.Accents(str)
 
@@ -70,7 +71,7 @@ var _ = Describe("RegexpMatchstring", func() {
 	})
 
 	Context("Тест 5. С помощью go-sanitize Проверяем функцию выполняющую 'очистку' строк от нежелательных символов или вырожений", func() {
-		str := "Mozilla/5.0 (Windows; U; Windows NT 5.1; \n en-US; rv:1.6)Gecko/20040113"
+		str := "Mozilla/5.0 (Windows; U; Windows NT 5.1; \n \ten-'US; rv:1.6)Gecko/20040113"
 		opts := gosanitize.DefaultOptions()
 		resultStr, _ := gosanitize.SanitizeString(str, opts)
 
@@ -85,13 +86,59 @@ var _ = Describe("RegexpMatchstring", func() {
 		})
 	})
 
-	Context("Тест 6. Тестируем пакет 'govalidator'", func() {
-		str := "Mozilla/5.0 (Windows; U; Windows NT 5.1; \n en-US; &where where rv:1.6)Gecko/20040113"
-		resultStr := govalidator.BlackList(str, "\n")
+	Context("Тест 6. Тестируем функцию которая преобразовывает некоторые символы в их HTML код", func() {
+		It("В строке должны быть заменены все, некоторые специальные символы в их HTML код", func() {
+			str := `Mozilla/5.0 (Windows; U; Windows NT 5.1; \n en-US<; $where " \twhere' rv>:1.6)Gecko/20040113`
+			strRes := commonlibs.StringSanitize(str)
 
-		fmt.Printf("++++++ govalidator: '%s'\n", resultStr)
+			fmt.Printf("+ stringSanitize: '%s'\n", str)
+			fmt.Printf("+ stringSanitize: '%s'\n", strRes)
 
+			charOne := strings.Contains(strRes, "\n")
+			charTwo := strings.Contains(strRes, "<")
+			charThree := strings.Contains(strRes, "\t")
+			charFour := strings.Contains(strRes, ">")
+			charFive := strings.Contains(strRes, "$")
+
+			fmt.Printf("charOne: '%v', charTwo: '%v', charThree: '%v', charFour: '%v', charFive: '%v'\n", charOne, charTwo, charThree, charFour, charFive)
+
+			charIsExist := charOne || charTwo || charThree || charFour || charFive
+
+			Expect(charIsExist).Should(BeFalse())
+		})
+	})
+
+	Context("Тест 7. Тестируем пакет 'govalidator'", func() {
 		It("Должен быть удален невалидный символ '\n'", func() {
+
+			specialCharacters := [][2]string{
+				{"$", " &#36; "},
+				{"\"", " &quot; "},
+				{"'", " &apos; "},
+				{"<", " &lt; "},
+				{">", " &gt; "},
+				{"\\n", " &#010; "},
+				{"\\t", " &#009; "},
+				{"\\r", " &#013; "},
+			}
+			var resultStrTwo string
+
+			str := `Mozilla/5.0 (Windows; U; Windows NT 5.1; \n en-US<; $where " \twhere' rv>:1.6)Gecko/20040113`
+			resultStr := govalidator.ReplacePattern(str, "(\\|\"|\\')", "\\/")
+
+			fmt.Printf("++++++ govalidator: '%s'\n", str)
+			fmt.Printf("++++++ govalidator: '%s'\n", resultStr)
+
+			resultStrTwo = str
+			for ch := range specialCharacters {
+
+				//fmt.Printf("--- 1. '%s', 2. '%s' ---\n", specialCharacters[ch][0], specialCharacters[ch][1])
+
+				resultStrTwo = govalidator.ReplacePattern(resultStrTwo, specialCharacters[ch][0], specialCharacters[ch][1])
+			}
+
+			fmt.Printf("++++++ MyFunc: '%s'\n", resultStrTwo)
+
 			Expect(strings.Contains(resultStr, "\n")).Should(BeFalse())
 		})
 	})

@@ -4,6 +4,29 @@ import (
 	"regexp"
 )
 
+//StringSanitize преобразовавает некоторые символы, такие как '$', '"', '<', '\n' и т.д., в HTML код
+func StringSanitize(strIn string) string {
+	var strOut string
+
+	specialCharacters := [][2]string{
+		{`\$`, "&#36;"},
+		{`\"`, "&quot;"},
+		{`'`, "&apos;"},
+		{`<`, "&lt;"},
+		{`>`, "&gt;"},
+		{`\\n`, "&#010;"},
+		{`\\t`, "&#009;"},
+		{`\\r`, "&#013;"},
+	}
+
+	strOut = strIn
+	for ch := range specialCharacters {
+		strOut = regexp.MustCompile(specialCharacters[ch][0]).ReplaceAllString(strOut, specialCharacters[ch][1])
+	}
+
+	return strOut
+}
+
 const (
 	ip                   string = `^((25[0-5]|2[0-4]\d|[01]?\d\d?)[.]){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$`
 	computerNetAddrRange string = `^((25[0-5]|2[0-4]\d|[01]?\d\d?)[.]){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)/[0-9]{1,2}$`

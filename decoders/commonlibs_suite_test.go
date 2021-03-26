@@ -1,4 +1,4 @@
-package commonlibs_test
+package decoders_test
 
 import (
 	"testing"

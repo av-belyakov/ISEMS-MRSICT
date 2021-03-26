@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"ISEMS-MRSICT/commonlibs"
 	"ISEMS-MRSICT/datamodels"
+	"ISEMS-MRSICT/decoders"
 )
 
 //UnmarshalJSONObjectSTIXReq декодирует JSON документ, поступающий от модуля 'moduleapirequestprocessing', который содержит список объектов STIX
@@ -16,7 +16,7 @@ func UnmarshalJSONObjectSTIXReq(msgReq datamodels.ModAPIRequestProcessingReqJSON
 		return nil, err
 	}
 
-	listResults, err := commonlibs.GetListSTIXObjectFromJSON(listSTIXObjectJSON)
+	listResults, err := decoders.GetListSTIXObjectFromJSON(listSTIXObjectJSON)
 	if err != nil {
 		return nil, err
 	}

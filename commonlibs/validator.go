@@ -6,8 +6,6 @@ import (
 
 //StringSanitize преобразовавает некоторые символы, такие как '$', '"', '<', '\n' и т.д., в HTML код
 func StringSanitize(strIn string) string {
-	var strOut string
-
 	specialCharacters := [][2]string{
 		{`\$`, "&#36;"},
 		{`\"`, "&quot;"},
@@ -19,12 +17,15 @@ func StringSanitize(strIn string) string {
 		{`\\r`, "&#013;"},
 	}
 
-	strOut = strIn
+	//	fmt.Printf("func 'StringSanitize', BEFORE strIn:'%s'\n", strIn)
+
 	for ch := range specialCharacters {
-		strOut = regexp.MustCompile(specialCharacters[ch][0]).ReplaceAllString(strOut, specialCharacters[ch][1])
+		strIn = regexp.MustCompile(specialCharacters[ch][0]).ReplaceAllString(strIn, specialCharacters[ch][1])
 	}
 
-	return strOut
+	//	fmt.Printf("func 'StringSanitize', AFTER strIn:'%s'\n", strIn)
+
+	return strIn
 }
 
 const (

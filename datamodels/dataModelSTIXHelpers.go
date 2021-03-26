@@ -21,16 +21,16 @@ type ExternalReferencesTypeSTIX []*ExternalReferenceTypeElementSTIX
 
 //CheckExternalReferencesTypeSTIX выполняет проверку значений типа ExternalReferencesTypeSTIX
 func (ertstix *ExternalReferencesTypeSTIX) CheckExternalReferencesTypeSTIX() bool {
-	ertstixTmp := make([]*ExternalReferenceTypeElementSTIX, len(*ertstix))
-
-	for _, v := range *ertstix {
-		if result, ok := v.CheckExternalReferenceTypeElementSTIX(); ok {
-			ertstixTmp = append(ertstixTmp, result)
-		} else {
-			return false
-		}
+	if len(*ertstix) == 0 {
+		return true
 	}
 
+	ertstixTmp := make([]*ExternalReferenceTypeElementSTIX, 0, len(*ertstix))
+	for _, v := range *ertstix {
+		if ok := v.CheckExternalReferenceTypeElementSTIX(); !ok {
+			ertstixTmp = append(ertstixTmp, v)
+		}
+	}
 	ertstix = (*ExternalReferencesTypeSTIX)(&ertstixTmp)
 
 	return true
@@ -51,41 +51,43 @@ type ExternalReferenceTypeElementSTIX struct {
 }
 
 //CheckExternalReferenceTypeElementSTIX выполняет проверку значений типа ExternalReferenceTypeElementSTIX
-func (ertestix *ExternalReferenceTypeElementSTIX) CheckExternalReferenceTypeElementSTIX() (*ExternalReferenceTypeElementSTIX, bool) {
+func (ertestix *ExternalReferenceTypeElementSTIX) CheckExternalReferenceTypeElementSTIX() bool {
 	ertestix.SourceName = commonlibs.StringSanitize(ertestix.SourceName)
 	ertestix.Description = commonlibs.StringSanitize(ertestix.Description)
 	if !govalidator.IsURL(ertestix.URL) {
-		return ertestix, false
+		return false
 	}
 
 	ertestix.ExternalID = commonlibs.StringSanitize(ertestix.ExternalID)
 
-	return ertestix, true
+	return true
 }
 
 //HashesTypeSTIX тип "hashes", по терминологии STIX, содержащий хеш значения, где <тип_хеша>:<хеш>
 type HashesTypeSTIX map[string]string
 
 //CheckHashesTypeSTIX выполняет проверку значений типа HashesTypeSTIX
-func (htstix *HashesTypeSTIX) CheckHashesTypeSTIX() *HashesTypeSTIX {
-	var htstixTmp HashesTypeSTIX = make(HashesTypeSTIX)
-
-	for k, v := range *htstix {
-		if (regexp.MustCompile(`^[0-9a-zA-Z|-|_]+$`)).MatchString(v) {
-			htstixTmp[k] = v
+func (htstix *HashesTypeSTIX) CheckHashesTypeSTIX() bool {
+	for _, v := range *htstix {
+		if !(regexp.MustCompile(`^[0-9a-zA-Z|-|_]+$`)).MatchString(v) {
+			return false
 		}
 	}
 
-	return &htstixTmp
+	return true
 }
 
 //IdentifierTypeSTIX тип "identifier", по терминалогии STIX, содержащий уникальный идентификатор UUID, преимущественно версии 4 при этом ID должен
 //начинаться с наименования организации или программного обеспечения сгенерировавшего его. Например, <example-source--ff26c055-6336-5bc5-b98d-13d6226742dd> (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 type IdentifierTypeSTIX string
 
-//String перобразует тип IdentifierTypeSTIX в строку
-func (itstix *IdentifierTypeSTIX) String() string {
-	return fmt.Sprintln(itstix)
+//CheckIdentifierTypeSTIX выполняет проверку значения типа IdentifierTypeSTIX
+func (itstix *IdentifierTypeSTIX) CheckIdentifierTypeSTIX() bool {
+	if len(*itstix) == 0 {
+		return true
+	}
+
+	return regexp.MustCompile(`^[0-9a-zA-Z-_]+(--)[0-9a-f|-]+$`).MatchString(fmt.Sprint(itstix))
 }
 
 //AddValue добавляет значение в тип IdentifierTypeSTIX
@@ -97,12 +99,38 @@ func (itstix *IdentifierTypeSTIX) AddValue(str string) {
 //KillChainPhasesTypeSTIX тип "kill-chain-phases", по терминалогии STIX, содержащий цепочки фактов, приведших к какому либо урону
 type KillChainPhasesTypeSTIX []*KillChainPhasesTypeElementSTIX
 
+func (kcptstix KillChainPhasesTypeSTIX) CheckKillChainPhasesTypeSTIX() bool {
+	for _, v := range kcptstix {
+		if !v.CheckKillChainPhasesTypeElementSTIX() {
+			return false
+		}
+	}
+
+	return true
+}
+
 //KillChainPhasesTypeElementSTIX тип содержащий набор элементов цепочки фактов, приведших к какому либо урону
 // KillChainName - имя цепочки (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // PhaseName - наименование фазы из спецификации STIX, например, "reconnaissance", "pre-attack" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 type KillChainPhasesTypeElementSTIX struct {
 	KillChainName string `json:"kill_chain_name" bson:"kill_chain_name" required:"true"`
 	PhaseName     string `json:"phase_name" bson:"phase_name" required:"true"`
+}
+
+//ChainKillChainPhasesTypeElementSTIX выполлняет проверку значения типа KillChainPhasesTypeElementSTIX
+func (kcptestix *KillChainPhasesTypeElementSTIX) CheckKillChainPhasesTypeElementSTIX() bool {
+	if kcptestix.KillChainName == "" {
+		return false
+	}
+
+	if kcptestix.PhaseName == "" {
+		return false
+	}
+
+	kcptestix.KillChainName = commonlibs.StringSanitize(kcptestix.KillChainName)
+	kcptestix.PhaseName = commonlibs.StringSanitize(kcptestix.PhaseName)
+
+	return true
 }
 
 //OpenVocabTypeSTIX тип "open-vocab", по терминалогии STIX, содержащий заранее определенное (предложенное) значение
@@ -228,6 +256,25 @@ type GranularMarkingsTypeSTIX struct {
 	Selectors  []string           `json:"selectors" bson:"selectors"`
 }
 
+func (gmtstix *GranularMarkingsTypeSTIX) CheckGranularMarkingsTypeSTIX() bool {
+	//для поля Lang
+	if gmtstix.Lang != "" && !(regexp.MustCompile(`^[a-zA-Z]+$`)).MatchString(gmtstix.Lang) {
+		return false
+	}
+
+	if !gmtstix.MarkingRef.CheckIdentifierTypeSTIX() {
+		return false
+	}
+
+	selectorTmp := make([]string, 0, len(gmtstix.Selectors))
+	for _, v := range gmtstix.Selectors {
+		selectorTmp = append(selectorTmp, commonlibs.StringSanitize(v))
+	}
+	gmtstix.Selectors = selectorTmp
+
+	return true
+}
+
 //MarkingDefinitionObjectSTIX объект "marking-definition", по терминалогии STIX, содержит метки данных ссылающиеся на требования к обработке
 // или совместному использованию данных
 // Type - наименование типа объекта, для этого типа это поле ДОЛЖНО содержать "marking-definition" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
@@ -315,4 +362,9 @@ type BundleObjectSTIX struct {
 type CommonPropertiesObjectSTIX struct {
 	Type string `json:"type" bson:"type" required:"true"`
 	ID   string `json:"id" bson:"id" required:"true"`
+}
+
+//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+func (cp CommonPropertiesObjectSTIX) ToStringBeautiful() string {
+	return fmt.Sprintf("type: '%s'\nid: '%s'\n", cp.Type, cp.ID)
 }

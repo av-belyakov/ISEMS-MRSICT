@@ -5,7 +5,9 @@ import (
 	"fmt"
 )
 
+/*********************************************************************************/
 /********** 			Cyber-observable Objects STIX (МЕТОДЫ)			**********/
+/*********************************************************************************/
 
 /*
 //OptionalCommonPropertiesCyberObservableObjectSTIX содержит опциональные общие свойства для Cyber-observable Objects STIX
@@ -53,18 +55,7 @@ func (astix ArtifactCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
-func (astix ArtifactCyberObservableObjectSTIX) CheckingTypeFields() bool {
-	fmt.Println("func 'CheckingTypeFields', START...")
-
-	if !astix.checkingTypeCommonFields() {
-		return false
-	}
-
-	//тут проверяем остальные параметры, не входящие в тип CommonPropertiesDomainObjectSTIX
-
-	return true
-}
+/* --- ArtifactCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (asstix AutonomousSystemCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -82,11 +73,15 @@ func (asstix AutonomousSystemCyberObservableObjectSTIX) EncoderJSON(interface{})
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
-func (asstix AutonomousSystemCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//CheckingTypeFields является валидатором параметров содержащихся в типе ArtifactCyberObservableObjectSTIX
+// возвращает ВАЛИДНЫЙ объект ArtifactCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.ArtifactCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
+func (astix ArtifactCyberObservableObjectSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
-	if !asstix.checkingTypeCommonFields() {
+	if !astix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -94,6 +89,8 @@ func (asstix AutonomousSystemCyberObservableObjectSTIX) CheckingTypeFields() boo
 
 	return true
 }
+
+/* --- AutonomousSystemCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (dstix DirectoryCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -111,11 +108,15 @@ func (dstix DirectoryCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byt
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
-func (dstix DirectoryCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//CheckingTypeFields является валидатором параметров содержащихся в типе AutonomousSystemCyberObservableObjectSTIX
+// возвращает ВАЛИДНЫЙ объект AutonomousSystemCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.AutonomousSystemCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
+func (asstix AutonomousSystemCyberObservableObjectSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
-	if !dstix.checkingTypeCommonFields() {
+	if !asstix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -123,6 +124,8 @@ func (dstix DirectoryCyberObservableObjectSTIX) CheckingTypeFields() bool {
 
 	return true
 }
+
+/* --- DirectoryCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (dnstix DomainNameCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -140,11 +143,15 @@ func (dnstix DomainNameCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]b
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
-func (dnstix DomainNameCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//CheckingTypeFields является валидатором параметров содержащихся в типе DirectoryCyberObservableObjectSTIX
+// возвращает ВАЛИДНЫЙ объект DirectoryCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.DirectoryCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
+func (dstix DirectoryCyberObservableObjectSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
-	if !dnstix.checkingTypeCommonFields() {
+	if !dstix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -152,6 +159,8 @@ func (dnstix DomainNameCyberObservableObjectSTIX) CheckingTypeFields() bool {
 
 	return true
 }
+
+/* --- DomainNameCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (eastix EmailAddressCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -169,11 +178,15 @@ func (eastix EmailAddressCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
-func (eastix EmailAddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//CheckingTypeFields является валидатором параметров содержащихся в типе DomainNameCyberObservableObjectSTIX
+// возвращает ВАЛИДНЫЙ объект DomainNameCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.DomainNameCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
+func (dnstix DomainNameCyberObservableObjectSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
-	if !eastix.checkingTypeCommonFields() {
+	if !dnstix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -181,6 +194,8 @@ func (eastix EmailAddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
 
 	return true
 }
+
+/* --- EmailAddressCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (emstix EmailMessageCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -198,11 +213,15 @@ func (emstix EmailMessageCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
-func (emstix EmailMessageCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//CheckingTypeFields является валидатором параметров содержащихся в типе EmailAddressCyberObservableObjectSTIX
+// возвращает ВАЛИДНЫЙ объект EmailAddressCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.EmailAddressCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
+func (eastix EmailAddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
-	if !emstix.checkingTypeCommonFields() {
+	if !eastix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -210,6 +229,8 @@ func (emstix EmailMessageCyberObservableObjectSTIX) CheckingTypeFields() bool {
 
 	return true
 }
+
+/* --- EmailMessageCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (fstix FileCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -248,16 +269,15 @@ func (fstix FileCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte, er
 	return &result, err
 }
 
-//GetFileCyberObservableObjectSTIX выполняет кодирование в JSON объект
-func (fstix *FileCyberObservableObjectSTIX) GetFileCyberObservableObjectSTIX() *FileCyberObservableObjectSTIX {
-	return fstix
-}
-
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
-func (fstix FileCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//CheckingTypeFields является валидатором параметров содержащихся в типе EmailMessageCyberObservableObjectSTIX
+// возвращает ВАЛИДНЫЙ объект EmailMessageCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.EmailMessageCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
+func (emstix EmailMessageCyberObservableObjectSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
-	if !fstix.checkingTypeCommonFields() {
+	if !emstix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -265,6 +285,13 @@ func (fstix FileCyberObservableObjectSTIX) CheckingTypeFields() bool {
 
 	return true
 }
+
+//GetFileCyberObservableObjectSTIX возвращает объект типа FileCyberObservableObjectSTIX
+func (fstix *FileCyberObservableObjectSTIX) GetFileCyberObservableObjectSTIX() *FileCyberObservableObjectSTIX {
+	return fstix
+}
+
+/* --- EmailMessageCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (ip4stix IPv4AddressCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -282,16 +309,15 @@ func (ip4stix IPv4AddressCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[
 	return &result, err
 }
 
-//GetIPv4AddressCyberObservableObjectSTIX выполняет кодирование в JSON объект
-func (fstix *IPv4AddressCyberObservableObjectSTIX) GetIPv4AddressCyberObservableObjectSTIX() *IPv4AddressCyberObservableObjectSTIX {
-	return fstix
-}
-
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
-func (ip4stix IPv4AddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//CheckingTypeFields является валидатором параметров содержащихся в типе FileCyberObservableObjectSTIX
+// возвращает ВАЛИДНЫЙ объект FileCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.FileCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
+func (fstix FileCyberObservableObjectSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
-	if !ip4stix.checkingTypeCommonFields() {
+	if !fstix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -299,6 +325,13 @@ func (ip4stix IPv4AddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
 
 	return true
 }
+
+//GetIPv4AddressCyberObservableObjectSTIX выполняет объект типа IPv4AddressCyberObservableObjectSTIX
+func (fstix *IPv4AddressCyberObservableObjectSTIX) GetIPv4AddressCyberObservableObjectSTIX() *IPv4AddressCyberObservableObjectSTIX {
+	return fstix
+}
+
+/* --- IPv4AddressCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (ip6stix IPv6AddressCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -316,11 +349,15 @@ func (ip6stix IPv6AddressCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
-func (ip6stix IPv6AddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//CheckingTypeFields является валидатором параметров содержащихся в типе IPv4AddressCyberObservableObjectSTIX
+// возвращает ВАЛИДНЫЙ объект IPv4AddressCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.IPv4AddressCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
+func (ip4stix IPv4AddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
-	if !ip6stix.checkingTypeCommonFields() {
+	if !ip4stix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -328,6 +365,8 @@ func (ip6stix IPv6AddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
 
 	return true
 }
+
+/* --- IPv6AddressCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (macstix MACAddressCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -345,11 +384,15 @@ func (macstix MACAddressCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
-func (macstix MACAddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//CheckingTypeFields является валидатором параметров содержащихся в типе IPv6AddressCyberObservableObjectSTIX
+// возвращает ВАЛИДНЫЙ объект IPv6AddressCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.IPv6AddressCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
+func (ip6stix IPv6AddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
-	if !macstix.checkingTypeCommonFields() {
+	if !ip6stix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -357,6 +400,8 @@ func (macstix MACAddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
 
 	return true
 }
+
+/* --- MACAddressCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (mstix MutexCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -374,11 +419,15 @@ func (mstix MutexCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte, e
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
-func (mstix MutexCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//CheckingTypeFields является валидатором параметров содержащихся в типе MACAddressCyberObservableObjectSTIX
+// возвращает ВАЛИДНЫЙ объект MACAddressCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.MACAddressCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
+func (macstix MACAddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
-	if !mstix.checkingTypeCommonFields() {
+	if !macstix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -386,6 +435,8 @@ func (mstix MutexCyberObservableObjectSTIX) CheckingTypeFields() bool {
 
 	return true
 }
+
+/* --- MutexCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (ntstix NetworkTrafficCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -424,11 +475,15 @@ func (ntstix NetworkTrafficCyberObservableObjectSTIX) EncoderJSON(interface{}) (
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
-func (ntstix NetworkTrafficCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//CheckingTypeFields является валидатором параметров содержащихся в типе MutexCyberObservableObjectSTIX
+// возвращает ВАЛИДНЫЙ объект MutexCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.MutexCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
+func (mstix MutexCyberObservableObjectSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
-	if !ntstix.checkingTypeCommonFields() {
+	if !mstix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -436,6 +491,8 @@ func (ntstix NetworkTrafficCyberObservableObjectSTIX) CheckingTypeFields() bool 
 
 	return true
 }
+
+/* --- NetworkTrafficCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (pstix ProcessCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -473,11 +530,15 @@ func (pstix ProcessCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte,
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
-func (pstix ProcessCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//CheckingTypeFields является валидатором параметров содержащихся в типе NetworkTrafficCyberObservableObjectSTIX
+// возвращает ВАЛИДНЫЙ объект NetworkTrafficCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.NetworkTrafficCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
+func (ntstix NetworkTrafficCyberObservableObjectSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
-	if !pstix.checkingTypeCommonFields() {
+	if !ntstix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -485,6 +546,8 @@ func (pstix ProcessCyberObservableObjectSTIX) CheckingTypeFields() bool {
 
 	return true
 }
+
+/* --- ProcessCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (sstix SoftwareCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -502,11 +565,15 @@ func (sstix SoftwareCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
-func (sstix SoftwareCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//CheckingTypeFields является валидатором параметров содержащихся в типе ProcessCyberObservableObjectSTIX
+// возвращает ВАЛИДНЫЙ объект ProcessCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.ProcessCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
+func (pstix ProcessCyberObservableObjectSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
-	if !sstix.checkingTypeCommonFields() {
+	if !pstix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -514,6 +581,8 @@ func (sstix SoftwareCyberObservableObjectSTIX) CheckingTypeFields() bool {
 
 	return true
 }
+
+/* --- SoftwareCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (urlstix URLCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -531,11 +600,15 @@ func (urlstix URLCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte, e
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
-func (urlstix URLCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//CheckingTypeFields является валидатором параметров содержащихся в типе SoftwareCyberObservableObjectSTIX
+// возвращает ВАЛИДНЫЙ объект SoftwareCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.SoftwareCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
+func (sstix SoftwareCyberObservableObjectSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
-	if !urlstix.checkingTypeCommonFields() {
+	if !sstix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -543,6 +616,8 @@ func (urlstix URLCyberObservableObjectSTIX) CheckingTypeFields() bool {
 
 	return true
 }
+
+/* --- URLCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (uastix UserAccountCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -560,11 +635,15 @@ func (uastix UserAccountCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
-func (uastix UserAccountCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//CheckingTypeFields является валидатором параметров содержащихся в типе URLCyberObservableObjectSTIX
+// возвращает ВАЛИДНЫЙ объект URLCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.URLCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
+func (urlstix URLCyberObservableObjectSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
-	if !uastix.checkingTypeCommonFields() {
+	if !urlstix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -572,6 +651,8 @@ func (uastix UserAccountCyberObservableObjectSTIX) CheckingTypeFields() bool {
 
 	return true
 }
+
+/* --- UserAccountCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -589,11 +670,15 @@ func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) EncoderJSON(interface
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
-func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//CheckingTypeFields является валидатором параметров содержащихся в типе UserAccountCyberObservableObjectSTIX
+// возвращает ВАЛИДНЫЙ объект UserAccountCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.UserAccountCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
+func (uastix UserAccountCyberObservableObjectSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
-	if !wrkstix.checkingTypeCommonFields() {
+	if !uastix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -601,6 +686,8 @@ func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) CheckingTypeFields() 
 
 	return true
 }
+
+/* --- WindowsRegistryKeyCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (x509sstix X509CertificateCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -618,7 +705,30 @@ func (x509sstix X509CertificateCyberObservableObjectSTIX) EncoderJSON(interface{
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
+//CheckingTypeFields является валидатором параметров содержащихся в типе WindowsRegistryKeyCyberObservableObjectSTIX
+// возвращает ВАЛИДНЫЙ объект WindowsRegistryKeyCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.WindowsRegistryKeyCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
+func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) CheckingTypeFields() bool {
+	fmt.Println("func 'CheckingTypeFields', START...")
+
+	if !wrkstix.checkingTypeCommonFields() {
+		return false
+	}
+
+	//тут проверяем остальные параметры, не входящие в тип CommonPropertiesDomainObjectSTIX
+
+	return true
+}
+
+/* --- X509CertificateCyberObservableObjectSTIX --- */
+
+//CheckingTypeFields является валидатором параметров содержащихся в типе X509CertificateCyberObservableObjectSTIX
+// возвращает ВАЛИДНЫЙ объект X509CertificateCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.X509CertificateCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
 func (x509sstix X509CertificateCyberObservableObjectSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
@@ -630,37 +740,6 @@ func (x509sstix X509CertificateCyberObservableObjectSTIX) CheckingTypeFields() b
 
 	return true
 }
-
-/*
-//DecoderJSON выполняет декодирование JSON объекта
-func () DecoderJSON(raw *json.RawMessage) (interface{}, error) {
-	if err := json.Unmarshal(*raw, &); err != nil {
-		return nil, err
-	}
-
-	return apdostix, nil
-}
-
-//EncoderJSON выполняет кодирование в JSON объект
-func () EncoderJSON(interface{}) (*[]byte, error) {
-	result, err := json.Marshal()
-
-	return &result, err
-}
-
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
-func () CheckingTypeFields() bool {
-	fmt.Println("func 'CheckingTypeFields', START...")
-
-	if !apdostix.checkingTypeCommonFields() {
-		return false
-	}
-
-	//тут проверяем остальные параметры, не входящие в тип CommonPropertiesDomainObjectSTIX
-
-	return true
-}
-*/
 
 //decodingExtensionsSTIX декодирует следующие типы STIX расширений:
 // - "archive-ext"

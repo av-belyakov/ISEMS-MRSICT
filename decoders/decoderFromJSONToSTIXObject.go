@@ -1,4 +1,4 @@
-package commonlibs
+package decoders
 
 import (
 	"encoding/json"

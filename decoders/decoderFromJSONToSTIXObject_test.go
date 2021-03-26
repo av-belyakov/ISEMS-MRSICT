@@ -1,4 +1,4 @@
-package commonlibs_test
+package decoders_test
 
 import (
 	"encoding/json"
@@ -6,8 +6,8 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"ISEMS-MRSICT/commonlibs"
 	"ISEMS-MRSICT/datamodels"
+	"ISEMS-MRSICT/decoders"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -32,7 +32,7 @@ var _ = Describe("DecoderFromJSONToSTIXObject", func() {
 		errUnmarchalReq = json.Unmarshal(docJSON, &modAPIRequestProcessingReqJSON)
 		errUnmarchalList = json.Unmarshal(*modAPIRequestProcessingReqJSON.RequestDetails, &listSTIXObjectJSON)
 
-		listSTIXObj, errso = commonlibs.GetListSTIXObjectFromJSON(listSTIXObjectJSON)
+		listSTIXObj, errso = decoders.GetListSTIXObjectFromJSON(listSTIXObjectJSON)
 
 		for _, i := range listSTIXObj {
 			n := 1

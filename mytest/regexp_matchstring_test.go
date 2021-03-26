@@ -1,13 +1,15 @@
 package mytest_test
 
 import (
-	"ISEMS-MRSICT/commonlibs"
+	"encoding/json"
 	"fmt"
 	"regexp"
 	"strings"
 
+	"ISEMS-MRSICT/commonlibs"
+	"ISEMS-MRSICT/datamodels"
+
 	govalidator "github.com/asaskevich/govalidator"
-	"github.com/kennygrant/sanitize"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	gosanitize "github.com/whosonfirst/go-sanitize"
@@ -55,18 +57,14 @@ var _ = Describe("RegexpMatchstring", func() {
 		})
 	})
 
-	Context("Тест 4. С помощью sanitize Проверяем функцию выполняющую 'очистку' строк от нежелательных символов или вырожений", func() {
-		str := "Mozilla/5.0 (Windows; U; Windows NT 5.1; <' \nen-US; rv:1.6)Gecko/20040113"
-		resultStr := sanitize.Accents(str)
-
-		fmt.Printf("String sanitize result: '%v'\n", resultStr)
-
-		It("Исходная строка должна содержать указанное невалидное значение", func() {
-			Expect(strings.Contains(str, "<'")).Should(BeTrue())
+	Context("Тест 4. Тестируем регулярне вырожения для проверки поля ID", func() {
+		It("Должно быть TRUE на валидное содержимое поля ID", func() {
+			id := "attack-pattern--7e33a43e-e34b-40ec-89da-36c9bb2cacd5"
+			Expect(regexp.MustCompile(`^(attack-pattern--)[0-9a-f|-]+$`).MatchString(id)).Should(BeTrue())
 		})
-
-		It("Результирующая строка не должна содержать невалидное значение", func() {
-			Expect(strings.Contains(resultStr, "<'")).Should(BeFalse())
+		It("Должно быть FALSE на валидное содержимое поля ID", func() {
+			id := "attack-pattxern--7e33a43e-e34b-40ec-89da-36c9bb2cacd5"
+			Expect(regexp.MustCompile(`^(attack-pattern--)[0-9a-f|-]+$`).MatchString(id)).Should(BeFalse())
 		})
 	})
 
@@ -142,6 +140,45 @@ var _ = Describe("RegexpMatchstring", func() {
 			Expect(strings.Contains(resultStr, "\n")).Should(BeFalse())
 		})
 	})
+
+	Context("Тест 8. Выполняем проверку типа 'attack-pattern' методом CheckingTypeFields", func() {
+		It("На валидное содержимое типа AttackPatternDomainObjectsSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
+			apbyte := json.RawMessage([]byte(`{
+	"type": "attack-pattern",
+	"spec_version": "2.1",
+	"id": "attack-pattern--7e33a43e-e34b-40ec-89da-36c9bb2cacd5",
+	"created": "2016-05-12T08:17:27.000Z",
+	"modified": "2016-05-12T08:17:27.000Z",
+	"name": "Spear Phishing as Practiced $< by Adversary X",
+	"description": "A particular form of spear phishing where the attacker claims that $ the target <> had won a contest, including personal details, to get them to click on a link.",
+	"external_references": [{ "source_name": "capec", "external_id": "CAPEC-163" }]
+}`))
+			var apo datamodels.AttackPatternDomainObjectsSTIX
+			apoTmp, err := apo.DecoderJSON(&apbyte)
+
+			Expect(err).ShouldNot(HaveOccurred())
+
+			newapo, ok := apoTmp.(datamodels.AttackPatternDomainObjectsSTIX)
+			apoIsTrue := newapo.CheckingTypeFields()
+
+			Expect(ok).Should(BeTrue())
+
+			fmt.Println(newapo.ToStringBeautiful())
+
+			Expect(apoIsTrue).Should(BeTrue())
+		})
+	})
+
+	/*
+			При выполнении валидации методом CheckingTypeFields() НЕОБХОДИМО для некоторых полей
+			вызывать функцию StringSanitize() и результаты ее работы СОХРАНЯТЬ в валидирующийся тип
+			для этого нужно использовать приемник типа который передается по ссылке, однако из-за
+			ошибки 'cannot use e (variable of type datamodels.UserAccountCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
+		    value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)'
+			я НЕМОГУ передавать приемник по ссылке, а только по значению. Соответственно обработанное с помощью функции
+			StringSanitize() поле не может быть сохранено. НАДО ДУМАТЬ КАК РЕШИТЬ ЭТУ ПРОБЛЕММУ! Так как метод CheckingTypeFields()
+			соответвтвует определенному интерфейсу, а занчит я не могу что бы он возвращал объект разного типа
+	*/
 
 	/*Context("Тест .", func(){
 		It("", func(){

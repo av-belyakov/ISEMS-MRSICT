@@ -8,52 +8,27 @@ import (
 	"ISEMS-MRSICT/commonlibs"
 )
 
+/*************************************************************************/
 /********** 			Domain Objects STIX (МЕТОДЫ)			**********/
-
-/*
-//CommonPropertiesDomainObjectSTIX свойства общие, для всех объектов STIX
-// SpecVersion - версия спецификации STIX используемая для представления текущего объекта (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
-// Created - время создания объекта, в формате "2016-05-12T08:17:27.000Z" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
-// Modified - время модификации объекта, в формате "2016-05-12T08:17:27.000Z" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
-// CreatedByRef - содержит идентификатор источника создавшего данный объект
-// Revoked - вернуть к текущему состоянию
-// Labels - определяет набор терминов, используемых для описания данного объекта
-// Сonfidence - определяет уверенность создателя в правильности своих данных. Доверительное значение ДОЛЖНО быть числом
-//  в диапазоне 0-100. Если 0 - значение не определено.
-// Lang - содержит текстовый код языка, на котором написан контент объекта. Для английского это "en" для русского "ru"
-// ExternalReferences - список внешних ссылок не относящихся к STIX информации
-// ObjectMarkingRefs - определяет список ID ссылающиеся на объект "marking-definition", по терминалогии STIX, в котором содержатся значения применяющиеся к этому объекту
-// GranularMarkings - определяет список "гранулярных меток" (granular_markings) относящихся к этому объекту
-// Defanged - определяет были ли определены данные содержащиеся в объекте
-// Extensions - может содержать дополнительную информацию, относящуюся к объекту
-type CommonPropertiesDomainObjectSTIX struct {
-	+ SpecVersion        string                     `json:"spec_version" bson:"spec_version" required:"true"`
-	no Created            time.Time                  `json:"created" bson:"created" required:"true"`
-	no Modified           time.Time                  `json:"modified" bson:"modified" required:"true"`
-	+ CreatedByRef       IdentifierTypeSTIX         `json:"created_by_ref" bson:"created_by_ref"`
-	no Revoked            bool                       `json:"revoked" bson:"revoked"`
-	+ Labels             []string                   `json:"labels" bson:"labels"`
-	no Сonfidence         int                        `json:"confidence" bson:"confidence"`
-	+ Lang               string                     `json:"lang" bson:"lang"`
-	hisself ExternalReferences ExternalReferencesTypeSTIX `json:"external_references" bson:"external_references"`
-	hisself ObjectMarkingRefs  []*IdentifierTypeSTIX      `json:"object_marking_refs" bson:"object_marking_refs"`
-	hisself GranularMarkings   GranularMarkingsTypeSTIX   `json:"granular_markings" bson:"granular_markings"`
-	no Defanged           bool                       `json:"defanged" bson:"defanged"`
-	+ Extensions         map[string]string          `json:"extensions" bson:"extensions"`
-}
-*/
+/*************************************************************************/
 
 func (cpdostix *CommonPropertiesDomainObjectSTIX) checkingTypeCommonFields() bool {
 	fmt.Println("func 'checkingTypeCommonFields', START...")
 
 	//валидация содержимого поля SpecVersion
 	if !(regexp.MustCompile(`^[0-9a-z.]+$`).MatchString(cpdostix.SpecVersion)) {
+
+		fmt.Println("\ttype CommonPropertiesDomainObjectSTIX - ERROR: 111")
+
 		return false
 	}
 
 	//валидация содержимого поля CreatedByRef
-	if len(cpdostix.CreatedByRef.String()) > 0 {
-		if !(regexp.MustCompile(`^[0-9a-zA-Z]+(--)[0-9a-f|-]+$`).MatchString(cpdostix.CreatedByRef.String())) {
+	if len(fmt.Sprint(cpdostix.CreatedByRef)) > 0 {
+		if !(regexp.MustCompile(`^[0-9a-zA-Z-_]+(--)[0-9a-f|-]+$`).MatchString(fmt.Sprint(cpdostix.CreatedByRef))) {
+
+			fmt.Println("\ttype CommonPropertiesDomainObjectSTIX - ERROR: 222")
+
 			return false
 		}
 	}
@@ -70,30 +45,40 @@ func (cpdostix *CommonPropertiesDomainObjectSTIX) checkingTypeCommonFields() boo
 	}
 
 	//для поля Lang
-	if !(regexp.MustCompile(`^[a-zA-Z]+$`)).MatchString(cpdostix.Lang) {
-		return false
-	}
+	if len(cpdostix.Lang) > 0 {
+		if !(regexp.MustCompile(`^[a-zA-Z]+$`)).MatchString(cpdostix.Lang) {
 
+			fmt.Println("\ttype CommonPropertiesDomainObjectSTIX - ERROR: 333")
+
+			return false
+		}
+	}
 	//вызываем метод проверки полей типа ExternalReferences
 	if ok := cpdostix.ExternalReferences.CheckExternalReferencesTypeSTIX(); !ok {
+
+		fmt.Println("\ttype CommonPropertiesDomainObjectSTIX - ERROR: 444")
+
 		return false
 	}
 
 	//проверяем поле ObjectMarkingRefs
-	newObjectMarkingRefs := make([]*IdentifierTypeSTIX, len(cpdostix.ObjectMarkingRefs))
-	for _, value := range cpdostix.ObjectMarkingRefs {
-		tmpRes := commonlibs.StringSanitize(value.String())
-		value.AddValue(tmpRes)
-		newObjectMarkingRefs = append(newObjectMarkingRefs, value)
+	if len(cpdostix.ObjectMarkingRefs) > 0 {
+		newObjectMarkingRefs := make([]*IdentifierTypeSTIX, len(cpdostix.ObjectMarkingRefs))
+		for _, value := range cpdostix.ObjectMarkingRefs {
+			tmpRes := commonlibs.StringSanitize(fmt.Sprint(value))
+			value.AddValue(tmpRes)
+			newObjectMarkingRefs = append(newObjectMarkingRefs, value)
+		}
+		cpdostix.ObjectMarkingRefs = newObjectMarkingRefs
 	}
-	cpdostix.ObjectMarkingRefs = newObjectMarkingRefs
 
 	//вызываем метод проверки полей типа GranularMarkingsTypeSTIX
-	/*
+	if ok := cpdostix.GranularMarkings.CheckGranularMarkingsTypeSTIX(); !ok {
 
-	   Нужно сделать проверку поля GranularMarkingsTypeSTIX, то есть описать метод проверки для типа GranularMarkingsTypeSTIX
+		fmt.Println("\ttype CommonPropertiesDomainObjectSTIX - ERROR: 555")
 
-	*/
+		return false
+	}
 
 	//обработка содержимого списка поля Extension
 	newExtension := make(map[string]string, len(cpdostix.Extensions))
@@ -104,6 +89,64 @@ func (cpdostix *CommonPropertiesDomainObjectSTIX) checkingTypeCommonFields() boo
 
 	return true
 }
+
+//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+func (cp CommonPropertiesDomainObjectSTIX) ToStringBeautiful() string {
+	var str string
+	str += fmt.Sprintf("spec_version: '%s'\n", cp.SpecVersion)
+	str += fmt.Sprintf("created: '%v'\n", cp.Created)
+	str += fmt.Sprintf("modified: '%v'\n", cp.Modified)
+	str += fmt.Sprintf("created_by_ref: '%s'\n", cp.CreatedByRef)
+	str += fmt.Sprintf("revoked: '%v'\n", cp.Revoked)
+	str += fmt.Sprintf("labels: \n%v", func(l []string) string {
+		var str string
+		for k, v := range l {
+			str += fmt.Sprintf("\tlabel '%d': '%s'\n", k, v)
+		}
+		return str
+	}(cp.Labels))
+	str += fmt.Sprintf("external_references: \n%v", func(l []*ExternalReferenceTypeElementSTIX) string {
+		var str string
+		for k, v := range l {
+			str += fmt.Sprintf("\t\texternal_references element '%d'\n", k)
+			str += fmt.Sprintf("\t\tsource_name: '%s'\n", v.SourceName)
+			str += fmt.Sprintf("\t\tdescription: '%s'\n", v.Description)
+			str += fmt.Sprintf("\t\turl: '%s'\n", v.URL)
+			str += fmt.Sprintf("\t\thashes: '%s'\n", v.Hashes)
+			str += fmt.Sprintf("\t\texternal_id: '%s'\n", v.ExternalID)
+		}
+		return str
+	}(cp.ExternalReferences))
+	str += fmt.Sprintf("object_marking_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+		var str string
+		for k, v := range l {
+			str += fmt.Sprintf("\tref '%d': '%v'\n", k, v)
+		}
+		return str
+	}(cp.ObjectMarkingRefs))
+	str += fmt.Sprintln("granular_markings:")
+	str += fmt.Sprintf("\tlang: '%s'\n", cp.GranularMarkings.Lang)
+	str += fmt.Sprintf("\tmarking_ref: '%v'\n", cp.GranularMarkings.MarkingRef)
+	str += fmt.Sprintf("\tselectors: \n%v", func(l []string) string {
+		var str string
+		for k, v := range l {
+			str += fmt.Sprintf("\t\tselector '%d': '%s'\n", k, v)
+		}
+		return str
+	}(cp.GranularMarkings.Selectors))
+	str += fmt.Sprintf("defanged: '%v'\n", cp.Defanged)
+	str += fmt.Sprintf("extensions: \n%v", func(l map[string]string) string {
+		var str string
+		for k, v := range l {
+			str += fmt.Sprintf("\t'%s': '%s'\n", k, v)
+		}
+		return str
+	}(cp.Extensions))
+
+	return str
+}
+
+/* --- AttackPatternDomainObjectsSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (apstix AttackPatternDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -122,17 +165,59 @@ func (apstix AttackPatternDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, 
 }
 
 //CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
+// возвращает ВАЛИДНЫЙ объект AttackPatternDomainObjectsSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.AttackPatternDomainObjectsSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
 func (apstix AttackPatternDomainObjectsSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
+
+	if !(regexp.MustCompile(`^(attack-pattern--)[0-9a-f|-]+$`).MatchString(apstix.ID)) {
+		return false
+	}
 
 	if !apstix.checkingTypeCommonFields() {
 		return false
 	}
 
-	//тут проверяем остальные параметры, не входящие в тип CommonPropertiesDomainObjectSTIX
+	apstix.Name = commonlibs.StringSanitize(apstix.Name)
+	apstix.Description = commonlibs.StringSanitize(apstix.Description)
 
-	return true
+	aliasesTmp := make([]string, 0, len(apstix.Aliases))
+	for _, v := range apstix.Aliases {
+		aliasesTmp = append(aliasesTmp, commonlibs.StringSanitize(v))
+	}
+	apstix.Aliases = aliasesTmp
+
+	return apstix.KillChainPhases.CheckKillChainPhasesTypeSTIX()
 }
+
+//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+func (ap AttackPatternDomainObjectsSTIX) ToStringBeautiful() string {
+	str := ap.CommonPropertiesObjectSTIX.ToStringBeautiful()
+	str += ap.CommonPropertiesDomainObjectSTIX.ToStringBeautiful()
+	str += fmt.Sprintf("name: '%s'\n", ap.Name)
+	str += fmt.Sprintf("description: '%s'\n", ap.Description)
+	str += fmt.Sprintf("aliases: \n%v", func(l []string) string {
+		var str string
+		for k, v := range l {
+			str += fmt.Sprintf("\t\taliase '%d': '%s'\n", k, v)
+		}
+		return str
+	}(ap.Aliases))
+	str += fmt.Sprintf("kill_chain_phases: \n%v", func(l KillChainPhasesTypeSTIX) string {
+		var str string
+		for k, v := range l {
+			str += fmt.Sprintf("\tkey:'%v' kill_chain_name: '%s'\n", k, v.KillChainName)
+			str += fmt.Sprintf("\tkey:'%v' phase_name: '%s'\n", k, v.PhaseName)
+		}
+		return str
+	}(ap.KillChainPhases))
+
+	return str
+}
+
+/* --- CampaignDomainObjectsSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (cstix CampaignDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -150,7 +235,11 @@ func (cstix CampaignDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error)
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
+//CheckingTypeFields является валидатором параметров содержащихся в типе CampaignDomainObjectsSTIX
+// возвращает ВАЛИДНЫЙ объект CampaignDomainObjectsSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.CampaignDomainObjectsSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
 func (cstix CampaignDomainObjectsSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
@@ -162,6 +251,8 @@ func (cstix CampaignDomainObjectsSTIX) CheckingTypeFields() bool {
 
 	return true
 }
+
+/* --- CourseOfActionDomainObjectsSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (castix CourseOfActionDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -179,7 +270,11 @@ func (castix CourseOfActionDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte,
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
+//CheckingTypeFields является валидатором параметров содержащихся в типе CourseOfActionDomainObjectsSTIX
+// возвращает ВАЛИДНЫЙ объект CourseOfActionDomainObjectsSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.CourseOfActionDomainObjectsSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
 func (castix CourseOfActionDomainObjectsSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
@@ -191,6 +286,8 @@ func (castix CourseOfActionDomainObjectsSTIX) CheckingTypeFields() bool {
 
 	return true
 }
+
+/* --- GroupingDomainObjectsSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (gstix GroupingDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -208,7 +305,11 @@ func (gstix GroupingDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error)
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
+//CheckingTypeFields является валидатором параметров содержащихся в типе GroupingDomainObjectsSTIX
+// возвращает ВАЛИДНЫЙ объект GroupingDomainObjectsSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.GroupingDomainObjectsSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
 func (gstix GroupingDomainObjectsSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
@@ -220,6 +321,8 @@ func (gstix GroupingDomainObjectsSTIX) CheckingTypeFields() bool {
 
 	return true
 }
+
+/* --- IdentityDomainObjectsSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (istix IdentityDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -237,7 +340,11 @@ func (istix IdentityDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error)
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
+//CheckingTypeFields является валидатором параметров содержащихся в типе IdentityDomainObjectsSTIX
+// возвращает ВАЛИДНЫЙ объект IdentityDomainObjectsSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.IdentityDomainObjectsSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
 func (istix IdentityDomainObjectsSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
@@ -249,6 +356,8 @@ func (istix IdentityDomainObjectsSTIX) CheckingTypeFields() bool {
 
 	return true
 }
+
+/* --- IndicatorDomainObjectsSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (istix IndicatorDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -266,7 +375,11 @@ func (istix IndicatorDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
+//CheckingTypeFields является валидатором параметров содержащихся в типе IndicatorDomainObjectsSTIX
+// возвращает ВАЛИДНЫЙ объект IndicatorDomainObjectsSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.IndicatorDomainObjectsSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
 func (istix IndicatorDomainObjectsSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
@@ -278,6 +391,8 @@ func (istix IndicatorDomainObjectsSTIX) CheckingTypeFields() bool {
 
 	return true
 }
+
+/* --- InfrastructureDomainObjectsSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (istix InfrastructureDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -295,7 +410,11 @@ func (istix InfrastructureDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, 
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
+//CheckingTypeFields является валидатором параметров содержащихся в типе InfrastructureDomainObjectsSTIX
+// возвращает ВАЛИДНЫЙ объект InfrastructureDomainObjectsSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.InfrastructureDomainObjectsSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
 func (istix InfrastructureDomainObjectsSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
@@ -307,6 +426,8 @@ func (istix InfrastructureDomainObjectsSTIX) CheckingTypeFields() bool {
 
 	return true
 }
+
+/* --- IntrusionSetDomainObjectsSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (istix IntrusionSetDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -324,7 +445,11 @@ func (istix IntrusionSetDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, er
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
+//CheckingTypeFields является валидатором параметров содержащихся в типе IntrusionSetDomainObjectsSTIX
+// возвращает ВАЛИДНЫЙ объект IntrusionSetDomainObjectsSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.IntrusionSetDomainObjectsSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
 func (istix IntrusionSetDomainObjectsSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
@@ -336,6 +461,8 @@ func (istix IntrusionSetDomainObjectsSTIX) CheckingTypeFields() bool {
 
 	return true
 }
+
+/* --- LocationDomainObjectsSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (lstix LocationDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -353,7 +480,11 @@ func (lstix LocationDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error)
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
+//CheckingTypeFields является валидатором параметров содержащихся в типе LocationDomainObjectsSTIX
+// возвращает ВАЛИДНЫЙ объект LocationDomainObjectsSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.LocationDomainObjectsSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
 func (lstix LocationDomainObjectsSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
@@ -365,6 +496,8 @@ func (lstix LocationDomainObjectsSTIX) CheckingTypeFields() bool {
 
 	return true
 }
+
+/* --- MalwareDomainObjectsSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (mstix MalwareDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -382,7 +515,11 @@ func (mstix MalwareDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error) 
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
+//CheckingTypeFields является валидатором параметров содержащихся в типе MalwareDomainObjectsSTIX
+// возвращает ВАЛИДНЫЙ объект MalwareDomainObjectsSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.MalwareDomainObjectsSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
 func (mstix MalwareDomainObjectsSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
@@ -394,6 +531,8 @@ func (mstix MalwareDomainObjectsSTIX) CheckingTypeFields() bool {
 
 	return true
 }
+
+/* --- MalwareAnalysisDomainObjectsSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (mastix MalwareAnalysisDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -411,7 +550,11 @@ func (mastix MalwareAnalysisDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
+//CheckingTypeFields является валидатором параметров содержащихся в типе MalwareAnalysisDomainObjectsSTIX
+// возвращает ВАЛИДНЫЙ объект MalwareAnalysisDomainObjectsSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.MalwareAnalysisDomainObjectsSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
 func (mastix MalwareAnalysisDomainObjectsSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
@@ -423,6 +566,8 @@ func (mastix MalwareAnalysisDomainObjectsSTIX) CheckingTypeFields() bool {
 
 	return true
 }
+
+/* --- NoteDomainObjectsSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (nstix NoteDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -440,7 +585,11 @@ func (nstix NoteDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
+//CheckingTypeFields является валидатором параметров содержащихся в типе NoteDomainObjectsSTIX
+// возвращает ВАЛИДНЫЙ объект NoteDomainObjectsSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.NoteDomainObjectsSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
 func (nstix NoteDomainObjectsSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
@@ -452,6 +601,8 @@ func (nstix NoteDomainObjectsSTIX) CheckingTypeFields() bool {
 
 	return true
 }
+
+/* --- ObservedDataDomainObjectsSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (odstix ObservedDataDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -469,7 +620,11 @@ func (odstix ObservedDataDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, e
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
+//CheckingTypeFields является валидатором параметров содержащихся в типе ObservedDataDomainObjectsSTIX
+// возвращает ВАЛИДНЫЙ объект ObservedDataDomainObjectsSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.ObservedDataDomainObjectsSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
 func (odstix ObservedDataDomainObjectsSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
@@ -481,6 +636,8 @@ func (odstix ObservedDataDomainObjectsSTIX) CheckingTypeFields() bool {
 
 	return true
 }
+
+/* --- OpinionDomainObjectsSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (ostix OpinionDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -498,7 +655,11 @@ func (ostix OpinionDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error) 
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
+//CheckingTypeFields является валидатором параметров содержащихся в типе OpinionDomainObjectsSTIX
+// возвращает ВАЛИДНЫЙ объект OpinionDomainObjectsSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.OpinionDomainObjectsSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
 func (ostix OpinionDomainObjectsSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
@@ -510,6 +671,8 @@ func (ostix OpinionDomainObjectsSTIX) CheckingTypeFields() bool {
 
 	return true
 }
+
+/* --- ReportDomainObjectsSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (rstix ReportDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -527,7 +690,11 @@ func (rstix ReportDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
+//CheckingTypeFields является валидатором параметров содержащихся в типе ReportDomainObjectsSTIX
+// возвращает ВАЛИДНЫЙ объект ReportDomainObjectsSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.ReportDomainObjectsSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
 func (rstix ReportDomainObjectsSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
@@ -539,6 +706,8 @@ func (rstix ReportDomainObjectsSTIX) CheckingTypeFields() bool {
 
 	return true
 }
+
+/* --- ThreatActorDomainObjectsSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (tastix ThreatActorDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -556,7 +725,11 @@ func (tastix ThreatActorDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, er
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
+//CheckingTypeFields является валидатором параметров содержащихся в типе ThreatActorDomainObjectsSTIX
+// возвращает ВАЛИДНЫЙ объект ThreatActorDomainObjectsSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.ThreatActorDomainObjectsSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
 func (tastix ThreatActorDomainObjectsSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
@@ -568,6 +741,8 @@ func (tastix ThreatActorDomainObjectsSTIX) CheckingTypeFields() bool {
 
 	return true
 }
+
+/* --- ToolDomainObjectsSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (tstix ToolDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -585,7 +760,11 @@ func (tstix ToolDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
+//CheckingTypeFields является валидатором параметров содержащихся в типе ToolDomainObjectsSTIX
+// возвращает ВАЛИДНЫЙ объект ToolDomainObjectsSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.ToolDomainObjectsSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
 func (tstix ToolDomainObjectsSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
@@ -597,6 +776,8 @@ func (tstix ToolDomainObjectsSTIX) CheckingTypeFields() bool {
 
 	return true
 }
+
+/* --- VulnerabilityDomainObjectsSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (vstix VulnerabilityDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -614,7 +795,11 @@ func (vstix VulnerabilityDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, e
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
+//CheckingTypeFields является валидатором параметров содержащихся в типе VulnerabilityDomainObjectsSTIX
+// возвращает ВАЛИДНЫЙ объект VulnerabilityDomainObjectsSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.VulnerabilityDomainObjectsSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
 func (vstix VulnerabilityDomainObjectsSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 

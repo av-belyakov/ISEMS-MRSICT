@@ -5,19 +5,9 @@ import (
 	"fmt"
 )
 
+/*****************************************************************************/
 /********** 			Relationship Objects STIX (МЕТОДЫ)			**********/
-
-/*
-//OptionalCommonPropertiesRelationshipObjectSTIX общие, опциональные свойства для все объектов STIX типа Relationship Objects
-// SpecVersion - версия STIX спецификации (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ).
-// Created - время создания объекта, в формате "2016-05-12T08:17:27.000Z" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ).
-// Modified - время создания объекта, в формате "2016-05-12T08:17:27.000Z" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ).
-type OptionalCommonPropertiesRelationshipObjectSTIX struct {
-	SpecVersion string    `json:"spec_version" bson:"spec_version"`
-	Created     time.Time `json:"created" bson:"created"`
-	Modified    time.Time `json:"modified" bson:"modified"`
-}
-*/
+/*****************************************************************************/
 
 func (ocprstix *OptionalCommonPropertiesRelationshipObjectSTIX) checkingTypeCommonFields() bool {
 	fmt.Println("func 'checkingTypeCommonFields', START...")
@@ -32,6 +22,8 @@ func (ocprstix *OptionalCommonPropertiesRelationshipObjectSTIX) checkingTypeComm
 
 	return true
 }
+
+/* --- RelationshipObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (rstix RelationshipObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -49,7 +41,11 @@ func (rstix RelationshipObjectSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
+//CheckingTypeFields является валидатором параметров содержащихся в типе RelationshipObjectSTIX
+// возвращает ВАЛИДНЫЙ объект RelationshipObjectSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.RelationshipObjectSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
 func (rstix RelationshipObjectSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 
@@ -61,6 +57,8 @@ func (rstix RelationshipObjectSTIX) CheckingTypeFields() bool {
 
 	return true
 }
+
+/* --- SightingObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (sstix SightingObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -78,7 +76,11 @@ func (sstix SightingObjectSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
+//CheckingTypeFields является валидатором параметров содержащихся в типе SightingObjectSTIX
+// возвращает ВАЛИДНЫЙ объект SightingObjectSTIX (к сожалению нельзя править существующий объект
+// из-за ошибки 'cannot use e (variable of type datamodels.SightingObjectSTIX) as datamodels.HandlerSTIXObject
+// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
 func (sstix SightingObjectSTIX) CheckingTypeFields() bool {
 	fmt.Println("func 'CheckingTypeFields', START...")
 

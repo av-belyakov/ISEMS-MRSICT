@@ -45,10 +45,10 @@ type CommonPropertiesDomainObjectSTIX struct {
 type AttackPatternDomainObjectsSTIX struct {
 	CommonPropertiesObjectSTIX
 	CommonPropertiesDomainObjectSTIX
-	Name            string                            `json:"name" bson:"name" required:"true"`
-	Description     string                            `json:"description" bson:"description"`
-	Aliases         []string                          `json:"aliases" bson:"aliases"`
-	KillChainPhases []*KillChainPhasesTypeElementSTIX `json:"kill_chain_phases" bson:"kill_chain_phases"`
+	Name            string                  `json:"name" bson:"name" required:"true"`
+	Description     string                  `json:"description" bson:"description"`
+	Aliases         []string                `json:"aliases" bson:"aliases"`
+	KillChainPhases KillChainPhasesTypeSTIX `json:"kill_chain_phases" bson:"kill_chain_phases"`
 }
 
 //CampaignDomainObjectsSTIX объект "Campaign", по терминалогии STIX, это набор действий определяющих злонамеренную деятельность или атаки

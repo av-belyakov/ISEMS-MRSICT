@@ -87,7 +87,7 @@ func (itstix *IdentifierTypeSTIX) CheckIdentifierTypeSTIX() bool {
 		return true
 	}
 
-	return regexp.MustCompile(`^[0-9a-zA-Z-_]+(--)[0-9a-f|-]+$`).MatchString(fmt.Sprint(itstix))
+	return regexp.MustCompile(`^[0-9a-zA-Z-_]+(--)[0-9a-f|-]+$`).MatchString(fmt.Sprint(*itstix))
 }
 
 //AddValue добавляет значение в тип IdentifierTypeSTIX
@@ -99,14 +99,13 @@ func (itstix *IdentifierTypeSTIX) AddValue(str string) {
 //KillChainPhasesTypeSTIX тип "kill-chain-phases", по терминалогии STIX, содержащий цепочки фактов, приведших к какому либо урону
 type KillChainPhasesTypeSTIX []*KillChainPhasesTypeElementSTIX
 
-func (kcptstix KillChainPhasesTypeSTIX) CheckKillChainPhasesTypeSTIX() bool {
-	for _, v := range kcptstix {
-		if !v.CheckKillChainPhasesTypeElementSTIX() {
-			return false
-		}
+//SanitizeStructKillChainPhasesTypeSTIX выполняет замену некоторых специальных символов на их HTML код
+func (kcptstix KillChainPhasesTypeSTIX) SanitizeStructKillChainPhasesTypeSTIX() KillChainPhasesTypeSTIX {
+	for k := range kcptstix {
+		kcptstix[k].SanitizeStructKillChainPhasesTypeElementSTIX()
 	}
 
-	return true
+	return kcptstix
 }
 
 //KillChainPhasesTypeElementSTIX тип содержащий набор элементов цепочки фактов, приведших к какому либо урону
@@ -117,24 +116,29 @@ type KillChainPhasesTypeElementSTIX struct {
 	PhaseName     string `json:"phase_name" bson:"phase_name" required:"true"`
 }
 
-//ChainKillChainPhasesTypeElementSTIX выполлняет проверку значения типа KillChainPhasesTypeElementSTIX
-func (kcptestix *KillChainPhasesTypeElementSTIX) CheckKillChainPhasesTypeElementSTIX() bool {
+//SanitizeStructKillChainPhasesTypeElementSTIX выполлняет проверку значения типа KillChainPhasesTypeElementSTIX
+func (kcptestix KillChainPhasesTypeElementSTIX) SanitizeStructKillChainPhasesTypeElementSTIX() KillChainPhasesTypeElementSTIX {
 	if kcptestix.KillChainName == "" {
-		return false
+		return kcptestix
 	}
 
 	if kcptestix.PhaseName == "" {
-		return false
+		return kcptestix
 	}
 
 	kcptestix.KillChainName = commonlibs.StringSanitize(kcptestix.KillChainName)
 	kcptestix.PhaseName = commonlibs.StringSanitize(kcptestix.PhaseName)
 
-	return true
+	return kcptestix
 }
 
 //OpenVocabTypeSTIX тип "open-vocab", по терминалогии STIX, содержащий заранее определенное (предложенное) значение
 type OpenVocabTypeSTIX string
+
+//SanitizeStructOpenVocabTypeSTIX выполняет замену некоторых специальных символов на их HTML код
+func (ovtstix OpenVocabTypeSTIX) SanitizeStructOpenVocabTypeSTIX() OpenVocabTypeSTIX {
+	return OpenVocabTypeSTIX(commonlibs.StringSanitize(fmt.Sprint(ovtstix)))
+}
 
 //DictionaryTypeSTIX тип "dictionary", по терминалогии STIX, содержащий значения любых типов
 type DictionaryTypeSTIX struct {

@@ -128,15 +128,15 @@ type IdentityDomainObjectsSTIX struct {
 type IndicatorDomainObjectsSTIX struct {
 	CommonPropertiesObjectSTIX
 	CommonPropertiesDomainObjectSTIX
-	Name            string                            `json:"name" bson:"name" required:"true"`
-	Description     string                            `json:"description" bson:"description"`
-	IndicatorTypes  []*OpenVocabTypeSTIX              `json:"indicator_types" bson:"indicator_types"`
-	Pattern         string                            `json:"pattern" bson:"pattern" required:"true"`
-	PatternType     OpenVocabTypeSTIX                 `json:"pattern_type" bson:"pattern_type" required:"true"`
-	PatternVersion  string                            `json:"pattern_version" bson:"pattern_version"`
-	ValidFrom       time.Time                         `json:"valid_from" bson:"valid_from" required:"true"`
-	ValidUntil      time.Time                         `json:"valid_until" bson:"valid_until"`
-	KillChainPhases []*KillChainPhasesTypeElementSTIX `json:"kill_chain_phases" bson:"kill_chain_phases"`
+	Name            string                  `json:"name" bson:"name" required:"true"`
+	Description     string                  `json:"description" bson:"description"`
+	IndicatorTypes  []*OpenVocabTypeSTIX    `json:"indicator_types" bson:"indicator_types"`
+	Pattern         string                  `json:"pattern" bson:"pattern" required:"true"`
+	PatternType     OpenVocabTypeSTIX       `json:"pattern_type" bson:"pattern_type" required:"true"`
+	PatternVersion  string                  `json:"pattern_version" bson:"pattern_version"`
+	ValidFrom       time.Time               `json:"valid_from" bson:"valid_from" required:"true"`
+	ValidUntil      time.Time               `json:"valid_until" bson:"valid_until"`
+	KillChainPhases KillChainPhasesTypeSTIX `json:"kill_chain_phases" bson:"kill_chain_phases"`
 }
 
 //InfrastructureDomainObjectsSTIX объект "Infrastructure", по терминалогии STIX, содержит описание любых систем,
@@ -151,13 +151,13 @@ type IndicatorDomainObjectsSTIX struct {
 type InfrastructureDomainObjectsSTIX struct {
 	CommonPropertiesObjectSTIX
 	CommonPropertiesDomainObjectSTIX
-	Name                string                            `json:"name" bson:"name" required:"true"`
-	Description         string                            `json:"description" bson:"description"`
-	InfrastructureTypes []*OpenVocabTypeSTIX              `json:"infrastructure_types" bson:"infrastructure_types"`
-	Aliases             []string                          `json:"aliases" bson:"aliases"`
-	KillChainPhases     []*KillChainPhasesTypeElementSTIX `json:"kill_chain_phases" bson:"kill_chain_phases"`
-	FirstSeen           time.Time                         `json:"first_seen" bson:"first_seen"`
-	LastSeen            time.Time                         `json:"last_seen" bson:"last_seen"`
+	Name                string                  `json:"name" bson:"name" required:"true"`
+	Description         string                  `json:"description" bson:"description"`
+	InfrastructureTypes []*OpenVocabTypeSTIX    `json:"infrastructure_types" bson:"infrastructure_types"`
+	Aliases             []string                `json:"aliases" bson:"aliases"`
+	KillChainPhases     KillChainPhasesTypeSTIX `json:"kill_chain_phases" bson:"kill_chain_phases"`
+	FirstSeen           time.Time               `json:"first_seen" bson:"first_seen"`
+	LastSeen            time.Time               `json:"last_seen" bson:"last_seen"`
 }
 
 //IntrusionSetDomainObjectsSTIX объект "Intrusion Set", по терминалогии STIX, содержит сгруппированный набор враждебного поведения и ресурсов
@@ -234,19 +234,19 @@ type LocationDomainObjectsSTIX struct {
 type MalwareDomainObjectsSTIX struct {
 	CommonPropertiesObjectSTIX
 	CommonPropertiesDomainObjectSTIX
-	Name                      string                            `json:"name" bson:"name"`
-	Description               string                            `json:"description" bson:"description"`
-	MalwareTypes              []*OpenVocabTypeSTIX              `json:"malware_types" bson:"malware_types"`
-	IsFamily                  bool                              `json:"is_family" bson:"is_family" required:"true"`
-	Aliases                   []string                          `json:"aliases" bson:"aliases"`
-	KillChainPhases           []*KillChainPhasesTypeElementSTIX `json:"kill_chain_phases" bson:"kill_chain_phases"`
-	FirstSeen                 time.Time                         `json:"first_seen" bson:"first_seen"`
-	LastSeen                  time.Time                         `json:"last_seen" bson:"last_seen"`
-	OperatingSystemRefs       []*IdentifierTypeSTIX             `json:"operating_system_refs" bson:"operating_system_refs"`
-	ArchitectureExecutionEnvs []*OpenVocabTypeSTIX              `json:"architecture_execution_envs" bson:"architecture_execution_envs"`
-	ImplementationLanguages   []*OpenVocabTypeSTIX              `json:"implementation_languages" bson:"implementation_languages"`
-	Capabilities              []*OpenVocabTypeSTIX              `json:"capabilities" bson:"capabilities"`
-	SampleRefs                []*IdentifierTypeSTIX             `json:"sample_refs" bson:"sample_refs"`
+	Name                      string                  `json:"name" bson:"name"`
+	Description               string                  `json:"description" bson:"description"`
+	MalwareTypes              []*OpenVocabTypeSTIX    `json:"malware_types" bson:"malware_types"`
+	IsFamily                  bool                    `json:"is_family" bson:"is_family" required:"true"`
+	Aliases                   []string                `json:"aliases" bson:"aliases"`
+	KillChainPhases           KillChainPhasesTypeSTIX `json:"kill_chain_phases" bson:"kill_chain_phases"`
+	FirstSeen                 time.Time               `json:"first_seen" bson:"first_seen"`
+	LastSeen                  time.Time               `json:"last_seen" bson:"last_seen"`
+	OperatingSystemRefs       []*IdentifierTypeSTIX   `json:"operating_system_refs" bson:"operating_system_refs"`
+	ArchitectureExecutionEnvs []*OpenVocabTypeSTIX    `json:"architecture_execution_envs" bson:"architecture_execution_envs"`
+	ImplementationLanguages   []*OpenVocabTypeSTIX    `json:"implementation_languages" bson:"implementation_languages"`
+	Capabilities              []*OpenVocabTypeSTIX    `json:"capabilities" bson:"capabilities"`
+	SampleRefs                []*IdentifierTypeSTIX   `json:"sample_refs" bson:"sample_refs"`
 }
 
 //MalwareAnalysisDomainObjectsSTIX объект "Malware Analysis", по терминалогии STIX, содержит анализ вредоносных программ захватывающих метаданные

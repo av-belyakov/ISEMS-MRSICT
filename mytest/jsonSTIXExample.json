@@ -52,7 +52,6 @@
             "description": "This is how to add a filter rule to block inbound access to TCP port 80 tothe existing UDP 1434 filter ..."
         },
         {
- 
             "type": "grouping",
             "spec_version": "2.1",
             "id": "grouping--84e4d88f-44ea-4bcd-bbf3-b2c1c320bcb3",

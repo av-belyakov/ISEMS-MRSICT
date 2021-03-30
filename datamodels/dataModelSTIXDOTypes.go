@@ -268,6 +268,7 @@ type MalwareDomainObjectsSTIX struct {
 // Result - один, из заранее определенного (предложенного) перечня результатов классификации, определяется аналитическим инструментом или сканером
 // AnalysisScoRefs - список идентификаторов на другие наблюдаемые Domain Objects STIX которые были захвачены в процессе наблюдения
 // SampleRef - содержит ссылку на файл, сетевой трафик или объект на основе которого был выполнен анализ вредоносного ПО
+// AvResult - результат аналитической обработки (ЭТО ПОЛЕ ЕСТЬ ТОЛЬКО В ПРИМЕРЕ, в описании типа данного поля нет)
 type MalwareAnalysisDomainObjectsSTIX struct {
 	CommonPropertiesObjectSTIX
 	CommonPropertiesDomainObjectSTIX
@@ -287,6 +288,7 @@ type MalwareAnalysisDomainObjectsSTIX struct {
 	Result                    OpenVocabTypeSTIX     `json:"result" bson:"result"`
 	AnalysisScoRefs           []*IdentifierTypeSTIX `json:"analysis_sco_refs" bson:"analysis_sco_refs"`
 	SampleRef                 IdentifierTypeSTIX    `json:"sample_ref" bson:"sample_ref"`
+	AvResult                  OpenVocabTypeSTIX     `json:"av_result" bson:"av_result"`
 }
 
 //NoteDomainObjectsSTIX объект "Note", по терминалогии STIX, содержит текстовую информации дополняющую текущий контекст анализа либо содержащей
@@ -398,12 +400,12 @@ type ThreatActorDomainObjectsSTIX struct {
 type ToolDomainObjectsSTIX struct {
 	CommonPropertiesObjectSTIX
 	CommonPropertiesDomainObjectSTIX
-	Name            string                            `json:"name" bson:"name" required:"true"`
-	Description     string                            `json:"description" bson:"description"`
-	ToolTypes       []*OpenVocabTypeSTIX              `json:"tool_types" bson:"tool_types"`
-	Aliases         []string                          `json:"aliases" bson:"aliases"`
-	KillChainPhases []*KillChainPhasesTypeElementSTIX `json:"kill_chain_phases" bson:"kill_chain_phases"`
-	ToolVersion     string                            `json:"tool_version" bson:"tool_version"`
+	Name            string                  `json:"name" bson:"name" required:"true"`
+	Description     string                  `json:"description" bson:"description"`
+	ToolTypes       []*OpenVocabTypeSTIX    `json:"tool_types" bson:"tool_types"`
+	Aliases         []string                `json:"aliases" bson:"aliases"`
+	KillChainPhases KillChainPhasesTypeSTIX `json:"kill_chain_phases" bson:"kill_chain_phases"`
+	ToolVersion     string                  `json:"tool_version" bson:"tool_version"`
 }
 
 //VulnerabilityDomainObjectsSTIX объект "Vulnerability", по терминологии STIX, содержит описание уязвимостей полученных в результате неверной формализации

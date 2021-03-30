@@ -68,6 +68,10 @@ type HashesTypeSTIX map[string]string
 
 //CheckHashesTypeSTIX выполняет проверку значений типа HashesTypeSTIX
 func (htstix *HashesTypeSTIX) CheckHashesTypeSTIX() bool {
+	if len(*htstix) == 0 {
+		return true
+	}
+
 	for _, v := range *htstix {
 		if !(regexp.MustCompile(`^[0-9a-zA-Z|-|_]+$`)).MatchString(v) {
 			return false

@@ -3,6 +3,7 @@ package datamodels
 import (
 	"encoding/json"
 	"fmt"
+	"regexp"
 )
 
 /*********************************************************************************/
@@ -26,18 +27,34 @@ type OptionalCommonPropertiesCyberObservableObjectSTIX struct {
 */
 
 func (ocpcstix *OptionalCommonPropertiesCyberObservableObjectSTIX) checkingTypeCommonFields() bool {
-	fmt.Println("func 'checkingTypeCommonFields', START...")
-
-	//rtype := reflect.TypeOf(testTypeOne.Extensions)
-	/*
-		валидация строк:
-		- удаление (замена) нежелательных символов или вырожений
-		- проверка строк на наличие ключевых строк в начале строки (для некоторых строк).
-		 Например для поля ID строка должна начинатся с названия типа и _ 'location_ggeg777d377377e7f'
-	*/
+	//валидация содержимого поля SpecVersion
+	if !(regexp.MustCompile(`^[0-9a-z.]+$`).MatchString(ocpcstix.SpecVersion)) {
+		return false
+	}
 
 	return true
 }
+
+func (ocpcstix OptionalCommonPropertiesCyberObservableObjectSTIX) sanitizeStruct() OptionalCommonPropertiesCyberObservableObjectSTIX {
+
+	return ocpcstix
+}
+
+func (ocpcstix OptionalCommonPropertiesCyberObservableObjectSTIX) ToStringBeautiful() string {
+	var str string
+	str += fmt.Sprintf("spec_version: '%s'\n", ocpcstix.SpecVersion)
+
+	/*
+		str += fmt.Sprintf("created: '%v'\n", cp.Created)
+		str += fmt.Sprintf("modified: '%v'\n", cp.Modified)
+		str += fmt.Sprintf("created_by_ref: '%s'\n", cp.CreatedByRef)
+		str += fmt.Sprintf("revoked: '%v'\n", cp.Revoked)
+	*/
+
+	return str
+}
+
+/* --- ArtifactCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (astix ArtifactCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -55,7 +72,72 @@ func (astix ArtifactCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte
 	return &result, err
 }
 
-/* --- ArtifactCyberObservableObjectSTIX --- */
+//CheckingTypeFields является валидатором параметров содержащихся в типе ArtifactCyberObservableObjectSTIX
+func (astix ArtifactCyberObservableObjectSTIX) CheckingTypeFields() bool {
+	if !(regexp.MustCompile(`^(artifact--)[0-9a-f|-]+$`).MatchString(astix.ID)) {
+		return false
+	}
+
+	if !astix.checkingTypeCommonFields() {
+		return false
+	}
+
+	//тут проверяем остальные параметры, не входящие в тип CommonPropertiesDomainObjectSTIX
+
+	return true
+}
+
+//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+func (astix ArtifactCyberObservableObjectSTIX) SanitizeStruct() ArtifactCyberObservableObjectSTIX {
+	astix.OptionalCommonPropertiesCyberObservableObjectSTIX = astix.sanitizeStruct()
+
+	/*
+		apstix.Name = commonlibs.StringSanitize(apstix.Name)
+		apstix.Description = commonlibs.StringSanitize(apstix.Description)
+
+		if len(apstix.Aliases) > 0 {
+			aliasesTmp := make([]string, 0, len(apstix.Aliases))
+			for _, v := range apstix.Aliases {
+				aliasesTmp = append(aliasesTmp, commonlibs.StringSanitize(v))
+			}
+			apstix.Aliases = aliasesTmp
+		}
+
+		apstix.KillChainPhases = apstix.KillChainPhases.SanitizeStructKillChainPhasesTypeSTIX()
+	*/
+
+	return astix
+}
+
+//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+func (astix ArtifactCyberObservableObjectSTIX) ToStringBeautiful() string {
+	str := astix.CommonPropertiesObjectSTIX.ToStringBeautiful()
+	str += astix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
+
+	/*
+		str += fmt.Sprintf("name: '%s'\n", apstix.Name)
+		str += fmt.Sprintf("description: '%s'\n", apstix.Description)
+		str += fmt.Sprintf("aliases: \n%v", func(l []string) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\taliase '%d': '%s'\n", k, v)
+			}
+			return str
+		}(apstix.Aliases))
+		str += fmt.Sprintf("kill_chain_phases: \n%v", func(l KillChainPhasesTypeSTIX) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\tkey:'%v' kill_chain_name: '%s'\n", k, v.KillChainName)
+				str += fmt.Sprintf("\tkey:'%v' phase_name: '%s'\n", k, v.PhaseName)
+			}
+			return str
+		}(apstix.KillChainPhases))
+	*/
+
+	return str
+}
+
+/* --- AutonomousSystemCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (asstix AutonomousSystemCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -73,15 +155,13 @@ func (asstix AutonomousSystemCyberObservableObjectSTIX) EncoderJSON(interface{})
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе ArtifactCyberObservableObjectSTIX
-// возвращает ВАЛИДНЫЙ объект ArtifactCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
-// из-за ошибки 'cannot use e (variable of type datamodels.ArtifactCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
-// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
-// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
-func (astix ArtifactCyberObservableObjectSTIX) CheckingTypeFields() bool {
-	fmt.Println("func 'CheckingTypeFields', START...")
+//CheckingTypeFields является валидатором параметров содержащихся в типе AutonomousSystemCyberObservableObjectSTIX
+func (asstix AutonomousSystemCyberObservableObjectSTIX) CheckingTypeFields() bool {
+	if !(regexp.MustCompile(`^(autonomous-system--)[0-9a-f|-]+$`).MatchString(asstix.ID)) {
+		return false
+	}
 
-	if !astix.checkingTypeCommonFields() {
+	if !asstix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -90,7 +170,57 @@ func (astix ArtifactCyberObservableObjectSTIX) CheckingTypeFields() bool {
 	return true
 }
 
-/* --- AutonomousSystemCyberObservableObjectSTIX --- */
+//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+func (asstix AutonomousSystemCyberObservableObjectSTIX) SanitizeStruct() AutonomousSystemCyberObservableObjectSTIX {
+	asstix.OptionalCommonPropertiesCyberObservableObjectSTIX = asstix.sanitizeStruct()
+
+	/*
+		apstix.Name = commonlibs.StringSanitize(apstix.Name)
+		apstix.Description = commonlibs.StringSanitize(apstix.Description)
+
+		if len(apstix.Aliases) > 0 {
+			aliasesTmp := make([]string, 0, len(apstix.Aliases))
+			for _, v := range apstix.Aliases {
+				aliasesTmp = append(aliasesTmp, commonlibs.StringSanitize(v))
+			}
+			apstix.Aliases = aliasesTmp
+		}
+
+		apstix.KillChainPhases = apstix.KillChainPhases.SanitizeStructKillChainPhasesTypeSTIX()
+	*/
+
+	return asstix
+}
+
+//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+func (asstix AutonomousSystemCyberObservableObjectSTIX) ToStringBeautiful() string {
+	str := asstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
+	str += asstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
+
+	/*
+		str += fmt.Sprintf("name: '%s'\n", apstix.Name)
+		str += fmt.Sprintf("description: '%s'\n", apstix.Description)
+		str += fmt.Sprintf("aliases: \n%v", func(l []string) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\taliase '%d': '%s'\n", k, v)
+			}
+			return str
+		}(apstix.Aliases))
+		str += fmt.Sprintf("kill_chain_phases: \n%v", func(l KillChainPhasesTypeSTIX) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\tkey:'%v' kill_chain_name: '%s'\n", k, v.KillChainName)
+				str += fmt.Sprintf("\tkey:'%v' phase_name: '%s'\n", k, v.PhaseName)
+			}
+			return str
+		}(apstix.KillChainPhases))
+	*/
+
+	return str
+}
+
+/* --- DirectoryCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (dstix DirectoryCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -108,15 +238,13 @@ func (dstix DirectoryCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byt
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AutonomousSystemCyberObservableObjectSTIX
-// возвращает ВАЛИДНЫЙ объект AutonomousSystemCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
-// из-за ошибки 'cannot use e (variable of type datamodels.AutonomousSystemCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
-// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
-// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
-func (asstix AutonomousSystemCyberObservableObjectSTIX) CheckingTypeFields() bool {
-	fmt.Println("func 'CheckingTypeFields', START...")
+//CheckingTypeFields является валидатором параметров содержащихся в типе DirectoryCyberObservableObjectSTIX
+func (dstix DirectoryCyberObservableObjectSTIX) CheckingTypeFields() bool {
+	if !(regexp.MustCompile(`^(directory--)[0-9a-f|-]+$`).MatchString(dstix.ID)) {
+		return false
+	}
 
-	if !asstix.checkingTypeCommonFields() {
+	if !dstix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -125,7 +253,57 @@ func (asstix AutonomousSystemCyberObservableObjectSTIX) CheckingTypeFields() boo
 	return true
 }
 
-/* --- DirectoryCyberObservableObjectSTIX --- */
+//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+func (dstix DirectoryCyberObservableObjectSTIX) SanitizeStruct() DirectoryCyberObservableObjectSTIX {
+	dstix.OptionalCommonPropertiesCyberObservableObjectSTIX = dstix.sanitizeStruct()
+
+	/*
+		apstix.Name = commonlibs.StringSanitize(apstix.Name)
+		apstix.Description = commonlibs.StringSanitize(apstix.Description)
+
+		if len(apstix.Aliases) > 0 {
+			aliasesTmp := make([]string, 0, len(apstix.Aliases))
+			for _, v := range apstix.Aliases {
+				aliasesTmp = append(aliasesTmp, commonlibs.StringSanitize(v))
+			}
+			apstix.Aliases = aliasesTmp
+		}
+
+		apstix.KillChainPhases = apstix.KillChainPhases.SanitizeStructKillChainPhasesTypeSTIX()
+	*/
+
+	return dstix
+}
+
+//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+func (dstix DirectoryCyberObservableObjectSTIX) ToStringBeautiful() string {
+	str := dstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
+	str += dstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
+
+	/*
+		str += fmt.Sprintf("name: '%s'\n", apstix.Name)
+		str += fmt.Sprintf("description: '%s'\n", apstix.Description)
+		str += fmt.Sprintf("aliases: \n%v", func(l []string) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\taliase '%d': '%s'\n", k, v)
+			}
+			return str
+		}(apstix.Aliases))
+		str += fmt.Sprintf("kill_chain_phases: \n%v", func(l KillChainPhasesTypeSTIX) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\tkey:'%v' kill_chain_name: '%s'\n", k, v.KillChainName)
+				str += fmt.Sprintf("\tkey:'%v' phase_name: '%s'\n", k, v.PhaseName)
+			}
+			return str
+		}(apstix.KillChainPhases))
+	*/
+
+	return str
+}
+
+/* --- DomainNameCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (dnstix DomainNameCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -143,15 +321,13 @@ func (dnstix DomainNameCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]b
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе DirectoryCyberObservableObjectSTIX
-// возвращает ВАЛИДНЫЙ объект DirectoryCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
-// из-за ошибки 'cannot use e (variable of type datamodels.DirectoryCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
-// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
-// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
-func (dstix DirectoryCyberObservableObjectSTIX) CheckingTypeFields() bool {
-	fmt.Println("func 'CheckingTypeFields', START...")
+//CheckingTypeFields является валидатором параметров содержащихся в типе DomainNameCyberObservableObjectSTIX
+func (dnstix DomainNameCyberObservableObjectSTIX) CheckingTypeFields() bool {
+	if !(regexp.MustCompile(`^(domain-name--)[0-9a-f|-]+$`).MatchString(dnstix.ID)) {
+		return false
+	}
 
-	if !dstix.checkingTypeCommonFields() {
+	if !dnstix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -160,7 +336,57 @@ func (dstix DirectoryCyberObservableObjectSTIX) CheckingTypeFields() bool {
 	return true
 }
 
-/* --- DomainNameCyberObservableObjectSTIX --- */
+//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+func (dnstix DomainNameCyberObservableObjectSTIX) SanitizeStruct() DomainNameCyberObservableObjectSTIX {
+	dnstix.OptionalCommonPropertiesCyberObservableObjectSTIX = dnstix.sanitizeStruct()
+
+	/*
+		apstix.Name = commonlibs.StringSanitize(apstix.Name)
+		apstix.Description = commonlibs.StringSanitize(apstix.Description)
+
+		if len(apstix.Aliases) > 0 {
+			aliasesTmp := make([]string, 0, len(apstix.Aliases))
+			for _, v := range apstix.Aliases {
+				aliasesTmp = append(aliasesTmp, commonlibs.StringSanitize(v))
+			}
+			apstix.Aliases = aliasesTmp
+		}
+
+		apstix.KillChainPhases = apstix.KillChainPhases.SanitizeStructKillChainPhasesTypeSTIX()
+	*/
+
+	return dnstix
+}
+
+//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+func (dnstix DomainNameCyberObservableObjectSTIX) ToStringBeautiful() string {
+	str := dnstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
+	str += dnstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
+
+	/*
+		str += fmt.Sprintf("name: '%s'\n", apstix.Name)
+		str += fmt.Sprintf("description: '%s'\n", apstix.Description)
+		str += fmt.Sprintf("aliases: \n%v", func(l []string) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\taliase '%d': '%s'\n", k, v)
+			}
+			return str
+		}(apstix.Aliases))
+		str += fmt.Sprintf("kill_chain_phases: \n%v", func(l KillChainPhasesTypeSTIX) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\tkey:'%v' kill_chain_name: '%s'\n", k, v.KillChainName)
+				str += fmt.Sprintf("\tkey:'%v' phase_name: '%s'\n", k, v.PhaseName)
+			}
+			return str
+		}(apstix.KillChainPhases))
+	*/
+
+	return str
+}
+
+/* --- EmailAddressCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (eastix EmailAddressCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -178,21 +404,69 @@ func (eastix EmailAddressCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе DomainNameCyberObservableObjectSTIX
-// возвращает ВАЛИДНЫЙ объект DomainNameCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
-// из-за ошибки 'cannot use e (variable of type datamodels.DomainNameCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
-// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
-// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
-func (dnstix DomainNameCyberObservableObjectSTIX) CheckingTypeFields() bool {
-	fmt.Println("func 'CheckingTypeFields', START...")
+//CheckingTypeFields является валидатором параметров содержащихся в типе EmailAddressCyberObservableObjectSTIX
+func (eastix EmailAddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
+	if !(regexp.MustCompile(`^(email-addr--)[0-9a-f|-]+$`).MatchString(eastix.ID)) {
+		return false
+	}
 
-	if !dnstix.checkingTypeCommonFields() {
+	if !eastix.checkingTypeCommonFields() {
 		return false
 	}
 
 	//тут проверяем остальные параметры, не входящие в тип CommonPropertiesDomainObjectSTIX
 
 	return true
+}
+
+//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+func (eastix EmailAddressCyberObservableObjectSTIX) SanitizeStruct() EmailAddressCyberObservableObjectSTIX {
+	eastix.OptionalCommonPropertiesCyberObservableObjectSTIX = eastix.sanitizeStruct()
+
+	/*
+		apstix.Name = commonlibs.StringSanitize(apstix.Name)
+		apstix.Description = commonlibs.StringSanitize(apstix.Description)
+
+		if len(apstix.Aliases) > 0 {
+			aliasesTmp := make([]string, 0, len(apstix.Aliases))
+			for _, v := range apstix.Aliases {
+				aliasesTmp = append(aliasesTmp, commonlibs.StringSanitize(v))
+			}
+			apstix.Aliases = aliasesTmp
+		}
+
+		apstix.KillChainPhases = apstix.KillChainPhases.SanitizeStructKillChainPhasesTypeSTIX()
+	*/
+
+	return eastix
+}
+
+//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+func (eastix EmailAddressCyberObservableObjectSTIX) ToStringBeautiful() string {
+	str := eastix.CommonPropertiesObjectSTIX.ToStringBeautiful()
+	str += eastix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
+
+	/*
+		str += fmt.Sprintf("name: '%s'\n", apstix.Name)
+		str += fmt.Sprintf("description: '%s'\n", apstix.Description)
+		str += fmt.Sprintf("aliases: \n%v", func(l []string) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\taliase '%d': '%s'\n", k, v)
+			}
+			return str
+		}(apstix.Aliases))
+		str += fmt.Sprintf("kill_chain_phases: \n%v", func(l KillChainPhasesTypeSTIX) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\tkey:'%v' kill_chain_name: '%s'\n", k, v.KillChainName)
+				str += fmt.Sprintf("\tkey:'%v' phase_name: '%s'\n", k, v.PhaseName)
+			}
+			return str
+		}(apstix.KillChainPhases))
+	*/
+
+	return str
 }
 
 /* --- EmailAddressCyberObservableObjectSTIX --- */
@@ -213,15 +487,13 @@ func (emstix EmailMessageCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе EmailAddressCyberObservableObjectSTIX
-// возвращает ВАЛИДНЫЙ объект EmailAddressCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
-// из-за ошибки 'cannot use e (variable of type datamodels.EmailAddressCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
-// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
-// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
-func (eastix EmailAddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
-	fmt.Println("func 'CheckingTypeFields', START...")
+//CheckingTypeFields является валидатором параметров содержащихся в типе EmailMessageCyberObservableObjectSTIX
+func (emstix EmailMessageCyberObservableObjectSTIX) CheckingTypeFields() bool {
+	if !(regexp.MustCompile(`^(email-message--)[0-9a-f|-]+$`).MatchString(emstix.ID)) {
+		return false
+	}
 
-	if !eastix.checkingTypeCommonFields() {
+	if !emstix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -230,7 +502,57 @@ func (eastix EmailAddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
 	return true
 }
 
-/* --- EmailMessageCyberObservableObjectSTIX --- */
+//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+func (emstix EmailMessageCyberObservableObjectSTIX) SanitizeStruct() EmailMessageCyberObservableObjectSTIX {
+	emstix.OptionalCommonPropertiesCyberObservableObjectSTIX = emstix.sanitizeStruct()
+
+	/*
+		apstix.Name = commonlibs.StringSanitize(apstix.Name)
+		apstix.Description = commonlibs.StringSanitize(apstix.Description)
+
+		if len(apstix.Aliases) > 0 {
+			aliasesTmp := make([]string, 0, len(apstix.Aliases))
+			for _, v := range apstix.Aliases {
+				aliasesTmp = append(aliasesTmp, commonlibs.StringSanitize(v))
+			}
+			apstix.Aliases = aliasesTmp
+		}
+
+		apstix.KillChainPhases = apstix.KillChainPhases.SanitizeStructKillChainPhasesTypeSTIX()
+	*/
+
+	return emstix
+}
+
+//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+func (emstix EmailMessageCyberObservableObjectSTIX) ToStringBeautiful() string {
+	str := emstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
+	str += emstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
+
+	/*
+		str += fmt.Sprintf("name: '%s'\n", apstix.Name)
+		str += fmt.Sprintf("description: '%s'\n", apstix.Description)
+		str += fmt.Sprintf("aliases: \n%v", func(l []string) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\taliase '%d': '%s'\n", k, v)
+			}
+			return str
+		}(apstix.Aliases))
+		str += fmt.Sprintf("kill_chain_phases: \n%v", func(l KillChainPhasesTypeSTIX) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\tkey:'%v' kill_chain_name: '%s'\n", k, v.KillChainName)
+				str += fmt.Sprintf("\tkey:'%v' phase_name: '%s'\n", k, v.PhaseName)
+			}
+			return str
+		}(apstix.KillChainPhases))
+	*/
+
+	return str
+}
+
+/* --- FileCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (fstix FileCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -269,15 +591,18 @@ func (fstix FileCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte, er
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе EmailMessageCyberObservableObjectSTIX
-// возвращает ВАЛИДНЫЙ объект EmailMessageCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
-// из-за ошибки 'cannot use e (variable of type datamodels.EmailMessageCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
-// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
-// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
-func (emstix EmailMessageCyberObservableObjectSTIX) CheckingTypeFields() bool {
-	fmt.Println("func 'CheckingTypeFields', START...")
+//GetFileCyberObservableObjectSTIX возвращает объект типа FileCyberObservableObjectSTIX
+func (fstix *FileCyberObservableObjectSTIX) GetFileCyberObservableObjectSTIX() *FileCyberObservableObjectSTIX {
+	return fstix
+}
 
-	if !emstix.checkingTypeCommonFields() {
+//CheckingTypeFields является валидатором параметров содержащихся в типе FileCyberObservableObjectSTIX
+func (fstix FileCyberObservableObjectSTIX) CheckingTypeFields() bool {
+	if !(regexp.MustCompile(`^(file--)[0-9a-f|-]+$`).MatchString(fstix.ID)) {
+		return false
+	}
+
+	if !fstix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -286,12 +611,57 @@ func (emstix EmailMessageCyberObservableObjectSTIX) CheckingTypeFields() bool {
 	return true
 }
 
-//GetFileCyberObservableObjectSTIX возвращает объект типа FileCyberObservableObjectSTIX
-func (fstix *FileCyberObservableObjectSTIX) GetFileCyberObservableObjectSTIX() *FileCyberObservableObjectSTIX {
+//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+func (fstix FileCyberObservableObjectSTIX) SanitizeStruct() FileCyberObservableObjectSTIX {
+	fstix.OptionalCommonPropertiesCyberObservableObjectSTIX = fstix.sanitizeStruct()
+
+	/*
+		apstix.Name = commonlibs.StringSanitize(apstix.Name)
+		apstix.Description = commonlibs.StringSanitize(apstix.Description)
+
+		if len(apstix.Aliases) > 0 {
+			aliasesTmp := make([]string, 0, len(apstix.Aliases))
+			for _, v := range apstix.Aliases {
+				aliasesTmp = append(aliasesTmp, commonlibs.StringSanitize(v))
+			}
+			apstix.Aliases = aliasesTmp
+		}
+
+		apstix.KillChainPhases = apstix.KillChainPhases.SanitizeStructKillChainPhasesTypeSTIX()
+	*/
+
 	return fstix
 }
 
-/* --- EmailMessageCyberObservableObjectSTIX --- */
+//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+func (fstix FileCyberObservableObjectSTIX) ToStringBeautiful() string {
+	str := fstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
+	str += fstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
+
+	/*
+		str += fmt.Sprintf("name: '%s'\n", apstix.Name)
+		str += fmt.Sprintf("description: '%s'\n", apstix.Description)
+		str += fmt.Sprintf("aliases: \n%v", func(l []string) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\taliase '%d': '%s'\n", k, v)
+			}
+			return str
+		}(apstix.Aliases))
+		str += fmt.Sprintf("kill_chain_phases: \n%v", func(l KillChainPhasesTypeSTIX) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\tkey:'%v' kill_chain_name: '%s'\n", k, v.KillChainName)
+				str += fmt.Sprintf("\tkey:'%v' phase_name: '%s'\n", k, v.PhaseName)
+			}
+			return str
+		}(apstix.KillChainPhases))
+	*/
+
+	return str
+}
+
+/* --- IPv4AddressCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (ip4stix IPv4AddressCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -309,15 +679,18 @@ func (ip4stix IPv4AddressCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе FileCyberObservableObjectSTIX
-// возвращает ВАЛИДНЫЙ объект FileCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
-// из-за ошибки 'cannot use e (variable of type datamodels.FileCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
-// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
-// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
-func (fstix FileCyberObservableObjectSTIX) CheckingTypeFields() bool {
-	fmt.Println("func 'CheckingTypeFields', START...")
+//GetIPv4AddressCyberObservableObjectSTIX выполняет объект типа IPv4AddressCyberObservableObjectSTIX
+func (fstix *IPv4AddressCyberObservableObjectSTIX) GetIPv4AddressCyberObservableObjectSTIX() *IPv4AddressCyberObservableObjectSTIX {
+	return fstix
+}
 
-	if !fstix.checkingTypeCommonFields() {
+//CheckingTypeFields является валидатором параметров содержащихся в типе IPv4AddressCyberObservableObjectSTIX
+func (ip4stix IPv4AddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
+	if !(regexp.MustCompile(`^(ipv4-addr--)[0-9a-f|-]+$`).MatchString(ip4stix.ID)) {
+		return false
+	}
+
+	if !ip4stix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -326,12 +699,57 @@ func (fstix FileCyberObservableObjectSTIX) CheckingTypeFields() bool {
 	return true
 }
 
-//GetIPv4AddressCyberObservableObjectSTIX выполняет объект типа IPv4AddressCyberObservableObjectSTIX
-func (fstix *IPv4AddressCyberObservableObjectSTIX) GetIPv4AddressCyberObservableObjectSTIX() *IPv4AddressCyberObservableObjectSTIX {
-	return fstix
+//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+func (ip4stix IPv4AddressCyberObservableObjectSTIX) SanitizeStruct() IPv4AddressCyberObservableObjectSTIX {
+	ip4stix.OptionalCommonPropertiesCyberObservableObjectSTIX = ip4stix.sanitizeStruct()
+
+	/*
+		apstix.Name = commonlibs.StringSanitize(apstix.Name)
+		apstix.Description = commonlibs.StringSanitize(apstix.Description)
+
+		if len(apstix.Aliases) > 0 {
+			aliasesTmp := make([]string, 0, len(apstix.Aliases))
+			for _, v := range apstix.Aliases {
+				aliasesTmp = append(aliasesTmp, commonlibs.StringSanitize(v))
+			}
+			apstix.Aliases = aliasesTmp
+		}
+
+		apstix.KillChainPhases = apstix.KillChainPhases.SanitizeStructKillChainPhasesTypeSTIX()
+	*/
+
+	return ip4stix
 }
 
-/* --- IPv4AddressCyberObservableObjectSTIX --- */
+//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+func (ip4stix IPv4AddressCyberObservableObjectSTIX) ToStringBeautiful() string {
+	str := ip4stix.CommonPropertiesObjectSTIX.ToStringBeautiful()
+	str += ip4stix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
+
+	/*
+		str += fmt.Sprintf("name: '%s'\n", apstix.Name)
+		str += fmt.Sprintf("description: '%s'\n", apstix.Description)
+		str += fmt.Sprintf("aliases: \n%v", func(l []string) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\taliase '%d': '%s'\n", k, v)
+			}
+			return str
+		}(apstix.Aliases))
+		str += fmt.Sprintf("kill_chain_phases: \n%v", func(l KillChainPhasesTypeSTIX) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\tkey:'%v' kill_chain_name: '%s'\n", k, v.KillChainName)
+				str += fmt.Sprintf("\tkey:'%v' phase_name: '%s'\n", k, v.PhaseName)
+			}
+			return str
+		}(apstix.KillChainPhases))
+	*/
+
+	return str
+}
+
+/* --- IPv6AddressCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (ip6stix IPv6AddressCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -349,15 +767,13 @@ func (ip6stix IPv6AddressCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе IPv4AddressCyberObservableObjectSTIX
-// возвращает ВАЛИДНЫЙ объект IPv4AddressCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
-// из-за ошибки 'cannot use e (variable of type datamodels.IPv4AddressCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
-// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
-// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
-func (ip4stix IPv4AddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
-	fmt.Println("func 'CheckingTypeFields', START...")
+//CheckingTypeFields является валидатором параметров содержащихся в типе IPv6AddressCyberObservableObjectSTIX
+func (ip6stix IPv6AddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
+	if !(regexp.MustCompile(`^(ipv6-addr--)[0-9a-f|-]+$`).MatchString(ip6stix.ID)) {
+		return false
+	}
 
-	if !ip4stix.checkingTypeCommonFields() {
+	if !ip6stix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -366,7 +782,57 @@ func (ip4stix IPv4AddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
 	return true
 }
 
-/* --- IPv6AddressCyberObservableObjectSTIX --- */
+//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+func (ip6stix IPv6AddressCyberObservableObjectSTIX) SanitizeStruct() IPv6AddressCyberObservableObjectSTIX {
+	ip6stix.OptionalCommonPropertiesCyberObservableObjectSTIX = ip6stix.sanitizeStruct()
+
+	/*
+		apstix.Name = commonlibs.StringSanitize(apstix.Name)
+		apstix.Description = commonlibs.StringSanitize(apstix.Description)
+
+		if len(apstix.Aliases) > 0 {
+			aliasesTmp := make([]string, 0, len(apstix.Aliases))
+			for _, v := range apstix.Aliases {
+				aliasesTmp = append(aliasesTmp, commonlibs.StringSanitize(v))
+			}
+			apstix.Aliases = aliasesTmp
+		}
+
+		apstix.KillChainPhases = apstix.KillChainPhases.SanitizeStructKillChainPhasesTypeSTIX()
+	*/
+
+	return ip6stix
+}
+
+//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+func (ip6stix IPv6AddressCyberObservableObjectSTIX) ToStringBeautiful() string {
+	str := ip6stix.CommonPropertiesObjectSTIX.ToStringBeautiful()
+	str += ip6stix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
+
+	/*
+		str += fmt.Sprintf("name: '%s'\n", apstix.Name)
+		str += fmt.Sprintf("description: '%s'\n", apstix.Description)
+		str += fmt.Sprintf("aliases: \n%v", func(l []string) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\taliase '%d': '%s'\n", k, v)
+			}
+			return str
+		}(apstix.Aliases))
+		str += fmt.Sprintf("kill_chain_phases: \n%v", func(l KillChainPhasesTypeSTIX) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\tkey:'%v' kill_chain_name: '%s'\n", k, v.KillChainName)
+				str += fmt.Sprintf("\tkey:'%v' phase_name: '%s'\n", k, v.PhaseName)
+			}
+			return str
+		}(apstix.KillChainPhases))
+	*/
+
+	return str
+}
+
+/* --- MACAddressCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (macstix MACAddressCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -384,15 +850,13 @@ func (macstix MACAddressCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе IPv6AddressCyberObservableObjectSTIX
-// возвращает ВАЛИДНЫЙ объект IPv6AddressCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
-// из-за ошибки 'cannot use e (variable of type datamodels.IPv6AddressCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
-// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
-// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
-func (ip6stix IPv6AddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
-	fmt.Println("func 'CheckingTypeFields', START...")
+//CheckingTypeFields является валидатором параметров содержащихся в типе MACAddressCyberObservableObjectSTIX
+func (macstix MACAddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
+	if !(regexp.MustCompile(`^(mac-addr--)[0-9a-f|-]+$`).MatchString(macstix.ID)) {
+		return false
+	}
 
-	if !ip6stix.checkingTypeCommonFields() {
+	if !macstix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -401,7 +865,57 @@ func (ip6stix IPv6AddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
 	return true
 }
 
-/* --- MACAddressCyberObservableObjectSTIX --- */
+//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+func (macstix MACAddressCyberObservableObjectSTIX) SanitizeStruct() MACAddressCyberObservableObjectSTIX {
+	macstix.OptionalCommonPropertiesCyberObservableObjectSTIX = macstix.sanitizeStruct()
+
+	/*
+		apstix.Name = commonlibs.StringSanitize(apstix.Name)
+		apstix.Description = commonlibs.StringSanitize(apstix.Description)
+
+		if len(apstix.Aliases) > 0 {
+			aliasesTmp := make([]string, 0, len(apstix.Aliases))
+			for _, v := range apstix.Aliases {
+				aliasesTmp = append(aliasesTmp, commonlibs.StringSanitize(v))
+			}
+			apstix.Aliases = aliasesTmp
+		}
+
+		apstix.KillChainPhases = apstix.KillChainPhases.SanitizeStructKillChainPhasesTypeSTIX()
+	*/
+
+	return macstix
+}
+
+//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+func (macstix MACAddressCyberObservableObjectSTIX) ToStringBeautiful() string {
+	str := macstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
+	str += macstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
+
+	/*
+		str += fmt.Sprintf("name: '%s'\n", apstix.Name)
+		str += fmt.Sprintf("description: '%s'\n", apstix.Description)
+		str += fmt.Sprintf("aliases: \n%v", func(l []string) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\taliase '%d': '%s'\n", k, v)
+			}
+			return str
+		}(apstix.Aliases))
+		str += fmt.Sprintf("kill_chain_phases: \n%v", func(l KillChainPhasesTypeSTIX) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\tkey:'%v' kill_chain_name: '%s'\n", k, v.KillChainName)
+				str += fmt.Sprintf("\tkey:'%v' phase_name: '%s'\n", k, v.PhaseName)
+			}
+			return str
+		}(apstix.KillChainPhases))
+	*/
+
+	return str
+}
+
+/* --- MutexCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (mstix MutexCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -419,15 +933,13 @@ func (mstix MutexCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte, e
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе MACAddressCyberObservableObjectSTIX
-// возвращает ВАЛИДНЫЙ объект MACAddressCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
-// из-за ошибки 'cannot use e (variable of type datamodels.MACAddressCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
-// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
-// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
-func (macstix MACAddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
-	fmt.Println("func 'CheckingTypeFields', START...")
+//CheckingTypeFields является валидатором параметров содержащихся в типе MutexCyberObservableObjectSTIX
+func (mstix MutexCyberObservableObjectSTIX) CheckingTypeFields() bool {
+	if !(regexp.MustCompile(`^(mutex--)[0-9a-f|-]+$`).MatchString(mstix.ID)) {
+		return false
+	}
 
-	if !macstix.checkingTypeCommonFields() {
+	if !mstix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -436,7 +948,57 @@ func (macstix MACAddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
 	return true
 }
 
-/* --- MutexCyberObservableObjectSTIX --- */
+//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+func (mstix MutexCyberObservableObjectSTIX) SanitizeStruct() MutexCyberObservableObjectSTIX {
+	mstix.OptionalCommonPropertiesCyberObservableObjectSTIX = mstix.sanitizeStruct()
+
+	/*
+		apstix.Name = commonlibs.StringSanitize(apstix.Name)
+		apstix.Description = commonlibs.StringSanitize(apstix.Description)
+
+		if len(apstix.Aliases) > 0 {
+			aliasesTmp := make([]string, 0, len(apstix.Aliases))
+			for _, v := range apstix.Aliases {
+				aliasesTmp = append(aliasesTmp, commonlibs.StringSanitize(v))
+			}
+			apstix.Aliases = aliasesTmp
+		}
+
+		apstix.KillChainPhases = apstix.KillChainPhases.SanitizeStructKillChainPhasesTypeSTIX()
+	*/
+
+	return mstix
+}
+
+//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+func (mstix MutexCyberObservableObjectSTIX) ToStringBeautiful() string {
+	str := mstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
+	str += mstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
+
+	/*
+		str += fmt.Sprintf("name: '%s'\n", apstix.Name)
+		str += fmt.Sprintf("description: '%s'\n", apstix.Description)
+		str += fmt.Sprintf("aliases: \n%v", func(l []string) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\taliase '%d': '%s'\n", k, v)
+			}
+			return str
+		}(apstix.Aliases))
+		str += fmt.Sprintf("kill_chain_phases: \n%v", func(l KillChainPhasesTypeSTIX) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\tkey:'%v' kill_chain_name: '%s'\n", k, v.KillChainName)
+				str += fmt.Sprintf("\tkey:'%v' phase_name: '%s'\n", k, v.PhaseName)
+			}
+			return str
+		}(apstix.KillChainPhases))
+	*/
+
+	return str
+}
+
+/* --- NetworkTrafficCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (ntstix NetworkTrafficCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -475,15 +1037,13 @@ func (ntstix NetworkTrafficCyberObservableObjectSTIX) EncoderJSON(interface{}) (
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе MutexCyberObservableObjectSTIX
-// возвращает ВАЛИДНЫЙ объект MutexCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
-// из-за ошибки 'cannot use e (variable of type datamodels.MutexCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
-// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
-// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
-func (mstix MutexCyberObservableObjectSTIX) CheckingTypeFields() bool {
-	fmt.Println("func 'CheckingTypeFields', START...")
+//CheckingTypeFields является валидатором параметров содержащихся в типе NetworkTrafficCyberObservableObjectSTIX
+func (ntstix NetworkTrafficCyberObservableObjectSTIX) CheckingTypeFields() bool {
+	if !(regexp.MustCompile(`^(network-traffic--)[0-9a-f|-]+$`).MatchString(ntstix.ID)) {
+		return false
+	}
 
-	if !mstix.checkingTypeCommonFields() {
+	if !ntstix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -492,7 +1052,57 @@ func (mstix MutexCyberObservableObjectSTIX) CheckingTypeFields() bool {
 	return true
 }
 
-/* --- NetworkTrafficCyberObservableObjectSTIX --- */
+//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+func (ntstix NetworkTrafficCyberObservableObjectSTIX) SanitizeStruct() NetworkTrafficCyberObservableObjectSTIX {
+	ntstix.OptionalCommonPropertiesCyberObservableObjectSTIX = ntstix.sanitizeStruct()
+
+	/*
+		apstix.Name = commonlibs.StringSanitize(apstix.Name)
+		apstix.Description = commonlibs.StringSanitize(apstix.Description)
+
+		if len(apstix.Aliases) > 0 {
+			aliasesTmp := make([]string, 0, len(apstix.Aliases))
+			for _, v := range apstix.Aliases {
+				aliasesTmp = append(aliasesTmp, commonlibs.StringSanitize(v))
+			}
+			apstix.Aliases = aliasesTmp
+		}
+
+		apstix.KillChainPhases = apstix.KillChainPhases.SanitizeStructKillChainPhasesTypeSTIX()
+	*/
+
+	return ntstix
+}
+
+//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+func (ntstix NetworkTrafficCyberObservableObjectSTIX) ToStringBeautiful() string {
+	str := ntstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
+	str += ntstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
+
+	/*
+		str += fmt.Sprintf("name: '%s'\n", apstix.Name)
+		str += fmt.Sprintf("description: '%s'\n", apstix.Description)
+		str += fmt.Sprintf("aliases: \n%v", func(l []string) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\taliase '%d': '%s'\n", k, v)
+			}
+			return str
+		}(apstix.Aliases))
+		str += fmt.Sprintf("kill_chain_phases: \n%v", func(l KillChainPhasesTypeSTIX) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\tkey:'%v' kill_chain_name: '%s'\n", k, v.KillChainName)
+				str += fmt.Sprintf("\tkey:'%v' phase_name: '%s'\n", k, v.PhaseName)
+			}
+			return str
+		}(apstix.KillChainPhases))
+	*/
+
+	return str
+}
+
+/* --- ProcessCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (pstix ProcessCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -530,15 +1140,13 @@ func (pstix ProcessCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte,
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе NetworkTrafficCyberObservableObjectSTIX
-// возвращает ВАЛИДНЫЙ объект NetworkTrafficCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
-// из-за ошибки 'cannot use e (variable of type datamodels.NetworkTrafficCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
-// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
-// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
-func (ntstix NetworkTrafficCyberObservableObjectSTIX) CheckingTypeFields() bool {
-	fmt.Println("func 'CheckingTypeFields', START...")
+//CheckingTypeFields является валидатором параметров содержащихся в типе ProcessCyberObservableObjectSTIX
+func (pstix ProcessCyberObservableObjectSTIX) CheckingTypeFields() bool {
+	if !(regexp.MustCompile(`^(process--)[0-9a-f|-]+$`).MatchString(pstix.ID)) {
+		return false
+	}
 
-	if !ntstix.checkingTypeCommonFields() {
+	if !pstix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -547,7 +1155,57 @@ func (ntstix NetworkTrafficCyberObservableObjectSTIX) CheckingTypeFields() bool 
 	return true
 }
 
-/* --- ProcessCyberObservableObjectSTIX --- */
+//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+func (pstix ProcessCyberObservableObjectSTIX) SanitizeStruct() ProcessCyberObservableObjectSTIX {
+	pstix.OptionalCommonPropertiesCyberObservableObjectSTIX = pstix.sanitizeStruct()
+
+	/*
+		apstix.Name = commonlibs.StringSanitize(apstix.Name)
+		apstix.Description = commonlibs.StringSanitize(apstix.Description)
+
+		if len(apstix.Aliases) > 0 {
+			aliasesTmp := make([]string, 0, len(apstix.Aliases))
+			for _, v := range apstix.Aliases {
+				aliasesTmp = append(aliasesTmp, commonlibs.StringSanitize(v))
+			}
+			apstix.Aliases = aliasesTmp
+		}
+
+		apstix.KillChainPhases = apstix.KillChainPhases.SanitizeStructKillChainPhasesTypeSTIX()
+	*/
+
+	return pstix
+}
+
+//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+func (pstix ProcessCyberObservableObjectSTIX) ToStringBeautiful() string {
+	str := pstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
+	str += pstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
+
+	/*
+		str += fmt.Sprintf("name: '%s'\n", apstix.Name)
+		str += fmt.Sprintf("description: '%s'\n", apstix.Description)
+		str += fmt.Sprintf("aliases: \n%v", func(l []string) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\taliase '%d': '%s'\n", k, v)
+			}
+			return str
+		}(apstix.Aliases))
+		str += fmt.Sprintf("kill_chain_phases: \n%v", func(l KillChainPhasesTypeSTIX) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\tkey:'%v' kill_chain_name: '%s'\n", k, v.KillChainName)
+				str += fmt.Sprintf("\tkey:'%v' phase_name: '%s'\n", k, v.PhaseName)
+			}
+			return str
+		}(apstix.KillChainPhases))
+	*/
+
+	return str
+}
+
+/* --- SoftwareCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (sstix SoftwareCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -565,15 +1223,13 @@ func (sstix SoftwareCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе ProcessCyberObservableObjectSTIX
-// возвращает ВАЛИДНЫЙ объект ProcessCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
-// из-за ошибки 'cannot use e (variable of type datamodels.ProcessCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
-// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
-// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
-func (pstix ProcessCyberObservableObjectSTIX) CheckingTypeFields() bool {
-	fmt.Println("func 'CheckingTypeFields', START...")
+//CheckingTypeFields является валидатором параметров содержащихся в типе SoftwareCyberObservableObjectSTIX
+func (sstix SoftwareCyberObservableObjectSTIX) CheckingTypeFields() bool {
+	if !(regexp.MustCompile(`^(software--)[0-9a-f|-]+$`).MatchString(sstix.ID)) {
+		return false
+	}
 
-	if !pstix.checkingTypeCommonFields() {
+	if !sstix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -582,7 +1238,57 @@ func (pstix ProcessCyberObservableObjectSTIX) CheckingTypeFields() bool {
 	return true
 }
 
-/* --- SoftwareCyberObservableObjectSTIX --- */
+//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+func (sstix SoftwareCyberObservableObjectSTIX) SanitizeStruct() SoftwareCyberObservableObjectSTIX {
+	sstix.OptionalCommonPropertiesCyberObservableObjectSTIX = sstix.sanitizeStruct()
+
+	/*
+		apstix.Name = commonlibs.StringSanitize(apstix.Name)
+		apstix.Description = commonlibs.StringSanitize(apstix.Description)
+
+		if len(apstix.Aliases) > 0 {
+			aliasesTmp := make([]string, 0, len(apstix.Aliases))
+			for _, v := range apstix.Aliases {
+				aliasesTmp = append(aliasesTmp, commonlibs.StringSanitize(v))
+			}
+			apstix.Aliases = aliasesTmp
+		}
+
+		apstix.KillChainPhases = apstix.KillChainPhases.SanitizeStructKillChainPhasesTypeSTIX()
+	*/
+
+	return sstix
+}
+
+//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+func (sstix SoftwareCyberObservableObjectSTIX) ToStringBeautiful() string {
+	str := sstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
+	str += sstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
+
+	/*
+		str += fmt.Sprintf("name: '%s'\n", apstix.Name)
+		str += fmt.Sprintf("description: '%s'\n", apstix.Description)
+		str += fmt.Sprintf("aliases: \n%v", func(l []string) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\taliase '%d': '%s'\n", k, v)
+			}
+			return str
+		}(apstix.Aliases))
+		str += fmt.Sprintf("kill_chain_phases: \n%v", func(l KillChainPhasesTypeSTIX) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\tkey:'%v' kill_chain_name: '%s'\n", k, v.KillChainName)
+				str += fmt.Sprintf("\tkey:'%v' phase_name: '%s'\n", k, v.PhaseName)
+			}
+			return str
+		}(apstix.KillChainPhases))
+	*/
+
+	return str
+}
+
+/* --- URLCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (urlstix URLCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -600,15 +1306,13 @@ func (urlstix URLCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte, e
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе SoftwareCyberObservableObjectSTIX
-// возвращает ВАЛИДНЫЙ объект SoftwareCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
-// из-за ошибки 'cannot use e (variable of type datamodels.SoftwareCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
-// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
-// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
-func (sstix SoftwareCyberObservableObjectSTIX) CheckingTypeFields() bool {
-	fmt.Println("func 'CheckingTypeFields', START...")
+//CheckingTypeFields является валидатором параметров содержащихся в типе URLCyberObservableObjectSTIX
+func (urlstix URLCyberObservableObjectSTIX) CheckingTypeFields() bool {
+	if !(regexp.MustCompile(`^(url--)[0-9a-f|-]+$`).MatchString(urlstix.ID)) {
+		return false
+	}
 
-	if !sstix.checkingTypeCommonFields() {
+	if !urlstix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -617,7 +1321,57 @@ func (sstix SoftwareCyberObservableObjectSTIX) CheckingTypeFields() bool {
 	return true
 }
 
-/* --- URLCyberObservableObjectSTIX --- */
+//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+func (urlstix URLCyberObservableObjectSTIX) SanitizeStruct() URLCyberObservableObjectSTIX {
+	urlstix.OptionalCommonPropertiesCyberObservableObjectSTIX = urlstix.sanitizeStruct()
+
+	/*
+		apstix.Name = commonlibs.StringSanitize(apstix.Name)
+		apstix.Description = commonlibs.StringSanitize(apstix.Description)
+
+		if len(apstix.Aliases) > 0 {
+			aliasesTmp := make([]string, 0, len(apstix.Aliases))
+			for _, v := range apstix.Aliases {
+				aliasesTmp = append(aliasesTmp, commonlibs.StringSanitize(v))
+			}
+			apstix.Aliases = aliasesTmp
+		}
+
+		apstix.KillChainPhases = apstix.KillChainPhases.SanitizeStructKillChainPhasesTypeSTIX()
+	*/
+
+	return urlstix
+}
+
+//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+func (urlstix URLCyberObservableObjectSTIX) ToStringBeautiful() string {
+	str := urlstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
+	str += urlstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
+
+	/*
+		str += fmt.Sprintf("name: '%s'\n", apstix.Name)
+		str += fmt.Sprintf("description: '%s'\n", apstix.Description)
+		str += fmt.Sprintf("aliases: \n%v", func(l []string) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\taliase '%d': '%s'\n", k, v)
+			}
+			return str
+		}(apstix.Aliases))
+		str += fmt.Sprintf("kill_chain_phases: \n%v", func(l KillChainPhasesTypeSTIX) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\tkey:'%v' kill_chain_name: '%s'\n", k, v.KillChainName)
+				str += fmt.Sprintf("\tkey:'%v' phase_name: '%s'\n", k, v.PhaseName)
+			}
+			return str
+		}(apstix.KillChainPhases))
+	*/
+
+	return str
+}
+
+/* --- UserAccountCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (uastix UserAccountCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -635,15 +1389,13 @@ func (uastix UserAccountCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе URLCyberObservableObjectSTIX
-// возвращает ВАЛИДНЫЙ объект URLCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
-// из-за ошибки 'cannot use e (variable of type datamodels.URLCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
-// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
-// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
-func (urlstix URLCyberObservableObjectSTIX) CheckingTypeFields() bool {
-	fmt.Println("func 'CheckingTypeFields', START...")
+//CheckingTypeFields является валидатором параметров содержащихся в типе UserAccountCyberObservableObjectSTIX
+func (uastix UserAccountCyberObservableObjectSTIX) CheckingTypeFields() bool {
+	if !(regexp.MustCompile(`^(user-account--)[0-9a-f|-]+$`).MatchString(uastix.ID)) {
+		return false
+	}
 
-	if !urlstix.checkingTypeCommonFields() {
+	if !uastix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -652,7 +1404,57 @@ func (urlstix URLCyberObservableObjectSTIX) CheckingTypeFields() bool {
 	return true
 }
 
-/* --- UserAccountCyberObservableObjectSTIX --- */
+//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+func (uastix UserAccountCyberObservableObjectSTIX) SanitizeStruct() UserAccountCyberObservableObjectSTIX {
+	uastix.OptionalCommonPropertiesCyberObservableObjectSTIX = uastix.sanitizeStruct()
+
+	/*
+		apstix.Name = commonlibs.StringSanitize(apstix.Name)
+		apstix.Description = commonlibs.StringSanitize(apstix.Description)
+
+		if len(apstix.Aliases) > 0 {
+			aliasesTmp := make([]string, 0, len(apstix.Aliases))
+			for _, v := range apstix.Aliases {
+				aliasesTmp = append(aliasesTmp, commonlibs.StringSanitize(v))
+			}
+			apstix.Aliases = aliasesTmp
+		}
+
+		apstix.KillChainPhases = apstix.KillChainPhases.SanitizeStructKillChainPhasesTypeSTIX()
+	*/
+
+	return uastix
+}
+
+//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+func (uastix UserAccountCyberObservableObjectSTIX) ToStringBeautiful() string {
+	str := uastix.CommonPropertiesObjectSTIX.ToStringBeautiful()
+	str += uastix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
+
+	/*
+		str += fmt.Sprintf("name: '%s'\n", apstix.Name)
+		str += fmt.Sprintf("description: '%s'\n", apstix.Description)
+		str += fmt.Sprintf("aliases: \n%v", func(l []string) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\taliase '%d': '%s'\n", k, v)
+			}
+			return str
+		}(apstix.Aliases))
+		str += fmt.Sprintf("kill_chain_phases: \n%v", func(l KillChainPhasesTypeSTIX) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\tkey:'%v' kill_chain_name: '%s'\n", k, v.KillChainName)
+				str += fmt.Sprintf("\tkey:'%v' phase_name: '%s'\n", k, v.PhaseName)
+			}
+			return str
+		}(apstix.KillChainPhases))
+	*/
+
+	return str
+}
+
+/* --- WindowsRegistryKeyCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -670,15 +1472,13 @@ func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) EncoderJSON(interface
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе UserAccountCyberObservableObjectSTIX
-// возвращает ВАЛИДНЫЙ объект UserAccountCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
-// из-за ошибки 'cannot use e (variable of type datamodels.UserAccountCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
-// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
-// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
-func (uastix UserAccountCyberObservableObjectSTIX) CheckingTypeFields() bool {
-	fmt.Println("func 'CheckingTypeFields', START...")
+//CheckingTypeFields является валидатором параметров содержащихся в типе WindowsRegistryKeyCyberObservableObjectSTIX
+func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) CheckingTypeFields() bool {
+	if !(regexp.MustCompile(`^(windows-registry-key--)[0-9a-f|-]+$`).MatchString(wrkstix.ID)) {
+		return false
+	}
 
-	if !uastix.checkingTypeCommonFields() {
+	if !wrkstix.checkingTypeCommonFields() {
 		return false
 	}
 
@@ -687,7 +1487,57 @@ func (uastix UserAccountCyberObservableObjectSTIX) CheckingTypeFields() bool {
 	return true
 }
 
-/* --- WindowsRegistryKeyCyberObservableObjectSTIX --- */
+//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) SanitizeStruct() WindowsRegistryKeyCyberObservableObjectSTIX {
+	wrkstix.OptionalCommonPropertiesCyberObservableObjectSTIX = wrkstix.sanitizeStruct()
+
+	/*
+		apstix.Name = commonlibs.StringSanitize(apstix.Name)
+		apstix.Description = commonlibs.StringSanitize(apstix.Description)
+
+		if len(apstix.Aliases) > 0 {
+			aliasesTmp := make([]string, 0, len(apstix.Aliases))
+			for _, v := range apstix.Aliases {
+				aliasesTmp = append(aliasesTmp, commonlibs.StringSanitize(v))
+			}
+			apstix.Aliases = aliasesTmp
+		}
+
+		apstix.KillChainPhases = apstix.KillChainPhases.SanitizeStructKillChainPhasesTypeSTIX()
+	*/
+
+	return wrkstix
+}
+
+//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) ToStringBeautiful() string {
+	str := wrkstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
+	str += wrkstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
+
+	/*
+		str += fmt.Sprintf("name: '%s'\n", apstix.Name)
+		str += fmt.Sprintf("description: '%s'\n", apstix.Description)
+		str += fmt.Sprintf("aliases: \n%v", func(l []string) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\taliase '%d': '%s'\n", k, v)
+			}
+			return str
+		}(apstix.Aliases))
+		str += fmt.Sprintf("kill_chain_phases: \n%v", func(l KillChainPhasesTypeSTIX) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\tkey:'%v' kill_chain_name: '%s'\n", k, v.KillChainName)
+				str += fmt.Sprintf("\tkey:'%v' phase_name: '%s'\n", k, v.PhaseName)
+			}
+			return str
+		}(apstix.KillChainPhases))
+	*/
+
+	return str
+}
+
+/* --- X509CertificateCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (x509sstix X509CertificateCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -705,32 +1555,11 @@ func (x509sstix X509CertificateCyberObservableObjectSTIX) EncoderJSON(interface{
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе WindowsRegistryKeyCyberObservableObjectSTIX
-// возвращает ВАЛИДНЫЙ объект WindowsRegistryKeyCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
-// из-за ошибки 'cannot use e (variable of type datamodels.WindowsRegistryKeyCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
-// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
-// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
-func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) CheckingTypeFields() bool {
-	fmt.Println("func 'CheckingTypeFields', START...")
-
-	if !wrkstix.checkingTypeCommonFields() {
+//CheckingTypeFields является валидатором параметров содержащихся в типе X509CertificateCyberObservableObjectSTIX
+func (x509sstix X509CertificateCyberObservableObjectSTIX) CheckingTypeFields() bool {
+	if !(regexp.MustCompile(`^(x509-certificate--)[0-9a-f|-]+$`).MatchString(x509sstix.ID)) {
 		return false
 	}
-
-	//тут проверяем остальные параметры, не входящие в тип CommonPropertiesDomainObjectSTIX
-
-	return true
-}
-
-/* --- X509CertificateCyberObservableObjectSTIX --- */
-
-//CheckingTypeFields является валидатором параметров содержащихся в типе X509CertificateCyberObservableObjectSTIX
-// возвращает ВАЛИДНЫЙ объект X509CertificateCyberObservableObjectSTIX (к сожалению нельзя править существующий объект
-// из-за ошибки 'cannot use e (variable of type datamodels.X509CertificateCyberObservableObjectSTIX) as datamodels.HandlerSTIXObject
-// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
-// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
-func (x509sstix X509CertificateCyberObservableObjectSTIX) CheckingTypeFields() bool {
-	fmt.Println("func 'CheckingTypeFields', START...")
 
 	if !x509sstix.checkingTypeCommonFields() {
 		return false
@@ -739,6 +1568,56 @@ func (x509sstix X509CertificateCyberObservableObjectSTIX) CheckingTypeFields() b
 	//тут проверяем остальные параметры, не входящие в тип CommonPropertiesDomainObjectSTIX
 
 	return true
+}
+
+//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+func (x509sstix X509CertificateCyberObservableObjectSTIX) SanitizeStruct() X509CertificateCyberObservableObjectSTIX {
+	x509sstix.OptionalCommonPropertiesCyberObservableObjectSTIX = x509sstix.sanitizeStruct()
+
+	/*
+		apstix.Name = commonlibs.StringSanitize(apstix.Name)
+		apstix.Description = commonlibs.StringSanitize(apstix.Description)
+
+		if len(apstix.Aliases) > 0 {
+			aliasesTmp := make([]string, 0, len(apstix.Aliases))
+			for _, v := range apstix.Aliases {
+				aliasesTmp = append(aliasesTmp, commonlibs.StringSanitize(v))
+			}
+			apstix.Aliases = aliasesTmp
+		}
+
+		apstix.KillChainPhases = apstix.KillChainPhases.SanitizeStructKillChainPhasesTypeSTIX()
+	*/
+
+	return x509sstix
+}
+
+//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+func (x509sstix X509CertificateCyberObservableObjectSTIX) ToStringBeautiful() string {
+	str := x509sstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
+	str += x509sstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
+
+	/*
+		str += fmt.Sprintf("name: '%s'\n", apstix.Name)
+		str += fmt.Sprintf("description: '%s'\n", apstix.Description)
+		str += fmt.Sprintf("aliases: \n%v", func(l []string) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\taliase '%d': '%s'\n", k, v)
+			}
+			return str
+		}(apstix.Aliases))
+		str += fmt.Sprintf("kill_chain_phases: \n%v", func(l KillChainPhasesTypeSTIX) string {
+			var str string
+			for k, v := range l {
+				str += fmt.Sprintf("\tkey:'%v' kill_chain_name: '%s'\n", k, v.KillChainName)
+				str += fmt.Sprintf("\tkey:'%v' phase_name: '%s'\n", k, v.PhaseName)
+			}
+			return str
+		}(apstix.KillChainPhases))
+	*/
+
+	return str
 }
 
 //decodingExtensionsSTIX декодирует следующие типы STIX расширений:

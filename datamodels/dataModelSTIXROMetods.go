@@ -3,24 +3,39 @@ package datamodels
 import (
 	"encoding/json"
 	"fmt"
+	"regexp"
+
+	"ISEMS-MRSICT/commonlibs"
 )
 
 /*****************************************************************************/
 /********** 			Relationship Objects STIX (МЕТОДЫ)			**********/
 /*****************************************************************************/
 
-func (ocprstix *OptionalCommonPropertiesRelationshipObjectSTIX) checkingTypeCommonFields() bool {
-	fmt.Println("func 'checkingTypeCommonFields', START...")
+func (oc *OptionalCommonPropertiesRelationshipObjectSTIX) checkingTypeCommonFields() bool {
+	if !(regexp.MustCompile(`^[0-9a-z.]+$`).MatchString(oc.SpecVersion)) {
+		return false
+	}
 
-	//rtype := reflect.TypeOf(testTypeOne.Extensions)
-	/*
-		валидация строк:
-		- удаление (замена) нежелательных символов или вырожений
-		- проверка строк на наличие ключевых строк в начале строки (для некоторых строк).
-		 Например для поля ID строка должна начинатся с названия типа и _ 'location_ggeg777d377377e7f'
-	*/
+	if oc.Created.Unix() < 0 {
+		return false
+	}
+
+	if oc.Modified.Unix() < 0 {
+		return false
+	}
 
 	return true
+}
+
+//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+func (oc *OptionalCommonPropertiesRelationshipObjectSTIX) ToStringBeautiful() string {
+	var str string
+	str += fmt.Sprintf("spec_version: '%s'\n", oc.SpecVersion)
+	str += fmt.Sprintf("created: '%v'\n", oc.Created)
+	str += fmt.Sprintf("modified: '%v'\n", oc.Modified)
+
+	return str
 }
 
 /* --- RelationshipObjectSTIX --- */
@@ -42,20 +57,49 @@ func (rstix RelationshipObjectSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 }
 
 //CheckingTypeFields является валидатором параметров содержащихся в типе RelationshipObjectSTIX
-// возвращает ВАЛИДНЫЙ объект RelationshipObjectSTIX (к сожалению нельзя править существующий объект
-// из-за ошибки 'cannot use e (variable of type datamodels.RelationshipObjectSTIX) as datamodels.HandlerSTIXObject
-// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
-// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
 func (rstix RelationshipObjectSTIX) CheckingTypeFields() bool {
-	fmt.Println("func 'CheckingTypeFields', START...")
+	if !(regexp.MustCompile(`^(relationship--)[0-9a-f|-]+$`).MatchString(rstix.ID)) {
+		return false
+	}
 
 	if !rstix.checkingTypeCommonFields() {
 		return false
 	}
 
-	//тут проверяем остальные параметры, не входящие в тип CommonPropertiesDomainObjectSTIX
+	if !(regexp.MustCompile(`^[0-9a-z|-]+$`).MatchString(rstix.RelationshipType)) {
+		return false
+	}
 
-	return true
+	if !rstix.SourceRef.CheckIdentifierTypeSTIX() {
+		return false
+	}
+
+	if !rstix.TargetRef.CheckIdentifierTypeSTIX() {
+		return false
+	}
+
+	return rstix.checkingTypeCommonFields()
+}
+
+//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+func (rstix RelationshipObjectSTIX) SanitizeStruct() RelationshipObjectSTIX {
+	rstix.Description = commonlibs.StringSanitize(rstix.Description)
+
+	return rstix
+}
+
+//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+func (rstix RelationshipObjectSTIX) ToStringBeautiful() string {
+	str := rstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
+	str += rstix.OptionalCommonPropertiesRelationshipObjectSTIX.ToStringBeautiful()
+	str += fmt.Sprintf("relationship_type: '%s'\n", rstix.RelationshipType)
+	str += fmt.Sprintf("description: '%s'\n", rstix.Description)
+	str += fmt.Sprintf("source_ref: '%v'\n", rstix.SourceRef)
+	str += fmt.Sprintf("target_ref: '%v'\n", rstix.TargetRef)
+	str += fmt.Sprintf("start_time: '%v'\n", rstix.StartTime)
+	str += fmt.Sprintf("stop_time: '%v'\n", rstix.StopTime)
+
+	return str
 }
 
 /* --- SightingObjectSTIX --- */
@@ -77,18 +121,69 @@ func (sstix SightingObjectSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 }
 
 //CheckingTypeFields является валидатором параметров содержащихся в типе SightingObjectSTIX
-// возвращает ВАЛИДНЫЙ объект SightingObjectSTIX (к сожалению нельзя править существующий объект
-// из-за ошибки 'cannot use e (variable of type datamodels.SightingObjectSTIX) as datamodels.HandlerSTIXObject
-// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
-// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
 func (sstix SightingObjectSTIX) CheckingTypeFields() bool {
-	fmt.Println("func 'CheckingTypeFields', START...")
+	if !(regexp.MustCompile(`^(sighting--)[0-9a-f|-]+$`).MatchString(sstix.ID)) {
+		return false
+	}
 
 	if !sstix.checkingTypeCommonFields() {
 		return false
 	}
 
-	//тут проверяем остальные параметры, не входящие в тип CommonPropertiesDomainObjectSTIX
+	if !sstix.SightingOfRef.CheckIdentifierTypeSTIX() {
+		return false
+	}
 
-	return true
+	if len(sstix.ObservedDataRefs) > 0 {
+		for _, v := range sstix.ObservedDataRefs {
+			if !v.CheckIdentifierTypeSTIX() {
+				return false
+			}
+		}
+	}
+
+	if len(sstix.WhereSightedRefs) > 0 {
+		for _, v := range sstix.WhereSightedRefs {
+			if !v.CheckIdentifierTypeSTIX() {
+				return false
+			}
+		}
+	}
+
+	return sstix.checkingTypeCommonFields()
+}
+
+//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+func (sstix SightingObjectSTIX) SanitizeStruct() SightingObjectSTIX {
+	sstix.Description = commonlibs.StringSanitize(sstix.Description)
+
+	return sstix
+}
+
+//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+func (sstix SightingObjectSTIX) ToStringBeautiful() string {
+	str := sstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
+	str += sstix.OptionalCommonPropertiesRelationshipObjectSTIX.ToStringBeautiful()
+	str += fmt.Sprintf("description: '%s'\n", sstix.Description)
+	str += fmt.Sprintf("first_seen: '%v'\n", sstix.FirstSeen)
+	str += fmt.Sprintf("last_seen: '%v'\n", sstix.LastSeen)
+	str += fmt.Sprintf("count: '%d'\n", sstix.Count)
+	str += fmt.Sprintf("sighting_of_ref: '%v'\n", sstix.SightingOfRef)
+	str += fmt.Sprintf("observed_data_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+		var str string
+		for k, v := range l {
+			str += fmt.Sprintf("\tobserved_data_ref '%d': '%v'\n", k, *v)
+		}
+		return str
+	}(sstix.ObservedDataRefs))
+	str += fmt.Sprintf("where_sighted_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+		var str string
+		for k, v := range l {
+			str += fmt.Sprintf("\twhere_sighted_ref '%d': '%v'\n", k, *v)
+		}
+		return str
+	}(sstix.WhereSightedRefs))
+	str += fmt.Sprintf("summary: '%v'\n", sstix.Summary)
+
+	return str
 }

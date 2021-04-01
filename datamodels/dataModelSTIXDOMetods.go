@@ -36,6 +36,15 @@ func (cpdostix *CommonPropertiesDomainObjectSTIX) checkingTypeCommonFields() boo
 		return false
 	}
 
+	//проверяем поле ObjectMarkingRefs
+	if len(cpdostix.ObjectMarkingRefs) > 0 {
+		for _, value := range cpdostix.ObjectMarkingRefs {
+			if !value.CheckIdentifierTypeSTIX() {
+				return false
+			}
+		}
+	}
+
 	//вызываем метод проверки полей типа GranularMarkingsTypeSTIX
 	if ok := cpdostix.GranularMarkings.CheckGranularMarkingsTypeSTIX(); !ok {
 		return false
@@ -54,17 +63,6 @@ func (cpdostix CommonPropertiesDomainObjectSTIX) sanitizeStruct() CommonProperti
 		}
 
 		cpdostix.Labels = nl
-	}
-
-	//проверяем поле ObjectMarkingRefs
-	if len(cpdostix.ObjectMarkingRefs) > 0 {
-		newObjectMarkingRefs := make([]*IdentifierTypeSTIX, 0, len(cpdostix.ObjectMarkingRefs))
-		for _, value := range cpdostix.ObjectMarkingRefs {
-			tmpRes := commonlibs.StringSanitize(fmt.Sprint(value))
-			value.AddValue(tmpRes)
-			newObjectMarkingRefs = append(newObjectMarkingRefs, value)
-		}
-		cpdostix.ObjectMarkingRefs = newObjectMarkingRefs
 	}
 
 	//обработка содержимого списка поля Extension
@@ -1030,35 +1028,35 @@ func (mstix MalwareDomainObjectsSTIX) ToStringBeautiful() string {
 	str += fmt.Sprintf("operating_system_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\toperating_system_ref '%d': '%v'\n", k, v)
+			str += fmt.Sprintf("\toperating_system_ref '%d': '%v'\n", k, *v)
 		}
 		return str
 	}(mstix.OperatingSystemRefs))
 	str += fmt.Sprintf("architecture_execution_envs: \n%v", func(l []*OpenVocabTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tarchitecture_execution_env '%d': '%v'\n", k, v)
+			str += fmt.Sprintf("\tarchitecture_execution_env '%d': '%v'\n", k, *v)
 		}
 		return str
 	}(mstix.ArchitectureExecutionEnvs))
 	str += fmt.Sprintf("implementation_languages: \n%v", func(l []*OpenVocabTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\timplementation_language '%d': '%v'\n", k, v)
+			str += fmt.Sprintf("\timplementation_language '%d': '%v'\n", k, *v)
 		}
 		return str
 	}(mstix.ImplementationLanguages))
 	str += fmt.Sprintf("capabilities: \n%v", func(l []*OpenVocabTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tcapabilitie '%d': '%v'\n", k, v)
+			str += fmt.Sprintf("\tcapabilitie '%d': '%v'\n", k, *v)
 		}
 		return str
 	}(mstix.Capabilities))
 	str += fmt.Sprintf("sample_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tsample_ref '%d': '%v'\n", k, v)
+			str += fmt.Sprintf("\tsample_ref '%d': '%v'\n", k, *v)
 		}
 		return str
 	}(mstix.SampleRefs))
@@ -1188,7 +1186,7 @@ func (mastix MalwareAnalysisDomainObjectsSTIX) ToStringBeautiful() string {
 	str += fmt.Sprintf("analysis_sco_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tanalysis_sco_ref '%d': '%v'\n", k, v)
+			str += fmt.Sprintf("\tanalysis_sco_ref '%d': '%v'\n", k, *v)
 		}
 		return str
 	}(mastix.AnalysisScoRefs))

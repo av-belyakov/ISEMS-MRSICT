@@ -300,7 +300,8 @@
             "spec_version": "2.1",
             "id": "artifact--6f437177-6e48-5cf8-9d9e-872a2bddd641",
             "mime_type": "application/zip",
-            "payload_bin": "ZX7HIBWPQA99NSUhEUgAAADI== ...",
+            "payload_bin": "J25mIG50Y25qZGZ6IGNuaGZyZiBkIGJhc2U2NCE=",
+            "url": "https://pkg.go.dev/github.com/asaskevich/govalidator#IsURL",
             "encryption_algorithm": "mime-type-indicated",
             "decryption_key": "My voice is my passport"           
         },

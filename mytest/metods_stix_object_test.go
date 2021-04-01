@@ -647,9 +647,277 @@ var _ = Describe("MetodsStixObject", func() {
 
 			Expect(ok).Should(BeTrue())
 
-			fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
+			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
 
 			Expect(coIsTrue).Should(BeTrue())
+		})
+	})
+
+	Context("Тест 21. Выполняем проверку типа 'artifact' методом CheckingTypeFields", func() {
+		It("На валидное содержимое типа ArtifactCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
+			mdbyte := json.RawMessage([]byte(`{
+				"type": "artifact",
+				"spec_version": "2.1",
+				"id": "artifact--6f437177-6e48-5cf8-9d9e-872a2bddd641",
+				"mime_type": "application/zip",
+				"payload_bin": "J25mIG50Y25qZGZ6IGNuaGZyZiBkIGJhc2U2NCE=",
+				"url": "https://pkg.go.dev/github.com/asaskevich/govalidator#IsURL",
+				"encryption_algorithm": "mime-type-indicated",
+				"decryption_key": "My voice is my passport"
+}`))
+			var md datamodels.ArtifactCyberObservableObjectSTIX
+			mdTmp, err := md.DecoderJSON(&mdbyte)
+
+			Expect(err).ShouldNot(HaveOccurred())
+
+			newmd, ok := mdTmp.(datamodels.ArtifactCyberObservableObjectSTIX)
+			newmd = newmd.SanitizeStruct()
+
+			Expect(ok).Should(BeTrue())
+
+			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
+
+			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+		})
+	})
+
+	Context("Тест 21. Выполняем проверку типа 'autonomous-system' методом CheckingTypeFields", func() {
+		It("На валидное содержимое типа AutonomousSystemCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
+			mdbyte := json.RawMessage([]byte(`{
+				"type": "autonomous-system",
+				"spec_version": "2.1",
+				"id": "autonomous-system--f720c34b-98ae-597f-ade5-27dc241e8c74",
+				"number": 15139,
+				"name": "Slime Industries",
+				"rir": "ARIN"           
+}`))
+			var md datamodels.AutonomousSystemCyberObservableObjectSTIX
+			mdTmp, err := md.DecoderJSON(&mdbyte)
+
+			Expect(err).ShouldNot(HaveOccurred())
+
+			newmd, ok := mdTmp.(datamodels.AutonomousSystemCyberObservableObjectSTIX)
+			newmd = newmd.SanitizeStruct()
+
+			Expect(ok).Should(BeTrue())
+
+			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
+
+			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+		})
+	})
+
+	Context("Тест 22. Выполняем проверку типа 'directory' методом CheckingTypeFields", func() {
+		It("На валидное содержимое типа DirectoryCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
+			mdbyte := json.RawMessage([]byte(`{
+				"type": "directory",
+				"spec_version": "2.1",
+				"id": "directory--93c0a9b0-520d-545d-9094-1a08ddf46b05",
+				"path": "C:\\Windows\\System32"         
+}`))
+			var md datamodels.DirectoryCyberObservableObjectSTIX
+			mdTmp, err := md.DecoderJSON(&mdbyte)
+
+			Expect(err).ShouldNot(HaveOccurred())
+
+			newmd, ok := mdTmp.(datamodels.DirectoryCyberObservableObjectSTIX)
+			newmd = newmd.SanitizeStruct()
+
+			Expect(ok).Should(BeTrue())
+
+			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
+
+			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+		})
+	})
+
+	Context("Тест 23. Выполняем проверку типа 'domain-name' методом CheckingTypeFields", func() {
+		It("На валидное содержимое типа DomainNameCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
+			mdbyte := json.RawMessage([]byte(`{
+				"type": "domain-name",
+				"spec_version": "2.1",
+				"id": "domain-name--3c10e93f-798e-5a26-a0c1-08156efab7f5",
+				"value": "example.com",
+				"resolves_to_refs": ["ipv4-addr--ff26c055-6336-5bc5-b98d-13d6226742dd"]
+}`))
+			var md datamodels.DomainNameCyberObservableObjectSTIX
+			mdTmp, err := md.DecoderJSON(&mdbyte)
+
+			Expect(err).ShouldNot(HaveOccurred())
+
+			newmd, ok := mdTmp.(datamodels.DomainNameCyberObservableObjectSTIX)
+			newmd = newmd.SanitizeStruct()
+
+			Expect(ok).Should(BeTrue())
+
+			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
+
+			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+		})
+	})
+
+	Context("Тест 24. Выполняем проверку типа 'email-addr' методом CheckingTypeFields", func() {
+		It("На валидное содержимое типа EmailAddressCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
+			mdbyte := json.RawMessage([]byte(`{
+				"type": "email-addr",
+				"spec_version": "2.1",
+				"id": "email-addr--2d77a846-6264-5d51-b586-e43822ea1ea3",
+				"value": "john@example.com",
+				"display_name": "John Doe"           
+}`))
+			var md datamodels.EmailAddressCyberObservableObjectSTIX
+			mdTmp, err := md.DecoderJSON(&mdbyte)
+
+			Expect(err).ShouldNot(HaveOccurred())
+
+			newmd, ok := mdTmp.(datamodels.EmailAddressCyberObservableObjectSTIX)
+			newmd = newmd.SanitizeStruct()
+
+			Expect(ok).Should(BeTrue())
+
+			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
+
+			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+		})
+	})
+
+	Context("Тест 25. Выполняем проверку типа 'email-message' методом CheckingTypeFields", func() {
+		It("На валидное содержимое типа EmailMessageCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
+			mdbyte := json.RawMessage([]byte(`{
+				"type": "email-message",
+				"spec_version": "2.1",
+				"id": "email-message--cf9b4b7f-14c8-5955-8065-020e0316b559",
+				"is_multipart": true,
+				"received_lines": [
+					"from mail.example.com ([198.51.100.3]) by smtp.gmail.com with ESMTPSA id q23sm23309939wme.17.2016.07.19.07.20.32 (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128); Tue, 19 Jul 2016 07:20:40 -0700 (PDT)"
+				],
+				"content_type": "multipart/mixed",
+				"date": "2016-06-19T14:20:40.000Z",
+				"from_ref": "email-addr--89f52ea8-d6ef-51e9-8fce-6a29236436ed",
+				"to_refs": ["email-addr--d1b3bf0c-f02a-51a1-8102-11aba7959868"],
+				"cc_refs": ["email-addr--e4ee5301-b52d-59cd-a8fa-8036738c7194"],
+				"subject": "Check out this picture of a cat!",
+				"additional_header_fields": {
+					"Content-Disposition": "inline",
+					"X-Mailer": "Mutt/1.5.23",
+					"X-Originating-IP": "198.51.100.3"
+				},
+				"body_multipart": [
+					{
+						"content_type": "text/plain; charset=utf-8",
+						"content_disposition": "inline",
+						"body": "Cats are funny!"
+					},
+					{
+						"content_type": "image/png",
+						"content_disposition": "attachment; filename=\"tabby.png\"",
+						"body_raw_ref": "artifact--4cce66f8-6eaa-53cb-85d5-3a85fca3a6c5"
+					},
+					{
+						"content_type": "application/zip",
+						"content_disposition": "attachment; filename=\"tabby_pics.zip\"",
+						"body_raw_ref": "file--6ce09d9c-0ad3-5ebf-900c-e3cb288955b5"
+					}
+				]
+}`))
+			var md datamodels.EmailMessageCyberObservableObjectSTIX
+			mdTmp, err := md.DecoderJSON(&mdbyte)
+
+			Expect(err).ShouldNot(HaveOccurred())
+
+			newmd, ok := mdTmp.(datamodels.EmailMessageCyberObservableObjectSTIX)
+			newmd = newmd.SanitizeStruct()
+
+			Expect(ok).Should(BeTrue())
+
+			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
+
+			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+		})
+	})
+
+	Context("Тест 25. Выполняем проверку типа 'email-message' методом CheckingTypeFields", func() {
+		It("На валидное содержимое типа FileCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
+			mdbyte := json.RawMessage([]byte(`{
+				"type": "file",
+				"spec_version": "2.1",
+				"id": "file--fb0419a8-f09c-57f8-be64-71a80417591c",
+				"extensions": {
+					"windows-pebinary-ext": {
+						"pe_type": "exe",
+						"machine_hex": "014c",
+						"number_of_sections": 4,
+						"time_date_stamp": "2016-01-22T12:31:12Z",
+						"pointer_to_symbol_table_hex": "74726144",
+						"number_of_symbols": 4542568,
+						"size_of_optional_header": 224,
+						"characteristics_hex": "818f",
+						"optional_header": {
+							"magic_hex": "010b",
+							"major_linker_version": 2,
+							"minor_linker_version": 25,
+							"size_of_code": 512,
+							"size_of_initialized_data": 283648,
+							"size_of_uninitialized_data": 0,
+							"address_of_entry_point": 4096,
+							"base_of_code": 4096,
+							"base_of_data": 8192,
+							"image_base": 14548992,
+							"section_alignment": 4096,
+							"file_alignment": 4096,
+							"major_os_version": 1,
+							"minor_os_version": 0,
+							"major_image_version": 0,
+							"minor_image_version": 0,
+							"major_subsystem_version": 4,
+							"minor_subsystem_version": 0,
+							"win32_version_value_hex": "00",
+							"size_of_image": 299008,
+							"size_of_headers": 4096,
+							"checksum_hex": "00",
+							"subsystem_hex": "03",
+							"dll_characteristics_hex": "00",
+							"size_of_stack_reserve": 100000,
+							"size_of_stack_commit": 8192,
+							"size_of_heap_reserve": 100000,
+							"size_of_heap_commit": 4096
+						},
+						"loader_flags_hex": "abdbffde",
+						"number_of_rva_and_sizes": 3758087646,
+						"sections": [
+							{
+								"name": "CODE",
+								"entropy": 0.061089
+							},
+							{
+								"name": "DATA",
+								"entropy": 7.980693
+							},
+							{
+								"name": "NicolasB",
+								"entropy": 0.607433
+							},
+							{
+								"name": ".idata",
+								"entropy": 0.607433
+							}
+						]
+					}
+				}
+}`))
+			var md datamodels.FileCyberObservableObjectSTIX
+			mdTmp, err := md.DecoderJSON(&mdbyte)
+
+			Expect(err).ShouldNot(HaveOccurred())
+
+			newmd, ok := mdTmp.(datamodels.FileCyberObservableObjectSTIX)
+			newmd = newmd.SanitizeStruct()
+
+			Expect(ok).Should(BeTrue())
+
+			fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
+
+			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
 		})
 	})
 })

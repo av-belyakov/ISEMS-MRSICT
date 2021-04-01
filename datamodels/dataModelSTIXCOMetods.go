@@ -4,27 +4,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"regexp"
+
+	"ISEMS-MRSICT/commonlibs"
+
+	"github.com/asaskevich/govalidator"
 )
 
 /*********************************************************************************/
 /********** 			Cyber-observable Objects STIX (МЕТОДЫ)			**********/
 /*********************************************************************************/
-
-/*
-//OptionalCommonPropertiesCyberObservableObjectSTIX содержит опциональные общие свойства для Cyber-observable Objects STIX
-// SpecVersion - версия STIX спецификации.
-// ObjectMarkingRefs - определяет список ID ссылающиеся на объект "marking-definition", по терминалогии STIX, в котором содержатся значения применяющиеся к этому объекту
-// GranularMarkings - определяет список "гранулярных меток" (granular_markings) относящихся к этому объекту
-// Defanged - определяет были ли определены данные содержащиеся в объекте
-// Extensions - может содержать дополнительную информацию, относящуюся к объекту
-type OptionalCommonPropertiesCyberObservableObjectSTIX struct {
-	SpecVersion       string                         `json:"spec_version" bson:"spec_version"`
-	ObjectMarkingRefs []*IdentifierTypeSTIX          `json:"object_marking_refs" bson:"object_marking_refs"`
-	GranularMarkings  GranularMarkingsTypeSTIX       `json:"granular_markings" bson:"granular_markings"`
-	Defanged          bool                           `json:"defanged" bson:"defanged"`
-	Extensions        map[string]*DictionaryTypeSTIX `json:"extensions" bson:"extensions"`
-}
-*/
 
 func (ocpcstix *OptionalCommonPropertiesCyberObservableObjectSTIX) checkingTypeCommonFields() bool {
 	//валидация содержимого поля SpecVersion
@@ -32,10 +20,37 @@ func (ocpcstix *OptionalCommonPropertiesCyberObservableObjectSTIX) checkingTypeC
 		return false
 	}
 
+	//проверяем поле ObjectMarkingRefs
+	if len(ocpcstix.ObjectMarkingRefs) > 0 {
+		for _, value := range ocpcstix.ObjectMarkingRefs {
+			if !value.CheckIdentifierTypeSTIX() {
+				return false
+			}
+		}
+	}
+
+	//вызываем метод проверки полей типа GranularMarkingsTypeSTIX
+	if ok := ocpcstix.GranularMarkings.CheckGranularMarkingsTypeSTIX(); !ok {
+		return false
+	}
+
 	return true
 }
 
 func (ocpcstix OptionalCommonPropertiesCyberObservableObjectSTIX) sanitizeStruct() OptionalCommonPropertiesCyberObservableObjectSTIX {
+	//обработка содержимого списка поля Extensions
+	if len(ocpcstix.Extensions) > 0 {
+		ext := make(map[string]*DictionaryTypeSTIX, len(ocpcstix.Extensions))
+		for k, v := range ocpcstix.Extensions {
+			switch v := v.dictionary.(type) {
+			case string:
+				ext[k] = &DictionaryTypeSTIX{commonlibs.StringSanitize(string(v))}
+			default:
+				ext[k] = &DictionaryTypeSTIX{v}
+			}
+		}
+		ocpcstix.Extensions = ext
+	}
 
 	return ocpcstix
 }
@@ -43,13 +58,24 @@ func (ocpcstix OptionalCommonPropertiesCyberObservableObjectSTIX) sanitizeStruct
 func (ocpcstix OptionalCommonPropertiesCyberObservableObjectSTIX) ToStringBeautiful() string {
 	var str string
 	str += fmt.Sprintf("spec_version: '%s'\n", ocpcstix.SpecVersion)
-
-	/*
-		str += fmt.Sprintf("created: '%v'\n", cp.Created)
-		str += fmt.Sprintf("modified: '%v'\n", cp.Modified)
-		str += fmt.Sprintf("created_by_ref: '%s'\n", cp.CreatedByRef)
-		str += fmt.Sprintf("revoked: '%v'\n", cp.Revoked)
-	*/
+	str += fmt.Sprintf("object_marking_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+		var str string
+		for k, v := range l {
+			str += fmt.Sprintf("\tobject_marking_ref '%d': '%v'\n", k, *v)
+		}
+		return str
+	}(ocpcstix.ObjectMarkingRefs))
+	str += fmt.Sprintln("granular_markings:")
+	str += fmt.Sprintf("\tlang: '%s'\n", ocpcstix.GranularMarkings.Lang)
+	str += fmt.Sprintf("\tmarking_ref: '%v'\n", ocpcstix.GranularMarkings.MarkingRef)
+	str += fmt.Sprintf("defanged: '%v'\n", ocpcstix.Defanged)
+	str += fmt.Sprintf("extensions: \n%v", func(l map[string]*DictionaryTypeSTIX) string {
+		var str string
+		for k, v := range l {
+			str += fmt.Sprintf("\t'%s': '%v'\n", k, *v)
+		}
+		return str
+	}(ocpcstix.Extensions))
 
 	return str
 }
@@ -82,7 +108,21 @@ func (astix ArtifactCyberObservableObjectSTIX) CheckingTypeFields() bool {
 		return false
 	}
 
-	//тут проверяем остальные параметры, не входящие в тип CommonPropertiesDomainObjectSTIX
+	if astix.PayloadBin != "" {
+		if !govalidator.IsBase64(astix.PayloadBin) {
+			return false
+		}
+	}
+
+	if astix.URL != "" {
+		if !govalidator.IsURL(astix.URL) {
+			return false
+		}
+	}
+
+	if !astix.Hashes.CheckHashesTypeSTIX() {
+		return false
+	}
 
 	return true
 }
@@ -91,20 +131,9 @@ func (astix ArtifactCyberObservableObjectSTIX) CheckingTypeFields() bool {
 func (astix ArtifactCyberObservableObjectSTIX) SanitizeStruct() ArtifactCyberObservableObjectSTIX {
 	astix.OptionalCommonPropertiesCyberObservableObjectSTIX = astix.sanitizeStruct()
 
-	/*
-		apstix.Name = commonlibs.StringSanitize(apstix.Name)
-		apstix.Description = commonlibs.StringSanitize(apstix.Description)
-
-		if len(apstix.Aliases) > 0 {
-			aliasesTmp := make([]string, 0, len(apstix.Aliases))
-			for _, v := range apstix.Aliases {
-				aliasesTmp = append(aliasesTmp, commonlibs.StringSanitize(v))
-			}
-			apstix.Aliases = aliasesTmp
-		}
-
-		apstix.KillChainPhases = apstix.KillChainPhases.SanitizeStructKillChainPhasesTypeSTIX()
-	*/
+	astix.MimeType = commonlibs.StringSanitize(astix.MimeType)
+	astix.EncryptionAlgorithm = EnumTypeSTIX(commonlibs.StringSanitize(string(astix.EncryptionAlgorithm)))
+	astix.DecryptionKey = commonlibs.StringSanitize(astix.DecryptionKey)
 
 	return astix
 }
@@ -113,26 +142,12 @@ func (astix ArtifactCyberObservableObjectSTIX) SanitizeStruct() ArtifactCyberObs
 func (astix ArtifactCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := astix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += astix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
-
-	/*
-		str += fmt.Sprintf("name: '%s'\n", apstix.Name)
-		str += fmt.Sprintf("description: '%s'\n", apstix.Description)
-		str += fmt.Sprintf("aliases: \n%v", func(l []string) string {
-			var str string
-			for k, v := range l {
-				str += fmt.Sprintf("\taliase '%d': '%s'\n", k, v)
-			}
-			return str
-		}(apstix.Aliases))
-		str += fmt.Sprintf("kill_chain_phases: \n%v", func(l KillChainPhasesTypeSTIX) string {
-			var str string
-			for k, v := range l {
-				str += fmt.Sprintf("\tkey:'%v' kill_chain_name: '%s'\n", k, v.KillChainName)
-				str += fmt.Sprintf("\tkey:'%v' phase_name: '%s'\n", k, v.PhaseName)
-			}
-			return str
-		}(apstix.KillChainPhases))
-	*/
+	str += fmt.Sprintf("mime_type: '%s'\n", astix.MimeType)
+	str += fmt.Sprintf("payload_bin: '%s'\n", astix.PayloadBin)
+	str += fmt.Sprintf("url: '%s'\n", astix.URL)
+	str += fmt.Sprintf("hashes: '%v'\n", astix.Hashes)
+	str += fmt.Sprintf("encryption_algorithm: '%v'\n", astix.EncryptionAlgorithm)
+	str += fmt.Sprintf("decryption_key: '%s'\n", astix.DecryptionKey)
 
 	return str
 }
@@ -165,7 +180,9 @@ func (asstix AutonomousSystemCyberObservableObjectSTIX) CheckingTypeFields() boo
 		return false
 	}
 
-	//тут проверяем остальные параметры, не входящие в тип CommonPropertiesDomainObjectSTIX
+	if asstix.Name == "" {
+		return false
+	}
 
 	return true
 }
@@ -174,20 +191,8 @@ func (asstix AutonomousSystemCyberObservableObjectSTIX) CheckingTypeFields() boo
 func (asstix AutonomousSystemCyberObservableObjectSTIX) SanitizeStruct() AutonomousSystemCyberObservableObjectSTIX {
 	asstix.OptionalCommonPropertiesCyberObservableObjectSTIX = asstix.sanitizeStruct()
 
-	/*
-		apstix.Name = commonlibs.StringSanitize(apstix.Name)
-		apstix.Description = commonlibs.StringSanitize(apstix.Description)
-
-		if len(apstix.Aliases) > 0 {
-			aliasesTmp := make([]string, 0, len(apstix.Aliases))
-			for _, v := range apstix.Aliases {
-				aliasesTmp = append(aliasesTmp, commonlibs.StringSanitize(v))
-			}
-			apstix.Aliases = aliasesTmp
-		}
-
-		apstix.KillChainPhases = apstix.KillChainPhases.SanitizeStructKillChainPhasesTypeSTIX()
-	*/
+	asstix.Name = commonlibs.StringSanitize(asstix.Name)
+	asstix.RIR = commonlibs.StringSanitize(asstix.RIR)
 
 	return asstix
 }
@@ -196,26 +201,9 @@ func (asstix AutonomousSystemCyberObservableObjectSTIX) SanitizeStruct() Autonom
 func (asstix AutonomousSystemCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := asstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += asstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
-
-	/*
-		str += fmt.Sprintf("name: '%s'\n", apstix.Name)
-		str += fmt.Sprintf("description: '%s'\n", apstix.Description)
-		str += fmt.Sprintf("aliases: \n%v", func(l []string) string {
-			var str string
-			for k, v := range l {
-				str += fmt.Sprintf("\taliase '%d': '%s'\n", k, v)
-			}
-			return str
-		}(apstix.Aliases))
-		str += fmt.Sprintf("kill_chain_phases: \n%v", func(l KillChainPhasesTypeSTIX) string {
-			var str string
-			for k, v := range l {
-				str += fmt.Sprintf("\tkey:'%v' kill_chain_name: '%s'\n", k, v.KillChainName)
-				str += fmt.Sprintf("\tkey:'%v' phase_name: '%s'\n", k, v.PhaseName)
-			}
-			return str
-		}(apstix.KillChainPhases))
-	*/
+	str += fmt.Sprintf("number: '%d'\n", asstix.Number)
+	str += fmt.Sprintf("name: '%s'\n", asstix.Name)
+	str += fmt.Sprintf("rir: '%s'\n", asstix.RIR)
 
 	return str
 }
@@ -248,7 +236,23 @@ func (dstix DirectoryCyberObservableObjectSTIX) CheckingTypeFields() bool {
 		return false
 	}
 
-	//тут проверяем остальные параметры, не входящие в тип CommonPropertiesDomainObjectSTIX
+	if dstix.Path == "" {
+		return false
+	}
+
+	isUnixPath := govalidator.IsUnixFilePath(dstix.Path)
+	isWinPath := govalidator.IsWinFilePath(dstix.Path)
+	if !isUnixPath && !isWinPath {
+		return false
+	}
+
+	if len(dstix.ContainsRefs) > 0 {
+		for _, v := range dstix.ContainsRefs {
+			if !v.CheckIdentifierTypeSTIX() {
+				return false
+			}
+		}
+	}
 
 	return true
 }
@@ -257,20 +261,7 @@ func (dstix DirectoryCyberObservableObjectSTIX) CheckingTypeFields() bool {
 func (dstix DirectoryCyberObservableObjectSTIX) SanitizeStruct() DirectoryCyberObservableObjectSTIX {
 	dstix.OptionalCommonPropertiesCyberObservableObjectSTIX = dstix.sanitizeStruct()
 
-	/*
-		apstix.Name = commonlibs.StringSanitize(apstix.Name)
-		apstix.Description = commonlibs.StringSanitize(apstix.Description)
-
-		if len(apstix.Aliases) > 0 {
-			aliasesTmp := make([]string, 0, len(apstix.Aliases))
-			for _, v := range apstix.Aliases {
-				aliasesTmp = append(aliasesTmp, commonlibs.StringSanitize(v))
-			}
-			apstix.Aliases = aliasesTmp
-		}
-
-		apstix.KillChainPhases = apstix.KillChainPhases.SanitizeStructKillChainPhasesTypeSTIX()
-	*/
+	dstix.PathEnc = commonlibs.StringSanitize(dstix.PathEnc)
 
 	return dstix
 }
@@ -279,26 +270,18 @@ func (dstix DirectoryCyberObservableObjectSTIX) SanitizeStruct() DirectoryCyberO
 func (dstix DirectoryCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := dstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += dstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
-
-	/*
-		str += fmt.Sprintf("name: '%s'\n", apstix.Name)
-		str += fmt.Sprintf("description: '%s'\n", apstix.Description)
-		str += fmt.Sprintf("aliases: \n%v", func(l []string) string {
-			var str string
-			for k, v := range l {
-				str += fmt.Sprintf("\taliase '%d': '%s'\n", k, v)
-			}
-			return str
-		}(apstix.Aliases))
-		str += fmt.Sprintf("kill_chain_phases: \n%v", func(l KillChainPhasesTypeSTIX) string {
-			var str string
-			for k, v := range l {
-				str += fmt.Sprintf("\tkey:'%v' kill_chain_name: '%s'\n", k, v.KillChainName)
-				str += fmt.Sprintf("\tkey:'%v' phase_name: '%s'\n", k, v.PhaseName)
-			}
-			return str
-		}(apstix.KillChainPhases))
-	*/
+	str += fmt.Sprintf("path: '%s'\n", dstix.Path)
+	str += fmt.Sprintf("path_enc: '%s'\n", dstix.PathEnc)
+	str += fmt.Sprintf("ctime: '%v'\n", dstix.Ctime)
+	str += fmt.Sprintf("mtime: '%v'\n", dstix.Mtime)
+	str += fmt.Sprintf("atime: '%s'\n", dstix.Atime)
+	str += fmt.Sprintf("contains_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+		var str string
+		for k, v := range l {
+			str += fmt.Sprintf("\tcontains_ref '%d': '%v'\n", k, *v)
+		}
+		return str
+	}(dstix.ContainsRefs))
 
 	return str
 }
@@ -331,7 +314,17 @@ func (dnstix DomainNameCyberObservableObjectSTIX) CheckingTypeFields() bool {
 		return false
 	}
 
-	//тут проверяем остальные параметры, не входящие в тип CommonPropertiesDomainObjectSTIX
+	if !govalidator.IsDNSName(dnstix.Value) {
+		return false
+	}
+
+	if len(dnstix.ResolvesToRefs) > 0 {
+		for _, v := range dnstix.ResolvesToRefs {
+			if !v.CheckIdentifierTypeSTIX() {
+				return false
+			}
+		}
+	}
 
 	return true
 }
@@ -340,21 +333,6 @@ func (dnstix DomainNameCyberObservableObjectSTIX) CheckingTypeFields() bool {
 func (dnstix DomainNameCyberObservableObjectSTIX) SanitizeStruct() DomainNameCyberObservableObjectSTIX {
 	dnstix.OptionalCommonPropertiesCyberObservableObjectSTIX = dnstix.sanitizeStruct()
 
-	/*
-		apstix.Name = commonlibs.StringSanitize(apstix.Name)
-		apstix.Description = commonlibs.StringSanitize(apstix.Description)
-
-		if len(apstix.Aliases) > 0 {
-			aliasesTmp := make([]string, 0, len(apstix.Aliases))
-			for _, v := range apstix.Aliases {
-				aliasesTmp = append(aliasesTmp, commonlibs.StringSanitize(v))
-			}
-			apstix.Aliases = aliasesTmp
-		}
-
-		apstix.KillChainPhases = apstix.KillChainPhases.SanitizeStructKillChainPhasesTypeSTIX()
-	*/
-
 	return dnstix
 }
 
@@ -362,26 +340,14 @@ func (dnstix DomainNameCyberObservableObjectSTIX) SanitizeStruct() DomainNameCyb
 func (dnstix DomainNameCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := dnstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += dnstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
-
-	/*
-		str += fmt.Sprintf("name: '%s'\n", apstix.Name)
-		str += fmt.Sprintf("description: '%s'\n", apstix.Description)
-		str += fmt.Sprintf("aliases: \n%v", func(l []string) string {
-			var str string
-			for k, v := range l {
-				str += fmt.Sprintf("\taliase '%d': '%s'\n", k, v)
-			}
-			return str
-		}(apstix.Aliases))
-		str += fmt.Sprintf("kill_chain_phases: \n%v", func(l KillChainPhasesTypeSTIX) string {
-			var str string
-			for k, v := range l {
-				str += fmt.Sprintf("\tkey:'%v' kill_chain_name: '%s'\n", k, v.KillChainName)
-				str += fmt.Sprintf("\tkey:'%v' phase_name: '%s'\n", k, v.PhaseName)
-			}
-			return str
-		}(apstix.KillChainPhases))
-	*/
+	str += fmt.Sprintf("value: '%s'\n", dnstix.Value)
+	str += fmt.Sprintf("resolves_to_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+		var str string
+		for k, v := range l {
+			str += fmt.Sprintf("\tresolves_to_ref '%d': '%v'\n", k, *v)
+		}
+		return str
+	}(dnstix.ResolvesToRefs))
 
 	return str
 }
@@ -414,7 +380,13 @@ func (eastix EmailAddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
 		return false
 	}
 
-	//тут проверяем остальные параметры, не входящие в тип CommonPropertiesDomainObjectSTIX
+	if !govalidator.IsEmail(eastix.Value) {
+		return false
+	}
+
+	if !eastix.BelongsToRef.CheckIdentifierTypeSTIX() {
+		return false
+	}
 
 	return true
 }
@@ -423,20 +395,7 @@ func (eastix EmailAddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
 func (eastix EmailAddressCyberObservableObjectSTIX) SanitizeStruct() EmailAddressCyberObservableObjectSTIX {
 	eastix.OptionalCommonPropertiesCyberObservableObjectSTIX = eastix.sanitizeStruct()
 
-	/*
-		apstix.Name = commonlibs.StringSanitize(apstix.Name)
-		apstix.Description = commonlibs.StringSanitize(apstix.Description)
-
-		if len(apstix.Aliases) > 0 {
-			aliasesTmp := make([]string, 0, len(apstix.Aliases))
-			for _, v := range apstix.Aliases {
-				aliasesTmp = append(aliasesTmp, commonlibs.StringSanitize(v))
-			}
-			apstix.Aliases = aliasesTmp
-		}
-
-		apstix.KillChainPhases = apstix.KillChainPhases.SanitizeStructKillChainPhasesTypeSTIX()
-	*/
+	eastix.DisplayName = commonlibs.StringSanitize(eastix.DisplayName)
 
 	return eastix
 }
@@ -445,26 +404,9 @@ func (eastix EmailAddressCyberObservableObjectSTIX) SanitizeStruct() EmailAddres
 func (eastix EmailAddressCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := eastix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += eastix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
-
-	/*
-		str += fmt.Sprintf("name: '%s'\n", apstix.Name)
-		str += fmt.Sprintf("description: '%s'\n", apstix.Description)
-		str += fmt.Sprintf("aliases: \n%v", func(l []string) string {
-			var str string
-			for k, v := range l {
-				str += fmt.Sprintf("\taliase '%d': '%s'\n", k, v)
-			}
-			return str
-		}(apstix.Aliases))
-		str += fmt.Sprintf("kill_chain_phases: \n%v", func(l KillChainPhasesTypeSTIX) string {
-			var str string
-			for k, v := range l {
-				str += fmt.Sprintf("\tkey:'%v' kill_chain_name: '%s'\n", k, v.KillChainName)
-				str += fmt.Sprintf("\tkey:'%v' phase_name: '%s'\n", k, v.PhaseName)
-			}
-			return str
-		}(apstix.KillChainPhases))
-	*/
+	str += fmt.Sprintf("value: '%s'\n", eastix.Value)
+	str += fmt.Sprintf("display_name: '%s'\n", eastix.DisplayName)
+	str += fmt.Sprintf("belongs_to_ref: '%v'\n", eastix.BelongsToRef)
 
 	return str
 }
@@ -497,7 +439,49 @@ func (emstix EmailMessageCyberObservableObjectSTIX) CheckingTypeFields() bool {
 		return false
 	}
 
-	//тут проверяем остальные параметры, не входящие в тип CommonPropertiesDomainObjectSTIX
+	if !emstix.FromRef.CheckIdentifierTypeSTIX() {
+		return false
+	}
+
+	if !emstix.SenderRef.CheckIdentifierTypeSTIX() {
+		return false
+	}
+
+	if len(emstix.ToRefs) > 0 {
+		for _, v := range emstix.ToRefs {
+			if !v.CheckIdentifierTypeSTIX() {
+				return false
+			}
+		}
+	}
+
+	if len(emstix.CcRefs) > 0 {
+		for _, v := range emstix.CcRefs {
+			if !v.CheckIdentifierTypeSTIX() {
+				return false
+			}
+		}
+	}
+
+	if len(emstix.BccRefs) > 0 {
+		for _, v := range emstix.BccRefs {
+			if !v.CheckIdentifierTypeSTIX() {
+				return false
+			}
+		}
+	}
+
+	if len(emstix.BodyMultipart) > 0 {
+		for _, v := range emstix.BodyMultipart {
+			if !v.BodyRawRef.CheckIdentifierTypeSTIX() {
+				return false
+			}
+		}
+	}
+
+	if !emstix.RawEmailRef.CheckIdentifierTypeSTIX() {
+		return false
+	}
 
 	return true
 }
@@ -506,20 +490,45 @@ func (emstix EmailMessageCyberObservableObjectSTIX) CheckingTypeFields() bool {
 func (emstix EmailMessageCyberObservableObjectSTIX) SanitizeStruct() EmailMessageCyberObservableObjectSTIX {
 	emstix.OptionalCommonPropertiesCyberObservableObjectSTIX = emstix.sanitizeStruct()
 
-	/*
-		apstix.Name = commonlibs.StringSanitize(apstix.Name)
-		apstix.Description = commonlibs.StringSanitize(apstix.Description)
+	emstix.ContentType = commonlibs.StringSanitize(emstix.ContentType)
+	emstix.MessageID = commonlibs.StringSanitize(emstix.MessageID)
+	emstix.Subject = commonlibs.StringSanitize(emstix.Subject)
 
-		if len(apstix.Aliases) > 0 {
-			aliasesTmp := make([]string, 0, len(apstix.Aliases))
-			for _, v := range apstix.Aliases {
-				aliasesTmp = append(aliasesTmp, commonlibs.StringSanitize(v))
-			}
-			apstix.Aliases = aliasesTmp
+	if len(emstix.ReceivedLines) > 0 {
+		tmp := make([]string, 0, len(emstix.ReceivedLines))
+		for _, v := range emstix.ReceivedLines {
+			tmp = append(tmp, commonlibs.StringSanitize(v))
 		}
+		emstix.ReceivedLines = tmp
+	}
 
-		apstix.KillChainPhases = apstix.KillChainPhases.SanitizeStructKillChainPhasesTypeSTIX()
-	*/
+	if len(emstix.AdditionalHeaderFields) > 0 {
+		tmp := make(map[string]*DictionaryTypeSTIX, len(emstix.AdditionalHeaderFields))
+		for k, v := range emstix.AdditionalHeaderFields {
+			switch v := v.dictionary.(type) {
+			case string:
+				tmp[k] = &DictionaryTypeSTIX{commonlibs.StringSanitize(string(v))}
+			default:
+				tmp[k] = &DictionaryTypeSTIX{v}
+			}
+		}
+		emstix.AdditionalHeaderFields = tmp
+	}
+
+	emstix.Body = commonlibs.StringSanitize(emstix.Body)
+
+	if len(emstix.BodyMultipart) > 0 {
+		tmp := make([]*EmailMIMEPartTypeSTIX, 0, len(emstix.BodyMultipart))
+		for _, v := range emstix.BodyMultipart {
+			tmp = append(tmp, &EmailMIMEPartTypeSTIX{
+				Body:               commonlibs.StringSanitize(v.Body),
+				BodyRawRef:         v.BodyRawRef,
+				ContentType:        commonlibs.StringSanitize(v.ContentType),
+				ContentDisposition: commonlibs.StringSanitize(v.ContentDisposition),
+			})
+		}
+		emstix.BodyMultipart = tmp
+	}
 
 	return emstix
 }
@@ -528,26 +537,61 @@ func (emstix EmailMessageCyberObservableObjectSTIX) SanitizeStruct() EmailMessag
 func (emstix EmailMessageCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := emstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += emstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
-
-	/*
-		str += fmt.Sprintf("name: '%s'\n", apstix.Name)
-		str += fmt.Sprintf("description: '%s'\n", apstix.Description)
-		str += fmt.Sprintf("aliases: \n%v", func(l []string) string {
-			var str string
-			for k, v := range l {
-				str += fmt.Sprintf("\taliase '%d': '%s'\n", k, v)
-			}
-			return str
-		}(apstix.Aliases))
-		str += fmt.Sprintf("kill_chain_phases: \n%v", func(l KillChainPhasesTypeSTIX) string {
-			var str string
-			for k, v := range l {
-				str += fmt.Sprintf("\tkey:'%v' kill_chain_name: '%s'\n", k, v.KillChainName)
-				str += fmt.Sprintf("\tkey:'%v' phase_name: '%s'\n", k, v.PhaseName)
-			}
-			return str
-		}(apstix.KillChainPhases))
-	*/
+	str += fmt.Sprintf("is_multipart: '%v'\n", emstix.IsMultipart)
+	str += fmt.Sprintf("date: '%v'\n", emstix.Date)
+	str += fmt.Sprintf("content_type: '%s'\n", emstix.ContentType)
+	str += fmt.Sprintf("from_ref: '%v'\n", emstix.FromRef)
+	str += fmt.Sprintf("sender_ref: '%v'\n", emstix.SenderRef)
+	str += fmt.Sprintf("to_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+		var str string
+		for k, v := range l {
+			str += fmt.Sprintf("\tto_ref '%d': '%v'\n", k, *v)
+		}
+		return str
+	}(emstix.ToRefs))
+	str += fmt.Sprintf("cc_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+		var str string
+		for k, v := range l {
+			str += fmt.Sprintf("\tcc_ref '%d': '%v'\n", k, *v)
+		}
+		return str
+	}(emstix.CcRefs))
+	str += fmt.Sprintf("bcc_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+		var str string
+		for k, v := range l {
+			str += fmt.Sprintf("\tbcc_ref '%d': '%v'\n", k, *v)
+		}
+		return str
+	}(emstix.BccRefs))
+	str += fmt.Sprintf("message_id: '%v'\n", emstix.MessageID)
+	str += fmt.Sprintf("subject: '%v'\n", emstix.Subject)
+	str += fmt.Sprintf("received_lines: \n%v", func(l []string) string {
+		var str string
+		for k, v := range l {
+			str += fmt.Sprintf("\treceived_line '%d': '%s'\n", k, v)
+		}
+		return str
+	}(emstix.ReceivedLines))
+	str += fmt.Sprintf("additional_header_fields: \n%v", func(l map[string]*DictionaryTypeSTIX) string {
+		var str string
+		for k, v := range l {
+			str += fmt.Sprintf("\t'%s': '%v'\n", k, *v)
+		}
+		return str
+	}(emstix.AdditionalHeaderFields))
+	str += fmt.Sprintf("body: '%v'\n", emstix.Body)
+	str += fmt.Sprintf("body_multipart: \n%v", func(l []*EmailMIMEPartTypeSTIX) string {
+		var str string
+		for k, v := range l {
+			str += fmt.Sprintf("\tbody_multipart '%d':\n", k)
+			str += fmt.Sprintf("\t\tbody: '%s'\n", v.Body)
+			str += fmt.Sprintf("\t\tbody_raw_ref: '%s'\n", v.BodyRawRef)
+			str += fmt.Sprintf("\t\tcontent_type: '%s'\n", v.ContentType)
+			str += fmt.Sprintf("\t\tcontent_disposition: '%s'\n", v.ContentDisposition)
+		}
+		return str
+	}(emstix.BodyMultipart))
+	str += fmt.Sprintf("raw_email_ref: '%v'\n", emstix.RawEmailRef)
 
 	return str
 }
@@ -606,7 +650,33 @@ func (fstix FileCyberObservableObjectSTIX) CheckingTypeFields() bool {
 		return false
 	}
 
-	//тут проверяем остальные параметры, не входящие в тип CommonPropertiesDomainObjectSTIX
+	if !fstix.Hashes.CheckHashesTypeSTIX() {
+		return false
+	}
+
+	if !fstix.ParentDirectoryRef.CheckIdentifierTypeSTIX() {
+		return false
+	}
+
+	if len(fstix.ContainsRefs) > 0 {
+		for _, v := range fstix.ContainsRefs {
+			if !v.CheckIdentifierTypeSTIX() {
+				return false
+			}
+		}
+	}
+
+	if !fstix.ContentRef.CheckIdentifierTypeSTIX() {
+		return false
+	}
+
+	if len(fstix.Extensions) > 0 {
+		for _, v := range fstix.Extensions {
+			if !checkingExtensionsSTIX(v) {
+				return false
+			}
+		}
+	}
 
 	return true
 }
@@ -615,20 +685,23 @@ func (fstix FileCyberObservableObjectSTIX) CheckingTypeFields() bool {
 func (fstix FileCyberObservableObjectSTIX) SanitizeStruct() FileCyberObservableObjectSTIX {
 	fstix.OptionalCommonPropertiesCyberObservableObjectSTIX = fstix.sanitizeStruct()
 
-	/*
-		apstix.Name = commonlibs.StringSanitize(apstix.Name)
-		apstix.Description = commonlibs.StringSanitize(apstix.Description)
-
-		if len(apstix.Aliases) > 0 {
-			aliasesTmp := make([]string, 0, len(apstix.Aliases))
-			for _, v := range apstix.Aliases {
-				aliasesTmp = append(aliasesTmp, commonlibs.StringSanitize(v))
+	fstix.Name = commonlibs.StringSanitize(fstix.Name)
+	fstix.NameEnc = commonlibs.StringSanitize(fstix.NameEnc)
+	fstix.MagicNumberHex = commonlibs.StringSanitize(fstix.MagicNumberHex)
+	fstix.MimeType = commonlibs.StringSanitize(fstix.MimeType)
+	if len(fstix.Extensions) > 0 {
+		tmp := make(map[string]*interface{}, len(fstix.Extensions))
+		for k, v := range fstix.Extensions {
+			switch v := (*v).(type) {
+			case string:
+				var str interface{} = commonlibs.StringSanitize(string(v))
+				tmp[k] = &str
+			default:
+				tmp[k] = &v
 			}
-			apstix.Aliases = aliasesTmp
 		}
-
-		apstix.KillChainPhases = apstix.KillChainPhases.SanitizeStructKillChainPhasesTypeSTIX()
-	*/
+		fstix.Extensions = tmp
+	}
 
 	return fstix
 }
@@ -637,26 +710,31 @@ func (fstix FileCyberObservableObjectSTIX) SanitizeStruct() FileCyberObservableO
 func (fstix FileCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := fstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += fstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
-
-	/*
-		str += fmt.Sprintf("name: '%s'\n", apstix.Name)
-		str += fmt.Sprintf("description: '%s'\n", apstix.Description)
-		str += fmt.Sprintf("aliases: \n%v", func(l []string) string {
-			var str string
-			for k, v := range l {
-				str += fmt.Sprintf("\taliase '%d': '%s'\n", k, v)
-			}
-			return str
-		}(apstix.Aliases))
-		str += fmt.Sprintf("kill_chain_phases: \n%v", func(l KillChainPhasesTypeSTIX) string {
-			var str string
-			for k, v := range l {
-				str += fmt.Sprintf("\tkey:'%v' kill_chain_name: '%s'\n", k, v.KillChainName)
-				str += fmt.Sprintf("\tkey:'%v' phase_name: '%s'\n", k, v.PhaseName)
-			}
-			return str
-		}(apstix.KillChainPhases))
-	*/
+	str += fmt.Sprintf("hashes: '%v'\n", fstix.Hashes)
+	str += fmt.Sprintf("size: '%d'\n", fstix.Size)
+	str += fmt.Sprintf("name: '%s'\n", fstix.Name)
+	str += fmt.Sprintf("name_enc: '%s'\n", fstix.NameEnc)
+	str += fmt.Sprintf("magic_number_hex: '%s'\n", fstix.MagicNumberHex)
+	str += fmt.Sprintf("mime_type: '%s'\n", fstix.MimeType)
+	str += fmt.Sprintf("ctime: '%v'\n", fstix.Ctime)
+	str += fmt.Sprintf("mtime: '%v'\n", fstix.Mtime)
+	str += fmt.Sprintf("atime: '%v'\n", fstix.Atime)
+	str += fmt.Sprintf("parent_directory_ref: '%v'\n", fstix.ParentDirectoryRef)
+	str += fmt.Sprintf("contains_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+		var str string
+		for k, v := range l {
+			str += fmt.Sprintf("\tcontains_ref '%d': '%v'\n", k, v)
+		}
+		return str
+	}(fstix.ContainsRefs))
+	str += fmt.Sprintf("content_ref: '%v'\n", fstix.ContentRef)
+	str += fmt.Sprintf("extensions: \n%v", func(l map[string]*interface{}) string {
+		var str string
+		for k, v := range l {
+			str += fmt.Sprintf("\t'%s': '%v'\n", k, *v)
+		}
+		return str
+	}(fstix.Extensions))
 
 	return str
 }
@@ -1699,4 +1777,149 @@ func decodingExtensionsSTIX(extType string, rawMsg *json.RawMessage) (interface{
 	default:
 		return struct{}{}, nil
 	}
+}
+
+//checkingExtensionsSTIX выполняет проверку полей следующих типов STIX расширений:
+// - "archive-ext"
+// - "windows-pebinary-ext"
+// - "http-request-ext"
+// - "windows-service-ext"
+func checkingExtensionsSTIX(extType interface{}) bool {
+	switch et := extType.(type) {
+	case ArchiveFileExtensionSTIX:
+		for _, v := range et.ContainsRefs {
+			if !v.CheckIdentifierTypeSTIX() {
+				return false
+			}
+		}
+
+	case NTFSFileExtensionSTIX:
+		if len(et.AlternateDataStreams) == 0 {
+			return true
+		}
+
+		for _, v := range et.AlternateDataStreams {
+			if !v.Hashes.CheckHashesTypeSTIX() {
+				return false
+			}
+		}
+
+	case WindowsPEBinaryFileExtensionSTIX:
+		if !et.FileHeaderHashes.CheckHashesTypeSTIX() {
+			return false
+		}
+
+	case HTTPRequestExtensionSTIX:
+		if !et.MessageBodyDataRef.CheckIdentifierTypeSTIX() {
+			return false
+		}
+
+	case WindowsServiceExtensionSTIX:
+		for _, v := range et.ServiceDllRefs {
+			if !v.CheckIdentifierTypeSTIX() {
+				return false
+			}
+		}
+	}
+
+	return true
+}
+
+//sanitizeExtensionsSTIX для ряда полей следующих типов STIX расширений:
+// - "archive-ext"
+// - "ntfs-ext"
+// - "pdf-ext"
+// - "raster-image-ext"
+// - "windows-pebinary-ext"
+// - "http-request-ext"
+// - "icmp-ext"
+// - "socket-ext"
+// - "tcp-ext"
+// - "windows-process-ext"
+// - "windows-service-ext"
+// - "unix-account-ext"
+// выполняет замену некоторых специальных символов на их HTML код
+func sanitizeExtensionsSTIX(extType interface{}) interface{} {
+	sanitizeDictionaryList := func(l map[string]*DictionaryTypeSTIX) map[string]*DictionaryTypeSTIX {
+		size := len(l)
+
+		if size == 0 {
+			return map[string]*DictionaryTypeSTIX{}
+		}
+
+		tmp := make(map[string]*DictionaryTypeSTIX, size)
+		for k, v := range l {
+			switch v := v.dictionary.(type) {
+			case string:
+				tmp[k] = &DictionaryTypeSTIX{commonlibs.StringSanitize(string(v))}
+			default:
+				tmp[k] = &DictionaryTypeSTIX{v}
+			}
+		}
+
+		return tmp
+	}
+
+	switch et := extType.(type) {
+	case ArchiveFileExtensionSTIX:
+		return commonlibs.StringSanitize(et.Comment)
+
+	case NTFSFileExtensionSTIX:
+		var tmpType NTFSFileExtensionSTIX
+		tmpType.SID = commonlibs.StringSanitize(et.SID)
+
+		size := len(et.AlternateDataStreams)
+
+		if size == 0 {
+			return tmpType
+		}
+
+		ads := make([]*AlternateDataStreamTypeSTIX, 0, size)
+		for _, v := range et.AlternateDataStreams {
+			ads = append(ads, &AlternateDataStreamTypeSTIX{
+				Name:   commonlibs.StringSanitize(v.Name),
+				Hashes: v.Hashes,
+				Size:   v.Size,
+			})
+		}
+		tmpType.AlternateDataStreams = ads
+
+		return tmpType
+
+	case PDFFileExtensionSTIX:
+		return PDFFileExtensionSTIX{
+			Version:          commonlibs.StringSanitize(et.Version),
+			IsOptimized:      et.IsOptimized,
+			DocumentInfoDict: sanitizeDictionaryList(et.DocumentInfoDict),
+			Pdfid0:           commonlibs.StringSanitize(et.Pdfid0),
+			Pdfid1:           commonlibs.StringSanitize(et.Pdfid1),
+		}
+
+	case RasterImageFileExtensionSTIX:
+		return RasterImageFileExtensionSTIX{
+			ImageHeight:  et.ImageHeight,
+			ImageWidth:   et.ImageWidth,
+			BitsPerPixel: et.BitsPerPixel,
+			ExifTags:     sanitizeDictionaryList(et.ExifTags),
+		}
+
+	case WindowsPEBinaryFileExtensionSTIX:
+
+	case HTTPRequestExtensionSTIX:
+
+	case ICMPExtensionSTIX:
+
+	case NetworkSocketExtensionSTIX:
+
+	case TCPExtensionSTIX:
+
+	case WindowsProcessExtensionSTIX:
+
+	case WindowsServiceExtensionSTIX:
+
+	case UNIXAccountExtensionSTIX:
+
+	}
+
+	return extType
 }

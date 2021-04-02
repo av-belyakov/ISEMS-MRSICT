@@ -836,7 +836,7 @@ var _ = Describe("MetodsStixObject", func() {
 		})
 	})
 
-	Context("Тест 25. Выполняем проверку типа 'email-message' методом CheckingTypeFields", func() {
+	Context("Тест 25. Выполняем проверку типа 'file' методом CheckingTypeFields", func() {
 		It("На валидное содержимое типа FileCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 				"type": "file",

@@ -689,19 +689,18 @@ func (fstix FileCyberObservableObjectSTIX) SanitizeStruct() FileCyberObservableO
 	fstix.NameEnc = commonlibs.StringSanitize(fstix.NameEnc)
 	fstix.MagicNumberHex = commonlibs.StringSanitize(fstix.MagicNumberHex)
 	fstix.MimeType = commonlibs.StringSanitize(fstix.MimeType)
-	if len(fstix.Extensions) > 0 {
-		tmp := make(map[string]*interface{}, len(fstix.Extensions))
-		for k, v := range fstix.Extensions {
-			switch v := (*v).(type) {
-			case string:
-				var str interface{} = commonlibs.StringSanitize(string(v))
-				tmp[k] = &str
-			default:
-				tmp[k] = &v
-			}
-		}
-		fstix.Extensions = tmp
+
+	esize := len(fstix.Extensions)
+	if esize == 0 {
+		return fstix
 	}
+
+	tmp := make(map[string]*interface{}, esize)
+	for k, v := range fstix.Extensions {
+		result := sanitizeExtensionsSTIX(v)
+		tmp[k] = &result
+	}
+	fstix.Extensions = tmp
 
 	return fstix
 }
@@ -728,13 +727,10 @@ func (fstix FileCyberObservableObjectSTIX) ToStringBeautiful() string {
 		return str
 	}(fstix.ContainsRefs))
 	str += fmt.Sprintf("content_ref: '%v'\n", fstix.ContentRef)
-	str += fmt.Sprintf("extensions: \n%v", func(l map[string]*interface{}) string {
-		var str string
-		for k, v := range l {
-			str += fmt.Sprintf("\t'%s': '%v'\n", k, *v)
-		}
-		return str
-	}(fstix.Extensions))
+	str += fmt.Sprintln("extensions:")
+	for k, v := range fstix.Extensions {
+		str += fmt.Sprintf("%s:\n%v\n", k, toStringBeautiful(*v))
+	}
 
 	return str
 }
@@ -1696,230 +1692,4 @@ func (x509sstix X509CertificateCyberObservableObjectSTIX) ToStringBeautiful() st
 	*/
 
 	return str
-}
-
-//decodingExtensionsSTIX декодирует следующие типы STIX расширений:
-// - "archive-ext"
-// - "ntfs-ext"
-// - "pdf-ext"
-// - "raster-image-ext"
-// - "windows-pebinary-ext"
-// - "http-request-ext"
-// - "icmp-ext"
-// - "socket-ext"
-// - "tcp-ext"
-// - "windows-process-ext"
-// - "windows-service-ext"
-// - "unix-account-ext"
-func decodingExtensionsSTIX(extType string, rawMsg *json.RawMessage) (interface{}, error) {
-	var err error
-	switch extType {
-	case "archive-ext":
-		var archiveExt ArchiveFileExtensionSTIX
-		err = json.Unmarshal(*rawMsg, &archiveExt)
-
-		return archiveExt, err
-	case "ntfs-ext":
-		var ntfsExt NTFSFileExtensionSTIX
-		err = json.Unmarshal(*rawMsg, &ntfsExt)
-
-		return ntfsExt, err
-	case "pdf-ext":
-		var pdfExt PDFFileExtensionSTIX
-		err = json.Unmarshal(*rawMsg, &pdfExt)
-
-		return pdfExt, err
-	case "raster-image-ext":
-		var rasterImageExt RasterImageFileExtensionSTIX
-		err = json.Unmarshal(*rawMsg, &rasterImageExt)
-
-		return rasterImageExt, err
-	case "windows-pebinary-ext":
-		var windowsPebinaryExt WindowsPEBinaryFileExtensionSTIX
-		err = json.Unmarshal(*rawMsg, &windowsPebinaryExt)
-
-		return windowsPebinaryExt, err
-	case "http-request-ext":
-		var httpRequestExt HTTPRequestExtensionSTIX
-		err = json.Unmarshal(*rawMsg, &httpRequestExt)
-
-		return httpRequestExt, err
-	case "icmp-ext":
-		var icmpExt ICMPExtensionSTIX
-		err := json.Unmarshal(*rawMsg, &icmpExt)
-
-		return icmpExt, err
-	case "socket-ext":
-		var socketExt NetworkSocketExtensionSTIX
-		err := json.Unmarshal(*rawMsg, &socketExt)
-
-		return socketExt, err
-	case "tcp-ext":
-		var tcpExt TCPExtensionSTIX
-		err := json.Unmarshal(*rawMsg, &tcpExt)
-
-		return tcpExt, err
-	case "windows-process-ext":
-		var windowsProcessExt WindowsProcessExtensionSTIX
-		err := json.Unmarshal(*rawMsg, &windowsProcessExt)
-
-		return windowsProcessExt, err
-	case "windows-service-ext":
-		var windowsServiceExt WindowsServiceExtensionSTIX
-		err := json.Unmarshal(*rawMsg, &windowsServiceExt)
-
-		return windowsServiceExt, err
-	case "unix-account-ext":
-		var unixAccountExt UNIXAccountExtensionSTIX
-		err := json.Unmarshal(*rawMsg, &unixAccountExt)
-
-		return unixAccountExt, err
-	default:
-		return struct{}{}, nil
-	}
-}
-
-//checkingExtensionsSTIX выполняет проверку полей следующих типов STIX расширений:
-// - "archive-ext"
-// - "windows-pebinary-ext"
-// - "http-request-ext"
-// - "windows-service-ext"
-func checkingExtensionsSTIX(extType interface{}) bool {
-	switch et := extType.(type) {
-	case ArchiveFileExtensionSTIX:
-		for _, v := range et.ContainsRefs {
-			if !v.CheckIdentifierTypeSTIX() {
-				return false
-			}
-		}
-
-	case NTFSFileExtensionSTIX:
-		if len(et.AlternateDataStreams) == 0 {
-			return true
-		}
-
-		for _, v := range et.AlternateDataStreams {
-			if !v.Hashes.CheckHashesTypeSTIX() {
-				return false
-			}
-		}
-
-	case WindowsPEBinaryFileExtensionSTIX:
-		if !et.FileHeaderHashes.CheckHashesTypeSTIX() {
-			return false
-		}
-
-	case HTTPRequestExtensionSTIX:
-		if !et.MessageBodyDataRef.CheckIdentifierTypeSTIX() {
-			return false
-		}
-
-	case WindowsServiceExtensionSTIX:
-		for _, v := range et.ServiceDllRefs {
-			if !v.CheckIdentifierTypeSTIX() {
-				return false
-			}
-		}
-	}
-
-	return true
-}
-
-//sanitizeExtensionsSTIX для ряда полей следующих типов STIX расширений:
-// - "archive-ext"
-// - "ntfs-ext"
-// - "pdf-ext"
-// - "raster-image-ext"
-// - "windows-pebinary-ext"
-// - "http-request-ext"
-// - "icmp-ext"
-// - "socket-ext"
-// - "tcp-ext"
-// - "windows-process-ext"
-// - "windows-service-ext"
-// - "unix-account-ext"
-// выполняет замену некоторых специальных символов на их HTML код
-func sanitizeExtensionsSTIX(extType interface{}) interface{} {
-	sanitizeDictionaryList := func(l map[string]*DictionaryTypeSTIX) map[string]*DictionaryTypeSTIX {
-		size := len(l)
-
-		if size == 0 {
-			return map[string]*DictionaryTypeSTIX{}
-		}
-
-		tmp := make(map[string]*DictionaryTypeSTIX, size)
-		for k, v := range l {
-			switch v := v.dictionary.(type) {
-			case string:
-				tmp[k] = &DictionaryTypeSTIX{commonlibs.StringSanitize(string(v))}
-			default:
-				tmp[k] = &DictionaryTypeSTIX{v}
-			}
-		}
-
-		return tmp
-	}
-
-	switch et := extType.(type) {
-	case ArchiveFileExtensionSTIX:
-		return commonlibs.StringSanitize(et.Comment)
-
-	case NTFSFileExtensionSTIX:
-		var tmpType NTFSFileExtensionSTIX
-		tmpType.SID = commonlibs.StringSanitize(et.SID)
-
-		size := len(et.AlternateDataStreams)
-
-		if size == 0 {
-			return tmpType
-		}
-
-		ads := make([]*AlternateDataStreamTypeSTIX, 0, size)
-		for _, v := range et.AlternateDataStreams {
-			ads = append(ads, &AlternateDataStreamTypeSTIX{
-				Name:   commonlibs.StringSanitize(v.Name),
-				Hashes: v.Hashes,
-				Size:   v.Size,
-			})
-		}
-		tmpType.AlternateDataStreams = ads
-
-		return tmpType
-
-	case PDFFileExtensionSTIX:
-		return PDFFileExtensionSTIX{
-			Version:          commonlibs.StringSanitize(et.Version),
-			IsOptimized:      et.IsOptimized,
-			DocumentInfoDict: sanitizeDictionaryList(et.DocumentInfoDict),
-			Pdfid0:           commonlibs.StringSanitize(et.Pdfid0),
-			Pdfid1:           commonlibs.StringSanitize(et.Pdfid1),
-		}
-
-	case RasterImageFileExtensionSTIX:
-		return RasterImageFileExtensionSTIX{
-			ImageHeight:  et.ImageHeight,
-			ImageWidth:   et.ImageWidth,
-			BitsPerPixel: et.BitsPerPixel,
-			ExifTags:     sanitizeDictionaryList(et.ExifTags),
-		}
-
-	case WindowsPEBinaryFileExtensionSTIX:
-
-	case HTTPRequestExtensionSTIX:
-
-	case ICMPExtensionSTIX:
-
-	case NetworkSocketExtensionSTIX:
-
-	case TCPExtensionSTIX:
-
-	case WindowsProcessExtensionSTIX:
-
-	case WindowsServiceExtensionSTIX:
-
-	case UNIXAccountExtensionSTIX:
-
-	}
-
-	return extType
 }

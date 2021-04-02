@@ -3,6 +3,8 @@ package datamodels
 import (
 	"encoding/json"
 	"time"
+
+	"ISEMS-MRSICT/commonlibs"
 )
 
 /********** 			Некоторые 'сложные' типы относящиеся к Cyber-observable Objects STIX 			**********/
@@ -83,6 +85,32 @@ type WindowsPEOptionalHeaderTypeSTIX struct {
 	Hashes                  []*HashesTypeSTIX `json:"hashes" bson:"hashes"`
 }
 
+//SanitizeStructWindowsPEOptionalHeaderTypeSTIX выполняет замену некоторых специальных символов на их HTML код
+func (wpeoh WindowsPEOptionalHeaderTypeSTIX) SanitizeStructWindowsPEOptionalHeaderTypeSTIX() WindowsPEOptionalHeaderTypeSTIX {
+	wpeoh.MagicHex = commonlibs.StringSanitize(wpeoh.MagicHex)
+	wpeoh.Win32VersionValueHex = commonlibs.StringSanitize(wpeoh.Win32VersionValueHex)
+	wpeoh.ChecksumHex = commonlibs.StringSanitize(wpeoh.ChecksumHex)
+	wpeoh.SubsystemHex = commonlibs.StringSanitize(wpeoh.SubsystemHex)
+	wpeoh.DllCharacteristicsHex = commonlibs.StringSanitize(wpeoh.DllCharacteristicsHex)
+
+	hsize := len(wpeoh.Hashes)
+	if hsize == 0 {
+		return wpeoh
+	}
+
+	nhashex := make([]*HashesTypeSTIX, 0, hsize)
+	for _, value := range wpeoh.Hashes {
+		ht := make(HashesTypeSTIX, len(*value))
+		for k, v := range *value {
+			ht[k] = v
+		}
+		nhashex = append(nhashex, &ht)
+	}
+	wpeoh.Hashes = nhashex
+
+	return wpeoh
+}
+
 //WindowsPESectionTypeSTIX тип "windows-pe-section-type", по терминалогии STIX, определяет методанные PE-секции файла
 // Name - определяет имя секции (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // Size - размер секции в байтах.
@@ -93,6 +121,24 @@ type WindowsPESectionTypeSTIX struct {
 	Size    uint64         `json:"size" bson:"size"`
 	Entropy float64        `json:"entropy" bson:"entropy"`
 	Hashes  HashesTypeSTIX `json:"hashes" bson:"hashes"`
+}
+
+//SanitizeStructWindowsPESectionTypeSTIX выполняет замену некоторых специальных символов на их HTML код
+func (wpes WindowsPESectionTypeSTIX) SanitizeStructWindowsPESectionTypeSTIX() WindowsPESectionTypeSTIX {
+	wpes.Name = commonlibs.StringSanitize(wpes.Name)
+
+	hsize := len(wpes.Hashes)
+	if hsize == 0 {
+		return wpes
+	}
+
+	nh := make(HashesTypeSTIX, hsize)
+	for k, v := range wpes.Hashes {
+		nh[k] = commonlibs.StringSanitize(v)
+	}
+	wpes.Hashes = nh
+
+	return wpes
 }
 
 //EmailMIMEPartTypeSTIX тип "email-mime-part-type", по терминалогии STIX, содержит один компонент тела email из нескольких частей
@@ -178,8 +224,8 @@ type X509V3ExtensionsTypeSTIX struct {
 // ContainsRefs - данное свойство определяет файлы содержащиеся в архиве. ДОЛЖНО содержать список типа file или directory (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // Comment - определяет комментарий включенный как часть архивного файла
 type ArchiveFileExtensionSTIX struct {
-	ContainsRefs []IdentifierTypeSTIX `json:"contains_refs" bson:"contains_refs"`
-	Comment      string               `json:"comment" bson:"comment"`
+	ContainsRefs []*IdentifierTypeSTIX `json:"contains_refs" bson:"contains_refs"`
+	Comment      string                `json:"comment" bson:"comment"`
 }
 
 //NTFSFileExtensionSTIX  тип "ntfs-ext", по терминалогии STIX, содержит расширение определяющее значения свойств, характерные для файловой системы NTFS

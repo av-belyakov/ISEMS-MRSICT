@@ -25,15 +25,29 @@ func (ertstix *ExternalReferencesTypeSTIX) CheckExternalReferencesTypeSTIX() boo
 		return true
 	}
 
-	ertstixTmp := make([]*ExternalReferenceTypeElementSTIX, 0, len(*ertstix))
 	for _, v := range *ertstix {
-		if ok := v.CheckExternalReferenceTypeElementSTIX(); !ok {
-			ertstixTmp = append(ertstixTmp, v)
+		if !v.CheckExternalReferenceTypeElementSTIX() {
+			return false
 		}
 	}
-	ertstix = (*ExternalReferencesTypeSTIX)(&ertstixTmp)
 
 	return true
+}
+
+//SanitizeStructExternalReferencesTypeSTIX для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+func (ertstix ExternalReferencesTypeSTIX) SanitizeStructExternalReferencesTypeSTIX() ExternalReferencesTypeSTIX {
+	size := len(ertstix)
+	if size == 0 {
+		return ertstix
+	}
+
+	ert := make([]*ExternalReferenceTypeElementSTIX, 0, size)
+	for _, v := range ertstix {
+		tmp := v.SanitizeStructExternalReferenceTypeElementSTIX()
+		ert = append(ert, &tmp)
+	}
+
+	return ertstix
 }
 
 //ExternalReferenceTypeElementSTIX тип содержащий подробную информацию о внешних ссылках, таких как URL, ID и т.д.
@@ -52,15 +66,22 @@ type ExternalReferenceTypeElementSTIX struct {
 
 //CheckExternalReferenceTypeElementSTIX выполняет проверку значений типа ExternalReferenceTypeElementSTIX
 func (ertestix *ExternalReferenceTypeElementSTIX) CheckExternalReferenceTypeElementSTIX() bool {
-	ertestix.SourceName = commonlibs.StringSanitize(ertestix.SourceName)
-	ertestix.Description = commonlibs.StringSanitize(ertestix.Description)
-	if !govalidator.IsURL(ertestix.URL) {
+	if ertestix.URL != "" && !govalidator.IsURL(ertestix.URL) {
 		return false
 	}
 
-	ertestix.ExternalID = commonlibs.StringSanitize(ertestix.ExternalID)
-
 	return true
+}
+
+//SanitizeStructExternalReferenceTypeElementSTIX выполняет проверку значений типа ExternalReferenceTypeElementSTIX
+func (ertestix ExternalReferenceTypeElementSTIX) SanitizeStructExternalReferenceTypeElementSTIX() ExternalReferenceTypeElementSTIX {
+	return ExternalReferenceTypeElementSTIX{
+		SourceName:  commonlibs.StringSanitize(ertestix.SourceName),
+		Description: commonlibs.StringSanitize(ertestix.Description),
+		URL:         ertestix.URL,
+		Hashes:      ertestix.Hashes,
+		ExternalID:  commonlibs.StringSanitize(ertestix.ExternalID),
+	}
 }
 
 //HashesTypeSTIX тип "hashes", по терминологии STIX, содержащий хеш значения, где <тип_хеша>:<хеш>

@@ -65,6 +65,9 @@ func (cpdostix CommonPropertiesDomainObjectSTIX) sanitizeStruct() CommonProperti
 		cpdostix.Labels = nl
 	}
 
+	//обработка содержимого списка поля ExternalReferences
+	cpdostix.ExternalReferences = cpdostix.ExternalReferences.SanitizeStructExternalReferencesTypeSTIX()
+
 	//обработка содержимого списка поля Extension
 	if len(cpdostix.Extensions) > 0 {
 		newExtension := make(map[string]string, len(cpdostix.Extensions))
@@ -163,6 +166,9 @@ func (apstix AttackPatternDomainObjectsSTIX) CheckingTypeFields() bool {
 
 	//обязательное поле
 	if apstix.Name == "" {
+
+		fmt.Println("AttackPatternDomainObjectsSTIX ERROR 111")
+
 		return false
 	}
 

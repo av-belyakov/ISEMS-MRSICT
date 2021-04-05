@@ -245,7 +245,7 @@ var _ = Describe("DecoderFromJSONToSTIXObject", func() {
 
 					if obj, ok := i.Data.(datamodels.FileCyberObservableObjectSTIX); ok {
 						for k, v := range obj.Extensions {
-							fmt.Printf("	Extensions name:'%s'\n	Extensions value:'%v'\n", k, *v)
+							fmt.Printf("	Extensions name:'%s'\n	Extensions value:'%v'\n", k, v)
 						}
 
 						if len(obj.Extensions) > 0 {

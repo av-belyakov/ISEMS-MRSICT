@@ -10,7 +10,6 @@ import (
 	govalidator "github.com/asaskevich/govalidator"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	gosanitize "github.com/whosonfirst/go-sanitize"
 )
 
 var _ = Describe("RegexpMatchstring", func() {
@@ -63,22 +62,6 @@ var _ = Describe("RegexpMatchstring", func() {
 		It("Должно быть FALSE на валидное содержимое поля ID", func() {
 			id := "attack-pattxern--7e33a43e-e34b-40ec-89da-36c9bb2cacd5"
 			Expect(regexp.MustCompile(`^(attack-pattern--)[0-9a-f|-]+$`).MatchString(id)).Should(BeFalse())
-		})
-	})
-
-	Context("Тест 5. С помощью go-sanitize Проверяем функцию выполняющую 'очистку' строк от нежелательных символов или вырожений", func() {
-		str := "Mozilla/5.0 (Windows; U; Windows NT 5.1; \n \ten-'US; rv:1.6)Gecko/20040113"
-		opts := gosanitize.DefaultOptions()
-		resultStr, _ := gosanitize.SanitizeString(str, opts)
-
-		fmt.Printf("String sanitize result: '%v'\n", resultStr)
-
-		It("Исходная строка должна содержать указанное невалидное значение", func() {
-			Expect(strings.Contains(str, "\n")).Should(BeTrue())
-		})
-
-		It("Результирующая строка не должна содержать невалидное значение", func() {
-			Expect(strings.Contains(resultStr, "\n")).Should(BeFalse())
 		})
 	})
 

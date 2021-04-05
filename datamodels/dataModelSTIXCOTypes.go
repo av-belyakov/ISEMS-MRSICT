@@ -166,6 +166,15 @@ type WindowsRegistryValueTypeSTIX struct {
 	DataType EnumTypeSTIX `json:"data_type" bson:"data_type"`
 }
 
+//SanitizeStructWindowsRegistryValueTypeSTIX выполняет замену некоторых специальных символов на их HTML код
+func (wrv WindowsRegistryValueTypeSTIX) SanitizeStructWindowsRegistryValueTypeSTIX() WindowsRegistryValueTypeSTIX {
+	wrv.Name = commonlibs.StringSanitize(wrv.Name)
+	wrv.Data = commonlibs.StringSanitize(wrv.Data)
+	wrv.DataType = EnumTypeSTIX(commonlibs.StringSanitize(string(wrv.DataType)))
+
+	return wrv
+}
+
 //X509V3ExtensionsTypeSTIX тип "X.509 v3 Extensions Type", по терминалогии STIX. Описывает поля расширения X.509 v3, фиксрует дополнительную информацию,
 //  такую как альтернативные имена субъектов. Объект, использующий тип "x509-v3-extensions-type", должен определить хотя бы одно из этих полей в нем.
 //  Данный тип расширяет только объекты "X.509 Certificate Object".
@@ -215,6 +224,26 @@ type X509V3ExtensionsTypeSTIX struct {
 	PrivateKeyUsagePeriodNotAfter  time.Time `json:"private_key_usage_period_not_after" bson:"private_key_usage_period_not_after"`
 	CertificatePolicies            string    `json:"certificate_policies" bson:"certificate_policies"`
 	PolicyMappings                 string    `json:"policy_mappings" bson:"policy_mappings"`
+}
+
+//SanitizeStructX509V3ExtensionsTypeSTIX выполняет замену некоторых специальных символов на их HTML код
+func (x509v3e X509V3ExtensionsTypeSTIX) SanitizeStructX509V3ExtensionsTypeSTIX() X509V3ExtensionsTypeSTIX {
+	x509v3e.BasicConstraints = commonlibs.StringSanitize(x509v3e.BasicConstraints)
+	x509v3e.NameConstraints = commonlibs.StringSanitize(x509v3e.NameConstraints)
+	x509v3e.PolicyConstraints = commonlibs.StringSanitize(x509v3e.PolicyConstraints)
+	x509v3e.KeyUsage = commonlibs.StringSanitize(x509v3e.KeyUsage)
+	x509v3e.ExtendedKeyUsage = commonlibs.StringSanitize(x509v3e.ExtendedKeyUsage)
+	x509v3e.SubjectKeyIdentifier = commonlibs.StringSanitize(x509v3e.SubjectKeyIdentifier)
+	x509v3e.AuthorityKeyIdentifier = commonlibs.StringSanitize(x509v3e.AuthorityKeyIdentifier)
+	x509v3e.SubjectAlternativeName = commonlibs.StringSanitize(x509v3e.SubjectAlternativeName)
+	x509v3e.IssuerAlternativeName = commonlibs.StringSanitize(x509v3e.IssuerAlternativeName)
+	x509v3e.SubjectDirectoryAttributes = commonlibs.StringSanitize(x509v3e.SubjectDirectoryAttributes)
+	x509v3e.CrlDistributionPoints = commonlibs.StringSanitize(x509v3e.CrlDistributionPoints)
+	x509v3e.InhibitAnyPolicy = commonlibs.StringSanitize(x509v3e.InhibitAnyPolicy)
+	x509v3e.CertificatePolicies = commonlibs.StringSanitize(x509v3e.CertificatePolicies)
+	x509v3e.PolicyMappings = commonlibs.StringSanitize(x509v3e.PolicyMappings)
+
+	return x509v3e
 }
 
 /********** 			Некоторые расширения, относящиеся к Cyber-observable Objects STIX 			**********/
@@ -565,12 +594,12 @@ type CommonFileCyberObservableObjectSTIX struct {
 //  свои расширения. При этом ключ словаря должен однозначно идентифицировать тип расширения.
 type FileCyberObservableObjectSTIX struct {
 	CommonFileCyberObservableObjectSTIX
-	Extensions map[string]*interface{} `json:"extensions" bson:"extensions"`
+	Extensions map[string]interface{} `json:"extensions" bson:"extensions"`
 }
 
 //IPv4AddressCyberObservableObjectSTIX объект "IPv4 Address Object", по терминалогии STIX, содержит один или более IPv4 адресов, выраженных с помощью нотации CIDR.
-// Value - указывает значения одного или нескольких IPv4-адресов, выраженные с помощью нотации CIDR. Если данный объект IPv6-адреса представляет собой один IPv6-адрес,
-//  суффикс CIDR /128 МОЖЕТ быть опущен. (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+// Value - указывает значения одного или нескольких IPv4-адресов, выраженные с помощью нотации CIDR. Если данный объект IPv4-адреса представляет собой один IPv4-адрес,
+//  суффикс CIDR /32 МОЖЕТ быть опущен. (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // ResolvesToRefs - указывает список ссылок на один или несколько MAC-адресов управления доступом к носителям уровня 2, на которые разрешается IPv6-адрес. Объекты,
 //  на которые ссылается этот список, ДОЛЖНЫ иметь тип macaddr.
 // BelongsToRefs - указывает список ссылок на одну или несколько автономных систем (AS), к которым принадлежит IPv6-адрес. Объекты, на которые ссылается этот список,
@@ -584,9 +613,9 @@ type IPv4AddressCyberObservableObjectSTIX struct {
 }
 
 //IPv6AddressCyberObservableObjectSTIX объект "IPv6 Address Object", по терминалогии STIX, содержит один или более IPv6 адресов, выраженных с помощью нотации CIDR.
-// Value - указывает значения одного или нескольких IPv6-адресов, выраженные с помощью нотации CIDR. Если данный объект IPv4-адреса представляет собой один IPv4-адрес,
-//  суффикс CIDR /32 МОЖЕТ быть опущен. Пример: 10.2.4.5/24 (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
-// ResolvesToRefs - указывает список ссылок на один или несколько MAC-адресов управления доступом к носителям уровня 2, на которые разрешается IPv4-адрес. Объекты,
+// Value - указывает значения одного или нескольких IPv6-адресов, выраженные с помощью нотации CIDR. Если данный объект IPv6-адреса представляет собой один IPv6-адрес,
+//  суффикс CIDR /128 МОЖЕТ быть опущен. (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+// ResolvesToRefs - указывает список ссылок на один или несколько MAC-адресов управления доступом к носителям уровня 2, на которые разрешается IPv6-адрес. Объекты,
 //  на которые ссылается этот список, ДОЛЖНЫ иметь тип macaddr.
 // BelongsToRefs - указывает список ссылок на одну или несколько автономных систем (AS), к которым принадлежит IPv4-адрес. Объекты, на которые ссылается этот список,
 //  ДОЛЖНЫ быть типа autonomous-system.
@@ -658,7 +687,7 @@ type CommonNetworkTrafficCyberObservableObjectSTIX struct {
 	IPFix             map[string]*DictionaryTypeSTIX `json:"ipfix" bson:"ipfix"`
 	SrcPayloadRef     IdentifierTypeSTIX             `json:"src_payload_ref" bson:"src_payload_ref"`
 	DstPayloadRef     IdentifierTypeSTIX             `json:"dst_payload_ref" bson:"dst_payload_ref"`
-	EncapsulatesRefs  []IdentifierTypeSTIX           `json:"encapsulates_refs" bson:"encapsulates_refs"`
+	EncapsulatesRefs  []*IdentifierTypeSTIX          `json:"encapsulates_refs" bson:"encapsulates_refs"`
 	EncapsulatedByRef IdentifierTypeSTIX             `json:"encapsulated_by_ref" bson:"encapsulated_by_ref"`
 }
 
@@ -667,7 +696,7 @@ type CommonNetworkTrafficCyberObservableObjectSTIX struct {
 // Extensions - объект Сетевого трафика определяет следующие расширения. В дополнение к ним производители МОГУТ создавать свои собственные. ключи словаря http-request-ext, cp-ext,
 type NetworkTrafficCyberObservableObjectSTIX struct {
 	CommonNetworkTrafficCyberObservableObjectSTIX
-	Extensions map[string]*interface{} `json:"extensions" bson:"extensions"`
+	Extensions map[string]interface{} `json:"extensions" bson:"extensions"`
 }
 
 //CommonProcessCyberObservableObjectSTIX общий объект "Process Object", по терминологии STIX, содержит общие свойства экземпляра компьютерной программы,
@@ -711,7 +740,7 @@ type CommonProcessCyberObservableObjectSTIX struct {
 //  windows-service-ext ДОЛЖНЫ идентифицировать тип расширения по имени. Соответствующие значения словаря ДОЛЖНЫ содержать содержимое экземпляра расширения.
 type ProcessCyberObservableObjectSTIX struct {
 	CommonProcessCyberObservableObjectSTIX
-	Extensions map[string]*interface{} `json:"extensions" bson:"extensions"`
+	Extensions map[string]interface{} `json:"extensions" bson:"extensions"`
 }
 
 //SoftwareCyberObservableObjectSTIX объект "Software Object", по терминологии STIX, содержит свойства, связанные с программным обеспечением, включая программные продукты.
@@ -720,7 +749,7 @@ type ProcessCyberObservableObjectSTIX struct {
 // CPE v2.3 из официального словаря NVD CPE [NVD]
 // SwID - содержит запись Тегов Software Identification ID (SWID) [SWID] для программного обеспечения, если таковая имеется. SwID помеченный tagId, является
 //  глобально уникальным идентификатором и ДОЛЖЕН использоваться как полномочие для идентификации помеченного продукта
-// Languages -содержит языки, поддерживаемые программным обеспечением. Значение каждого елемента списка ДОЛЖНО быть кодом языка ISO 639-2 [ISO639 -2]
+// Languages -содержит языки, поддерживаемые программным обеспечением. Значение каждого елемента списка ДОЛЖНО быть кодом языка ISO 639-2
 // Vendor - содержит название производителя программного обеспечения
 // Version - содержит версию ПО
 type SoftwareCyberObservableObjectSTIX struct {
@@ -746,7 +775,7 @@ type URLCyberObservableObjectSTIX struct {
 // учетные записи операционной системы, устройства, службы обмена сообщениями и платформы социальных сетей и других прочих учетных записей
 // Поскольку все свойства этого объекта являются необязательными, по крайней мере одно из свойств, определенных ниже, ДОЛЖНО быть инициализировано
 // при использовании этого объекта
-// Extensions - содержит словарь расширяющий тип "User Account Object" одно из расширений "unix-account-ext", реализуется описанным ниже типом, UNIXTMAccountExtensionSTIX
+// Extensions - содержит словарь расширяющий тип "User Account Object" одно из расширений "unix-account-ext", реализуется описанным ниже типом, UNIXAccountExtensionSTIX
 //  кроме этого производитель может созавать свои собственные типы расширений
 //  Ключи данного словаря идентифицируют тип расширения по имени, значения являются содержимым экземпляра расширения
 // UserID - содержит идентификатор учетной записи. Формат идентификатора зависит от системы в которой находится данная учетная запись пользователя,
@@ -776,21 +805,21 @@ type URLCyberObservableObjectSTIX struct {
 type UserAccountCyberObservableObjectSTIX struct {
 	CommonPropertiesObjectSTIX
 	OptionalCommonPropertiesCyberObservableObjectSTIX
-	Extensions            map[string]*UNIXAccountExtensionSTIX `json:"extensions" bson:"extensions"`
-	UserID                string                               `json:"user_id" bson:"user_id"`
-	Credential            string                               `json:"credential" bson:"credential"`
-	AccountLogin          string                               `json:"account_login" bson:"account_login"`
-	AccountType           OpenVocabTypeSTIX                    `json:"account_type" bson:"account_type"`
-	DisplayName           string                               `json:"display_name" bson:"display_name"`
-	IsServiceAccount      bool                                 `json:"is_service_account" bson:"is_service_account"`
-	IsPrivileged          bool                                 `json:"is_privileged" bson:"is_privileged"`
-	CanEscalatePrivs      bool                                 `json:"can_escalate_privs" bson:"can_escalate_privs"`
-	IsDisabled            bool                                 `json:"is_disabled" bson:"is_disabled"`
-	AccountCreated        time.Time                            `json:"account_created" bson:"account_created"`
-	AccountExpires        time.Time                            `json:"account_expires" bson:"account_expires"`
-	CredentialLastChanged time.Time                            `json:"credential_last_changed" bson:"credential_last_changed"`
-	AccountFirstLogin     time.Time                            `json:"account_first_login" bson:"account_first_login"`
-	AccountLastLogin      time.Time                            `json:"account_last_login" bson:"account_last_login"`
+	Extensions            map[string]UNIXAccountExtensionSTIX `json:"extensions" bson:"extensions"`
+	UserID                string                              `json:"user_id" bson:"user_id"`
+	Credential            string                              `json:"credential" bson:"credential"`
+	AccountLogin          string                              `json:"account_login" bson:"account_login"`
+	AccountType           OpenVocabTypeSTIX                   `json:"account_type" bson:"account_type"`
+	DisplayName           string                              `json:"display_name" bson:"display_name"`
+	IsServiceAccount      bool                                `json:"is_service_account" bson:"is_service_account"`
+	IsPrivileged          bool                                `json:"is_privileged" bson:"is_privileged"`
+	CanEscalatePrivs      bool                                `json:"can_escalate_privs" bson:"can_escalate_privs"`
+	IsDisabled            bool                                `json:"is_disabled" bson:"is_disabled"`
+	AccountCreated        time.Time                           `json:"account_created" bson:"account_created"`
+	AccountExpires        time.Time                           `json:"account_expires" bson:"account_expires"`
+	CredentialLastChanged time.Time                           `json:"credential_last_changed" bson:"credential_last_changed"`
+	AccountFirstLogin     time.Time                           `json:"account_first_login" bson:"account_first_login"`
+	AccountLastLogin      time.Time                           `json:"account_last_login" bson:"account_last_login"`
 }
 
 //WindowsRegistryKeyCyberObservableObjectSTIX объект "Windows Registry Key Object", по терминалогии STIX. Содержит описание значений полей раздела реестра Windows.

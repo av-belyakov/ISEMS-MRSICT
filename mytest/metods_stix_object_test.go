@@ -852,6 +852,7 @@ var _ = Describe("MetodsStixObject", func() {
 						"number_of_symbols": 4542568,
 						"size_of_optional_header": 224,
 						"characteristics_hex": "818f",
+						"file_header_hashes": { "test-hex": "452-a7bcz21d" },
 						"optional_header": {
 							"magic_hex": "010b",
 							"major_linker_version": 2,
@@ -911,6 +912,319 @@ var _ = Describe("MetodsStixObject", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.FileCyberObservableObjectSTIX)
+			newmd = newmd.SanitizeStruct()
+
+			Expect(ok).Should(BeTrue())
+
+			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
+
+			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+		})
+	})
+
+	Context("Тест 26. Выполняем проверку типа 'ipv4-addr' методом CheckingTypeFields", func() {
+		It("На валидное содержимое типа IPv4AddressCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
+			mdbyte := json.RawMessage([]byte(`{
+				"type": "ipv4-addr",
+				"spec_version": "2.1",
+				"id": "ipv4-addr--5853f6a4-638f-5b4e-9b0f-ded361ae3812",
+				"value": "198.51.100.0/24"
+}`))
+			var md datamodels.IPv4AddressCyberObservableObjectSTIX
+			mdTmp, err := md.DecoderJSON(&mdbyte)
+
+			Expect(err).ShouldNot(HaveOccurred())
+
+			newmd, ok := mdTmp.(datamodels.IPv4AddressCyberObservableObjectSTIX)
+			newmd = newmd.SanitizeStruct()
+
+			Expect(ok).Should(BeTrue())
+
+			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
+
+			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+		})
+	})
+
+	Context("Тест 27. Выполняем проверку типа 'ipv6-addr' методом CheckingTypeFields", func() {
+		It("На валидное содержимое типа IPv6AddressCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
+			mdbyte := json.RawMessage([]byte(`{
+				"type": "ipv6-addr",
+				"spec_version": "2.1",
+				"id": "ipv6-addr--5daf7456-8863-5481-9d42-237d477697f4",
+				"value": "2001:0db8::/96"
+}`))
+			var md datamodels.IPv6AddressCyberObservableObjectSTIX
+			mdTmp, err := md.DecoderJSON(&mdbyte)
+
+			Expect(err).ShouldNot(HaveOccurred())
+
+			newmd, ok := mdTmp.(datamodels.IPv6AddressCyberObservableObjectSTIX)
+			newmd = newmd.SanitizeStruct()
+
+			Expect(ok).Should(BeTrue())
+
+			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
+
+			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+		})
+	})
+
+	Context("Тест 28. Выполняем проверку типа 'mac-addr' методом CheckingTypeFields", func() {
+		It("На валидное содержимое типа MACAddressCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
+			mdbyte := json.RawMessage([]byte(`{
+				"type": "mac-addr",
+				"spec_version": "2.1",
+				"id": "mac-addr--65cfcf98-8a6e-5a1b-8f61-379ac4f92d00",
+				"value": "d2:fb:49:24:37:18"          
+}`))
+			var md datamodels.MACAddressCyberObservableObjectSTIX
+			mdTmp, err := md.DecoderJSON(&mdbyte)
+
+			Expect(err).ShouldNot(HaveOccurred())
+
+			newmd, ok := mdTmp.(datamodels.MACAddressCyberObservableObjectSTIX)
+			newmd = newmd.SanitizeStruct()
+
+			Expect(ok).Should(BeTrue())
+
+			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
+
+			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+		})
+	})
+
+	Context("Тест 29. Выполняем проверку типа 'mac-addr' методом CheckingTypeFields", func() {
+		It("На валидное содержимое типа MutexCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
+			mdbyte := json.RawMessage([]byte(`{
+				"type": "mutex",
+				"spec_version": "2.1",
+				"id": "mutex--eba44954-d4e4-5d3b-814c-2b17dd8de300",
+				"name": "__CLEANSWEEP__"
+}`))
+			var md datamodels.MutexCyberObservableObjectSTIX
+			mdTmp, err := md.DecoderJSON(&mdbyte)
+
+			Expect(err).ShouldNot(HaveOccurred())
+
+			newmd, ok := mdTmp.(datamodels.MutexCyberObservableObjectSTIX)
+			newmd = newmd.SanitizeStruct()
+
+			Expect(ok).Should(BeTrue())
+
+			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
+
+			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+		})
+	})
+
+	Context("Тест 30. Выполняем проверку типа 'network-traffic' методом CheckingTypeFields", func() {
+		It("На валидное содержимое типа NetworkTrafficCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
+			mdbyte := json.RawMessage([]byte(`{
+				"type": "network-traffic",
+				"spec_version": "2.1",
+				"id": "network-traffic--630d7bb1-0bbc-53a6-a6d4-f3c2d35c2734",
+				"src_ref": "ipv4-addr--e42c19c8-f9fe-5ae9-9fc8-22c398f78fb",
+				"dst_ref": "ipv4-addr--03b708d9-7761-5523-ab75-5ea096294a68",
+				"src_port": 2487,
+				"dst_port": 1723,	
+				"protocols": ["ipv4", "tcp"],
+				"src_byte_count": 147600,
+				"src_packets": 100,
+				"dst_byte_count": 935750,
+				"encapsulates_refs": ["network-traffic--53e0bf48-2eee-5c03-8bde-ed7049d2c0a3"],
+				"ipfix": {
+					"minimumIpTotalLength": 32,
+					"maximumIpTotalLength": 2556
+				},
+				"extensions": {
+					"http-request-ext": {
+						"request_method": "get",
+						"request_value": "/download.html",
+						"request_version": "http/1.1",
+						"request_header": {
+							"Accept-Encoding": "gzip,deflate",
+							"User-Agent": "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.6)Gecko/20040113",
+							"Host": "www.example.com"
+						}
+					},
+					"socket-ext": {
+						"is_listening": true,
+						"address_family": "AF_INET",
+						"socket_type": "SOCK_STREAM"
+					}
+				}
+}`))
+			var md datamodels.NetworkTrafficCyberObservableObjectSTIX
+			mdTmp, err := md.DecoderJSON(&mdbyte)
+
+			Expect(err).ShouldNot(HaveOccurred())
+
+			newmd, ok := mdTmp.(datamodels.NetworkTrafficCyberObservableObjectSTIX)
+			newmd = newmd.SanitizeStruct()
+
+			Expect(ok).Should(BeTrue())
+
+			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
+
+			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+		})
+	})
+
+	Context("Тест 31. Выполняем проверку типа 'process' методом CheckingTypeFields", func() {
+		It("На валидное содержимое типа ProcessCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
+			mdbyte := json.RawMessage([]byte(`{
+				"type": "process",
+				"spec_version": "2.1",
+				"id": "process--99ab297d-4c39-48ea-9d64-052d596864df",
+				"pid": 2217,
+				"command_line": "C:\\Windows\\System32\\sirvizio.exe /s",
+				"image_ref": "file--3916128d-69af-5525-be7a-99fac2383a59",
+				"extensions": {
+					"windows-service-ext": {
+						"service_name": "sirvizio",
+						"display_name": "Sirvizio",
+						"start_type": "SERVICE_AUTO_START",
+						"service_type": "SERVICE_WIN32_OWN_PROCESS",
+						"service_status": "SERVICE_RUNNING"
+					}
+				}
+}`))
+			var md datamodels.ProcessCyberObservableObjectSTIX
+			mdTmp, err := md.DecoderJSON(&mdbyte)
+
+			Expect(err).ShouldNot(HaveOccurred())
+
+			newmd, ok := mdTmp.(datamodels.ProcessCyberObservableObjectSTIX)
+			newmd = newmd.SanitizeStruct()
+
+			Expect(ok).Should(BeTrue())
+
+			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
+
+			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+		})
+	})
+
+	Context("Тест 32. Выполняем проверку типа 'software' методом CheckingTypeFields", func() {
+		It("На валидное содержимое типа SoftwareCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
+			mdbyte := json.RawMessage([]byte(`{
+				"type": "software",
+				"spec_version": "2.1",
+				"id": "software--a1827f6d-ca53-5605-9e93-4316cd22a00a",
+				"name": "Word",
+				"cpe": "cpe:2.3:a:microsoft:word:2000:*:*:*:*:*:*:*",
+				"version": "2002",
+				"vendor": "Microsoft"           
+}`))
+			var md datamodels.SoftwareCyberObservableObjectSTIX
+			mdTmp, err := md.DecoderJSON(&mdbyte)
+
+			Expect(err).ShouldNot(HaveOccurred())
+
+			newmd, ok := mdTmp.(datamodels.SoftwareCyberObservableObjectSTIX)
+			newmd = newmd.SanitizeStruct()
+
+			Expect(ok).Should(BeTrue())
+
+			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
+
+			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+		})
+	})
+
+	Context("Тест 32. Выполняем проверку типа 'url' методом CheckingTypeFields", func() {
+		It("На валидное содержимое типа URLCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
+			mdbyte := json.RawMessage([]byte(`{
+				"type": "url",
+				"spec_version": "2.1",
+				"id": "url--c1477287-23ac-5971-a010-5c287877fa60",
+				"value": "https://example.com/research/index.html"
+}`))
+			var md datamodels.URLCyberObservableObjectSTIX
+			mdTmp, err := md.DecoderJSON(&mdbyte)
+
+			Expect(err).ShouldNot(HaveOccurred())
+
+			newmd, ok := mdTmp.(datamodels.URLCyberObservableObjectSTIX)
+			newmd = newmd.SanitizeStruct()
+
+			Expect(ok).Should(BeTrue())
+
+			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
+
+			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+		})
+	})
+
+	Context("Тест 33. Выполняем проверку типа 'user-account' методом CheckingTypeFields", func() {
+		It("На валидное содержимое типа UserAccountCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
+			mdbyte := json.RawMessage([]byte(`{
+				"type": "user-account",
+				"spec_version": "2.1",
+				"id": "user-account--0d5b424b-93b8-5cd8-ac36-306e1789d63c",
+				"user_id": "1001",
+				"account_login": "jdoe",
+				"account_type": "unix",
+				"display_name": "John Doe",
+				"is_service_account": false,
+				"is_privileged": false,
+				"can_escalate_privs": true,
+				"account_created": "2016-01-20T12:31:12Z",
+				"credential_last_changed": "2016-01-20T14:27:43Z",
+				"account_first_login": "2016-01-20T14:26:07Z",
+				"account_last_login": "2016-07-22T16:08:28Z",
+				"extensions": {
+					"unix-account-ext": {
+						"gid": 1001,
+						"groups": ["wheel"],
+						"home_dir": "/home/jdoe",
+						"shell": "/bin/bash"
+					}
+				}
+}`))
+			var md datamodels.UserAccountCyberObservableObjectSTIX
+			mdTmp, err := md.DecoderJSON(&mdbyte)
+
+			Expect(err).ShouldNot(HaveOccurred())
+
+			newmd, ok := mdTmp.(datamodels.UserAccountCyberObservableObjectSTIX)
+			newmd = newmd.SanitizeStruct()
+
+			Expect(ok).Should(BeTrue())
+
+			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
+
+			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+		})
+	})
+
+	Context("Тест 34. Выполняем проверку типа 'windows-registry-key' методом CheckingTypeFields", func() {
+		It("На валидное содержимое типа WindowsRegistryKeyCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
+			mdbyte := json.RawMessage([]byte(`{
+				"type": "windows-registry-key",
+				"spec_version": "2.1",
+				"id": "windows-registry-key--2ba37ae7-2745-5082-9dfd-9486dad41016",
+				"key": "hkey_local_machine\\system\\bar\\foo",
+				"values": [
+					{
+						"name": "Foo",
+						"data": "qwerty",
+						"data_type": "REG_SZ"
+					},
+					{
+						"name": "Bar",
+						"data": "42",
+						"data_type": "REG_DWORD"
+					}
+				]
+}`))
+			var md datamodels.WindowsRegistryKeyCyberObservableObjectSTIX
+			mdTmp, err := md.DecoderJSON(&mdbyte)
+
+			Expect(err).ShouldNot(HaveOccurred())
+
+			newmd, ok := mdTmp.(datamodels.WindowsRegistryKeyCyberObservableObjectSTIX)
 			newmd = newmd.SanitizeStruct()
 
 			Expect(ok).Should(BeTrue())

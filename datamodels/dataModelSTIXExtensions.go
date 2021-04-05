@@ -346,17 +346,6 @@ func sanitizeExtensionsSTIX(extType interface{}) interface{} {
 func toStringBeautiful(extType interface{}) string {
 	str := "\t\t"
 
-	fmt.Println("func 'toStringBeautiful', START...")
-	fmt.Println(extType)
-
-	/*
-
-	   Надо разобратся!!!!
-	   Отсутствует вывод информации. switch et := extType.(type) {} не отрабатывает
-	   а при выводе через print получаю просто ссылку на область памяти
-
-	*/
-
 	switch et := extType.(type) {
 	case ArchiveFileExtensionSTIX:
 		str += fmt.Sprintln("contains_refs:")
@@ -398,9 +387,6 @@ func toStringBeautiful(extType interface{}) string {
 		}
 
 	case WindowsPEBinaryFileExtensionSTIX:
-
-		fmt.Println("func 'toStringBeautiful', WindowsPEBinaryFileExtensionSTIX")
-
 		str += fmt.Sprintf("pe_type: '%v'\n", et.PeType)
 		str += fmt.Sprintf("\t\timphash: '%s'\n", et.Imphash)
 		str += fmt.Sprintf("\t\tmachine_hex: '%s'\n", et.MachineHex)

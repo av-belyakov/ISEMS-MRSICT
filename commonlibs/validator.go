@@ -32,54 +32,54 @@ func StringSanitize(strIn string) string {
 }
 
 const (
-	ip                   string = `^((25[0-5]|2[0-4]\d|[01]?\d\d?)[.]){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$`
-	computerNetAddrRange string = `^((25[0-5]|2[0-4]\d|[01]?\d\d?)[.]){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)/[0-9]{1,2}$`
-	tcpDumpFileName      string = `^(\w|_)+\.(tdp|pcap)$`
-	uuid3                string = `^[0-9a-f]{8}-[0-9a-f]{4}-3[0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}$`
-	uuid4                string = `^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`
-	uuid5                string = `^[0-9a-f]{8}-[0-9a-f]{4}-5[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`
-	uuid                 string = `^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$`
-	alpha                string = `^[a-zA-Z]+$`
-	alphanumeric         string = `^[a-zA-Z0-9]+$`
-	literaryline         string = `^[a-zA-Z0-9.,-_()!]+$`
-	numeric              string = `^[0-9]+$`
-	integer              string = `^(?:[-+]?(?:0|[1-9][0-9]*))$`
-	float                string = `^(?:[-+]?(?:[0-9]+))?(?:\\.[0-9]*)?(?:[eE][\\+\\-]?(?:[0-9]+))?$`
-	hexadecimal          string = `^[0-9a-fA-F]+$`
-	hexcolor             string = `^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$`
-	ascii                string = `^[\x00-\x7F]+$`
-	multibyte            string = `[^\x00-\x7F]`
-	fullWidth            string = `[^\u0020-\u007E\uFF61-\uFF9F\uFFA0-\uFFDC\uFFE8-\uFFEE0-9a-zA-Z]`
-	halfWidth            string = `[\u0020-\u007E\uFF61-\uFF9F\uFFA0-\uFFDC\uFFE8-\uFFEE0-9a-zA-Z]`
-	base64               string = `^(?:[A-Za-z0-9+\\/]{4})*(?:[A-Za-z0-9+\\/]{2}==|[A-Za-z0-9+\\/]{3}=|[A-Za-z0-9+\\/]{4})$`
-	printableASCII       string = `^[\x20-\x7E]+$`
-	dataURI              string = `^data:.+\\/(.+);base64$`
-	magnetURI            string = `^magnet:\\?xt=urn:[a-zA-Z0-9]+:[a-zA-Z0-9]{32,40}&dn=.+&tr=.+$`
-	latitude             string = `^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?)$`
-	longitude            string = `^[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)$`
-	dnsName              string = `^([a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62}){1}(\.[a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62})*[\._]?$`
-	urlSchema            string = `((ftp|tcp|udp|wss?|https?):\/\/)`
-	urlUsername          string = `(\S+(:\S*)?@)`
-	urlPath              string = `((\/|\?|#)[^\s]*)`
-	urlPort              string = `(:(\d{1,5}))`
-	urlIP                string = `([1-9]\d?|1\d\d|2[01]\d|22[0-3]|24\d|25[0-5])(\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])){2}(?:\.([0-9]\d?|1\d\d|2[0-4]\d|25[0-5]))`
-	urlSubdomain         string = `((www\.)|([a-zA-Z0-9]+([-_\.]?[a-zA-Z0-9])*[a-zA-Z0-9]\.[a-zA-Z0-9]+))`
-	url                  string = `^` + urlSchema + `?` + urlUsername + `?` + `((` + urlIP + `|(\[` + ip + `\])|(([a-zA-Z0-9]([a-zA-Z0-9-_]+)?[a-zA-Z0-9]([-\.][a-zA-Z0-9]+)*)|(` + urlSubdomain + `?))?(([a-zA-Z\x{00a1}-\x{ffff}0-9]+-?-?)*[a-zA-Z\x{00a1}-\x{ffff}0-9]+)(?:\.([a-zA-Z\x{00a1}-\x{ffff}]{1,}))?))\.?` + urlPort + `?` + urlPath + `?$`
-	ssn                  string = `^\d{3}[- ]?\d{2}[- ]?\d{4}$`
-	winPath              string = `^[a-zA-Z]:\\(?:[^\\/:*?"<>|\r\n]+\\)*[^\\/:*?"<>|\r\n]*$`
-	unixPath             string = `^(/[^/\x00]*)+/?$`
+	ipv4                     string = `^((25[0-5]|2[0-4]\d|[01]?\d\d?)[.]){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$`
+	computerNetAddrIPv4Range string = `^((25[0-5]|2[0-4]\d|[01]?\d\d?)[.]){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)/[0-9]{1,2}$`
+	tcpDumpFileName          string = `^(\w|_)+\.(tdp|pcap)$`
+	uuid3                    string = `^[0-9a-f]{8}-[0-9a-f]{4}-3[0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}$`
+	uuid4                    string = `^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`
+	uuid5                    string = `^[0-9a-f]{8}-[0-9a-f]{4}-5[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`
+	uuid                     string = `^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$`
+	alpha                    string = `^[a-zA-Z]+$`
+	alphanumeric             string = `^[a-zA-Z0-9]+$`
+	literaryline             string = `^[a-zA-Z0-9.,-_()!]+$`
+	numeric                  string = `^[0-9]+$`
+	integer                  string = `^(?:[-+]?(?:0|[1-9][0-9]*))$`
+	float                    string = `^(?:[-+]?(?:[0-9]+))?(?:\\.[0-9]*)?(?:[eE][\\+\\-]?(?:[0-9]+))?$`
+	hexadecimal              string = `^[0-9a-fA-F]+$`
+	hexcolor                 string = `^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$`
+	ascii                    string = `^[\x00-\x7F]+$`
+	multibyte                string = `[^\x00-\x7F]`
+	fullWidth                string = `[^\u0020-\u007E\uFF61-\uFF9F\uFFA0-\uFFDC\uFFE8-\uFFEE0-9a-zA-Z]`
+	halfWidth                string = `[\u0020-\u007E\uFF61-\uFF9F\uFFA0-\uFFDC\uFFE8-\uFFEE0-9a-zA-Z]`
+	base64                   string = `^(?:[A-Za-z0-9+\\/]{4})*(?:[A-Za-z0-9+\\/]{2}==|[A-Za-z0-9+\\/]{3}=|[A-Za-z0-9+\\/]{4})$`
+	printableASCII           string = `^[\x20-\x7E]+$`
+	dataURI                  string = `^data:.+\\/(.+);base64$`
+	magnetURI                string = `^magnet:\\?xt=urn:[a-zA-Z0-9]+:[a-zA-Z0-9]{32,40}&dn=.+&tr=.+$`
+	latitude                 string = `^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?)$`
+	longitude                string = `^[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)$`
+	dnsName                  string = `^([a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62}){1}(\.[a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62})*[\._]?$`
+	urlSchema                string = `((ftp|tcp|udp|wss?|https?):\/\/)`
+	urlUsername              string = `(\S+(:\S*)?@)`
+	urlPath                  string = `((\/|\?|#)[^\s]*)`
+	urlPort                  string = `(:(\d{1,5}))`
+	urlIP                    string = `([1-9]\d?|1\d\d|2[01]\d|22[0-3]|24\d|25[0-5])(\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])){2}(?:\.([0-9]\d?|1\d\d|2[0-4]\d|25[0-5]))`
+	urlSubdomain             string = `((www\.)|([a-zA-Z0-9]+([-_\.]?[a-zA-Z0-9])*[a-zA-Z0-9]\.[a-zA-Z0-9]+))`
+	url                      string = `^` + urlSchema + `?` + urlUsername + `?` + `((` + urlIP + `|(\[` + ipv4 + `\])|(([a-zA-Z0-9]([a-zA-Z0-9-_]+)?[a-zA-Z0-9]([-\.][a-zA-Z0-9]+)*)|(` + urlSubdomain + `?))?(([a-zA-Z\x{00a1}-\x{ffff}0-9]+-?-?)*[a-zA-Z\x{00a1}-\x{ffff}0-9]+)(?:\.([a-zA-Z\x{00a1}-\x{ffff}]{1,}))?))\.?` + urlPort + `?` + urlPath + `?$`
+	ssn                      string = `^\d{3}[- ]?\d{2}[- ]?\d{4}$`
+	winPath                  string = `^[a-zA-Z]:\\(?:[^\\/:*?"<>|\r\n]+\\)*[^\\/:*?"<>|\r\n]*$`
+	unixPath                 string = `^(/[^/\x00]*)+/?$`
 )
 
 //IsIPAddress проверяет значение на соответствие его ip адресу сети Интернет
-func IsIPAddress(value string) bool {
-	patterCheckFileName := regexp.MustCompile(ip)
+func IsIPv4Address(value string) bool {
+	patterCheckFileName := regexp.MustCompile(ipv4)
 
 	return patterCheckFileName.MatchString(value)
 }
 
 //IsComputerNetAddrRange проверяет значение на соответствие его диапазону адресов компьютерной сети. Например, 192.168.0.1/24
-func IsComputerNetAddrRange(value string) bool {
-	patterCheckFileName := regexp.MustCompile(computerNetAddrRange)
+func IsComputerNetAddrIPv4Range(value string) bool {
+	patterCheckFileName := regexp.MustCompile(computerNetAddrIPv4Range)
 
 	return patterCheckFileName.MatchString(value)
 }

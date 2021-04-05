@@ -26,6 +26,11 @@ type EncoderJSONObject interface {
 	EncoderJSON(interface{}) (*[]byte, error)
 }
 
+//ToBeautifulOutputConverter интерфейс реализующий обработчик для красивого представления данных хранящихся в пользовательской структуре
+type ToBeautifulOutputConverter interface {
+	ToStringBeautiful() string
+}
+
 type GetIPv4AddressCyberObservableObjectSTIX interface {
 	GetIPv4AddressCyberObservableObjectSTIX() *IPv4AddressCyberObservableObjectSTIX
 }

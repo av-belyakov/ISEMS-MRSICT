@@ -47,7 +47,7 @@ func (ertstix ExternalReferencesTypeSTIX) SanitizeStructExternalReferencesTypeST
 		ert = append(ert, &tmp)
 	}
 
-	return ertstix
+	return ert
 }
 
 //ExternalReferenceTypeElementSTIX тип содержащий подробную информацию о внешних ссылках, таких как URL, ID и т.д.
@@ -93,8 +93,13 @@ func (htstix *HashesTypeSTIX) CheckHashesTypeSTIX() bool {
 		return true
 	}
 
-	for _, v := range *htstix {
-		if !(regexp.MustCompile(`^[0-9a-zA-Z|-|_]+$`)).MatchString(v) {
+	pattern := regexp.MustCompile(`^[0-9a-zA-Z-_=]+$`)
+	for k, v := range *htstix {
+		if !pattern.MatchString(k) {
+			return false
+		}
+
+		if !pattern.MatchString(v) {
 			return false
 		}
 	}
@@ -112,7 +117,7 @@ func (itstix *IdentifierTypeSTIX) CheckIdentifierTypeSTIX() bool {
 		return true
 	}
 
-	return regexp.MustCompile(`^[0-9a-zA-Z-_]+(--)[0-9a-f|-]+$`).MatchString(fmt.Sprint(*itstix))
+	return regexp.MustCompile(`^[0-9a-zA-Z-_]+(--)[0-9a-f-]+$`).MatchString(fmt.Sprint(*itstix))
 }
 
 //AddValue добавляет значение в тип IdentifierTypeSTIX

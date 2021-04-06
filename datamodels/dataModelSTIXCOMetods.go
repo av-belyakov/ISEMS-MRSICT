@@ -1680,42 +1680,13 @@ func (x509sstix X509CertificateCyberObservableObjectSTIX) SanitizeStruct() X509C
 
 	x509sstix.Version = commonlibs.StringSanitize(x509sstix.Version)
 	x509sstix.SerialNumber = commonlibs.StringSanitize(x509sstix.SerialNumber)
-
-	/*
-
-	   НЕ УСПЕЛ ДОДЕЛАТЬ
-
-	*/
+	x509sstix.SignatureAlgorithm = commonlibs.StringSanitize(x509sstix.SignatureAlgorithm)
+	x509sstix.Issuer = commonlibs.StringSanitize(x509sstix.Issuer)
+	x509sstix.Subject = commonlibs.StringSanitize(x509sstix.Subject)
+	x509sstix.SubjectPublicKeyAlgorithm = commonlibs.StringSanitize(x509sstix.SubjectPublicKeyAlgorithm)
+	x509sstix.SubjectPublicKeyModulus = commonlibs.StringSanitize(x509sstix.SubjectPublicKeyModulus)
 
 	x509sstix.X509V3Extensions = x509sstix.X509V3Extensions.SanitizeStructX509V3ExtensionsTypeSTIX()
-	/*
-		IsSelfSigned              bool                     `json:"is_self_signed" bson:"is_self_signed"`
-			Hashes                    HashesTypeSTIX           `json:"hashes" bson:"hashes"`
-			Version                   string                   `json:"version" bson:"version"`
-			SerialNumber              string                   `json:"serial_number" bson:"serial_number"`
-			SignatureAlgorithm        string                   `json:"signature_algorithm" bson:"signature_algorithm"`
-			Issuer                    string                   `json:"issuer" bson:"issuer"`
-			ValidityNotBefore         time.Time                `json:"validity_not_before" bson:"validity_not_before"`
-			ValidityNotAfter          time.Time                `json:"validity_not_after" bson:"validity_not_after"`
-			Subject                   string                   `json:"subject" bson:"subject"`
-			SubjectPublicKeyAlgorithm string                   `json:"subject_public_key_algorithm" bson:"subject_public_key_algorithm"`
-			SubjectPublicKeyModulus   string                   `json:"subject_public_key_modulus" bson:"subject_public_key_modulus"`
-			SubjectPublicKeyExponent  int                      `json:"subject_public_key_exponent" bson:"subject_public_key_exponent"`
-			X509V3Extensions          X509V3ExtensionsTypeSTIX `json:"x509_v3_extensions" bson:"x509_v3_extensions"`
-
-				apstix.Name = commonlibs.StringSanitize(apstix.Name)
-				apstix.Description = commonlibs.StringSanitize(apstix.Description)
-
-				if len(apstix.Aliases) > 0 {
-					aliasesTmp := make([]string, 0, len(apstix.Aliases))
-					for _, v := range apstix.Aliases {
-						aliasesTmp = append(aliasesTmp, commonlibs.StringSanitize(v))
-					}
-					apstix.Aliases = aliasesTmp
-				}
-
-				apstix.KillChainPhases = apstix.KillChainPhases.SanitizeStructKillChainPhasesTypeSTIX()
-	*/
 
 	return x509sstix
 }
@@ -1724,26 +1695,41 @@ func (x509sstix X509CertificateCyberObservableObjectSTIX) SanitizeStruct() X509C
 func (x509sstix X509CertificateCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := x509sstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += x509sstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
-
-	/*
-		str += fmt.Sprintf("name: '%s'\n", apstix.Name)
-		str += fmt.Sprintf("description: '%s'\n", apstix.Description)
-		str += fmt.Sprintf("aliases: \n%v", func(l []string) string {
-			var str string
-			for k, v := range l {
-				str += fmt.Sprintf("\taliase '%d': '%s'\n", k, v)
-			}
-			return str
-		}(apstix.Aliases))
-		str += fmt.Sprintf("kill_chain_phases: \n%v", func(l KillChainPhasesTypeSTIX) string {
-			var str string
-			for k, v := range l {
-				str += fmt.Sprintf("\tkey:'%v' kill_chain_name: '%s'\n", k, v.KillChainName)
-				str += fmt.Sprintf("\tkey:'%v' phase_name: '%s'\n", k, v.PhaseName)
-			}
-			return str
-		}(apstix.KillChainPhases))
-	*/
+	str += fmt.Sprintf("is_self_signed: '%v'\n", x509sstix.IsSelfSigned)
+	str += fmt.Sprintf("hashes: \n%v", func(l map[string]string) string {
+		var str string
+		for k, v := range l {
+			str += fmt.Sprintf("\t'%s': '%v'\n", k, v)
+		}
+		return str
+	}(x509sstix.Hashes))
+	str += fmt.Sprintf("version: '%s'\n", x509sstix.Version)
+	str += fmt.Sprintf("serial_number: '%s'\n", x509sstix.SerialNumber)
+	str += fmt.Sprintf("signature_algorithm: '%s'\n", x509sstix.SignatureAlgorithm)
+	str += fmt.Sprintf("issuer: '%s'\n", x509sstix.Issuer)
+	str += fmt.Sprintf("validity_not_before: '%v'\n", x509sstix.ValidityNotBefore)
+	str += fmt.Sprintf("validity_not_after: '%v'\n", x509sstix.ValidityNotAfter)
+	str += fmt.Sprintf("subject: '%s'\n", x509sstix.Subject)
+	str += fmt.Sprintf("subject_public_key_algorithm: '%s'\n", x509sstix.SubjectPublicKeyAlgorithm)
+	str += fmt.Sprintf("subject_public_key_modulus: '%s'\n", x509sstix.SubjectPublicKeyModulus)
+	str += fmt.Sprintf("subject_public_key_exponent: '%v'\n", x509sstix.SubjectPublicKeyExponent)
+	str += fmt.Sprintln("x509_v3_extensions:")
+	str += fmt.Sprintf("\tbasic_constraints: '%s'\n", x509sstix.X509V3Extensions.BasicConstraints)
+	str += fmt.Sprintf("\tname_constraints: '%s'\n", x509sstix.X509V3Extensions.NameConstraints)
+	str += fmt.Sprintf("\tpolicy_contraints: '%s'\n", x509sstix.X509V3Extensions.PolicyContraints)
+	str += fmt.Sprintf("\tkey_usage: '%s'\n", x509sstix.X509V3Extensions.KeyUsage)
+	str += fmt.Sprintf("\textended_key_usage: '%s'\n", x509sstix.X509V3Extensions.ExtendedKeyUsage)
+	str += fmt.Sprintf("\tsubject_key_identifier: '%s'\n", x509sstix.X509V3Extensions.SubjectKeyIdentifier)
+	str += fmt.Sprintf("\tauthority_key_identifier: '%s'\n", x509sstix.X509V3Extensions.AuthorityKeyIdentifier)
+	str += fmt.Sprintf("\tsubject_alternative_name: '%s'\n", x509sstix.X509V3Extensions.SubjectAlternativeName)
+	str += fmt.Sprintf("\tissuer_alternative_name: '%s'\n", x509sstix.X509V3Extensions.IssuerAlternativeName)
+	str += fmt.Sprintf("\tsubject_directory_attributes: '%s'\n", x509sstix.X509V3Extensions.SubjectDirectoryAttributes)
+	str += fmt.Sprintf("\tcrl_distribution_points: '%s'\n", x509sstix.X509V3Extensions.CrlDistributionPoints)
+	str += fmt.Sprintf("\tinhibit_any_policy: '%s'\n", x509sstix.X509V3Extensions.InhibitAnyPolicy)
+	str += fmt.Sprintf("\tprivate_key_usage_period_not_before: '%v'\n", x509sstix.X509V3Extensions.PrivateKeyUsagePeriodNotBefore)
+	str += fmt.Sprintf("\tprivate_key_usage_period_not_after: '%v'\n", x509sstix.X509V3Extensions.PrivateKeyUsagePeriodNotAfter)
+	str += fmt.Sprintf("\tcertificate_policies: '%s'\n", x509sstix.X509V3Extensions.CertificatePolicies)
+	str += fmt.Sprintf("\tpolicy_mappings: '%s'\n", x509sstix.X509V3Extensions.PolicyMappings)
 
 	return str
 }

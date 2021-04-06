@@ -210,7 +210,7 @@ func (wrv WindowsRegistryValueTypeSTIX) SanitizeStructWindowsRegistryValueTypeST
 type X509V3ExtensionsTypeSTIX struct {
 	BasicConstraints               string    `json:"basic_constraints" bson:"basic_constraints"`
 	NameConstraints                string    `json:"name_constraints" bson:"name_constraints"`
-	PolicyConstraints              string    `json:"policy_constraints" bson:"policy_constraints"`
+	PolicyContraints               string    `json:"policy_contraints" bson:"policy_contraints"`
 	KeyUsage                       string    `json:"key_usage" bson:"key_usage"`
 	ExtendedKeyUsage               string    `json:"extended_key_usage" bson:"extended_key_usage"`
 	SubjectKeyIdentifier           string    `json:"subject_key_identifier" bson:"subject_key_identifier"`
@@ -230,7 +230,7 @@ type X509V3ExtensionsTypeSTIX struct {
 func (x509v3e X509V3ExtensionsTypeSTIX) SanitizeStructX509V3ExtensionsTypeSTIX() X509V3ExtensionsTypeSTIX {
 	x509v3e.BasicConstraints = commonlibs.StringSanitize(x509v3e.BasicConstraints)
 	x509v3e.NameConstraints = commonlibs.StringSanitize(x509v3e.NameConstraints)
-	x509v3e.PolicyConstraints = commonlibs.StringSanitize(x509v3e.PolicyConstraints)
+	x509v3e.PolicyContraints = commonlibs.StringSanitize(x509v3e.PolicyContraints)
 	x509v3e.KeyUsage = commonlibs.StringSanitize(x509v3e.KeyUsage)
 	x509v3e.ExtendedKeyUsage = commonlibs.StringSanitize(x509v3e.ExtendedKeyUsage)
 	x509v3e.SubjectKeyIdentifier = commonlibs.StringSanitize(x509v3e.SubjectKeyIdentifier)

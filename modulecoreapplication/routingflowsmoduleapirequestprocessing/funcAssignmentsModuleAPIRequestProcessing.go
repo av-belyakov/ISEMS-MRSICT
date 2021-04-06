@@ -27,6 +27,11 @@ func UnmarshalJSONObjectSTIXReq(msgReq datamodels.ModAPIRequestProcessingReqJSON
 //CheckSTIXObjects выполняет валидацию списка STIX объектов
 func CheckSTIXObjects(l []*datamodels.ElementSTIXObject) error {
 	for _, item := range l {
+
+		/*
+			Здесь нужно проверить выполняется ли валидация всех полученных STIX объектов
+		*/
+
 		if item.Data.CheckingTypeFields() {
 			continue
 		}

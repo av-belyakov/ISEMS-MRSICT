@@ -67,14 +67,40 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 					Description: fmt.Sprint(err),
 					FuncName:    "unmarshalJSONObjectSTIXReq",
 				}
-
-				return
 			}
 
 			return
 		}
 
+		/*
+							!!!!!!!
+			   Функция CheckSTIXObjects(l) пока всего лишь заглушка, она пустая внутри и ничего не делает.
+			   Необходимо ее дописать для валидации STIX объектов
+							!!!!!!!
+		*/
+
 		//выполняем валидацию полученных STIX объектов
+		if err := CheckSTIXObjects(l); err != nil {
+			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+				TypeMessage: "error",
+				Description: fmt.Sprint(err),
+				FuncName:    "unmarshalJSONObjectSTIXReq",
+			}
+
+			if err := auxiliaryfunctions.SendCriticalErrorMessageJSON(&auxiliaryfunctions.ErrorMessageType{
+				ClientID: data.ClientID,
+				Error:    fmt.Errorf("Error: non-valid STIX objects were received. Section: '%v'", commonMsgReq.Section),
+				C:        clim.ChannelsModuleAPIRequestProcessing.InputModule,
+			}); err != nil {
+				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+					TypeMessage: "error",
+					Description: fmt.Sprint(err),
+					FuncName:    "unmarshalJSONObjectSTIXReq",
+				}
+			}
+
+			return
+		}
 
 		//добавляем информацию о задаче в хранилище задач
 		appTaskID, err := tst.AddNewTask(&memorytemporarystoragecommoninformation.TemporaryStorageTaskType{

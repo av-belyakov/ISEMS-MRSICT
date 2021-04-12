@@ -88,6 +88,11 @@ func (rstix RelationshipObjectSTIX) SanitizeStruct() RelationshipObjectSTIX {
 	return rstix
 }
 
+//GetID возвращает ID STIX объекта
+func (rstix RelationshipObjectSTIX) GetID() string {
+	return rstix.ID
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (rstix RelationshipObjectSTIX) ToStringBeautiful() string {
 	str := rstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -158,6 +163,11 @@ func (sstix SightingObjectSTIX) SanitizeStruct() SightingObjectSTIX {
 	sstix.Description = commonlibs.StringSanitize(sstix.Description)
 
 	return sstix
+}
+
+//GetID возвращает ID STIX объекта
+func (sstix SightingObjectSTIX) GetID() string {
+	return sstix.ID
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе

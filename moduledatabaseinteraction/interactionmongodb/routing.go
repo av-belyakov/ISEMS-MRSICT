@@ -42,13 +42,13 @@ func Routing(
 
 		switch data.Section {
 		case "handling stix object":
-			go ws.wrapperFuncTypeHandlingSTIXObject()
+			go ws.wrapperFuncTypeHandlingSTIXObject(chanOutput, data, tst)
 
 		case "handling search requests":
-			go ws.wrapperFuncTypeHandlingSearchRequests()
+			go ws.wrapperFuncTypeHandlingSearchRequests(tst)
 
 		case "handling reference book":
-			go ws.wrapperFuncTypeHandlingReferenceBook()
+			go ws.wrapperFuncTypeHandlingReferenceBook(tst)
 
 		}
 	}

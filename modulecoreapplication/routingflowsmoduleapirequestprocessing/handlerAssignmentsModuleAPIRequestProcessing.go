@@ -28,7 +28,7 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 
 		if err := auxiliaryfunctions.SendCriticalErrorMessageJSON(&auxiliaryfunctions.ErrorMessageType{
 			ClientID: data.ClientID,
-			Error:    fmt.Errorf("Error: error when decoding a JSON document"),
+			Error:    fmt.Errorf("error: error when decoding a JSON document"),
 			C:        clim.ChannelsModuleAPIRequestProcessing.InputModule,
 		}); err != nil {
 			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
@@ -59,7 +59,7 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 
 			if err := auxiliaryfunctions.SendCriticalErrorMessageJSON(&auxiliaryfunctions.ErrorMessageType{
 				ClientID: data.ClientID,
-				Error:    fmt.Errorf("Error: error when decoding a JSON document. Section: '%v'", commonMsgReq.Section),
+				Error:    fmt.Errorf("error: error when decoding a JSON document. Section: '%v'", commonMsgReq.Section),
 				C:        clim.ChannelsModuleAPIRequestProcessing.InputModule,
 			}); err != nil {
 				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
@@ -72,13 +72,6 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 			return
 		}
 
-		/*
-							!!!!!!!
-			   Функция CheckSTIXObjects(l) пока всего лишь заглушка, она пустая внутри и ничего не делает.
-			   Необходимо ее дописать для валидации STIX объектов
-							!!!!!!!
-		*/
-
 		//выполняем валидацию полученных STIX объектов
 		if err := CheckSTIXObjects(l); err != nil {
 			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
@@ -89,7 +82,7 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 
 			if err := auxiliaryfunctions.SendCriticalErrorMessageJSON(&auxiliaryfunctions.ErrorMessageType{
 				ClientID: data.ClientID,
-				Error:    fmt.Errorf("Error: non-valid STIX objects were received. Section: '%v'", commonMsgReq.Section),
+				Error:    fmt.Errorf("error: non-valid STIX objects were received. Section: '%v'", commonMsgReq.Section),
 				C:        clim.ChannelsModuleAPIRequestProcessing.InputModule,
 			}); err != nil {
 				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
@@ -111,7 +104,7 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 			AdditionalClientName: commonMsgReq.UserNameGeneratedTask,
 			Section:              commonMsgReq.Section,
 			Command:              "", //в случае с объектами STIX команда не указывается (автоматически подразумевается добавление или обновление объектов STIX)
-			TaskParameters:       l,
+			TaskParameters:       SanitizeSTIXObject(l),
 		})
 		if err != nil {
 			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
@@ -120,8 +113,18 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 				FuncName:    "unmarshalJSONObjectSTIXReq",
 			}
 		}
+
 		fmt.Println(l)
 		fmt.Printf("Application task ID: '%s'\n", appTaskID)
+
+		clim.ChannelsModuleDataBaseInteraction.ChannelsMongoDB.InputModule <- datamodels.ModuleDataBaseInteractionChannel{
+			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+				ModuleGeneratorMessage: "module core application",
+				ModuleReceiverMessage:  "module database interaction",
+			},
+			Section:   "handling stix object",
+			AppTaskID: appTaskID,
+		}
 
 	case "handling search requests":
 

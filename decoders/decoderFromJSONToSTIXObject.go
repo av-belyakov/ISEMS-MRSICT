@@ -414,7 +414,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ElementST
 				Data:     e,
 			})
 
-			/* *** Relationship Objects *** */
+		/* *** Relationship Objects *** */
 		case "relationship":
 			var r datamodels.RelationshipObjectSTIX
 			elem, err := r.DecoderJSON(item)
@@ -449,7 +449,7 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ElementST
 				Data:     e,
 			})
 
-			/* *** Cyber-observable Objects STIX *** */
+		/* *** Cyber-observable Objects STIX *** */
 		case "artifact":
 			var a datamodels.ArtifactCyberObservableObjectSTIX
 			elem, err := a.DecoderJSON(item)
@@ -758,5 +758,6 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ElementST
 
 		}
 	}
+
 	return result, nil
 }

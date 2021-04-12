@@ -138,6 +138,11 @@ func (astix ArtifactCyberObservableObjectSTIX) SanitizeStruct() ArtifactCyberObs
 	return astix
 }
 
+//GetID возвращает ID STIX объекта
+func (astix ArtifactCyberObservableObjectSTIX) GetID() string {
+	return astix.ID
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (astix ArtifactCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := astix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -195,6 +200,11 @@ func (asstix AutonomousSystemCyberObservableObjectSTIX) SanitizeStruct() Autonom
 	asstix.RIR = commonlibs.StringSanitize(asstix.RIR)
 
 	return asstix
+}
+
+//GetID возвращает ID STIX объекта
+func (asstix AutonomousSystemCyberObservableObjectSTIX) GetID() string {
+	return asstix.ID
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -264,6 +274,11 @@ func (dstix DirectoryCyberObservableObjectSTIX) SanitizeStruct() DirectoryCyberO
 	dstix.PathEnc = commonlibs.StringSanitize(dstix.PathEnc)
 
 	return dstix
+}
+
+//GetID возвращает ID STIX объекта
+func (dstix DirectoryCyberObservableObjectSTIX) GetID() string {
+	return dstix.ID
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -336,6 +351,11 @@ func (dnstix DomainNameCyberObservableObjectSTIX) SanitizeStruct() DomainNameCyb
 	return dnstix
 }
 
+//GetID возвращает ID STIX объекта
+func (dnstix DomainNameCyberObservableObjectSTIX) GetID() string {
+	return dnstix.ID
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (dnstix DomainNameCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := dnstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -398,6 +418,11 @@ func (eastix EmailAddressCyberObservableObjectSTIX) SanitizeStruct() EmailAddres
 	eastix.DisplayName = commonlibs.StringSanitize(eastix.DisplayName)
 
 	return eastix
+}
+
+//GetID возвращает ID STIX объекта
+func (eastix EmailAddressCyberObservableObjectSTIX) GetID() string {
+	return eastix.ID
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -531,6 +556,11 @@ func (emstix EmailMessageCyberObservableObjectSTIX) SanitizeStruct() EmailMessag
 	}
 
 	return emstix
+}
+
+//GetID возвращает ID STIX объекта
+func (emstix EmailMessageCyberObservableObjectSTIX) GetID() string {
+	return emstix.ID
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -705,6 +735,11 @@ func (fstix FileCyberObservableObjectSTIX) SanitizeStruct() FileCyberObservableO
 	return fstix
 }
 
+//GetID возвращает ID STIX объекта
+func (fstix FileCyberObservableObjectSTIX) GetID() string {
+	return fstix.ID
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (fstix FileCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := fstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -804,6 +839,11 @@ func (ip4stix IPv4AddressCyberObservableObjectSTIX) SanitizeStruct() IPv4Address
 	return ip4stix
 }
 
+//GetID возвращает ID STIX объекта
+func (ip4stix IPv4AddressCyberObservableObjectSTIX) GetID() string {
+	return ip4stix.ID
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (ip4stix IPv4AddressCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := ip4stix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -887,6 +927,11 @@ func (ip6stix IPv6AddressCyberObservableObjectSTIX) SanitizeStruct() IPv6Address
 	return ip6stix
 }
 
+//GetID возвращает ID STIX объекта
+func (ip6stix IPv6AddressCyberObservableObjectSTIX) GetID() string {
+	return ip6stix.ID
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (ip6stix IPv6AddressCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := ip6stix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -951,6 +996,11 @@ func (macstix MACAddressCyberObservableObjectSTIX) SanitizeStruct() MACAddressCy
 	return macstix
 }
 
+//GetID возвращает ID STIX объекта
+func (macstix MACAddressCyberObservableObjectSTIX) GetID() string {
+	return macstix.ID
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (macstix MACAddressCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := macstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -1001,6 +1051,11 @@ func (mstix MutexCyberObservableObjectSTIX) SanitizeStruct() MutexCyberObservabl
 	mstix.Name = commonlibs.StringSanitize(mstix.Name)
 
 	return mstix
+}
+
+//GetID возвращает ID STIX объекта
+func (mstix MutexCyberObservableObjectSTIX) GetID() string {
+	return mstix.ID
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -1144,6 +1199,11 @@ func (ntstix NetworkTrafficCyberObservableObjectSTIX) SanitizeStruct() NetworkTr
 	ntstix.Extensions = tmp
 
 	return ntstix
+}
+
+//GetID возвращает ID STIX объекта
+func (ntstix NetworkTrafficCyberObservableObjectSTIX) GetID() string {
+	return ntstix.ID
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -1312,6 +1372,11 @@ func (pstix ProcessCyberObservableObjectSTIX) SanitizeStruct() ProcessCyberObser
 	return pstix
 }
 
+//GetID возвращает ID STIX объекта
+func (pstix ProcessCyberObservableObjectSTIX) GetID() string {
+	return pstix.ID
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (pstix ProcessCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := pstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -1411,6 +1476,11 @@ func (sstix SoftwareCyberObservableObjectSTIX) SanitizeStruct() SoftwareCyberObs
 	return sstix
 }
 
+//GetID возвращает ID STIX объекта
+func (sstix SoftwareCyberObservableObjectSTIX) GetID() string {
+	return sstix.ID
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (sstix SoftwareCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := sstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -1471,6 +1541,11 @@ func (urlstix URLCyberObservableObjectSTIX) SanitizeStruct() URLCyberObservableO
 	urlstix.OptionalCommonPropertiesCyberObservableObjectSTIX = urlstix.sanitizeStruct()
 
 	return urlstix
+}
+
+//GetID возвращает ID STIX объекта
+func (urlstix URLCyberObservableObjectSTIX) GetID() string {
+	return urlstix.ID
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -1534,6 +1609,11 @@ func (uastix UserAccountCyberObservableObjectSTIX) SanitizeStruct() UserAccountC
 	uastix.Extensions = tmp
 
 	return uastix
+}
+
+//GetID возвращает ID STIX объекта
+func (uastix UserAccountCyberObservableObjectSTIX) GetID() string {
+	return uastix.ID
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -1617,6 +1697,11 @@ func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) SanitizeStruct() Wind
 	return wrkstix
 }
 
+//GetID возвращает ID STIX объекта
+func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) GetID() string {
+	return wrkstix.ID
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := wrkstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -1689,6 +1774,11 @@ func (x509sstix X509CertificateCyberObservableObjectSTIX) SanitizeStruct() X509C
 	x509sstix.X509V3Extensions = x509sstix.X509V3Extensions.SanitizeStructX509V3ExtensionsTypeSTIX()
 
 	return x509sstix
+}
+
+//GetID возвращает ID STIX объекта
+func (x509sstix X509CertificateCyberObservableObjectSTIX) GetID() string {
+	return x509sstix.ID
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе

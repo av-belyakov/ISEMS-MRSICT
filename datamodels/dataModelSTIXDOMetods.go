@@ -166,9 +166,6 @@ func (apstix AttackPatternDomainObjectsSTIX) CheckingTypeFields() bool {
 
 	//обязательное поле
 	if apstix.Name == "" {
-
-		fmt.Println("AttackPatternDomainObjectsSTIX ERROR 111")
-
 		return false
 	}
 
@@ -193,6 +190,11 @@ func (apstix AttackPatternDomainObjectsSTIX) SanitizeStruct() AttackPatternDomai
 	apstix.KillChainPhases = apstix.KillChainPhases.SanitizeStructKillChainPhasesTypeSTIX()
 
 	return apstix
+}
+
+//GetID возвращает ID STIX объекта
+func (apstix AttackPatternDomainObjectsSTIX) GetID() string {
+	return apstix.ID
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -267,6 +269,11 @@ func (cstix CampaignDomainObjectsSTIX) SanitizeStruct() CampaignDomainObjectsSTI
 	return cstix
 }
 
+//GetID возвращает ID STIX объекта
+func (cstix CampaignDomainObjectsSTIX) GetID() string {
+	return cstix.ID
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (cstix CampaignDomainObjectsSTIX) ToStringBeautiful() string {
 	str := cstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -328,6 +335,11 @@ func (castix CourseOfActionDomainObjectsSTIX) SanitizeStruct() CourseOfActionDom
 	//cstix.Action - ЗАРЕЗЕРВИРОВАНО
 
 	return castix
+}
+
+//GetID возвращает ID STIX объекта
+func (castix CourseOfActionDomainObjectsSTIX) GetID() string {
+	return castix.ID
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -397,6 +409,11 @@ func (gstix GroupingDomainObjectsSTIX) SanitizeStruct() GroupingDomainObjectsSTI
 	gstix.Context = gstix.Context.SanitizeStructOpenVocabTypeSTIX()
 
 	return gstix
+}
+
+//GetID возвращает ID STIX объекта
+func (gstix GroupingDomainObjectsSTIX) GetID() string {
+	return gstix.ID
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -481,6 +498,11 @@ func (istix IdentityDomainObjectsSTIX) SanitizeStruct() IdentityDomainObjectsSTI
 	return istix
 }
 
+//GetID возвращает ID STIX объекта
+func (istix IdentityDomainObjectsSTIX) GetID() string {
+	return istix.ID
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (istix IdentityDomainObjectsSTIX) ToStringBeautiful() string {
 	str := istix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -535,7 +557,7 @@ func (istix IndicatorDomainObjectsSTIX) CheckingTypeFields() bool {
 		return false
 	}
 
-	//необходимое поле
+	//обязательное поле
 	if istix.Pattern == "" {
 		return false
 	}
@@ -576,6 +598,11 @@ func (istix IndicatorDomainObjectsSTIX) SanitizeStruct() IndicatorDomainObjectsS
 	istix.KillChainPhases = istix.KillChainPhases.SanitizeStructKillChainPhasesTypeSTIX()
 
 	return istix
+}
+
+//GetID возвращает ID STIX объекта
+func (istix IndicatorDomainObjectsSTIX) GetID() string {
+	return istix.ID
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -671,6 +698,11 @@ func (istix InfrastructureDomainObjectsSTIX) SanitizeStruct() InfrastructureDoma
 	istix.KillChainPhases = istix.KillChainPhases.SanitizeStructKillChainPhasesTypeSTIX()
 
 	return istix
+}
+
+//GetID возвращает ID STIX объекта
+func (istix InfrastructureDomainObjectsSTIX) GetID() string {
+	return istix.ID
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -781,6 +813,11 @@ func (istix IntrusionSetDomainObjectsSTIX) SanitizeStruct() IntrusionSetDomainOb
 	return istix
 }
 
+//GetID возвращает ID STIX объекта
+func (istix IntrusionSetDomainObjectsSTIX) GetID() string {
+	return istix.ID
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (istix IntrusionSetDomainObjectsSTIX) ToStringBeautiful() string {
 	str := istix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -852,8 +889,10 @@ func (lstix LocationDomainObjectsSTIX) CheckingTypeFields() bool {
 		return false
 	}
 
-	if !(regexp.MustCompile(`^[a-zA-Z]+$`).MatchString(lstix.Country)) {
-		return false
+	if lstix.Country != "" {
+		if !(regexp.MustCompile(`^[a-zA-Z]+$`).MatchString(lstix.Country)) {
+			return false
+		}
 	}
 
 	return true
@@ -872,6 +911,11 @@ func (lstix LocationDomainObjectsSTIX) SanitizeStruct() LocationDomainObjectsSTI
 	lstix.PostalCode = commonlibs.StringSanitize(lstix.PostalCode)
 
 	return lstix
+}
+
+//GetID возвращает ID STIX объекта
+func (lstix LocationDomainObjectsSTIX) GetID() string {
+	return lstix.ID
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -1000,6 +1044,11 @@ func (mstix MalwareDomainObjectsSTIX) SanitizeStruct() MalwareDomainObjectsSTIX 
 	return mstix
 }
 
+//GetID возвращает ID STIX объекта
+func (mstix MalwareDomainObjectsSTIX) GetID() string {
+	return mstix.ID
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (mstix MalwareDomainObjectsSTIX) ToStringBeautiful() string {
 	str := mstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -1098,6 +1147,7 @@ func (mastix MalwareAnalysisDomainObjectsSTIX) CheckingTypeFields() bool {
 		return false
 	}
 
+	//обязательное поле
 	if mastix.Product == "" {
 		return false
 	}
@@ -1157,6 +1207,11 @@ func (mastix MalwareAnalysisDomainObjectsSTIX) SanitizeStruct() MalwareAnalysisD
 	mastix.AvResult = OpenVocabTypeSTIX(commonlibs.StringSanitize(string(mastix.AvResult)))
 
 	return mastix
+}
+
+//GetID возвращает ID STIX объекта
+func (mastix MalwareAnalysisDomainObjectsSTIX) GetID() string {
+	return mastix.ID
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -1261,6 +1316,11 @@ func (nstix NoteDomainObjectsSTIX) SanitizeStruct() NoteDomainObjectsSTIX {
 	return nstix
 }
 
+//GetID возвращает ID STIX объекта
+func (nstix NoteDomainObjectsSTIX) GetID() string {
+	return nstix.ID
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (nstix NoteDomainObjectsSTIX) ToStringBeautiful() string {
 	str := nstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -1309,6 +1369,14 @@ func (odstix ObservedDataDomainObjectsSTIX) CheckingTypeFields() bool {
 		return false
 	}
 
+	if odstix.NumberObserved <= 0 {
+		return false
+	}
+
+	if (odstix.FirstObserved.Unix() < 0) || (odstix.LastObserved.Unix() < 0) {
+		return false
+	}
+
 	if !odstix.checkingTypeCommonFields() {
 		return false
 	}
@@ -1329,6 +1397,11 @@ func (odstix ObservedDataDomainObjectsSTIX) SanitizeStruct() ObservedDataDomainO
 	odstix.CommonPropertiesDomainObjectSTIX = odstix.sanitizeStruct()
 
 	return odstix
+}
+
+//GetID возвращает ID STIX объекта
+func (odstix ObservedDataDomainObjectsSTIX) GetID() string {
+	return odstix.ID
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -1413,6 +1486,11 @@ func (ostix OpinionDomainObjectsSTIX) SanitizeStruct() OpinionDomainObjectsSTIX 
 	return ostix
 }
 
+//GetID возвращает ID STIX объекта
+func (ostix OpinionDomainObjectsSTIX) GetID() string {
+	return ostix.ID
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (ostix OpinionDomainObjectsSTIX) ToStringBeautiful() string {
 	str := ostix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -1470,6 +1548,10 @@ func (rstix ReportDomainObjectsSTIX) CheckingTypeFields() bool {
 		return false
 	}
 
+	if rstix.Published.Unix() <= 0 {
+		return false
+	}
+
 	//обязательное поле
 	if len(rstix.ObjectRefs) == 0 {
 		return false
@@ -1501,6 +1583,11 @@ func (rstix ReportDomainObjectsSTIX) SanitizeStruct() ReportDomainObjectsSTIX {
 	}
 
 	return rstix
+}
+
+//GetID возвращает ID STIX объекта
+func (rstix ReportDomainObjectsSTIX) GetID() string {
+	return rstix.ID
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -1633,6 +1720,11 @@ func (tastix ThreatActorDomainObjectsSTIX) SanitizeStruct() ThreatActorDomainObj
 	return tastix
 }
 
+//GetID возвращает ID STIX объекта
+func (tastix ThreatActorDomainObjectsSTIX) GetID() string {
+	return tastix.ID
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (tastix ThreatActorDomainObjectsSTIX) ToStringBeautiful() string {
 	str := tastix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -1756,6 +1848,11 @@ func (tstix ToolDomainObjectsSTIX) SanitizeStruct() ToolDomainObjectsSTIX {
 	return tstix
 }
 
+//GetID возвращает ID STIX объекта
+func (tstix ToolDomainObjectsSTIX) GetID() string {
+	return tstix.ID
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (tstix ToolDomainObjectsSTIX) ToStringBeautiful() string {
 	str := tstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -1832,6 +1929,11 @@ func (vstix VulnerabilityDomainObjectsSTIX) SanitizeStruct() VulnerabilityDomain
 	vstix.Description = commonlibs.StringSanitize(vstix.Description)
 
 	return vstix
+}
+
+//GetID возвращает ID STIX объекта
+func (vstix VulnerabilityDomainObjectsSTIX) GetID() string {
+	return vstix.ID
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе

@@ -42,6 +42,22 @@ func RoutingCoreApp(
 					делаем запрос к временному хранилищу на получение по AppTaskID ID клиета (ClientID) модуля
 					moduleapirequestprocessing
 
+					одна из ошибок получаемая из модуля БД это ошибка он не найденной по указанной ID задаче
+					Пример:
+						chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
+							CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+							ModuleGeneratorMessage: "module database interaction",
+							ModuleReceiverMessage:  "module core application",
+							ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
+								FuncName:                                fn,
+								ModuleAPIRequestProcessingSettingSendTo: true,
+								Error:                                   fmt.Errorf("no information about the task by its id was found in the temporary storage"),
+								},
+							},
+							Section:   "handling stix object",
+							AppTaskID: data.AppTaskID,
+						}
+
 				*/
 
 				if err := auxiliaryfunctions.SendCriticalErrorMessageJSON(&auxiliaryfunctions.ErrorMessageType{

@@ -8,6 +8,7 @@ package datamodels
 //  Для свойств ModuleGeneratorMessage и ModuleReceiverMessage, доступны следующие предустановленные значения:
 // - "module api request processing"
 // - "module core application"
+// - "module database interaction"
 // InformationMessage - информационное сообщение
 // ErrorMessage - подробное описание сообщения об ошибке
 type CommanDataTypePassedThroughChannels struct {
@@ -28,16 +29,14 @@ type ErrorDataTypePassedThroughChannels struct {
 }
 
 //ModuleDataBaseInteractionChannel описание типов данных циркулирующих между модулем взаимодействия с БД и Ядром приложения
-// DataBaseType - тип БД
 // Section - секция обработки данных
 // Command - команда
 // AppTaskID - внутренний идентификатор задачи
 type ModuleDataBaseInteractionChannel struct {
 	CommanDataTypePassedThroughChannels
-	DataBaseType string
-	Section      string
-	Command      string
-	AppTaskID    string
+	Section   string
+	Command   string
+	AppTaskID string
 }
 
 //ModuleReguestProcessingChannel описание типов данных циркулирующих между модулем обрабатывающем запросы с внешних источников и ядром приложения

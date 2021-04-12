@@ -6,14 +6,10 @@ import (
 
 //HandlerSTIXObject интерфейс реализующий обработчики для STIX объектов
 type HandlerSTIXObject interface {
-	ValidatorJSONObject
 	DecoderJSONObject
 	EncoderJSONObject
-}
-
-//ValidatorJSONObject интерфейс реализующий обработчик для валидации STIX объектов
-type ValidatorJSONObject interface {
-	CheckingTypeFields() bool
+	ValidatorJSONObject
+	GetterIDSTIXObject
 }
 
 //DecoderJSONObject интерфейс реализующий обработчик для декодирования JSON объекта в STIX объект
@@ -24,6 +20,16 @@ type DecoderJSONObject interface {
 //EncoderJSONObject интерфейс реализующий обработчик для кодирования STIX объекта в JSON объект
 type EncoderJSONObject interface {
 	EncoderJSON(interface{}) (*[]byte, error)
+}
+
+//ValidatorJSONObject интерфейс реализующий обработчик для валидации STIX объектов
+type ValidatorJSONObject interface {
+	CheckingTypeFields() bool
+}
+
+//GetterIDSTIXObject интерфейс реализующий обработчик для получения ID STIX объекта
+type GetterIDSTIXObject interface {
+	GetID() string
 }
 
 //ToBeautifulOutputConverter интерфейс реализующий обработчик для красивого представления данных хранящихся в пользовательской структуре

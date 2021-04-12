@@ -15,7 +15,7 @@ var _ = Describe("FuncAssignmentsModuleAPIRequestProcessing", func() {
 	var (
 		errReadFile, errUnmarchalReq, errUnmarchalToSTIX, errCheckSTIXObjects error
 		docJSON                                                               []byte
-		l                                                                     []*datamodels.ElementSTIXObject
+		l, sanitizeListElement                                                []*datamodels.ElementSTIXObject
 		modAPIRequestProcessingReqJSON                                        datamodels.ModAPIRequestProcessingReqJSON
 	)
 
@@ -24,6 +24,7 @@ var _ = Describe("FuncAssignmentsModuleAPIRequestProcessing", func() {
 		errUnmarchalReq = json.Unmarshal(docJSON, &modAPIRequestProcessingReqJSON)
 		l, errUnmarchalToSTIX = routingflowsmoduleapirequestprocessing.UnmarshalJSONObjectSTIXReq(modAPIRequestProcessingReqJSON)
 		errCheckSTIXObjects = routingflowsmoduleapirequestprocessing.CheckSTIXObjects(l)
+		sanitizeListElement = routingflowsmoduleapirequestprocessing.SanitizeSTIXObject(l)
 	})
 
 	Context("Тест 1. Проверка на наличие ошибок при предварительном преобразовании из JSON", func() {
@@ -34,26 +35,21 @@ var _ = Describe("FuncAssignmentsModuleAPIRequestProcessing", func() {
 	})
 
 	Context("Тест 2. Проверяем функцию 'UnmarshalJSONObjectSTIXReq'", func() {
-		It("должен быть получен список из 64 STIX объектов, ошибок быть не должно", func() {
+		It("должен быть получен список из 65 STIX объектов, ошибок быть не должно", func() {
 			Expect(errUnmarchalToSTIX).ShouldNot(HaveOccurred())
-			Expect(len(l)).Should(Equal(64))
+			Expect(len(l)).Should(Equal(65))
 		})
 	})
 
 	Context("Тест 3. Выполнение валидации STIX объектов", func() {
 		It("При выполнении валидации не должно быть ошибок", func() {
-
-			/*
-							   						!!!!!!!!!
-							   Теперь нужно сделать вадилацию для каждого объекта
-
-				Валидацию сделал и протестировал для КАЖДОГО STIX объекта. Теперь нужно выполнить тестирование
-				для группы объектов содержащихся в срезе
-
-							   						!!!!!!!!!
-			*/
-
 			Expect(errCheckSTIXObjects).ShouldNot(HaveOccurred())
+		})
+	})
+
+	Context("Тест 4. Выполнение санитаризации STIX объектов", func() {
+		It("Количество STIX объектов после выполнения санитаризации должно соответствовать количеству объектов исходного среза", func() {
+			Expect(len(sanitizeListElement)).To(Equal(len(l)))
 		})
 	})
 })

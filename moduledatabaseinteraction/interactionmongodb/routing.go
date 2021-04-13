@@ -9,8 +9,7 @@ import (
 )
 
 type wrappersSetting struct {
-	Command                     string
-	AppTaskID                   string
+	DataRequest                 datamodels.ModuleDataBaseInteractionChannel
 	AdditionalRequestParameters interface{}
 	NameDB                      string
 	ChanSaveLog                 chan<- modulelogginginformationerrors.LogMessageType
@@ -37,12 +36,11 @@ func Routing(
 	for data := range chanInput {
 		fmt.Printf("func 'Routing', received data from chan: '%v'\n", data)
 
-		ws.Command = data.Command
-		ws.AppTaskID = data.AppTaskID
+		ws.DataRequest = data
 
 		switch data.Section {
 		case "handling stix object":
-			go ws.wrapperFuncTypeHandlingSTIXObject(chanOutput, data, tst)
+			go ws.wrapperFuncTypeHandlingSTIXObject(chanOutput, tst)
 
 		case "handling search requests":
 			go ws.wrapperFuncTypeHandlingSearchRequests(tst)

@@ -31,16 +31,16 @@ func (qp *QueryParameters) InsertData(list []interface{}) (bool, error) {
 		return false, err
 	}
 
-	if qp.CollectionName != "task_list" {
+	if qp.CollectionName != "stix_object_collection" {
 		return true, nil
 	}
 
 	if _, err := collection.Indexes().CreateOne(context.TODO(), mongo.IndexModel{
 		Keys: bson.D{
-			{Key: "task_id", Value: 1},
-			{Key: "filtering_option.date_time_interval.start", Value: 1},
-			{Key: "filtering_option.date_time_interval.end", Value: 1},
-			{Key: "detailed_information_on_filtering.time_interval_task_execution.start", Value: 1},
+			{Key: "commonpropertiesobjectstix.type", Value: 1},
+			{Key: "commonpropertiesobjectstix.id", Value: 1},
+			{Key: "commonpropertiesdomainobjectstix.created", Value: 1},
+			{Key: "commonpropertiesdomainobjectstix.modified", Value: 1},
 		},
 	}); err != nil {
 		return false, err
@@ -49,7 +49,7 @@ func (qp *QueryParameters) InsertData(list []interface{}) (bool, error) {
 	return true, nil
 }
 
-//DeleteOneData удаляет елемент
+//DeleteOneData удаляет элемент
 func (qp *QueryParameters) DeleteOneData(elem interface{}) error {
 	collection := qp.ConnectDB.Database(qp.NameDB).Collection(qp.CollectionName)
 	if _, err := collection.DeleteOne(context.TODO(), elem); err != nil {

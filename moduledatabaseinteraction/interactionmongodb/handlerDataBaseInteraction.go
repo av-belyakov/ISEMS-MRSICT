@@ -26,9 +26,9 @@ type ChannelsMongoDBInteraction struct {
 // Connection - дескриптор соединения
 // CTX - контекст переносит крайний срок, сигнал отмены и другие значения через границы API
 type ConnectionDescriptorMongoDB struct {
-	connection *mongo.Client
-	ctx        context.Context
-	ctxCancel  context.CancelFunc
+	Connection *mongo.Client
+	Ctx        context.Context
+	CtxCancel  context.CancelFunc
 }
 
 var cmdbi ChannelsMongoDBInteraction
@@ -43,8 +43,8 @@ func init() {
 	ctx, cancel := context.WithTimeout(context.Background(), 1000*time.Second)
 
 	cdmdb = ConnectionDescriptorMongoDB{
-		ctx:       ctx,
-		ctxCancel: cancel,
+		Ctx:       ctx,
+		CtxCancel: cancel,
 	}
 }
 
@@ -58,11 +58,11 @@ func InteractionMongoDB(
 	fmt.Printf("func 'InteractionMongoDB', settings db: '%v'\n", mdbs)
 
 	defer func() {
-		cdmdb.ctxCancel()
+		cdmdb.CtxCancel()
 	}()
 
 	//подключаемся к базе данных MongoDB
-	if err := cdmdb.createConnection(mdbs); err != nil {
+	if err := cdmdb.CreateConnection(mdbs); err != nil {
 		chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 			TypeMessage: "error",
 			Description: fmt.Sprint(err),
@@ -78,10 +78,7 @@ func InteractionMongoDB(
 	return cmdbi, nil
 }
 
-func (cdmongodb ConnectionDescriptorMongoDB) createConnection(mdbs *datamodels.MongoDBSettings) error {
-
-	fmt.Println("func 'createConnection' ----------- START ----------")
-
+func (cdmongodb *ConnectionDescriptorMongoDB) CreateConnection(mdbs *datamodels.MongoDBSettings) error {
 	clientOption := options.Client()
 	clientOption.SetAuth(options.Credential{
 		AuthMechanism: "SCRAM-SHA-256",
@@ -95,20 +92,18 @@ func (cdmongodb ConnectionDescriptorMongoDB) createConnection(mdbs *datamodels.M
 		return err
 	}
 
-	client.Connect(cdmongodb.ctx)
+	client.Connect(cdmongodb.Ctx)
 
-	if err = client.Ping(cdmongodb.ctx, readpref.Primary()); err != nil {
+	if err = client.Ping(cdmongodb.Ctx, readpref.Primary()); err != nil {
 		return err
 	}
 
-	cdmongodb.connection = client
-
-	fmt.Println("func 'createConnection' ----------- END ----------")
+	cdmongodb.Connection = client
 
 	return nil
 }
 
 //GetConnection возвращает дескриптор соединения с БД MongoDB
 func (cdmongodb ConnectionDescriptorMongoDB) GetConnection() (*mongo.Client, context.Context) {
-	return cdmongodb.connection, cdmongodb.ctx
+	return cdmongodb.Connection, cdmongodb.Ctx
 }

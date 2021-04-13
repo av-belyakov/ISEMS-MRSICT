@@ -12,7 +12,6 @@ import (
 //WrapperFuncTypeHandlingSTIXObject набор обработчиков для работы с запросами связанными со STIX объектами
 func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 	chanOutput chan<- datamodels.ModuleDataBaseInteractionChannel,
-	data datamodels.ModuleDataBaseInteractionChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) {
 
 	fn := "wrapperFuncTypeHandlingSTIXObject"
@@ -21,7 +20,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 	fmt.Printf("func 'wrapperFuncTypeHandlingSTIXObject', received message: '%v'\n", ws)
 
 	//получаем всю информацию о выполняемой задаче
-	_, taskInfo, err := tst.GetTaskByID(data.AppTaskID)
+	_, taskInfo, err := tst.GetTaskByID(ws.DataRequest.AppTaskID)
 	if err != nil {
 		ws.ChanSaveLog <- modulelogginginformationerrors.LogMessageType{
 			TypeMessage: "error",
@@ -40,7 +39,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 				},
 			},
 			Section:   "handling stix object",
-			AppTaskID: data.AppTaskID,
+			AppTaskID: ws.DataRequest.AppTaskID,
 		}
 
 		return
@@ -69,7 +68,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 				},
 			},
 			Section:   "handling stix object",
-			AppTaskID: data.AppTaskID,
+			AppTaskID: ws.DataRequest.AppTaskID,
 		}
 
 		return

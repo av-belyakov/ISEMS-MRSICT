@@ -2,8 +2,8 @@
     "connectionsDataBase": {
         "mongoDBSettings": {
             "isUseSocket": false,
-            "host": "127.0.0.1",
-            "port": 37017,
+            "host": "192.168.13.200",
+            "port": 27017,
             "user": "module-isems-mrsict",
             "password": "vkL6Zn$jPmt1e1",
             "nameDB": "isems-mrsict",

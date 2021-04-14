@@ -434,7 +434,8 @@ type UNIXAccountExtensionSTIX struct {
 
 //OptionalCommonPropertiesCyberObservableObjectSTIX содержит опциональные общие свойства для Cyber-observable Objects STIX
 // SpecVersion - версия STIX спецификации.
-// ObjectMarkingRefs - определяет список ID ссылающиеся на объект "marking-definition", по терминалогии STIX, в котором содержатся значения применяющиеся к этому объекту
+// ObjectMarkingRefs - определяет список ID ссылающиеся на объект "marking-definition", по терминалогии STIX, в котором содержатся
+// значения применяющиеся к этому объекту
 // GranularMarkings - определяет список "гранулярных меток" (granular_markings) относящихся к этому объекту
 // Defanged - определяет были ли определены данные содержащиеся в объекте
 // Extensions - может содержать дополнительную информацию, относящуюся к объекту
@@ -592,9 +593,34 @@ type CommonFileCyberObservableObjectSTIX struct {
 //FileCyberObservableObjectSTIX объект "File Object", по терминалогии STIX, последекодирования из JSON (основной, рабочий объект)
 // Extensions - определяет следующие расширения pdf-ext, archive-ext, ntfs-ext, raster-image-ext, windows-pebinary-ext. В дополнении к ним пользователь может создавать
 //  свои расширения. При этом ключ словаря должен однозначно идентифицировать тип расширения.
+// Hashes - определяет словарь хешей для файла. При этом ДОЛЖНЫ использоватся ключи из открытого словаря hash-algorithm- ov.
+// Size - содержит размер файла в байтах
+// Name - содержит имя файла
+// NameEnc - определяет кодировку имени файла. Содержимое должно соответствовать ревизии IANA от 2013-12-20.
+// MagicNumberHex - указывает шестнадцатеричную константу (“магическое число”), связанную с определенным форматом файла, который соответствует этому файлу, если это применимо.
+// MimeType - определяет MIME имени файла, например, application/msword.
+// Ctime - время, в формате "2016-05-12T08:17:27.000Z", создания файла
+// Mtime - время, в формате "2016-05-12T08:17:27.000Z", модификации файла
+// Atime - время, в формате "2016-05-12T08:17:27.000Z", обращения к файлу
+// ParentDirectoryRef - определяет родительскую директорию для файла. Объект ссылающийся на это свойство ДОЛЖЕН быть типом directory
+// ContainsRefs - содержит ссылки на другие Cyber-observable Objects STIX, содержащиеся в файле, например другой файл, добавленный в конец файла, или IP-адрес, содержащийся где-то в файле.
+// ContentRef - определяет контент файла. Данное значение ДОЛЖНО иметь тип artifact, то есть ссылатся на ArtifactCyberObservableObjectSTIX
 type FileCyberObservableObjectSTIX struct {
-	CommonFileCyberObservableObjectSTIX
-	Extensions map[string]interface{} `json:"extensions" bson:"extensions"`
+	CommonPropertiesObjectSTIX
+	OptionalCommonPropertiesCyberObservableObjectSTIX
+	Extensions         map[string]interface{} `json:"extensions" bson:"extensions"`
+	Hashes             HashesTypeSTIX         `json:"hashes" bson:"hashes"`
+	Size               uint64                 `json:"size" bson:"size"`
+	Name               string                 `json:"name" bson:"name"`
+	NameEnc            string                 `json:"name_enc" bson:"name_enc"`
+	MagicNumberHex     string                 `json:"magic_number_hex" bson:"magic_number_hex"`
+	MimeType           string                 `json:"mime_type" bson:"mime_type"`
+	Ctime              time.Time              `json:"ctime" bson:"ctime"`
+	Mtime              time.Time              `json:"mtime" bson:"mtime"`
+	Atime              time.Time              `json:"atime" bson:"atime"`
+	ParentDirectoryRef IdentifierTypeSTIX     `json:"parent_directory_ref" bson:"parent_directory_ref"`
+	ContainsRefs       []*IdentifierTypeSTIX  `json:"contains_refs" bson:"contains_refs"`
+	ContentRef         IdentifierTypeSTIX     `json:"content_ref" bson:"content_ref"`
 }
 
 //IPv4AddressCyberObservableObjectSTIX объект "IPv4 Address Object", по терминалогии STIX, содержит один или более IPv4 адресов, выраженных с помощью нотации CIDR.
@@ -694,9 +720,47 @@ type CommonNetworkTrafficCyberObservableObjectSTIX struct {
 //NetworkTrafficCyberObservableObjectSTIX объект "Network Traffic Object", по терминалогии STIX, содержит объект Сетевого трафика представляющий собой произвольный сетевой трафик,
 //  который исходит из источника и адресуется адресату.
 // Extensions - объект Сетевого трафика определяет следующие расширения. В дополнение к ним производители МОГУТ создавать свои собственные. ключи словаря http-request-ext, cp-ext,
+// Start - время, в формате "2016-05-12T08:17:27.000Z", инициирования сетевого трафика, если он известен.
+// End - время, в формате "2016-05-12T08:17:27.000Z", окончания сетевого трафика, если он известен.
+// IsActive - указывает, продолжается ли сетевой трафик. Если задано свойство end, то это свойство ДОЛЖНО быть false.
+// SrcRef - указывает источник сетевого трафика в качестве ссылки на кибернаблюдаемый объект. Объект, на который ссылается ссылка, ДОЛЖЕН быть типа ipv4-addr, ipv6 - addr, mac-addr
+//  или domain-name (для случаев, когда IP-адрес для доменного имени неизвестен).
+// DstRef - указывает место назначения сетевого трафика в качестве ссылки на кибернаблюдаемый объект. Объект, на который ссылается ссылка, ДОЛЖЕН быть типа ipv4-addr, ipv6 - addr,
+//  mac-addr или domain-name (для случаев, когда IP-адрес для доменного имени неизвестен).
+// SrcPort - задает исходный порт, используемый в сетевом трафике, в виде целого числа. Значение порта ДОЛЖНО находиться в диапазоне от 0 до 65535.
+// DstPort - задает порт назначения, используемый в сетевом трафике, в виде целого числа. Значение порта ДОЛЖНО находиться в диапазоне от 0 до 65535.
+// Protocols - указывает протоколы, наблюдаемые в сетевом трафике, а также их соответствующее состояние.
+// SrcByteCount - задает число байтов в виде положительного целого числа, отправленных от источника к месту назначения.
+// DstByteCount - задает число байтов в виде положительного целого числа, отправленных из пункта назначения в источник.
+// SrcPackets - задает количество пакетов в виде положительного целого числа, отправленных от источника к месту назначения.
+// DstPackets - задает количество пакетов в виде положительного целого числа, отправленных от пункта назначения к источнику
+// IPFix - указывает любые данные Экспорта информации IP-потока [IPFIX] для трафика в виде словаря. Каждая пара ключ/значение в словаре представляет имя/значение одного элемента IPFIX.
+//  Соответственно, каждый ключ словаря ДОЛЖЕН быть сохраненной в регистре версией имени элемента IPFIX.
+// SrcPayloadRef - указывает байты, отправленные из источника в пункт назначения. Объект, на который ссылается это свойство, ДОЛЖЕН иметь тип artifact.
+// DstPayloadRef - указывает байты, отправленные из пункта назначения в источник. Объект, на который ссылается это свойство, ДОЛЖЕН иметь тип artifact.
+// EncapsulatesRefs - ссылки на другие объекты, инкапсулированные этим объектом. Объекты, на которые ссылается это свойство, ДОЛЖНЫ иметь тип network-traffic.
+// EncapsulatedByRef - ссылки на другой объект сетевого трафика, который инкапсулирует этот объект. Объекты, на которые ссылается это свойство, ДОЛЖНЫ иметь тип network-traffic.
 type NetworkTrafficCyberObservableObjectSTIX struct {
-	CommonNetworkTrafficCyberObservableObjectSTIX
-	Extensions map[string]interface{} `json:"extensions" bson:"extensions"`
+	CommonPropertiesObjectSTIX
+	OptionalCommonPropertiesCyberObservableObjectSTIX
+	Extensions        map[string]interface{}         `json:"extensions" bson:"extensions"`
+	Start             time.Time                      `json:"start" bson:"start"`
+	End               time.Time                      `json:"end" bson:"end"`
+	IsActive          bool                           `json:"is_active" bson:"is_active"`
+	SrcRef            IdentifierTypeSTIX             `json:"src_ref" bson:"src_ref"`
+	DstRef            IdentifierTypeSTIX             `json:"dst_ref" bson:"dst_ref"`
+	SrcPort           int                            `json:"src_port" bson:"src_port"`
+	DstPort           int                            `json:"dst_port" bson:"dst_port"`
+	Protocols         []string                       `json:"protocols" bson:"protocols"`
+	SrcByteCount      uint64                         `json:"src_byte_count" bson:"src_byte_count"`
+	DstByteCount      uint64                         `json:"dst_byte_count" bson:"dst_byte_count"`
+	SrcPackets        int                            `json:"src_packets" bson:"src_packets"`
+	DstPackets        int                            `json:"dst_packets" bson:"dst_packets"`
+	IPFix             map[string]*DictionaryTypeSTIX `json:"ipfix" bson:"ipfix"`
+	SrcPayloadRef     IdentifierTypeSTIX             `json:"src_payload_ref" bson:"src_payload_ref"`
+	DstPayloadRef     IdentifierTypeSTIX             `json:"dst_payload_ref" bson:"dst_payload_ref"`
+	EncapsulatesRefs  []*IdentifierTypeSTIX          `json:"encapsulates_refs" bson:"encapsulates_refs"`
+	EncapsulatedByRef IdentifierTypeSTIX             `json:"encapsulated_by_ref" bson:"encapsulated_by_ref"`
 }
 
 //CommonProcessCyberObservableObjectSTIX общий объект "Process Object", по терминологии STIX, содержит общие свойства экземпляра компьютерной программы,
@@ -738,9 +802,35 @@ type CommonProcessCyberObservableObjectSTIX struct {
 //  выполняемой в операционной системе. Объект процесса ДОЛЖЕН содержать хотя бы одно свойство (отличное от типа) этого объекта (или одного из его расширений).
 // Extensions - определяет расширения windows-process-exit или windows-service-ext. В дополнение к ним производители МОГУТ создавать свои собственные. ключи словаря windows-process-exit,
 //  windows-service-ext ДОЛЖНЫ идентифицировать тип расширения по имени. Соответствующие значения словаря ДОЛЖНЫ содержать содержимое экземпляра расширения.
+// IsHidden - определяет является ли процесс скрытым.
+// PID - униальный идентификатор процесса.
+// CreatedTime - время, в формате "2016-05-12T08:17:27.000Z", создания процесса.
+// Cwd - текущая рабочая директория процесса.
+// CommandLine - поределяет полный перечень команд используемых для запуска процесса, включая имя процесса и аргументы.
+// EnvironmentVariables - определяет список переменных окружения, в виде словаря, ассоциируемых с приложением.
+// OpenedConnectionRefs - определяет список открытых, процессом, сетевых соединений ка одну или более ссылку на объект типа network-traffic.
+// CreatorUserRef - определяет что за пользователь создал объект, ссылка ДОЛЖНА ссылатся на объект типа user-account.
+// ImageRef - указывает исполняемый двоичный файл, который был выполнен как образ процесса, как ссылка на файловый объект. Объект, на который ссылается
+//  это свойство, ДОЛЖЕН иметь тип file.
+// ParentRef - указывает другой процесс, который породил (т. е. является родителем) этот процесс, как ссылку на объект процесса. Объект, на который
+//  ссылается это свойство, ДОЛЖЕН иметь тип process.
+// ChildRefs - указывает другие процессы, которые были порождены (т. е. дочерние) этим процессом, в качестве ссылки на один или несколько других
+//  объектов процесса. Объекты, на которые ссылается этот список, ДОЛЖНЫ иметь тип process.
 type ProcessCyberObservableObjectSTIX struct {
-	CommonProcessCyberObservableObjectSTIX
-	Extensions map[string]interface{} `json:"extensions" bson:"extensions"`
+	CommonPropertiesObjectSTIX
+	OptionalCommonPropertiesCyberObservableObjectSTIX
+	Extensions           map[string]interface{}         `json:"extensions" bson:"extensions"`
+	IsHidden             bool                           `json:"is_hidden" bson:"is_hidden"`
+	PID                  int                            `json:"pid" bson:"pid"`
+	CreatedTime          time.Time                      `json:"created_time" bson:"created_time"`
+	Cwd                  string                         `json:"cwd" bson:"cwd"`
+	CommandLine          string                         `json:"command_line" bson:"command_line"`
+	EnvironmentVariables map[string]*DictionaryTypeSTIX `json:"environment_variables" bson:"environment_variables"`
+	OpenedConnectionRefs []*IdentifierTypeSTIX          `json:"opened_connection_refs" bson:"opened_connection_refs"`
+	CreatorUserRef       IdentifierTypeSTIX             `json:"creator_user_ref" bson:"creator_user_ref"`
+	ImageRef             IdentifierTypeSTIX             `json:"image_ref" bson:"image_ref"`
+	ParentRef            IdentifierTypeSTIX             `json:"parent_ref" bson:"parent_ref"`
+	ChildRefs            []*IdentifierTypeSTIX          `json:"child_refs" bson:"child_refs"`
 }
 
 //SoftwareCyberObservableObjectSTIX объект "Software Object", по терминологии STIX, содержит свойства, связанные с программным обеспечением, включая программные продукты.

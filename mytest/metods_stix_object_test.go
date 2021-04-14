@@ -38,7 +38,6 @@ var _ = Describe("MetodsStixObject", func() {
 			Expect(ok).Should(BeTrue())
 
 			//fmt.Println(newapo.ToStringBeautiful())
-
 			Expect(apoIsTrue).Should(BeTrue())
 		})
 	})

@@ -3,6 +3,8 @@ package datamodels
 import (
 	"encoding/json"
 	"fmt"
+	"path"
+	"reflect"
 	"regexp"
 
 	"ISEMS-MRSICT/commonlibs"
@@ -78,6 +80,42 @@ func (cpdostix CommonPropertiesDomainObjectSTIX) sanitizeStruct() CommonProperti
 	}
 
 	return cpdostix
+}
+
+func (cpdostix *CommonPropertiesDomainObjectSTIX) comparisonTypeCommonFields(coNew *CommonPropertiesDomainObjectSTIX) (bool, []OldValuesObjectType, error) {
+	var (
+		isEqual bool = true
+		result  []OldValuesObjectType
+	)
+
+	oldValue := reflect.ValueOf(cpdostix)
+	typeOfOldValue := oldValue.Type()
+
+	newValue := reflect.ValueOf(coNew)
+	typeOfNewValue := newValue.Type()
+
+	fmt.Println("---=== func 'comparisonTypeCommonFields', only for 'CommonPropertiesDomainObjectSTIX' ===---")
+
+	for i := 0; i < oldValue.NumField(); i++ {
+		for j := 0; j < newValue.NumField(); j++ {
+			resultDeepEqual := reflect.DeepEqual(oldValue.Field(i).Interface(), newValue.Field(j).Interface())
+			if typeOfOldValue.Field(i).Name == typeOfNewValue.Field(j).Name {
+
+				//fmt.Printf("Field: %s\tValue BEFORE: %v, AFTER: %v, Equal: %v\n", typeOfOldValue.Field(i).Name, oldValue.Field(i).Interface(), newValue.Field(j).Interface(), resultDeepEqual)
+
+				if !resultDeepEqual {
+					result = append(result, OldValuesObjectType{
+						Path:  path.Join("commonpropertiesdomainobjectstix", typeOfOldValue.Field(i).Name),
+						Value: oldValue.Field(i).Interface(),
+					})
+
+					isEqual = false
+				}
+			}
+		}
+	}
+
+	return isEqual, result, nil
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -195,6 +233,52 @@ func (apstix AttackPatternDomainObjectsSTIX) SanitizeStruct() AttackPatternDomai
 //GetID возвращает ID STIX объекта
 func (apstix AttackPatternDomainObjectsSTIX) GetID() string {
 	return apstix.ID
+}
+
+func (apstix *AttackPatternDomainObjectsSTIX) ComparisonTypeCommonFields(apNew *AttackPatternDomainObjectsSTIX) (bool, ContrastObjectType, error) {
+	var (
+		isEqual bool = true
+		cot     ContrastObjectType
+	)
+
+	oldValue := reflect.ValueOf(apstix)
+	typeOfOldValue := oldValue.Type()
+
+	newValue := reflect.ValueOf(apNew)
+	typeOfNewValue := newValue.Type()
+
+	fmt.Println("---=== func 'ComparisonTypeCommonFields', only for 'AttackPatternDomainObjectsSTIX' ===---")
+
+	for i := 0; i < oldValue.NumField(); i++ {
+		for j := 0; j < newValue.NumField(); j++ {
+			resultDeepEqual := reflect.DeepEqual(oldValue.Field(i).Interface(), newValue.Field(j).Interface())
+			if typeOfOldValue.Field(i).Name == "CommonPropertiesDomainObjectSTIX" {
+				//привести значение к типу CommonPropertiesDomainObjectSTIX
+
+				//выполнить CommonPropertiesDomainObjectSTIX.ComparisonTypeCommonFields() для проверки встроенных полей
+				// если есть ошибка то выход, если один из параметров false (то есть объекты CommonPropertiesDomainObjectSTIX не равны)
+				// тогда сохраняем информацию в ContrastObjectType
+			}
+
+			//дальше перебираем остальные поля типа AttackPatternDomainObjectsSTIX
+
+			if typeOfOldValue.Field(i).Name == typeOfNewValue.Field(j).Name {
+
+				//fmt.Printf("Field: %s\tValue BEFORE: %v, AFTER: %v, Equal: %v\n", typeOfOldValue.Field(i).Name, oldValue.Field(i).Interface(), newValue.Field(j).Interface(), resultDeepEqual)
+
+				if !resultDeepEqual {
+					result = append(result, OldValuesObjectType{
+						Path:  typeOfOldValue.Field(i).Name,
+						Value: oldValue.Field(i).Interface(),
+					})
+
+					isEqual = false
+				}
+			}
+		}
+	}
+
+	return isEqual, cot, nil
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе

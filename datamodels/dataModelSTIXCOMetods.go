@@ -636,7 +636,18 @@ func (fstix FileCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (in
 	}
 
 	fstix = FileCyberObservableObjectSTIX{
-		CommonFileCyberObservableObjectSTIX: commonObject,
+		CommonPropertiesObjectSTIX:                        commonObject.CommonPropertiesObjectSTIX,
+		OptionalCommonPropertiesCyberObservableObjectSTIX: commonObject.OptionalCommonPropertiesCyberObservableObjectSTIX,
+		Hashes:             commonObject.Hashes,
+		Size:               commonObject.Size,
+		Name:               commonObject.Name,
+		NameEnc:            commonObject.NameEnc,
+		MagicNumberHex:     commonObject.MagicNumberHex,
+		MimeType:           commonObject.MimeType,
+		Ctime:              commonObject.Ctime,
+		Mtime:              commonObject.Mtime,
+		Atime:              commonObject.Atime,
+		ParentDirectoryRef: commonObject.ParentDirectoryRef,
 	}
 
 	if len(commonObject.Extensions) == 0 {
@@ -1077,7 +1088,18 @@ func (ntstix NetworkTrafficCyberObservableObjectSTIX) DecoderJSON(raw *json.RawM
 	}
 
 	ntstix = NetworkTrafficCyberObservableObjectSTIX{
-		CommonNetworkTrafficCyberObservableObjectSTIX: commonObject,
+		CommonPropertiesObjectSTIX:                        commonObject.CommonPropertiesObjectSTIX,
+		OptionalCommonPropertiesCyberObservableObjectSTIX: commonObject.OptionalCommonPropertiesCyberObservableObjectSTIX,
+		Start:        commonObject.Start,
+		End:          commonObject.End,
+		IsActive:     commonObject.IsActive,
+		SrcRef:       commonObject.SrcRef,
+		DstRef:       commonObject.DstRef,
+		SrcPort:      commonObject.SrcPort,
+		DstPort:      commonObject.DstPort,
+		Protocols:    commonObject.Protocols,
+		SrcByteCount: commonObject.SrcByteCount,
+		DstByteCount: commonObject.DstByteCount,
 	}
 
 	if len(commonObject.Extensions) == 0 {
@@ -1263,7 +1285,17 @@ func (pstix ProcessCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) 
 	}
 
 	pstix = ProcessCyberObservableObjectSTIX{
-		CommonProcessCyberObservableObjectSTIX: commonObject,
+		CommonPropertiesObjectSTIX:                        commonObject.CommonPropertiesObjectSTIX,
+		OptionalCommonPropertiesCyberObservableObjectSTIX: commonObject.OptionalCommonPropertiesCyberObservableObjectSTIX,
+		IsHidden:             commonObject.IsHidden,
+		PID:                  commonObject.PID,
+		CreatedTime:          commonObject.CreatedTime,
+		Cwd:                  commonObject.Cwd,
+		CommandLine:          commonObject.CommandLine,
+		EnvironmentVariables: commonObject.EnvironmentVariables,
+		OpenedConnectionRefs: commonObject.OpenedConnectionRefs,
+		CreatorUserRef:       commonObject.CreatorUserRef,
+		ImageRef:             commonObject.ImageRef,
 	}
 
 	if len(commonObject.Extensions) == 0 {

@@ -27,6 +27,7 @@ type QueryParameters struct {
 //InsertData добавляет все данные
 func (qp *QueryParameters) InsertData(list []interface{}) (bool, error) {
 	collection := qp.ConnectDB.Database(qp.NameDB).Collection(qp.CollectionName)
+
 	if _, err := collection.InsertMany(context.TODO(), list); err != nil {
 		return false, err
 	}
@@ -35,12 +36,18 @@ func (qp *QueryParameters) InsertData(list []interface{}) (bool, error) {
 		return true, nil
 	}
 
-	if _, err := collection.Indexes().CreateOne(context.TODO(), mongo.IndexModel{
-		Keys: bson.D{
-			{Key: "commonpropertiesobjectstix.type", Value: 1},
-			{Key: "commonpropertiesobjectstix.id", Value: 1},
-			{Key: "commonpropertiesdomainobjectstix.created", Value: 1},
-			{Key: "commonpropertiesdomainobjectstix.modified", Value: 1},
+	if _, err := collection.Indexes().CreateMany(context.TODO(), []mongo.IndexModel{
+		{
+			Keys: bson.D{
+				{Key: "commonpropertiesobjectstix.type", Value: 1},
+				{Key: "commonpropertiesobjectstix.id", Value: 1},
+			},
+			Options: &options.IndexOptions{},
+		}, {
+			Keys: bson.D{
+				{Key: "source_ref", Value: 1},
+			},
+			Options: &options.IndexOptions{},
 		},
 	}); err != nil {
 		return false, err

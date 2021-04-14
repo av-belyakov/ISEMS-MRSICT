@@ -2,6 +2,7 @@ package datamodels
 
 import (
 	"encoding/json"
+	"time"
 )
 
 //HandlerSTIXObject интерфейс реализующий обработчики для STIX объектов
@@ -51,6 +52,28 @@ type GetFileCyberObservableObjectSTIX interface {
 type ElementSTIXObject struct {
 	DataType string
 	Data     HandlerSTIXObject
+}
+
+//ContrastObjectType содержит перечисление полей и их значения, которые были изменены в произвольном типе
+// SourceReceivingChanges - источник от которого были получены изменения
+// ModifiedTime - время выполнения модификации
+// CollectionName - наименование коллекции в которой выполнялись модификации
+// DocumentID - идентификатор документа в котором выполнялись модификации (для данного поля используется значение _id документа MongoDB)
+// FieldList - перечень полей подвергшихся изменениям
+type ContrastObjectType struct {
+	SourceReceivingChanges string
+	ModifiedTime           time.Time
+	CollectionName         string
+	DocumentID             string
+	FieldList              []OldValuesObjectType
+}
+
+//OldValuesObjectType содержит старое значение полей, до их модификации
+// Path - полный путь к объекту подвергшемуся модификации
+// Value - предыдущее значение поля подвергшемуся модификации
+type OldValuesObjectType struct {
+	Path  string
+	Value interface{}
 }
 
 /********** 			Domain Objects STIX			**********/

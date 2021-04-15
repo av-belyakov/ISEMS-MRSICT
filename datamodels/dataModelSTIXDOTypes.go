@@ -31,7 +31,7 @@ type CommonPropertiesDomainObjectSTIX struct {
 	Сonfidence         int                        `json:"confidence" bson:"confidence"`
 	Lang               string                     `json:"lang" bson:"lang"`
 	ExternalReferences ExternalReferencesTypeSTIX `json:"external_references" bson:"external_references"`
-	ObjectMarkingRefs  []*IdentifierTypeSTIX      `json:"object_marking_refs" bson:"object_marking_refs"`
+	ObjectMarkingRefs  []IdentifierTypeSTIX       `json:"object_marking_refs" bson:"object_marking_refs"`
 	GranularMarkings   GranularMarkingsTypeSTIX   `json:"granular_markings" bson:"granular_markings"`
 	Defanged           bool                       `json:"defanged" bson:"defanged"`
 	Extensions         map[string]string          `json:"extensions" bson:"extensions"`
@@ -90,10 +90,10 @@ type CourseOfActionDomainObjectsSTIX struct {
 type GroupingDomainObjectsSTIX struct {
 	CommonPropertiesObjectSTIX
 	CommonPropertiesDomainObjectSTIX
-	Name        string                `json:"name" bson:"name" required:"true"`
-	Description string                `json:"description" bson:"description"`
-	Context     OpenVocabTypeSTIX     `json:"context" bson:"context" required:"true"`
-	ObjectRefs  []*IdentifierTypeSTIX `json:"object_refs" bson:"object_refs" required:"true"`
+	Name        string               `json:"name" bson:"name" required:"true"`
+	Description string               `json:"description" bson:"description"`
+	Context     OpenVocabTypeSTIX    `json:"context" bson:"context" required:"true"`
+	ObjectRefs  []IdentifierTypeSTIX `json:"object_refs" bson:"object_refs" required:"true"`
 }
 
 //IdentityDomainObjectsSTIX объект "Identity", по терминалогии STIX, содержит основную идентификационную информацию физичиских лиц, организаций и т.д.
@@ -106,12 +106,12 @@ type GroupingDomainObjectsSTIX struct {
 type IdentityDomainObjectsSTIX struct {
 	CommonPropertiesObjectSTIX
 	CommonPropertiesDomainObjectSTIX
-	Name               string               `json:"name" bson:"name" required:"true"`
-	Description        string               `json:"description" bson:"description"`
-	Roles              []string             `json:"roles" bson:"roles"`
-	IdentityClass      OpenVocabTypeSTIX    `json:"identity_class" bson:"identity_class"`
-	Sectors            []*OpenVocabTypeSTIX `json:"sectors" bson:"sectors"`
-	ContactInformation string               `json:"contact_information" bson:"contact_information"`
+	Name               string              `json:"name" bson:"name" required:"true"`
+	Description        string              `json:"description" bson:"description"`
+	Roles              []string            `json:"roles" bson:"roles"`
+	IdentityClass      OpenVocabTypeSTIX   `json:"identity_class" bson:"identity_class"`
+	Sectors            []OpenVocabTypeSTIX `json:"sectors" bson:"sectors"`
+	ContactInformation string              `json:"contact_information" bson:"contact_information"`
 }
 
 //IndicatorDomainObjectsSTIX объект "Indicator", по терминалогии STIX, содержит шаблон который может быть использован для
@@ -130,7 +130,7 @@ type IndicatorDomainObjectsSTIX struct {
 	CommonPropertiesDomainObjectSTIX
 	Name            string                  `json:"name" bson:"name" required:"true"`
 	Description     string                  `json:"description" bson:"description"`
-	IndicatorTypes  []*OpenVocabTypeSTIX    `json:"indicator_types" bson:"indicator_types"`
+	IndicatorTypes  []OpenVocabTypeSTIX     `json:"indicator_types" bson:"indicator_types"`
 	Pattern         string                  `json:"pattern" bson:"pattern" required:"true"`
 	PatternType     OpenVocabTypeSTIX       `json:"pattern_type" bson:"pattern_type" required:"true"`
 	PatternVersion  string                  `json:"pattern_version" bson:"pattern_version"`
@@ -153,7 +153,7 @@ type InfrastructureDomainObjectsSTIX struct {
 	CommonPropertiesDomainObjectSTIX
 	Name                string                  `json:"name" bson:"name" required:"true"`
 	Description         string                  `json:"description" bson:"description"`
-	InfrastructureTypes []*OpenVocabTypeSTIX    `json:"infrastructure_types" bson:"infrastructure_types"`
+	InfrastructureTypes []OpenVocabTypeSTIX     `json:"infrastructure_types" bson:"infrastructure_types"`
 	Aliases             []string                `json:"aliases" bson:"aliases"`
 	KillChainPhases     KillChainPhasesTypeSTIX `json:"kill_chain_phases" bson:"kill_chain_phases"`
 	FirstSeen           time.Time               `json:"first_seen" bson:"first_seen"`
@@ -175,15 +175,15 @@ type InfrastructureDomainObjectsSTIX struct {
 type IntrusionSetDomainObjectsSTIX struct {
 	CommonPropertiesObjectSTIX
 	CommonPropertiesDomainObjectSTIX
-	Name                 string               `json:"name" bson:"name" required:"true"`
-	Description          string               `json:"description" bson:"description"`
-	Aliases              []string             `json:"aliases" bson:"aliases"`
-	FirstSeen            time.Time            `json:"first_seen" bson:"first_seen"`
-	LastSeen             time.Time            `json:"last_seen" bson:"last_seen"`
-	Goals                []string             `json:"goals" bson:"goals"`
-	ResourceLevel        OpenVocabTypeSTIX    `json:"resource_level" bson:"resource_level"`
-	PrimaryMotivation    OpenVocabTypeSTIX    `json:"primary_motivation" bson:"primary_motivation"`
-	SecondaryMotivations []*OpenVocabTypeSTIX `json:"secondary_motivations" bson:"secondary_motivations"`
+	Name                 string              `json:"name" bson:"name" required:"true"`
+	Description          string              `json:"description" bson:"description"`
+	Aliases              []string            `json:"aliases" bson:"aliases"`
+	FirstSeen            time.Time           `json:"first_seen" bson:"first_seen"`
+	LastSeen             time.Time           `json:"last_seen" bson:"last_seen"`
+	Goals                []string            `json:"goals" bson:"goals"`
+	ResourceLevel        OpenVocabTypeSTIX   `json:"resource_level" bson:"resource_level"`
+	PrimaryMotivation    OpenVocabTypeSTIX   `json:"primary_motivation" bson:"primary_motivation"`
+	SecondaryMotivations []OpenVocabTypeSTIX `json:"secondary_motivations" bson:"secondary_motivations"`
 }
 
 //LocationDomainObjectsSTIX объект "Location", по терминалогии STIX, содержит описание географического местоположения
@@ -236,17 +236,17 @@ type MalwareDomainObjectsSTIX struct {
 	CommonPropertiesDomainObjectSTIX
 	Name                      string                  `json:"name" bson:"name"`
 	Description               string                  `json:"description" bson:"description"`
-	MalwareTypes              []*OpenVocabTypeSTIX    `json:"malware_types" bson:"malware_types"`
+	MalwareTypes              []OpenVocabTypeSTIX     `json:"malware_types" bson:"malware_types"`
 	IsFamily                  bool                    `json:"is_family" bson:"is_family" required:"true"`
 	Aliases                   []string                `json:"aliases" bson:"aliases"`
 	KillChainPhases           KillChainPhasesTypeSTIX `json:"kill_chain_phases" bson:"kill_chain_phases"`
 	FirstSeen                 time.Time               `json:"first_seen" bson:"first_seen"`
 	LastSeen                  time.Time               `json:"last_seen" bson:"last_seen"`
-	OperatingSystemRefs       []*IdentifierTypeSTIX   `json:"operating_system_refs" bson:"operating_system_refs"`
-	ArchitectureExecutionEnvs []*OpenVocabTypeSTIX    `json:"architecture_execution_envs" bson:"architecture_execution_envs"`
-	ImplementationLanguages   []*OpenVocabTypeSTIX    `json:"implementation_languages" bson:"implementation_languages"`
-	Capabilities              []*OpenVocabTypeSTIX    `json:"capabilities" bson:"capabilities"`
-	SampleRefs                []*IdentifierTypeSTIX   `json:"sample_refs" bson:"sample_refs"`
+	OperatingSystemRefs       []IdentifierTypeSTIX    `json:"operating_system_refs" bson:"operating_system_refs"`
+	ArchitectureExecutionEnvs []OpenVocabTypeSTIX     `json:"architecture_execution_envs" bson:"architecture_execution_envs"`
+	ImplementationLanguages   []OpenVocabTypeSTIX     `json:"implementation_languages" bson:"implementation_languages"`
+	Capabilities              []OpenVocabTypeSTIX     `json:"capabilities" bson:"capabilities"`
+	SampleRefs                []IdentifierTypeSTIX    `json:"sample_refs" bson:"sample_refs"`
 }
 
 //MalwareAnalysisDomainObjectsSTIX объект "Malware Analysis", по терминалогии STIX, содержит анализ вредоносных программ захватывающих метаданные
@@ -272,23 +272,23 @@ type MalwareDomainObjectsSTIX struct {
 type MalwareAnalysisDomainObjectsSTIX struct {
 	CommonPropertiesObjectSTIX
 	CommonPropertiesDomainObjectSTIX
-	Product                   string                `json:"product" bson:"product" required:"true"`
-	Version                   string                `json:"version" bson:"version"`
-	HostVMRef                 IdentifierTypeSTIX    `json:"host_vm_ref" bson:"host_vm_ref"`
-	OperatingSystemRef        IdentifierTypeSTIX    `json:"operating_system_ref" bson:"operating_system_ref"`
-	InstalledSoftwareRefs     []*IdentifierTypeSTIX `json:"installed_software_refs" bson:"installed_software_refs"`
-	ConfigurationVersion      string                `json:"configuration_version" bson:"configuration_version"`
-	Modules                   []string              `json:"modules" bson:"modules"`
-	AnalysisEngineVersion     string                `json:"analysis_engine_version" bson:"analysis_engine_version"`
-	AnalysisDefinitionVersion string                `json:"analysis_definition_version" bson:"analysis_definition_version"`
-	Submitted                 time.Time             `json:"submitted" bson:"submitted"`
-	AnalysisStarted           time.Time             `json:"analysis_started" bson:"analysis_started"`
-	AnalysisEnded             time.Time             `json:"analysis_ended" bson:"analysis_ended"`
-	ResultName                string                `json:"result_name" bson:"result_name"`
-	Result                    OpenVocabTypeSTIX     `json:"result" bson:"result"`
-	AnalysisScoRefs           []*IdentifierTypeSTIX `json:"analysis_sco_refs" bson:"analysis_sco_refs"`
-	SampleRef                 IdentifierTypeSTIX    `json:"sample_ref" bson:"sample_ref"`
-	AvResult                  OpenVocabTypeSTIX     `json:"av_result" bson:"av_result"`
+	Product                   string               `json:"product" bson:"product" required:"true"`
+	Version                   string               `json:"version" bson:"version"`
+	HostVMRef                 IdentifierTypeSTIX   `json:"host_vm_ref" bson:"host_vm_ref"`
+	OperatingSystemRef        IdentifierTypeSTIX   `json:"operating_system_ref" bson:"operating_system_ref"`
+	InstalledSoftwareRefs     []IdentifierTypeSTIX `json:"installed_software_refs" bson:"installed_software_refs"`
+	ConfigurationVersion      string               `json:"configuration_version" bson:"configuration_version"`
+	Modules                   []string             `json:"modules" bson:"modules"`
+	AnalysisEngineVersion     string               `json:"analysis_engine_version" bson:"analysis_engine_version"`
+	AnalysisDefinitionVersion string               `json:"analysis_definition_version" bson:"analysis_definition_version"`
+	Submitted                 time.Time            `json:"submitted" bson:"submitted"`
+	AnalysisStarted           time.Time            `json:"analysis_started" bson:"analysis_started"`
+	AnalysisEnded             time.Time            `json:"analysis_ended" bson:"analysis_ended"`
+	ResultName                string               `json:"result_name" bson:"result_name"`
+	Result                    OpenVocabTypeSTIX    `json:"result" bson:"result"`
+	AnalysisScoRefs           []IdentifierTypeSTIX `json:"analysis_sco_refs" bson:"analysis_sco_refs"`
+	SampleRef                 IdentifierTypeSTIX   `json:"sample_ref" bson:"sample_ref"`
+	AvResult                  OpenVocabTypeSTIX    `json:"av_result" bson:"av_result"`
 }
 
 //NoteDomainObjectsSTIX объект "Note", по терминалогии STIX, содержит текстовую информации дополняющую текущий контекст анализа либо содержащей
@@ -300,10 +300,10 @@ type MalwareAnalysisDomainObjectsSTIX struct {
 type NoteDomainObjectsSTIX struct {
 	CommonPropertiesObjectSTIX
 	CommonPropertiesDomainObjectSTIX
-	Abstract   string                `json:"abstract" bson:"abstract"`
-	Content    string                `json:"content" bson:"content" required:"true"`
-	Authors    []string              `json:"authors" bson:"authors"`
-	ObjectRefs []*IdentifierTypeSTIX `json:"object_refs" bson:"object_refs" required:"true"`
+	Abstract   string               `json:"abstract" bson:"abstract"`
+	Content    string               `json:"content" bson:"content" required:"true"`
+	Authors    []string             `json:"authors" bson:"authors"`
+	ObjectRefs []IdentifierTypeSTIX `json:"object_refs" bson:"object_refs" required:"true"`
 }
 
 //ObservedDataDomainObjectsSTIX объект "Observed Data", по терминалогии STIX, содержит информацию сущностях связанных с кибер безопасностью, таких как файлы,
@@ -315,10 +315,10 @@ type NoteDomainObjectsSTIX struct {
 type ObservedDataDomainObjectsSTIX struct {
 	CommonPropertiesObjectSTIX
 	CommonPropertiesDomainObjectSTIX
-	FirstObserved  time.Time             `json:"first_observed" bson:"first_observed" required:"true"`
-	LastObserved   time.Time             `json:"last_observed" bson:"last_observed" required:"true"`
-	NumberObserved int                   `json:"number_observed" bson:"number_observed" required:"true"`
-	ObjectRefs     []*IdentifierTypeSTIX `json:"object_refs" bson:"object_refs"`
+	FirstObserved  time.Time            `json:"first_observed" bson:"first_observed" required:"true"`
+	LastObserved   time.Time            `json:"last_observed" bson:"last_observed" required:"true"`
+	NumberObserved int                  `json:"number_observed" bson:"number_observed" required:"true"`
+	ObjectRefs     []IdentifierTypeSTIX `json:"object_refs" bson:"object_refs"`
 }
 
 //OpinionDomainObjectsSTIX объект "Opinion", по терминалогии STIX, содержит оценку информации в приведенной в каком либо другом объекте STIX, которую произвел
@@ -330,10 +330,10 @@ type ObservedDataDomainObjectsSTIX struct {
 type OpinionDomainObjectsSTIX struct {
 	CommonPropertiesObjectSTIX
 	CommonPropertiesDomainObjectSTIX
-	Explanation string                `json:"explanation" bson:"explanation"`
-	Authors     []string              `json:"authors" bson:"authors"`
-	Opinion     EnumTypeSTIX          `json:"opinion" bson:"opinion" required:"true"`
-	ObjectRefs  []*IdentifierTypeSTIX `json:"object_refs" bson:"object_refs" required:"true"`
+	Explanation string               `json:"explanation" bson:"explanation"`
+	Authors     []string             `json:"authors" bson:"authors"`
+	Opinion     EnumTypeSTIX         `json:"opinion" bson:"opinion" required:"true"`
+	ObjectRefs  []IdentifierTypeSTIX `json:"object_refs" bson:"object_refs" required:"true"`
 }
 
 //ReportDomainObjectsSTIX объект "Report", по терминалогии STIX, содержит совокупность данных об угрозах, сосредоточенных на одной или нескольких темах,
@@ -347,11 +347,11 @@ type OpinionDomainObjectsSTIX struct {
 type ReportDomainObjectsSTIX struct {
 	CommonPropertiesObjectSTIX
 	CommonPropertiesDomainObjectSTIX
-	Name        string                `json:"name" bson:"name" required:"true"`
-	Description string                `json:"description" bson:"description"`
-	ReportTypes []*OpenVocabTypeSTIX  `json:"report_types" bson:"report_types"`
-	Published   time.Time             `json:"published" bson:"published" required:"true"`
-	ObjectRefs  []*IdentifierTypeSTIX `json:"object_refs" bson:"object_refs" required:"true"`
+	Name        string               `json:"name" bson:"name" required:"true"`
+	Description string               `json:"description" bson:"description"`
+	ReportTypes []OpenVocabTypeSTIX  `json:"report_types" bson:"report_types"`
+	Published   time.Time            `json:"published" bson:"published" required:"true"`
+	ObjectRefs  []IdentifierTypeSTIX `json:"object_refs" bson:"object_refs" required:"true"`
 }
 
 //ThreatActorDomainObjectsSTIX объект "Threat Actor", по терминалогии STIX, содержит информацию о физических лицах или их группах и организациях
@@ -374,19 +374,19 @@ type ReportDomainObjectsSTIX struct {
 type ThreatActorDomainObjectsSTIX struct {
 	CommonPropertiesObjectSTIX
 	CommonPropertiesDomainObjectSTIX
-	Name                 string               `json:"name" bson:"name" required:"true"`
-	Description          string               `json:"description" bson:"description"`
-	ThreatActorTypes     []*OpenVocabTypeSTIX `json:"threat_actor_types" bson:"threat_actor_types"`
-	Aliases              []string             `json:"aliases" bson:"aliases"`
-	FirstSeen            time.Time            `json:"first_seen" bson:"first_seen"`
-	LastSeen             time.Time            `json:"last_seen" bson:"last_seen"`
-	Roles                []*OpenVocabTypeSTIX `json:"roles" bson:"roles"`
-	Goals                []string             `json:"goals" bson:"goals"`
-	Sophistication       OpenVocabTypeSTIX    `json:"sophistication" bson:"sophistication"`
-	ResourceLevel        OpenVocabTypeSTIX    `json:"resource_level" bson:"resource_level"`
-	PrimaryMotivation    OpenVocabTypeSTIX    `json:"primary_motivation" bson:"primary_motivation"`
-	SecondaryMotivations []*OpenVocabTypeSTIX `json:"secondary_motivations" bson:"secondary_motivations"`
-	PersonalMotivations  []*OpenVocabTypeSTIX `json:"personal_motivations" bson:"personal_motivations"`
+	Name                 string              `json:"name" bson:"name" required:"true"`
+	Description          string              `json:"description" bson:"description"`
+	ThreatActorTypes     []OpenVocabTypeSTIX `json:"threat_actor_types" bson:"threat_actor_types"`
+	Aliases              []string            `json:"aliases" bson:"aliases"`
+	FirstSeen            time.Time           `json:"first_seen" bson:"first_seen"`
+	LastSeen             time.Time           `json:"last_seen" bson:"last_seen"`
+	Roles                []OpenVocabTypeSTIX `json:"roles" bson:"roles"`
+	Goals                []string            `json:"goals" bson:"goals"`
+	Sophistication       OpenVocabTypeSTIX   `json:"sophistication" bson:"sophistication"`
+	ResourceLevel        OpenVocabTypeSTIX   `json:"resource_level" bson:"resource_level"`
+	PrimaryMotivation    OpenVocabTypeSTIX   `json:"primary_motivation" bson:"primary_motivation"`
+	SecondaryMotivations []OpenVocabTypeSTIX `json:"secondary_motivations" bson:"secondary_motivations"`
+	PersonalMotivations  []OpenVocabTypeSTIX `json:"personal_motivations" bson:"personal_motivations"`
 }
 
 //ToolDomainObjectsSTIX объект "Tool", по терминалогии STIX, содержит информацию о легитимном ПО которое может быть использованно для реализации
@@ -402,7 +402,7 @@ type ToolDomainObjectsSTIX struct {
 	CommonPropertiesDomainObjectSTIX
 	Name            string                  `json:"name" bson:"name" required:"true"`
 	Description     string                  `json:"description" bson:"description"`
-	ToolTypes       []*OpenVocabTypeSTIX    `json:"tool_types" bson:"tool_types"`
+	ToolTypes       []OpenVocabTypeSTIX     `json:"tool_types" bson:"tool_types"`
 	Aliases         []string                `json:"aliases" bson:"aliases"`
 	KillChainPhases KillChainPhasesTypeSTIX `json:"kill_chain_phases" bson:"kill_chain_phases"`
 	ToolVersion     string                  `json:"tool_version" bson:"tool_version"`

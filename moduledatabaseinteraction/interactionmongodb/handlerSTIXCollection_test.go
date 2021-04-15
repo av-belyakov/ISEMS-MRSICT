@@ -157,15 +157,10 @@ var _ = Describe("HandlerSTIXCollection", func() {
 
 	Context("Тест 9. Проверяем возможность перебора значений содержащихся в пользовательском типе", func() {
 		It("При обработки тестовых значений не должно быть ошибок", func() {
-			var bomr []*datamodels.IdentifierTypeSTIX
-			bonrTmp := []datamodels.IdentifierTypeSTIX{
+			bomr := []datamodels.IdentifierTypeSTIX{
 				datamodels.IdentifierTypeSTIX("obj_mark_ref_odcfc22y2vr34u41udv"),
 				datamodels.IdentifierTypeSTIX("obj_mark_ref_ahvas223h23h2dh3h1h"),
 				datamodels.IdentifierTypeSTIX("obj_mark_ref_nivnbufuf74gf74gf7s"),
-			}
-
-			for _, v := range bonrTmp {
-				bomr = append(bomr, &v)
 			}
 
 			before := datamodels.AttackPatternDomainObjectsSTIX{
@@ -174,16 +169,16 @@ var _ = Describe("HandlerSTIXCollection", func() {
 					ID:   "attack_pattern_vyw7d27dffd3ffd6f6fd6fw",
 				},
 				CommonPropertiesDomainObjectSTIX: datamodels.CommonPropertiesDomainObjectSTIX{
-					SpecVersion:  "",
+					SpecVersion:  "12.3.4",
 					Created:      time.Now(),
 					Modified:     time.Now(),
 					CreatedByRef: datamodels.IdentifierTypeSTIX("ref_cubu8c3gf8g8g3f83"),
 					Revoked:      false,
-					Labels:       []string{"lable_1", "lable_2", "lable_3"},
+					Labels:       []string{"lable_1", "lable_5", "lable_3"},
 					Lang:         "RU",
 					Сonfidence:   12,
 					ExternalReferences: datamodels.ExternalReferencesTypeSTIX{
-						&datamodels.ExternalReferenceTypeElementSTIX{
+						datamodels.ExternalReferenceTypeElementSTIX{
 							SourceName:  "source_name_1",
 							Description: "just any descripton",
 							URL:         "http://any-site.org/example_one",
@@ -193,7 +188,7 @@ var _ = Describe("HandlerSTIXCollection", func() {
 							},
 							ExternalID: "12444_gddgdg",
 						},
-						&datamodels.ExternalReferenceTypeElementSTIX{
+						datamodels.ExternalReferenceTypeElementSTIX{
 							SourceName:  "source_name_2",
 							Description: "just any descripton two",
 							URL:         "http://any-site.org/example_two",
@@ -225,16 +220,16 @@ var _ = Describe("HandlerSTIXCollection", func() {
 					ID:   "attack_pattern_vyw7d27dffd3ffd6f6fd6fw",
 				},
 				CommonPropertiesDomainObjectSTIX: datamodels.CommonPropertiesDomainObjectSTIX{
-					SpecVersion:  "",
+					SpecVersion:  "", //change
 					Created:      time.Now(),
 					Modified:     time.Now(),
 					CreatedByRef: datamodels.IdentifierTypeSTIX("ref_cubu8c3gf8g8g3f83"),
 					Revoked:      false,
-					Labels:       []string{"lable_1", "lable_2", "lable_3"},
+					Labels:       []string{"lable_1", "lable_2", "lable_3"}, //change
 					Lang:         "RU",
-					Сonfidence:   12,
+					Сonfidence:   3, //change
 					ExternalReferences: datamodels.ExternalReferencesTypeSTIX{
-						&datamodels.ExternalReferenceTypeElementSTIX{
+						datamodels.ExternalReferenceTypeElementSTIX{
 							SourceName:  "source_name_1",
 							Description: "just any descripton",
 							URL:         "http://any-site.org/example_one",
@@ -244,7 +239,7 @@ var _ = Describe("HandlerSTIXCollection", func() {
 							},
 							ExternalID: "12444_gddgdg",
 						},
-						&datamodels.ExternalReferenceTypeElementSTIX{
+						datamodels.ExternalReferenceTypeElementSTIX{
 							SourceName:  "source_name_2",
 							Description: "just any descripton two",
 							URL:         "http://any-site.org/example_two",
@@ -270,11 +265,151 @@ var _ = Describe("HandlerSTIXCollection", func() {
 				KillChainPhases: datamodels.KillChainPhasesTypeSTIX{},
 			}
 
-			isEqual, contrastResult, err := ComparisonTypeCommonFields(before.CommonPropertiesDomainObjectSTIX, after.CommonPropertiesDomainObjectSTIX)
+			isEqual, _, err := ComparisonTypeCommonFields(before.CommonPropertiesDomainObjectSTIX, after.CommonPropertiesDomainObjectSTIX)
+
+			/*fmt.Println("_______ func 'ComparisonTypeCommonFields', contrastResult ________")
+			fmt.Printf("Collection name: '%s'\nDocument ID: '%s'\nModified time: '%v'\n", contrastResult.CollectionName, contrastResult.DocumentID, contrastResult.ModifiedTime)
+			for k, v := range contrastResult.FieldList {
+				fmt.Printf("Key: %d\n\tFeildType: '%s'\n\tPath: '%s'\n\tValue: '%v'\n", k, v.FeildType, v.Path, v.Value)
+			}
+			fmt.Println("------------------------------------------------------------------")*/
+
+			Expect(isEqual).Should(BeFalse())
+			Expect(err).ShouldNot(HaveOccurred())
+		})
+	})
+
+	Context("Тест 10. Проверяем возможность перебора значений содержащихся в пользовательском типе 'Attack-pattern'", func() {
+		It("При сравнении двух объектов типа 'Attack-pattern' содержащих некоторые разные данные переменная isEqual должна быть FALSE", func() {
+			bomr := []datamodels.IdentifierTypeSTIX{
+				datamodels.IdentifierTypeSTIX("obj_mark_ref_odcfc22y2vr34u41udv"),
+				datamodels.IdentifierTypeSTIX("obj_mark_ref_ahvas223h23h2dh3h1h"),
+				datamodels.IdentifierTypeSTIX("obj_mark_ref_nivnbufuf74gf74gf7s"),
+			}
+
+			apOld := datamodels.AttackPatternDomainObjectsSTIX{
+				CommonPropertiesObjectSTIX: datamodels.CommonPropertiesObjectSTIX{
+					Type: "attack pattern",
+					ID:   "attack_pattern_vyw7d27dffd3ffd6f6fd6fw",
+				},
+				CommonPropertiesDomainObjectSTIX: datamodels.CommonPropertiesDomainObjectSTIX{
+					SpecVersion:  "12.3.4",
+					Created:      time.Now(),
+					Modified:     time.Now(),
+					CreatedByRef: datamodels.IdentifierTypeSTIX("ref_cubu8c3gf8g8g3f83"),
+					Revoked:      false,
+					Labels:       []string{"lable_1", "lable_5", "lable_3"},
+					Lang:         "RU",
+					Сonfidence:   12,
+					ExternalReferences: datamodels.ExternalReferencesTypeSTIX{
+						datamodels.ExternalReferenceTypeElementSTIX{
+							SourceName:  "source_name_1",
+							Description: "just any descripton",
+							URL:         "http://any-site.org/example_one",
+							Hashes: datamodels.HashesTypeSTIX{
+								"SHA-1":   "dcubdub883g3838fgc83f",
+								"SHA-128": "cb8b38b8c38f83f888f844",
+							},
+							ExternalID: "12444_gddgdg",
+						},
+						datamodels.ExternalReferenceTypeElementSTIX{
+							SourceName:  "source_name_2",
+							Description: "just any descripton two",
+							URL:         "http://any-site.org/example_two",
+							Hashes: datamodels.HashesTypeSTIX{
+								"SHA-1":   "dcubdub883g3838fgc83f",
+								"SHA-128": "cb8b38b8c38f83f888f844",
+								"SHA-256": "bccw62f626fd63fd63f6f36",
+							},
+							ExternalID: "12444_gddgdg",
+						},
+					},
+					ObjectMarkingRefs: bomr,
+					Defanged:          false,
+					Extensions: map[string]string{
+						"Key_1": "Value_1",
+						"Key_2": "Value_2",
+						"Key_3": "Value_3",
+					},
+				},
+				Name:            "attack pattern name 1",
+				Description:     "test dscription name 443",
+				Aliases:         []string{"Alias attack pattern", "Alias only attack pattern"},
+				KillChainPhases: datamodels.KillChainPhasesTypeSTIX{},
+			}
+
+			isEqual, differentResult, err := apOld.ComparisonTypeCommonFields(&datamodels.AttackPatternDomainObjectsSTIX{
+				CommonPropertiesObjectSTIX: datamodels.CommonPropertiesObjectSTIX{
+					Type: "attack pattern",
+					ID:   "attack_pattern_vyw7d27dffd3ffd6f6fd6fw",
+				},
+				CommonPropertiesDomainObjectSTIX: datamodels.CommonPropertiesDomainObjectSTIX{
+					SpecVersion:  "12.3.5", //change
+					Created:      time.Now(),
+					Modified:     time.Now(),
+					CreatedByRef: datamodels.IdentifierTypeSTIX("ref_cubu8c3gf8g8g3f83"),
+					Revoked:      false,
+					Labels:       []string{"lable_1", "lable_2", "lable_3"}, //change
+					Lang:         "RU",
+					Сonfidence:   111, //change
+					ExternalReferences: datamodels.ExternalReferencesTypeSTIX{
+						datamodels.ExternalReferenceTypeElementSTIX{
+							SourceName:  "source_name_1",
+							Description: "just any descripton",
+							URL:         "http://any-site.org/example_one",
+							Hashes: datamodels.HashesTypeSTIX{
+								"SHA-1":   "dcubdub883g3838fgc83f",
+								"SHA-128": "cb8b38b8c38f83f888f844",
+								"SHA-256": "cbudbcuf737fdv7f7ve7fv3f", //change
+							},
+							ExternalID: "12444_gddgdg",
+						},
+						datamodels.ExternalReferenceTypeElementSTIX{ //change
+							SourceName:  "source_name_2",
+							Description: "just any descripton two",
+							URL:         "http://any-site.org/example_two",
+							Hashes: datamodels.HashesTypeSTIX{
+								"SHA-1":   "dcubdub883g3838fgc83f",
+								"SHA-128": "cb8b38b8c38f83fas88f844", //change
+								"SHA-256": "bccw62f626fd63fd63f6f36",
+							},
+							ExternalID: "12444_gddgdg",
+						},
+					},
+					ObjectMarkingRefs: bomr,
+					Defanged:          false,
+					Extensions: map[string]string{
+						"Key_1": "Value_1",
+						"Key_2": "Value_2",
+						"Key_3": "Value_3",
+					},
+				},
+				Name:            "attack pattern name 1 //change", //change
+				Description:     "test dscription name ",          //change
+				Aliases:         []string{"Alias attack pattern", "Alias only attack pattern"},
+				KillChainPhases: datamodels.KillChainPhasesTypeSTIX{},
+			}, "test source")
 
 			fmt.Println("_______ func 'ComparisonTypeCommonFields', contrastResult ________")
-			fmt.Println(contrastResult)
+			fmt.Printf("Collection name: '%s'\nDocument ID: '%s'\nModified time: '%v'\n", differentResult.CollectionName, differentResult.DocumentID, differentResult.ModifiedTime)
+			for k, v := range differentResult.FieldList {
+				fmt.Printf("Key: %d\n\tFeildType: '%s'\n\tPath: '%s'\n\tValue: '%v'\n", k, v.FeildType, v.Path, v.Value)
+			}
 			fmt.Println("------------------------------------------------------------------")
+
+			//попробуем положить список изменений в БД
+			qp := interactionmongodb.QueryParameters{
+				NameDB:         "isems-mrsict",
+				CollectionName: "accounting_differences_objects_collection",
+				ConnectDB:      cdmdb.Connection,
+			}
+
+			Expect(isEqual).Should(BeFalse())
+			Expect(err).ShouldNot(HaveOccurred())
+
+			_, errReqDB := qp.InsertData([]interface{}{differentResult})
+
+			Expect(errReqDB).ShouldNot(HaveOccurred())
 
 			/*
 			   Контроль за изменением STIX объектов будет выполнятся только для STIX объектов типа Domain Object (STIX DO)
@@ -283,8 +418,6 @@ var _ = Describe("HandlerSTIXCollection", func() {
 			   Значит метод сравнения нужен только для CommonPropertiesDomainObjectSTIX и всех типов STIX DO
 			*/
 
-			Expect(isEqual).Should(BeFalse())
-			Expect(err).ShouldNot(HaveOccurred())
 		})
 	})
 
@@ -297,7 +430,7 @@ var _ = Describe("HandlerSTIXCollection", func() {
 	*/
 })
 
-func ComparisonTypeCommonFields(before, after datamodels.CommonPropertiesDomainObjectSTIX) (bool, datamodels.ContrastObjectType, error) {
+func ComparisonTypeCommonFields(before, after datamodels.CommonPropertiesDomainObjectSTIX) (bool, datamodels.DifferentObjectType, error) {
 	var isEqual bool = true
 	tmpOne := reflect.ValueOf(before)
 	typeOfSOne := tmpOne.Type()
@@ -307,9 +440,9 @@ func ComparisonTypeCommonFields(before, after datamodels.CommonPropertiesDomainO
 
 	fmt.Println("---=== func 'ComparisonTypeCommonFields' ===---")
 
-	contrast := datamodels.ContrastObjectType{
+	contrast := datamodels.DifferentObjectType{
 		ModifiedTime: time.Now(),
-		FieldList:    []datamodels.OldValuesObjectType{},
+		FieldList:    []datamodels.OldFieldValueObjectType{},
 	}
 
 	for i := 0; i < tmpOne.NumField(); i++ {
@@ -321,9 +454,10 @@ func ComparisonTypeCommonFields(before, after datamodels.CommonPropertiesDomainO
 				fmt.Printf("Field: %s\tValue BEFORE: %v, AFTER: %v, Equal: %v\n", typeOfSOne.Field(i).Name, tmpOne.Field(i).Interface(), tmpTwo.Field(j).Interface(), resultDeepEqual)
 
 				if !resultDeepEqual {
-					contrast.FieldList = append(contrast.FieldList, datamodels.OldValuesObjectType{
-						Path:  typeOfSOne.Field(i).Name,
-						Value: tmpOne.Field(i).Interface(),
+					contrast.FieldList = append(contrast.FieldList, datamodels.OldFieldValueObjectType{
+						FeildType: typeOfSOne.Field(i).Type.Name(),
+						Path:      typeOfSOne.Field(i).Name,
+						Value:     tmpOne.Field(i).Interface(),
 					})
 
 					isEqual = false
@@ -384,7 +518,7 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 			continue
 		}
 
-		fmt.Printf("func 'GetListElementSTIXObject', type STIX object: '%s', ID: '%s'\n", modelType.Type, modelType.ID)
+		//fmt.Printf("func 'GetListElementSTIXObject', type STIX object: '%s', ID: '%s'\n", modelType.Type, modelType.ID)
 
 		switch modelType.Type {
 		/* *** Domain Objects STIX *** */

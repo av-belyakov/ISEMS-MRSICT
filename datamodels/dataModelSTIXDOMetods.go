@@ -6,6 +6,7 @@ import (
 	"path"
 	"reflect"
 	"regexp"
+	"time"
 
 	"ISEMS-MRSICT/commonlibs"
 )
@@ -82,40 +83,48 @@ func (cpdostix CommonPropertiesDomainObjectSTIX) sanitizeStruct() CommonProperti
 	return cpdostix
 }
 
-func (cpdostix *CommonPropertiesDomainObjectSTIX) comparisonTypeCommonFields(coNew *CommonPropertiesDomainObjectSTIX) (bool, []OldValuesObjectType, error) {
+func (cpdostix *CommonPropertiesDomainObjectSTIX) comparisonTypeCommonFields(coNew *CommonPropertiesDomainObjectSTIX) (bool, []OldFieldValueObjectType) {
 	var (
 		isEqual bool = true
-		result  []OldValuesObjectType
+		result  []OldFieldValueObjectType
 	)
 
-	oldValue := reflect.ValueOf(cpdostix)
+	oldValue := reflect.ValueOf(*cpdostix)
 	typeOfOldValue := oldValue.Type()
 
-	newValue := reflect.ValueOf(coNew)
+	newValue := reflect.ValueOf(*coNew)
 	typeOfNewValue := newValue.Type()
 
-	fmt.Println("---=== func 'comparisonTypeCommonFields', only for 'CommonPropertiesDomainObjectSTIX' ===---")
+	//fmt.Println("---=== func 'comparisonTypeCommonFields', only for 'CommonPropertiesDomainObjectSTIX' ===---")
 
 	for i := 0; i < oldValue.NumField(); i++ {
 		for j := 0; j < newValue.NumField(); j++ {
-			resultDeepEqual := reflect.DeepEqual(oldValue.Field(i).Interface(), newValue.Field(j).Interface())
-			if typeOfOldValue.Field(i).Name == typeOfNewValue.Field(j).Name {
-
-				//fmt.Printf("Field: %s\tValue BEFORE: %v, AFTER: %v, Equal: %v\n", typeOfOldValue.Field(i).Name, oldValue.Field(i).Interface(), newValue.Field(j).Interface(), resultDeepEqual)
-
-				if !resultDeepEqual {
-					result = append(result, OldValuesObjectType{
-						Path:  path.Join("commonpropertiesdomainobjectstix", typeOfOldValue.Field(i).Name),
-						Value: oldValue.Field(i).Interface(),
-					})
-
-					isEqual = false
-				}
+			if typeOfOldValue.Field(i).Name != typeOfNewValue.Field(j).Name {
+				continue
 			}
+
+			if reflect.DeepEqual(oldValue.Field(i).Interface(), newValue.Field(j).Interface()) {
+				continue
+			}
+
+			//fmt.Printf("---=== func 'comparisonTypeCommonFields', old value '%v' ===---\n", oldValue.Field(i).Interface())
+
+			fieldType := typeOfOldValue.Field(i).Type.Name()
+			if fieldType == "" {
+				fieldType = typeOfOldValue.Field(i).Type.Kind().String()
+			}
+
+			result = append(result, OldFieldValueObjectType{
+				FeildType: fieldType,
+				Path:      path.Join("CommonPropertiesDomainObjectSTIX", typeOfOldValue.Field(i).Name),
+				Value:     oldValue.Field(i).Interface(),
+			})
+
+			isEqual = false
 		}
 	}
 
-	return isEqual, result, nil
+	return isEqual, result
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -133,7 +142,7 @@ func (cp CommonPropertiesDomainObjectSTIX) ToStringBeautiful() string {
 		}
 		return str
 	}(cp.Labels))
-	str += fmt.Sprintf("external_references: \n%v", func(l []*ExternalReferenceTypeElementSTIX) string {
+	str += fmt.Sprintf("external_references: \n%v", func(l []ExternalReferenceTypeElementSTIX) string {
 		var str string
 		for k, v := range l {
 			str += fmt.Sprintf("\texternal_references element '%d':\n", k)
@@ -145,7 +154,7 @@ func (cp CommonPropertiesDomainObjectSTIX) ToStringBeautiful() string {
 		}
 		return str
 	}(cp.ExternalReferences))
-	str += fmt.Sprintf("object_marking_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+	str += fmt.Sprintf("object_marking_refs: \n%v", func(l []IdentifierTypeSTIX) string {
 		var str string
 		for k, v := range l {
 			str += fmt.Sprintf("\tref '%d': '%v'\n", k, v)
@@ -235,45 +244,73 @@ func (apstix AttackPatternDomainObjectsSTIX) GetID() string {
 	return apstix.ID
 }
 
-func (apstix *AttackPatternDomainObjectsSTIX) ComparisonTypeCommonFields(apNew *AttackPatternDomainObjectsSTIX) (bool, ContrastObjectType, error) {
+func (apstix *AttackPatternDomainObjectsSTIX) ComparisonTypeCommonFields(apNew *AttackPatternDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
-		cot     ContrastObjectType
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             apstix.ID,
+		}
 	)
 
-	oldValue := reflect.ValueOf(apstix)
+	oldValue := reflect.ValueOf(*apstix)
 	typeOfOldValue := oldValue.Type()
 
-	newValue := reflect.ValueOf(apNew)
+	newValue := reflect.ValueOf(*apNew)
 	typeOfNewValue := newValue.Type()
 
 	fmt.Println("---=== func 'ComparisonTypeCommonFields', only for 'AttackPatternDomainObjectsSTIX' ===---")
 
 	for i := 0; i < oldValue.NumField(); i++ {
 		for j := 0; j < newValue.NumField(); j++ {
-			resultDeepEqual := reflect.DeepEqual(oldValue.Field(i).Interface(), newValue.Field(j).Interface())
-			if typeOfOldValue.Field(i).Name == "CommonPropertiesDomainObjectSTIX" {
-				//привести значение к типу CommonPropertiesDomainObjectSTIX
-
-				//выполнить CommonPropertiesDomainObjectSTIX.ComparisonTypeCommonFields() для проверки встроенных полей
-				// если есть ошибка то выход, если один из параметров false (то есть объекты CommonPropertiesDomainObjectSTIX не равны)
-				// тогда сохраняем информацию в ContrastObjectType
+			if typeOfOldValue.Field(i).Name != typeOfNewValue.Field(j).Name {
+				continue
 			}
 
-			//дальше перебираем остальные поля типа AttackPatternDomainObjectsSTIX
-
-			if typeOfOldValue.Field(i).Name == typeOfNewValue.Field(j).Name {
-
-				//fmt.Printf("Field: %s\tValue BEFORE: %v, AFTER: %v, Equal: %v\n", typeOfOldValue.Field(i).Name, oldValue.Field(i).Interface(), newValue.Field(j).Interface(), resultDeepEqual)
-
-				if !resultDeepEqual {
-					result = append(result, OldValuesObjectType{
-						Path:  typeOfOldValue.Field(i).Name,
-						Value: oldValue.Field(i).Interface(),
-					})
-
-					isEqual = false
+			if typeOfOldValue.Field(i).Name == "CommonPropertiesDomainObjectSTIX" {
+				//привести значение к типу CommonPropertiesDomainObjectSTIX
+				cpdoOld, ok := oldValue.Field(i).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
 				}
+
+				cpdoNew, ok := newValue.Field(j).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				ok, result := cpdoOld.comparisonTypeCommonFields(&cpdoNew)
+				if ok {
+					continue
+				}
+
+				isEqual = false
+
+				fmt.Println("---=== func 'ComparisonTypeCommonFields', only for 'AttackPatternDomainObjectsSTIX' ===---")
+				fmt.Println(result)
+				fmt.Println("________ END __________")
+
+				for _, v := range result {
+					cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+						FeildType: v.FeildType,
+						Path:      path.Join("AttackPatternDomainObjectsSTIX", v.Path),
+						Value:     v.Value,
+					})
+				}
+
+				continue
+			}
+
+			if !reflect.DeepEqual(oldValue.Field(i).Interface(), newValue.Field(j).Interface()) {
+				cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+					FeildType: typeOfOldValue.Field(i).Type.Name(),
+					Path:      path.Join("AttackPatternDomainObjectsSTIX", typeOfOldValue.Field(i).Name),
+					Value:     oldValue.Field(i).Interface(),
+				})
+
+				isEqual = false
 			}
 		}
 	}
@@ -507,10 +544,10 @@ func (gstix GroupingDomainObjectsSTIX) ToStringBeautiful() string {
 	str += fmt.Sprintf("name: '%s'\n", gstix.Name)
 	str += fmt.Sprintf("description: '%s'\n", gstix.Description)
 	str += fmt.Sprintf("context: '%s'\n", gstix.Context)
-	str += fmt.Sprintf("object_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+	str += fmt.Sprintf("object_refs: \n%v", func(l []IdentifierTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tobject_ref '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\tobject_ref '%d': '%v'\n", k, v)
 		}
 		return str
 	}(gstix.ObjectRefs))
@@ -568,10 +605,10 @@ func (istix IdentityDomainObjectsSTIX) SanitizeStruct() IdentityDomainObjectsSTI
 	istix.IdentityClass = istix.IdentityClass.SanitizeStructOpenVocabTypeSTIX()
 
 	if len(istix.Sectors) > 0 {
-		sectorsTmp := make([]*OpenVocabTypeSTIX, 0, len(istix.Sectors))
+		sectorsTmp := make([]OpenVocabTypeSTIX, 0, len(istix.Sectors))
 		for _, v := range istix.Sectors {
 			tmp := v.SanitizeStructOpenVocabTypeSTIX()
-			sectorsTmp = append(sectorsTmp, &tmp)
+			sectorsTmp = append(sectorsTmp, tmp)
 		}
 
 		istix.Sectors = sectorsTmp
@@ -601,10 +638,10 @@ func (istix IdentityDomainObjectsSTIX) ToStringBeautiful() string {
 		return str
 	}(istix.Roles))
 	str += fmt.Sprintf("identity_class: '%s'\n", istix.IdentityClass)
-	str += fmt.Sprintf("sectors: \n%v", func(l []*OpenVocabTypeSTIX) string {
+	str += fmt.Sprintf("sectors: \n%v", func(l []OpenVocabTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tsector '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\tsector '%d': '%v'\n", k, v)
 		}
 		return str
 	}(istix.Sectors))
@@ -667,10 +704,10 @@ func (istix IndicatorDomainObjectsSTIX) SanitizeStruct() IndicatorDomainObjectsS
 	istix.Description = commonlibs.StringSanitize(istix.Description)
 
 	if len(istix.IndicatorTypes) > 0 {
-		it := make([]*OpenVocabTypeSTIX, 0, len(istix.IndicatorTypes))
+		it := make([]OpenVocabTypeSTIX, 0, len(istix.IndicatorTypes))
 		for _, v := range istix.IndicatorTypes {
 			tmp := v.SanitizeStructOpenVocabTypeSTIX()
-			it = append(it, &tmp)
+			it = append(it, tmp)
 		}
 
 		istix.IndicatorTypes = it
@@ -695,10 +732,10 @@ func (istix IndicatorDomainObjectsSTIX) ToStringBeautiful() string {
 	str += istix.CommonPropertiesDomainObjectSTIX.ToStringBeautiful()
 	str += fmt.Sprintf("name: '%s'\n", istix.Name)
 	str += fmt.Sprintf("description: '%s'\n", istix.Description)
-	str += fmt.Sprintf("indicator_types: \n%v", func(l []*OpenVocabTypeSTIX) string {
+	str += fmt.Sprintf("indicator_types: \n%v", func(l []OpenVocabTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tindicator_type '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\tindicator_type '%d': '%v'\n", k, v)
 		}
 		return str
 	}(istix.IndicatorTypes))
@@ -707,10 +744,10 @@ func (istix IndicatorDomainObjectsSTIX) ToStringBeautiful() string {
 	str += fmt.Sprintf("pattern_version: '%s'\n", istix.PatternVersion)
 	str += fmt.Sprintf("valid_from: '%v'\n", istix.ValidFrom)
 	str += fmt.Sprintf("valid_until: '%v'\n", istix.ValidUntil)
-	str += fmt.Sprintf("sectors: \n%v", func(l []*KillChainPhasesTypeElementSTIX) string {
+	str += fmt.Sprintf("sectors: \n%v", func(l []KillChainPhasesTypeElementSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tsector '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\tsector '%d': '%v'\n", k, v)
 		}
 		return str
 	}(istix.KillChainPhases))
@@ -762,10 +799,10 @@ func (istix InfrastructureDomainObjectsSTIX) SanitizeStruct() InfrastructureDoma
 	istix.Description = commonlibs.StringSanitize(istix.Description)
 
 	if len(istix.InfrastructureTypes) > 0 {
-		it := make([]*OpenVocabTypeSTIX, 0, len(istix.InfrastructureTypes))
+		it := make([]OpenVocabTypeSTIX, 0, len(istix.InfrastructureTypes))
 		for _, v := range istix.InfrastructureTypes {
 			tmp := v.SanitizeStructOpenVocabTypeSTIX()
-			it = append(it, &tmp)
+			it = append(it, tmp)
 		}
 
 		istix.InfrastructureTypes = it
@@ -795,10 +832,10 @@ func (istix InfrastructureDomainObjectsSTIX) ToStringBeautiful() string {
 	str += istix.CommonPropertiesDomainObjectSTIX.ToStringBeautiful()
 	str += fmt.Sprintf("name: '%s'\n", istix.Name)
 	str += fmt.Sprintf("description: '%s'\n", istix.Description)
-	str += fmt.Sprintf("infrastructure_types: \n%v", func(l []*OpenVocabTypeSTIX) string {
+	str += fmt.Sprintf("infrastructure_types: \n%v", func(l []OpenVocabTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tinfrastructure_type '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\tinfrastructure_type '%d': '%v'\n", k, v)
 		}
 		return str
 	}(istix.InfrastructureTypes))
@@ -809,10 +846,10 @@ func (istix InfrastructureDomainObjectsSTIX) ToStringBeautiful() string {
 		}
 		return str
 	}(istix.Aliases))
-	str += fmt.Sprintf("sectors: \n%v", func(l []*KillChainPhasesTypeElementSTIX) string {
+	str += fmt.Sprintf("sectors: \n%v", func(l []KillChainPhasesTypeElementSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tsector '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\tsector '%d': '%v'\n", k, v)
 		}
 		return str
 	}(istix.KillChainPhases))
@@ -885,10 +922,10 @@ func (istix IntrusionSetDomainObjectsSTIX) SanitizeStruct() IntrusionSetDomainOb
 	istix.PrimaryMotivation = istix.PrimaryMotivation.SanitizeStructOpenVocabTypeSTIX()
 
 	if len(istix.SecondaryMotivations) > 0 {
-		sm := make([]*OpenVocabTypeSTIX, 0, len(istix.SecondaryMotivations))
+		sm := make([]OpenVocabTypeSTIX, 0, len(istix.SecondaryMotivations))
 		for _, v := range istix.SecondaryMotivations {
 			tmp := v.SanitizeStructOpenVocabTypeSTIX()
-			sm = append(sm, &tmp)
+			sm = append(sm, tmp)
 		}
 
 		istix.SecondaryMotivations = sm
@@ -926,10 +963,10 @@ func (istix IntrusionSetDomainObjectsSTIX) ToStringBeautiful() string {
 	}(istix.Goals))
 	str += fmt.Sprintf("resource_level: '%s'\n", istix.FirstSeen)
 	str += fmt.Sprintf("primary_motivation: '%s'\n", istix.LastSeen)
-	str += fmt.Sprintf("secondary_motivations: \n%v", func(l []*OpenVocabTypeSTIX) string {
+	str += fmt.Sprintf("secondary_motivations: \n%v", func(l []OpenVocabTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tsecondary_motivation '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\tsecondary_motivation '%d': '%v'\n", k, v)
 		}
 		return str
 	}(istix.SecondaryMotivations))
@@ -1076,10 +1113,10 @@ func (mstix MalwareDomainObjectsSTIX) SanitizeStruct() MalwareDomainObjectsSTIX 
 	mstix.Description = commonlibs.StringSanitize(mstix.Description)
 
 	if len(mstix.MalwareTypes) > 0 {
-		mt := make([]*OpenVocabTypeSTIX, 0, len(mstix.MalwareTypes))
+		mt := make([]OpenVocabTypeSTIX, 0, len(mstix.MalwareTypes))
 		for _, v := range mstix.MalwareTypes {
 			tmp := v.SanitizeStructOpenVocabTypeSTIX()
-			mt = append(mt, &tmp)
+			mt = append(mt, tmp)
 		}
 
 		mstix.MalwareTypes = mt
@@ -1096,30 +1133,30 @@ func (mstix MalwareDomainObjectsSTIX) SanitizeStruct() MalwareDomainObjectsSTIX 
 	mstix.KillChainPhases = mstix.KillChainPhases.SanitizeStructKillChainPhasesTypeSTIX()
 
 	if len(mstix.ArchitectureExecutionEnvs) > 0 {
-		aee := make([]*OpenVocabTypeSTIX, 0, len(mstix.ArchitectureExecutionEnvs))
+		aee := make([]OpenVocabTypeSTIX, 0, len(mstix.ArchitectureExecutionEnvs))
 		for _, v := range mstix.ArchitectureExecutionEnvs {
 			tmp := v.SanitizeStructOpenVocabTypeSTIX()
-			aee = append(aee, &tmp)
+			aee = append(aee, tmp)
 		}
 
 		mstix.ArchitectureExecutionEnvs = aee
 	}
 
 	if len(mstix.ImplementationLanguages) > 0 {
-		il := make([]*OpenVocabTypeSTIX, 0, len(mstix.ImplementationLanguages))
+		il := make([]OpenVocabTypeSTIX, 0, len(mstix.ImplementationLanguages))
 		for _, v := range mstix.ImplementationLanguages {
 			tmp := v.SanitizeStructOpenVocabTypeSTIX()
-			il = append(il, &tmp)
+			il = append(il, tmp)
 		}
 
 		mstix.ImplementationLanguages = il
 	}
 
 	if len(mstix.Capabilities) > 0 {
-		c := make([]*OpenVocabTypeSTIX, 0, len(mstix.Capabilities))
+		c := make([]OpenVocabTypeSTIX, 0, len(mstix.Capabilities))
 		for _, v := range mstix.Capabilities {
 			tmp := v.SanitizeStructOpenVocabTypeSTIX()
-			c = append(c, &tmp)
+			c = append(c, tmp)
 		}
 
 		mstix.Capabilities = c
@@ -1139,10 +1176,10 @@ func (mstix MalwareDomainObjectsSTIX) ToStringBeautiful() string {
 	str += mstix.CommonPropertiesDomainObjectSTIX.ToStringBeautiful()
 	str += fmt.Sprintf("name: '%s'\n", mstix.Name)
 	str += fmt.Sprintf("description: '%s'\n", mstix.Description)
-	str += fmt.Sprintf("malware_types: \n%v", func(l []*OpenVocabTypeSTIX) string {
+	str += fmt.Sprintf("malware_types: \n%v", func(l []OpenVocabTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tmalware_type '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\tmalware_type '%d': '%v'\n", k, v)
 		}
 		return str
 	}(mstix.MalwareTypes))
@@ -1164,38 +1201,38 @@ func (mstix MalwareDomainObjectsSTIX) ToStringBeautiful() string {
 	}(mstix.KillChainPhases))
 	str += fmt.Sprintf("first_seen: '%v'\n", mstix.FirstSeen)
 	str += fmt.Sprintf("last_seen: '%v'\n", mstix.LastSeen)
-	str += fmt.Sprintf("operating_system_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+	str += fmt.Sprintf("operating_system_refs: \n%v", func(l []IdentifierTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\toperating_system_ref '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\toperating_system_ref '%d': '%v'\n", k, v)
 		}
 		return str
 	}(mstix.OperatingSystemRefs))
-	str += fmt.Sprintf("architecture_execution_envs: \n%v", func(l []*OpenVocabTypeSTIX) string {
+	str += fmt.Sprintf("architecture_execution_envs: \n%v", func(l []OpenVocabTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tarchitecture_execution_env '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\tarchitecture_execution_env '%d': '%v'\n", k, v)
 		}
 		return str
 	}(mstix.ArchitectureExecutionEnvs))
-	str += fmt.Sprintf("implementation_languages: \n%v", func(l []*OpenVocabTypeSTIX) string {
+	str += fmt.Sprintf("implementation_languages: \n%v", func(l []OpenVocabTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\timplementation_language '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\timplementation_language '%d': '%v'\n", k, v)
 		}
 		return str
 	}(mstix.ImplementationLanguages))
-	str += fmt.Sprintf("capabilities: \n%v", func(l []*OpenVocabTypeSTIX) string {
+	str += fmt.Sprintf("capabilities: \n%v", func(l []OpenVocabTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tcapabilitie '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\tcapabilitie '%d': '%v'\n", k, v)
 		}
 		return str
 	}(mstix.Capabilities))
-	str += fmt.Sprintf("sample_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+	str += fmt.Sprintf("sample_refs: \n%v", func(l []IdentifierTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tsample_ref '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\tsample_ref '%d': '%v'\n", k, v)
 		}
 		return str
 	}(mstix.SampleRefs))
@@ -1306,10 +1343,10 @@ func (mastix MalwareAnalysisDomainObjectsSTIX) ToStringBeautiful() string {
 	str += fmt.Sprintf("version: '%s'\n", mastix.Version)
 	str += fmt.Sprintf("host_vm_ref: '%s'\n", mastix.HostVMRef)
 	str += fmt.Sprintf("operating_system_ref: '%s'\n", mastix.OperatingSystemRef)
-	str += fmt.Sprintf("installed_software_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+	str += fmt.Sprintf("installed_software_refs: \n%v", func(l []IdentifierTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tinstalled_software_ref '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\tinstalled_software_ref '%d': '%v'\n", k, v)
 		}
 		return str
 	}(mastix.InstalledSoftwareRefs))
@@ -1328,10 +1365,10 @@ func (mastix MalwareAnalysisDomainObjectsSTIX) ToStringBeautiful() string {
 	str += fmt.Sprintf("analysis_ended: '%v'\n", mastix.AnalysisEnded)
 	str += fmt.Sprintf("result_name: '%s'\n", mastix.ResultName)
 	str += fmt.Sprintf("result: '%s'\n", mastix.Result)
-	str += fmt.Sprintf("analysis_sco_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+	str += fmt.Sprintf("analysis_sco_refs: \n%v", func(l []IdentifierTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tanalysis_sco_ref '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\tanalysis_sco_ref '%d': '%v'\n", k, v)
 		}
 		return str
 	}(mastix.AnalysisScoRefs))
@@ -1418,10 +1455,10 @@ func (nstix NoteDomainObjectsSTIX) ToStringBeautiful() string {
 		}
 		return str
 	}(nstix.Authors))
-	str += fmt.Sprintf("object_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+	str += fmt.Sprintf("object_refs: \n%v", func(l []IdentifierTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tobject_ref '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\tobject_ref '%d': '%v'\n", k, v)
 		}
 		return str
 	}(nstix.ObjectRefs))
@@ -1495,10 +1532,10 @@ func (odstix ObservedDataDomainObjectsSTIX) ToStringBeautiful() string {
 	str += fmt.Sprintf("first_observed: '%v'\n", odstix.FirstObserved)
 	str += fmt.Sprintf("last_observed: '%v'\n", odstix.LastObserved)
 	str += fmt.Sprintf("number_observed: '%d'\n", odstix.NumberObserved)
-	str += fmt.Sprintf("object_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+	str += fmt.Sprintf("object_refs: \n%v", func(l []IdentifierTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tobject_ref '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\tobject_ref '%d': '%v'\n", k, v)
 		}
 		return str
 	}(odstix.ObjectRefs))
@@ -1588,10 +1625,10 @@ func (ostix OpinionDomainObjectsSTIX) ToStringBeautiful() string {
 		return str
 	}(ostix.Authors))
 	str += fmt.Sprintf("opinion: '%v'\n", ostix.Opinion)
-	str += fmt.Sprintf("object_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+	str += fmt.Sprintf("object_refs: \n%v", func(l []IdentifierTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tobject_ref '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\tobject_ref '%d': '%v'\n", k, v)
 		}
 		return str
 	}(ostix.ObjectRefs))
@@ -1657,10 +1694,10 @@ func (rstix ReportDomainObjectsSTIX) SanitizeStruct() ReportDomainObjectsSTIX {
 	rstix.Name = commonlibs.StringSanitize(rstix.Name)
 	rstix.Description = commonlibs.StringSanitize(rstix.Description)
 	if len(rstix.ReportTypes) > 0 {
-		r := make([]*OpenVocabTypeSTIX, 0, len(rstix.ReportTypes))
+		r := make([]OpenVocabTypeSTIX, 0, len(rstix.ReportTypes))
 		for _, v := range rstix.ReportTypes {
 			tmp := v.SanitizeStructOpenVocabTypeSTIX()
-			r = append(r, &tmp)
+			r = append(r, tmp)
 		}
 
 		rstix.ReportTypes = r
@@ -1680,18 +1717,18 @@ func (rstix ReportDomainObjectsSTIX) ToStringBeautiful() string {
 	str += rstix.CommonPropertiesDomainObjectSTIX.ToStringBeautiful()
 	str += fmt.Sprintf("name: '%s'\n", rstix.Name)
 	str += fmt.Sprintf("description: '%s'\n", rstix.Description)
-	str += fmt.Sprintf("report_types: \n%v", func(l []*OpenVocabTypeSTIX) string {
+	str += fmt.Sprintf("report_types: \n%v", func(l []OpenVocabTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\treport_type '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\treport_type '%d': '%v'\n", k, v)
 		}
 		return str
 	}(rstix.ReportTypes))
 	str += fmt.Sprintf("published: '%v'\n", rstix.Published)
-	str += fmt.Sprintf("object_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+	str += fmt.Sprintf("object_refs: \n%v", func(l []IdentifierTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tobject_ref '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\tobject_ref '%d': '%v'\n", k, v)
 		}
 		return str
 	}(rstix.ObjectRefs))
@@ -1742,10 +1779,10 @@ func (tastix ThreatActorDomainObjectsSTIX) SanitizeStruct() ThreatActorDomainObj
 	tastix.Description = commonlibs.StringSanitize(tastix.Description)
 
 	if len(tastix.ThreatActorTypes) > 0 {
-		ta := make([]*OpenVocabTypeSTIX, 0, len(tastix.ThreatActorTypes))
+		ta := make([]OpenVocabTypeSTIX, 0, len(tastix.ThreatActorTypes))
 		for _, v := range tastix.ThreatActorTypes {
 			tmp := v.SanitizeStructOpenVocabTypeSTIX()
-			ta = append(ta, &tmp)
+			ta = append(ta, tmp)
 		}
 
 		tastix.ThreatActorTypes = ta
@@ -1760,10 +1797,10 @@ func (tastix ThreatActorDomainObjectsSTIX) SanitizeStruct() ThreatActorDomainObj
 	}
 
 	if len(tastix.Roles) > 0 {
-		ta := make([]*OpenVocabTypeSTIX, 0, len(tastix.Roles))
+		ta := make([]OpenVocabTypeSTIX, 0, len(tastix.Roles))
 		for _, v := range tastix.Roles {
 			tmp := v.SanitizeStructOpenVocabTypeSTIX()
-			ta = append(ta, &tmp)
+			ta = append(ta, tmp)
 		}
 
 		tastix.Roles = ta
@@ -1782,20 +1819,20 @@ func (tastix ThreatActorDomainObjectsSTIX) SanitizeStruct() ThreatActorDomainObj
 	tastix.PrimaryMotivation = OpenVocabTypeSTIX(commonlibs.StringSanitize(string(tastix.PrimaryMotivation)))
 
 	if len(tastix.SecondaryMotivations) > 0 {
-		ta := make([]*OpenVocabTypeSTIX, 0, len(tastix.SecondaryMotivations))
+		ta := make([]OpenVocabTypeSTIX, 0, len(tastix.SecondaryMotivations))
 		for _, v := range tastix.SecondaryMotivations {
 			tmp := v.SanitizeStructOpenVocabTypeSTIX()
-			ta = append(ta, &tmp)
+			ta = append(ta, tmp)
 		}
 
 		tastix.Roles = ta
 	}
 
 	if len(tastix.PersonalMotivations) > 0 {
-		ta := make([]*OpenVocabTypeSTIX, 0, len(tastix.PersonalMotivations))
+		ta := make([]OpenVocabTypeSTIX, 0, len(tastix.PersonalMotivations))
 		for _, v := range tastix.PersonalMotivations {
 			tmp := v.SanitizeStructOpenVocabTypeSTIX()
-			ta = append(ta, &tmp)
+			ta = append(ta, tmp)
 		}
 
 		tastix.Roles = ta
@@ -1815,10 +1852,10 @@ func (tastix ThreatActorDomainObjectsSTIX) ToStringBeautiful() string {
 	str += tastix.CommonPropertiesDomainObjectSTIX.ToStringBeautiful()
 	str += fmt.Sprintf("name: '%s'\n", tastix.Name)
 	str += fmt.Sprintf("description: '%s'\n", tastix.Description)
-	str += fmt.Sprintf("threat_actor_types: \n%v", func(l []*OpenVocabTypeSTIX) string {
+	str += fmt.Sprintf("threat_actor_types: \n%v", func(l []OpenVocabTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tthreat_actor_type '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\tthreat_actor_type '%d': '%v'\n", k, v)
 		}
 		return str
 	}(tastix.ThreatActorTypes))
@@ -1831,10 +1868,10 @@ func (tastix ThreatActorDomainObjectsSTIX) ToStringBeautiful() string {
 	}(tastix.Aliases))
 	str += fmt.Sprintf("first_seen: '%v'\n", tastix.FirstSeen)
 	str += fmt.Sprintf("last_seen: '%v'\n", tastix.LastSeen)
-	str += fmt.Sprintf("roles: \n%v", func(l []*OpenVocabTypeSTIX) string {
+	str += fmt.Sprintf("roles: \n%v", func(l []OpenVocabTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\trole '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\trole '%d': '%v'\n", k, v)
 		}
 		return str
 	}(tastix.Roles))
@@ -1848,17 +1885,17 @@ func (tastix ThreatActorDomainObjectsSTIX) ToStringBeautiful() string {
 	str += fmt.Sprintf("sophistication: '%v'\n", tastix.FirstSeen)
 	str += fmt.Sprintf("resource_level: '%v'\n", tastix.LastSeen)
 	str += fmt.Sprintf("primary_motivation: '%v'\n", tastix.LastSeen)
-	str += fmt.Sprintf("secondary_motivations: \n%v", func(l []*OpenVocabTypeSTIX) string {
+	str += fmt.Sprintf("secondary_motivations: \n%v", func(l []OpenVocabTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tsecondary_motivation '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\tsecondary_motivation '%d': '%v'\n", k, v)
 		}
 		return str
 	}(tastix.SecondaryMotivations))
-	str += fmt.Sprintf("personal_motivations: \n%v", func(l []*OpenVocabTypeSTIX) string {
+	str += fmt.Sprintf("personal_motivations: \n%v", func(l []OpenVocabTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tpersonal_motivation '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\tpersonal_motivation '%d': '%v'\n", k, v)
 		}
 		return str
 	}(tastix.PersonalMotivations))
@@ -1909,10 +1946,10 @@ func (tstix ToolDomainObjectsSTIX) SanitizeStruct() ToolDomainObjectsSTIX {
 	tstix.Description = commonlibs.StringSanitize(tstix.Description)
 
 	if len(tstix.ToolTypes) > 0 {
-		t := make([]*OpenVocabTypeSTIX, 0, len(tstix.ToolTypes))
+		t := make([]OpenVocabTypeSTIX, 0, len(tstix.ToolTypes))
 		for _, v := range tstix.ToolTypes {
 			tmp := v.SanitizeStructOpenVocabTypeSTIX()
-			t = append(t, &tmp)
+			t = append(t, tmp)
 		}
 
 		tstix.ToolTypes = t
@@ -1944,10 +1981,10 @@ func (tstix ToolDomainObjectsSTIX) ToStringBeautiful() string {
 
 	str += fmt.Sprintf("name: '%s'\n", tstix.Name)
 	str += fmt.Sprintf("description: '%s'\n", tstix.Description)
-	str += fmt.Sprintf("tool_types: \n%v", func(l []*OpenVocabTypeSTIX) string {
+	str += fmt.Sprintf("tool_types: \n%v", func(l []OpenVocabTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\ttool_type '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\ttool_type '%d': '%v'\n", k, v)
 		}
 		return str
 	}(tstix.ToolTypes))
@@ -1958,10 +1995,10 @@ func (tstix ToolDomainObjectsSTIX) ToStringBeautiful() string {
 		}
 		return str
 	}(tstix.Aliases))
-	str += fmt.Sprintf("kill_chain_phases: \n%v", func(l []*KillChainPhasesTypeElementSTIX) string {
+	str += fmt.Sprintf("kill_chain_phases: \n%v", func(l []KillChainPhasesTypeElementSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tkill_chain_phase '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\tkill_chain_phase '%d': '%v'\n", k, v)
 		}
 		return str
 	}(tstix.KillChainPhases))

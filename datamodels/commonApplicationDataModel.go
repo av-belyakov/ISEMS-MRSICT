@@ -54,26 +54,28 @@ type ElementSTIXObject struct {
 	Data     HandlerSTIXObject
 }
 
-//ContrastObjectType содержит перечисление полей и их значения, которые были изменены в произвольном типе
+//DifferentObjectType содержит перечисление полей и их значения, которые были изменены в произвольном типе
 // SourceReceivingChanges - источник от которого были получены изменения
 // ModifiedTime - время выполнения модификации
 // CollectionName - наименование коллекции в которой выполнялись модификации
 // DocumentID - идентификатор документа в котором выполнялись модификации (для данного поля используется значение _id документа MongoDB)
 // FieldList - перечень полей подвергшихся изменениям
-type ContrastObjectType struct {
-	SourceReceivingChanges string
-	ModifiedTime           time.Time
-	CollectionName         string
-	DocumentID             string
-	FieldList              []OldValuesObjectType
+type DifferentObjectType struct {
+	SourceReceivingChanges string                    `bson:"source_receiving_changes"`
+	ModifiedTime           time.Time                 `bson:"modified_time"`
+	CollectionName         string                    `bson:"collection_name"`
+	DocumentID             string                    `bson:"document_id"`
+	FieldList              []OldFieldValueObjectType `bson:"field_list"`
 }
 
-//OldValuesObjectType содержит старое значение полей, до их модификации
+//OldFieldValueObjectType содержит старое значение полей, до их модификации
+// FeildType - тип поля
 // Path - полный путь к объекту подвергшемуся модификации
 // Value - предыдущее значение поля подвергшемуся модификации
-type OldValuesObjectType struct {
-	Path  string
-	Value interface{}
+type OldFieldValueObjectType struct {
+	FeildType string      `bson:"feild_type"`
+	Path      string      `bson:"path"`
+	Value     interface{} `bson:"value"`
 }
 
 /********** 			Domain Objects STIX			**********/

@@ -149,20 +149,20 @@ func checkingExtensionsSTIX(extType interface{}) bool {
 // - "unix-account-ext"
 // выполняет замену некоторых специальных символов на их HTML код
 func sanitizeExtensionsSTIX(extType interface{}) interface{} {
-	sanitizeDictionaryList := func(l map[string]*DictionaryTypeSTIX) map[string]*DictionaryTypeSTIX {
+	sanitizeDictionaryList := func(l map[string]DictionaryTypeSTIX) map[string]DictionaryTypeSTIX {
 		size := len(l)
 
 		if size == 0 {
-			return map[string]*DictionaryTypeSTIX{}
+			return map[string]DictionaryTypeSTIX{}
 		}
 
-		tmp := make(map[string]*DictionaryTypeSTIX, size)
+		tmp := make(map[string]DictionaryTypeSTIX, size)
 		for k, v := range l {
 			switch v := v.dictionary.(type) {
 			case string:
-				tmp[k] = &DictionaryTypeSTIX{commonlibs.StringSanitize(string(v))}
+				tmp[k] = DictionaryTypeSTIX{commonlibs.StringSanitize(string(v))}
 			default:
-				tmp[k] = &DictionaryTypeSTIX{v}
+				tmp[k] = DictionaryTypeSTIX{v}
 			}
 		}
 
@@ -183,9 +183,9 @@ func sanitizeExtensionsSTIX(extType interface{}) interface{} {
 			return tmpType
 		}
 
-		ads := make([]*AlternateDataStreamTypeSTIX, 0, size)
+		ads := make([]AlternateDataStreamTypeSTIX, 0, size)
 		for _, v := range et.AlternateDataStreams {
-			ads = append(ads, &AlternateDataStreamTypeSTIX{
+			ads = append(ads, AlternateDataStreamTypeSTIX{
 				Name:   commonlibs.StringSanitize(v.Name),
 				Hashes: v.Hashes,
 				Size:   v.Size,
@@ -214,11 +214,11 @@ func sanitizeExtensionsSTIX(extType interface{}) interface{} {
 
 	case WindowsPEBinaryFileExtensionSTIX:
 		ssize := len(et.Sections)
-		ns := make([]*WindowsPESectionTypeSTIX, 0, ssize)
+		ns := make([]WindowsPESectionTypeSTIX, 0, ssize)
 		if ssize > 0 {
 			for _, v := range et.Sections {
 				tmp := v.SanitizeStructWindowsPESectionTypeSTIX()
-				ns = append(ns, &tmp)
+				ns = append(ns, tmp)
 			}
 			et.Sections = ns
 		}

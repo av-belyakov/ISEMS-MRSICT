@@ -52,37 +52,37 @@ type AlternateDataStreamTypeSTIX struct {
 // NumberOfRvaAndSizes - указывает количество записей каталога данных в оставшейся части необязательного заголовка.
 // Hashes - указывает все хэши, которые были вычислены для необязательного заголовка.
 type WindowsPEOptionalHeaderTypeSTIX struct {
-	MagicHex                string            `json:"magic_hex" bson:"magic_hex"`
-	MajorLinkerVersion      int               `json:"major_linker_version" bson:"major_linker_version"`
-	MinorLinkerVersion      int               `json:"minor_linker_version" bson:"minor_linker_version"`
-	SizeOfCode              int               `json:"size_of_code" bson:"size_of_code"`
-	SizeOfInitializedData   int               `json:"size_of_initialized_data" bson:"size_of_initialized_data"`
-	SizeOfUninitializedData int               `json:"size_of_uninitialized_data" bson:"size_of_uninitialized_data"`
-	AddressOfEntryPoint     int               `json:"address_of_entry_point" bson:"address_of_entry_point"`
-	BaseOfCode              int               `json:"base_of_code" bson:"base_of_code"`
-	BaseOfData              int               `json:"base_of_data" bson:"base_of_data"`
-	ImageBase               int               `json:"image_base" bson:"image_base"`
-	SectionAlignment        int               `json:"section_alignment" bson:"section_alignment"`
-	FileAlignment           int               `json:"file_alignment" bson:"file_alignment"`
-	MajorOSVersion          int               `json:"major_os_version" bson:"major_os_version"`
-	MinorOSVersion          int               `json:"minor_os_version" bson:"minor_os_version"`
-	MajorImageVersion       int               `json:"major_image_version" bson:"major_image_version"`
-	MinorImageVersion       int               `json:"minor_image_version" bson:"minor_image_version"`
-	MajorSubsystemVersion   int               `json:"major_subsystem_version" bson:"major_subsystem_version"`
-	MinorSubsystemVersion   int               `json:"minor_subsystem_version" bson:"minor_subsystem_version"`
-	Win32VersionValueHex    string            `json:"win32_version_value_hex" bson:"win32_version_value_hex"`
-	SizeOfImage             int               `json:"size_of_image" bson:"size_of_image"`
-	SizeOfHeaders           int               `json:"size_of_headers" bson:"size_of_headers"`
-	ChecksumHex             string            `json:"checksum_hex" bson:"checksum_hex"`
-	SubsystemHex            string            `json:"subsystem_hex" bson:"subsystem_hex"`
-	DllCharacteristicsHex   string            `json:"dll_characteristics_hex" bson:"dll_characteristics_hex"`
-	SizeOfStackReserve      int               `json:"size_of_stack_reserve" bson:"size_of_stack_reserve"`
-	SizeOfStackCommit       int               `json:"size_of_stack_commit" bson:"size_of_stack_commit"`
-	SizeOfHeapReserve       int               `json:"size_of_heap_reserve" bson:"size_of_heap_reserve"`
-	SizeOfHeapCommit        int               `json:"size_of_heap_commit" bson:"size_of_heap_commit"`
-	LoaderFlagsHex          string            `json:"loader_flags_hex" bson:"loader_flags_hex"`
-	NumberOfRvaAndSizes     int               `json:"number_of_rva_and_sizes" bson:"number_of_rva_and_sizes"`
-	Hashes                  []*HashesTypeSTIX `json:"hashes" bson:"hashes"`
+	MagicHex                string           `json:"magic_hex" bson:"magic_hex"`
+	MajorLinkerVersion      int              `json:"major_linker_version" bson:"major_linker_version"`
+	MinorLinkerVersion      int              `json:"minor_linker_version" bson:"minor_linker_version"`
+	SizeOfCode              int              `json:"size_of_code" bson:"size_of_code"`
+	SizeOfInitializedData   int              `json:"size_of_initialized_data" bson:"size_of_initialized_data"`
+	SizeOfUninitializedData int              `json:"size_of_uninitialized_data" bson:"size_of_uninitialized_data"`
+	AddressOfEntryPoint     int              `json:"address_of_entry_point" bson:"address_of_entry_point"`
+	BaseOfCode              int              `json:"base_of_code" bson:"base_of_code"`
+	BaseOfData              int              `json:"base_of_data" bson:"base_of_data"`
+	ImageBase               int              `json:"image_base" bson:"image_base"`
+	SectionAlignment        int              `json:"section_alignment" bson:"section_alignment"`
+	FileAlignment           int              `json:"file_alignment" bson:"file_alignment"`
+	MajorOSVersion          int              `json:"major_os_version" bson:"major_os_version"`
+	MinorOSVersion          int              `json:"minor_os_version" bson:"minor_os_version"`
+	MajorImageVersion       int              `json:"major_image_version" bson:"major_image_version"`
+	MinorImageVersion       int              `json:"minor_image_version" bson:"minor_image_version"`
+	MajorSubsystemVersion   int              `json:"major_subsystem_version" bson:"major_subsystem_version"`
+	MinorSubsystemVersion   int              `json:"minor_subsystem_version" bson:"minor_subsystem_version"`
+	Win32VersionValueHex    string           `json:"win32_version_value_hex" bson:"win32_version_value_hex"`
+	SizeOfImage             int              `json:"size_of_image" bson:"size_of_image"`
+	SizeOfHeaders           int              `json:"size_of_headers" bson:"size_of_headers"`
+	ChecksumHex             string           `json:"checksum_hex" bson:"checksum_hex"`
+	SubsystemHex            string           `json:"subsystem_hex" bson:"subsystem_hex"`
+	DllCharacteristicsHex   string           `json:"dll_characteristics_hex" bson:"dll_characteristics_hex"`
+	SizeOfStackReserve      int              `json:"size_of_stack_reserve" bson:"size_of_stack_reserve"`
+	SizeOfStackCommit       int              `json:"size_of_stack_commit" bson:"size_of_stack_commit"`
+	SizeOfHeapReserve       int              `json:"size_of_heap_reserve" bson:"size_of_heap_reserve"`
+	SizeOfHeapCommit        int              `json:"size_of_heap_commit" bson:"size_of_heap_commit"`
+	LoaderFlagsHex          string           `json:"loader_flags_hex" bson:"loader_flags_hex"`
+	NumberOfRvaAndSizes     int              `json:"number_of_rva_and_sizes" bson:"number_of_rva_and_sizes"`
+	Hashes                  []HashesTypeSTIX `json:"hashes" bson:"hashes"`
 }
 
 //SanitizeStructWindowsPEOptionalHeaderTypeSTIX выполняет замену некоторых специальных символов на их HTML код
@@ -98,13 +98,13 @@ func (wpeoh WindowsPEOptionalHeaderTypeSTIX) SanitizeStructWindowsPEOptionalHead
 		return wpeoh
 	}
 
-	nhashex := make([]*HashesTypeSTIX, 0, hsize)
+	nhashex := make([]HashesTypeSTIX, 0, hsize)
 	for _, value := range wpeoh.Hashes {
-		ht := make(HashesTypeSTIX, len(*value))
-		for k, v := range *value {
+		ht := make(HashesTypeSTIX, len(value))
+		for k, v := range value {
 			ht[k] = v
 		}
-		nhashex = append(nhashex, &ht)
+		nhashex = append(nhashex, ht)
 	}
 	wpeoh.Hashes = nhashex
 
@@ -253,16 +253,16 @@ func (x509v3e X509V3ExtensionsTypeSTIX) SanitizeStructX509V3ExtensionsTypeSTIX()
 // ContainsRefs - данное свойство определяет файлы содержащиеся в архиве. ДОЛЖНО содержать список типа file или directory (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // Comment - определяет комментарий включенный как часть архивного файла
 type ArchiveFileExtensionSTIX struct {
-	ContainsRefs []*IdentifierTypeSTIX `json:"contains_refs" bson:"contains_refs"`
-	Comment      string                `json:"comment" bson:"comment"`
+	ContainsRefs []IdentifierTypeSTIX `json:"contains_refs" bson:"contains_refs"`
+	Comment      string               `json:"comment" bson:"comment"`
 }
 
 //NTFSFileExtensionSTIX  тип "ntfs-ext", по терминалогии STIX, содержит расширение определяющее значения свойств, характерные для файловой системы NTFS
 // SID - опреляет безопасный идентификатор, связанный с файлом
 // AlternateDataStreams - определяет список альтернативных NTFS потоков данных связанных с файлом
 type NTFSFileExtensionSTIX struct {
-	SID                  string                         `json:"sid" bson:"sid"`
-	AlternateDataStreams []*AlternateDataStreamTypeSTIX `json:"alternate_data_streams" bson:"alternate_data_streams"`
+	SID                  string                        `json:"sid" bson:"sid"`
+	AlternateDataStreams []AlternateDataStreamTypeSTIX `json:"alternate_data_streams" bson:"alternate_data_streams"`
 }
 
 //PDFFileExtensionSTIX тип "pdf-ext", по терминалогии STIX, содержит свойства специфичные для файлов в формате PDF
@@ -272,11 +272,11 @@ type NTFSFileExtensionSTIX struct {
 // Pdfid0 - определяет первый файловый идентификатор найденный в PDF файле
 // Pdfid1 - определяет второй файловый идентификатор найденный в PDF файле
 type PDFFileExtensionSTIX struct {
-	Version          string                         `json:"version" bson:"version"`
-	IsOptimized      bool                           `json:"is_optimized" bson:"is_optimized"`
-	DocumentInfoDict map[string]*DictionaryTypeSTIX `json:"document_info_dict" bson:"document_info_dict"`
-	Pdfid0           string                         `json:"pdfid0" bson:"pdfid0"`
-	Pdfid1           string                         `json:"pdfid1" bson:"pdfid1"`
+	Version          string                        `json:"version" bson:"version"`
+	IsOptimized      bool                          `json:"is_optimized" bson:"is_optimized"`
+	DocumentInfoDict map[string]DictionaryTypeSTIX `json:"document_info_dict" bson:"document_info_dict"`
+	Pdfid0           string                        `json:"pdfid0" bson:"pdfid0"`
+	Pdfid1           string                        `json:"pdfid1" bson:"pdfid1"`
 }
 
 //RasterImageFileExtensionSTIX тип "raster-image-ext", по терминалогии STIX, определяет специфичные расширения для растровых, графических файлов
@@ -287,10 +287,10 @@ type PDFFileExtensionSTIX struct {
 //  Соответственно, каждый ключ словаря ДОЛЖЕН быть сохраненной в регистре версией имени тега EXIF, например . Каждое значение словаря ДОЛЖНО быть либо (для типов данных int* EXIF),
 //  либо строкой (для всех других типов данных EXIF).
 type RasterImageFileExtensionSTIX struct {
-	ImageHeight  int                            `json:"image_height" bson:"image_height"`
-	ImageWidth   int                            `json:"image_width" bson:"image_width"`
-	BitsPerPixel int                            `json:"bits_per_pixel" bson:"bits_per_pixel"`
-	ExifTags     map[string]*DictionaryTypeSTIX `json:"exif_tags" bson:"exif_tags"`
+	ImageHeight  int                           `json:"image_height" bson:"image_height"`
+	ImageWidth   int                           `json:"image_width" bson:"image_width"`
+	BitsPerPixel int                           `json:"bits_per_pixel" bson:"bits_per_pixel"`
+	ExifTags     map[string]DictionaryTypeSTIX `json:"exif_tags" bson:"exif_tags"`
 }
 
 //HTTPRequestExtensionSTIX тип "http-request-ext", по терминалогии STIX, определяет специфичное расширение HTTP-запроса, задает расширение по умолчанию для захвата свойств
@@ -302,12 +302,12 @@ type RasterImageFileExtensionSTIX struct {
 // MessageBodyLength - указывает длину тела HTTP-сообщения, если оно включено, в байтах.
 // MessageBodyDataRef - указывает данные, содержащиеся в теле HTTP-сообщения, если они включены. Объект, на который ссылается это свойство, ДОЛЖЕН иметь тип artifact.
 type HTTPRequestExtensionSTIX struct {
-	RequestMethod      string                         `json:"request_method" bson:"request_method"`
-	RequestValue       string                         `json:"request_value" bson:"request_value"`
-	RequestVersion     string                         `json:"request_version" bson:"request_version"`
-	RequestHeader      map[string]*DictionaryTypeSTIX `json:"request_header" bson:"request_header"`
-	MessageBodyLength  int                            `json:"message_body_length" bson:"message_body_length"`
-	MessageBodyDataRef IdentifierTypeSTIX             `json:"message_body_data_ref" bson:"message_body_data_ref"`
+	RequestMethod      string                        `json:"request_method" bson:"request_method"`
+	RequestValue       string                        `json:"request_value" bson:"request_value"`
+	RequestVersion     string                        `json:"request_version" bson:"request_version"`
+	RequestHeader      map[string]DictionaryTypeSTIX `json:"request_header" bson:"request_header"`
+	MessageBodyLength  int                           `json:"message_body_length" bson:"message_body_length"`
+	MessageBodyDataRef IdentifierTypeSTIX            `json:"message_body_data_ref" bson:"message_body_data_ref"`
 }
 
 //ICMPExtensionSTIX тип "icmp-ext", по терминалогии STIX, определяет специфичное расширение по умолчанию для захвата свойств сетевого трафика, специфичных для ICMP. Ключ для этого
@@ -330,13 +330,13 @@ type ICMPExtensionSTIX struct {
 // SocketDescriptor - указывается значение дескриптора файла сокета, связанное с сокетом, как неотрицательное целое число.
 // SocketHandle - указывает значение дескриптора или индекса, связанное с сокетом.
 type NetworkSocketExtensionSTIX struct {
-	AddressFamily    EnumTypeSTIX                   `json:"address_family" bson:"address_family"`
-	IsBlocking       bool                           `json:"is_blocking" bson:"is_blocking"`
-	IsListening      bool                           `json:"is_listening" bson:"is_listening"`
-	Options          map[string]*DictionaryTypeSTIX `json:"options" bson:"options"`
-	SocketType       EnumTypeSTIX                   `json:"socket_type" bson:"socket_type"`
-	SocketDescriptor int                            `json:"socket_descriptor" bson:"socket_descriptor"`
-	SocketHandle     int                            `json:"socket_handle" bson:"socket_handle"`
+	AddressFamily    EnumTypeSTIX                  `json:"address_family" bson:"address_family"`
+	IsBlocking       bool                          `json:"is_blocking" bson:"is_blocking"`
+	IsListening      bool                          `json:"is_listening" bson:"is_listening"`
+	Options          map[string]DictionaryTypeSTIX `json:"options" bson:"options"`
+	SocketType       EnumTypeSTIX                  `json:"socket_type" bson:"socket_type"`
+	SocketDescriptor int                           `json:"socket_descriptor" bson:"socket_descriptor"`
+	SocketHandle     int                           `json:"socket_handle" bson:"socket_handle"`
 }
 
 //TCPExtensionSTIX тип "tcp-ext", по терминалогии STIX, определяет специфичное расширение задает расширение по умолчанию для захвата свойств сетевого трафика, специфичных для TCP.
@@ -373,7 +373,7 @@ type WindowsPEBinaryFileExtensionSTIX struct {
 	CharacteristicsHex      string                          `json:"characteristics_hex" bson:"characteristics_hex"`
 	FileHeaderHashes        HashesTypeSTIX                  `json:"file_header_hashes" bson:"file_header_hashes"`
 	OptionalHeader          WindowsPEOptionalHeaderTypeSTIX `json:"optional_header" bson:"optional_header"`
-	Sections                []*WindowsPESectionTypeSTIX     `json:"sections" bson:"sections"`
+	Sections                []WindowsPESectionTypeSTIX      `json:"sections" bson:"sections"`
 }
 
 //WindowsProcessExtensionSTIX тип "windows-process-ext", по терминалогии STIX, содержит рассширения расширение по умолчанию для захвата свойств,
@@ -386,13 +386,13 @@ type WindowsPEBinaryFileExtensionSTIX struct {
 // StartupInfo - указывает структуру STARTUP_INFO, используемую процессом в качестве словаря.
 // IntegrityLevel - указывает уровень целостности Windows или надежность процесса. Значения этого свойства ДОЛЖНЫ быть получены из перечисления windows-integrity-level-enum.
 type WindowsProcessExtensionSTIX struct {
-	ASLREnabled    bool                           `json:"aslr_enabled" bson:"aslr_enabled"`
-	DEPEnabled     bool                           `json:"dep_enabled" bson:"dep_enabled"`
-	Priority       string                         `json:"priority" bson:"priority"`
-	OwnerSID       string                         `json:"owner_sid" bson:"owner_sid"`
-	WindowTitle    string                         `json:"window_title" bson:"window_title"`
-	StartupInfo    map[string]*DictionaryTypeSTIX `json:"startup_info" bson:"startup_info"`
-	IntegrityLevel EnumTypeSTIX                   `json:"integrity_level" bson:"integrity_level"`
+	ASLREnabled    bool                          `json:"aslr_enabled" bson:"aslr_enabled"`
+	DEPEnabled     bool                          `json:"dep_enabled" bson:"dep_enabled"`
+	Priority       string                        `json:"priority" bson:"priority"`
+	OwnerSID       string                        `json:"owner_sid" bson:"owner_sid"`
+	WindowTitle    string                        `json:"window_title" bson:"window_title"`
+	StartupInfo    map[string]DictionaryTypeSTIX `json:"startup_info" bson:"startup_info"`
+	IntegrityLevel EnumTypeSTIX                  `json:"integrity_level" bson:"integrity_level"`
 }
 
 //WindowsServiceExtensionSTIX тип "windows-service-ext", по терминалогии STIX, содержит рассширения службы Windows задает расширение по умолчанию для
@@ -407,14 +407,14 @@ type WindowsProcessExtensionSTIX struct {
 // ServiceType - определяет тип сервиса. Значение данного поля ДОЛЖНО иметь тип windows-service-type-enum.
 // ServiceStatus - определяет статус сервиса. Значение данного поля ДОЛЖНО иметь тип windows-service-status-enum.
 type WindowsServiceExtensionSTIX struct {
-	ServiceName    string                `json:"service_name" bson:"service_name"`
-	Descriptions   []string              `json:"descriptions" bson:"descriptions"`
-	DisplayName    string                `json:"display_name" bson:"display_name"`
-	GroupName      string                `json:"group_name" bson:"group_name"`
-	StartType      EnumTypeSTIX          `json:"start_type" bson:"start_type"`
-	ServiceDllRefs []*IdentifierTypeSTIX `json:"service_dll_refs" bson:"service_dll_refs"`
-	ServiceType    EnumTypeSTIX          `json:"service_type" bson:"service_type"`
-	ServiceStatus  EnumTypeSTIX          `json:"service_status" bson:"service_status"`
+	ServiceName    string               `json:"service_name" bson:"service_name"`
+	Descriptions   []string             `json:"descriptions" bson:"descriptions"`
+	DisplayName    string               `json:"display_name" bson:"display_name"`
+	GroupName      string               `json:"group_name" bson:"group_name"`
+	StartType      EnumTypeSTIX         `json:"start_type" bson:"start_type"`
+	ServiceDllRefs []IdentifierTypeSTIX `json:"service_dll_refs" bson:"service_dll_refs"`
+	ServiceType    EnumTypeSTIX         `json:"service_type" bson:"service_type"`
+	ServiceStatus  EnumTypeSTIX         `json:"service_status" bson:"service_status"`
 }
 
 //UNIXAccountExtensionSTIX тип "unix-account-ext", по терминалогии STIX, содержит рассширения 'по умолчанию' захваченной дополнительной информации
@@ -440,11 +440,11 @@ type UNIXAccountExtensionSTIX struct {
 // Defanged - определяет были ли определены данные содержащиеся в объекте
 // Extensions - может содержать дополнительную информацию, относящуюся к объекту
 type OptionalCommonPropertiesCyberObservableObjectSTIX struct {
-	SpecVersion       string                         `json:"spec_version" bson:"spec_version"`
-	ObjectMarkingRefs []*IdentifierTypeSTIX          `json:"object_marking_refs" bson:"object_marking_refs"`
-	GranularMarkings  GranularMarkingsTypeSTIX       `json:"granular_markings" bson:"granular_markings"`
-	Defanged          bool                           `json:"defanged" bson:"defanged"`
-	Extensions        map[string]*DictionaryTypeSTIX `json:"extensions" bson:"extensions"`
+	SpecVersion       string                        `json:"spec_version" bson:"spec_version"`
+	ObjectMarkingRefs []IdentifierTypeSTIX          `json:"object_marking_refs" bson:"object_marking_refs"`
+	GranularMarkings  GranularMarkingsTypeSTIX      `json:"granular_markings" bson:"granular_markings"`
+	Defanged          bool                          `json:"defanged" bson:"defanged"`
+	Extensions        map[string]DictionaryTypeSTIX `json:"extensions" bson:"extensions"`
 }
 
 //ArtifactCyberObservableObjectSTIX объект "Artifact", по терминалогии STIX, позволяет захватывать массив байтов (8 бит) в виде строки в кодировке base64
@@ -489,12 +489,12 @@ type AutonomousSystemCyberObservableObjectSTIX struct {
 type DirectoryCyberObservableObjectSTIX struct {
 	CommonPropertiesObjectSTIX
 	OptionalCommonPropertiesCyberObservableObjectSTIX
-	Path         string                `json:"path" bson:"path" required:"true"`
-	PathEnc      string                `json:"path_enc" bson:"path_enc"`
-	Ctime        time.Time             `json:"ctime" bson:"ctime"`
-	Mtime        time.Time             `json:"mtime" bson:"mtime"`
-	Atime        time.Time             `json:"atime" bson:"atime"`
-	ContainsRefs []*IdentifierTypeSTIX `json:"contains_refs" bson:"contains_refs"`
+	Path         string               `json:"path" bson:"path" required:"true"`
+	PathEnc      string               `json:"path_enc" bson:"path_enc"`
+	Ctime        time.Time            `json:"ctime" bson:"ctime"`
+	Mtime        time.Time            `json:"mtime" bson:"mtime"`
+	Atime        time.Time            `json:"atime" bson:"atime"`
+	ContainsRefs []IdentifierTypeSTIX `json:"contains_refs" bson:"contains_refs"`
 }
 
 //DomainNameCyberObservableObjectSTIX объект "Domain Name", по терминалогии STIX, содержит сетевое доменное имя
@@ -503,8 +503,8 @@ type DirectoryCyberObservableObjectSTIX struct {
 type DomainNameCyberObservableObjectSTIX struct {
 	CommonPropertiesObjectSTIX
 	OptionalCommonPropertiesCyberObservableObjectSTIX
-	Value          string                `json:"value" bson:"value" required:"true"`
-	ResolvesToRefs []*IdentifierTypeSTIX `json:"resolves_to_refs" bson:"resolves_to_refs"`
+	Value          string               `json:"value" bson:"value" required:"true"`
+	ResolvesToRefs []IdentifierTypeSTIX `json:"resolves_to_refs" bson:"resolves_to_refs"`
 }
 
 //EmailAddressCyberObservableObjectSTIX объект "Email Address", по терминалогии STIX, содержит представление единственного email адреса
@@ -540,21 +540,21 @@ type EmailAddressCyberObservableObjectSTIX struct {
 type EmailMessageCyberObservableObjectSTIX struct {
 	CommonPropertiesObjectSTIX
 	OptionalCommonPropertiesCyberObservableObjectSTIX
-	IsMultipart            bool                           `json:"is_multipart" bson:"is_multipart" required:"true"`
-	Date                   time.Time                      `json:"date" bson:"date"`
-	ContentType            string                         `json:"content_type" bson:"content_type"`
-	FromRef                IdentifierTypeSTIX             `json:"from_ref" bson:"from_ref"`
-	SenderRef              IdentifierTypeSTIX             `json:"sender_ref" bson:"sender_ref"`
-	ToRefs                 []*IdentifierTypeSTIX          `json:"to_refs" bson:"to_refs"`
-	CcRefs                 []*IdentifierTypeSTIX          `json:"cc_refs" bson:"cc_refs"`
-	BccRefs                []*IdentifierTypeSTIX          `json:"bcc_refs" bson:"bcc_refs"`
-	MessageID              string                         `json:"message_id" bson:"message_id"`
-	Subject                string                         `json:"subject" bson:"subject"`
-	ReceivedLines          []string                       `json:"received_lines" bson:"received_lines"`
-	AdditionalHeaderFields map[string]*DictionaryTypeSTIX `json:"additional_header_fields" bson:"additional_header_fields"`
-	Body                   string                         `json:"body" bson:"body"`
-	BodyMultipart          []*EmailMIMEPartTypeSTIX       `json:"body_multipart" bson:"body_multipart"`
-	RawEmailRef            IdentifierTypeSTIX             `json:"raw_email_ref" bson:"raw_email_ref"`
+	IsMultipart            bool                          `json:"is_multipart" bson:"is_multipart" required:"true"`
+	Date                   time.Time                     `json:"date" bson:"date"`
+	ContentType            string                        `json:"content_type" bson:"content_type"`
+	FromRef                IdentifierTypeSTIX            `json:"from_ref" bson:"from_ref"`
+	SenderRef              IdentifierTypeSTIX            `json:"sender_ref" bson:"sender_ref"`
+	ToRefs                 []IdentifierTypeSTIX          `json:"to_refs" bson:"to_refs"`
+	CcRefs                 []IdentifierTypeSTIX          `json:"cc_refs" bson:"cc_refs"`
+	BccRefs                []IdentifierTypeSTIX          `json:"bcc_refs" bson:"bcc_refs"`
+	MessageID              string                        `json:"message_id" bson:"message_id"`
+	Subject                string                        `json:"subject" bson:"subject"`
+	ReceivedLines          []string                      `json:"received_lines" bson:"received_lines"`
+	AdditionalHeaderFields map[string]DictionaryTypeSTIX `json:"additional_header_fields" bson:"additional_header_fields"`
+	Body                   string                        `json:"body" bson:"body"`
+	BodyMultipart          []EmailMIMEPartTypeSTIX       `json:"body_multipart" bson:"body_multipart"`
+	RawEmailRef            IdentifierTypeSTIX            `json:"raw_email_ref" bson:"raw_email_ref"`
 }
 
 //CommonFileCyberObservableObjectSTIX общий объект "File Object", по терминалогии STIX, содержит объект со свойствами файла
@@ -619,7 +619,7 @@ type FileCyberObservableObjectSTIX struct {
 	Mtime              time.Time              `json:"mtime" bson:"mtime"`
 	Atime              time.Time              `json:"atime" bson:"atime"`
 	ParentDirectoryRef IdentifierTypeSTIX     `json:"parent_directory_ref" bson:"parent_directory_ref"`
-	ContainsRefs       []*IdentifierTypeSTIX  `json:"contains_refs" bson:"contains_refs"`
+	ContainsRefs       []IdentifierTypeSTIX   `json:"contains_refs" bson:"contains_refs"`
 	ContentRef         IdentifierTypeSTIX     `json:"content_ref" bson:"content_ref"`
 }
 
@@ -633,9 +633,9 @@ type FileCyberObservableObjectSTIX struct {
 type IPv4AddressCyberObservableObjectSTIX struct {
 	CommonPropertiesObjectSTIX
 	OptionalCommonPropertiesCyberObservableObjectSTIX
-	Value          string                `json:"value" bson:"value"`
-	ResolvesToRefs []*IdentifierTypeSTIX `json:"resolves_to_refs" bson:"resolves_to_refs"`
-	BelongsToRefs  []*IdentifierTypeSTIX `json:"belongs_to_refs" bson:"belongs_to_refs"`
+	Value          string               `json:"value" bson:"value"`
+	ResolvesToRefs []IdentifierTypeSTIX `json:"resolves_to_refs" bson:"resolves_to_refs"`
+	BelongsToRefs  []IdentifierTypeSTIX `json:"belongs_to_refs" bson:"belongs_to_refs"`
 }
 
 //IPv6AddressCyberObservableObjectSTIX объект "IPv6 Address Object", по терминалогии STIX, содержит один или более IPv6 адресов, выраженных с помощью нотации CIDR.
@@ -648,9 +648,9 @@ type IPv4AddressCyberObservableObjectSTIX struct {
 type IPv6AddressCyberObservableObjectSTIX struct {
 	CommonPropertiesObjectSTIX
 	OptionalCommonPropertiesCyberObservableObjectSTIX
-	Value          string                `json:"value" bson:"value"`
-	ResolvesToRefs []*IdentifierTypeSTIX `json:"resolves_to_refs" bson:"resolves_to_refs"`
-	BelongsToRefs  []*IdentifierTypeSTIX `json:"belongs_to_refs" bson:"belongs_to_refs"`
+	Value          string               `json:"value" bson:"value"`
+	ResolvesToRefs []IdentifierTypeSTIX `json:"resolves_to_refs" bson:"resolves_to_refs"`
+	BelongsToRefs  []IdentifierTypeSTIX `json:"belongs_to_refs" bson:"belongs_to_refs"`
 }
 
 //MACAddressCyberObservableObjectSTIX объект "MAC Address Object", по терминалогии STIX, содержит объект MAC-адрес, представляющий собой один адрес управления доступом к среде (MAC).
@@ -697,24 +697,24 @@ type MutexCyberObservableObjectSTIX struct {
 type CommonNetworkTrafficCyberObservableObjectSTIX struct {
 	CommonPropertiesObjectSTIX
 	OptionalCommonPropertiesCyberObservableObjectSTIX
-	Extensions        map[string]*json.RawMessage    `json:"extensions" bson:"extensions"`
-	Start             time.Time                      `json:"start" bson:"start"`
-	End               time.Time                      `json:"end" bson:"end"`
-	IsActive          bool                           `json:"is_active" bson:"is_active"`
-	SrcRef            IdentifierTypeSTIX             `json:"src_ref" bson:"src_ref"`
-	DstRef            IdentifierTypeSTIX             `json:"dst_ref" bson:"dst_ref"`
-	SrcPort           int                            `json:"src_port" bson:"src_port"`
-	DstPort           int                            `json:"dst_port" bson:"dst_port"`
-	Protocols         []string                       `json:"protocols" bson:"protocols"`
-	SrcByteCount      uint64                         `json:"src_byte_count" bson:"src_byte_count"`
-	DstByteCount      uint64                         `json:"dst_byte_count" bson:"dst_byte_count"`
-	SrcPackets        int                            `json:"src_packets" bson:"src_packets"`
-	DstPackets        int                            `json:"dst_packets" bson:"dst_packets"`
-	IPFix             map[string]*DictionaryTypeSTIX `json:"ipfix" bson:"ipfix"`
-	SrcPayloadRef     IdentifierTypeSTIX             `json:"src_payload_ref" bson:"src_payload_ref"`
-	DstPayloadRef     IdentifierTypeSTIX             `json:"dst_payload_ref" bson:"dst_payload_ref"`
-	EncapsulatesRefs  []*IdentifierTypeSTIX          `json:"encapsulates_refs" bson:"encapsulates_refs"`
-	EncapsulatedByRef IdentifierTypeSTIX             `json:"encapsulated_by_ref" bson:"encapsulated_by_ref"`
+	Extensions        map[string]*json.RawMessage   `json:"extensions" bson:"extensions"`
+	Start             time.Time                     `json:"start" bson:"start"`
+	End               time.Time                     `json:"end" bson:"end"`
+	IsActive          bool                          `json:"is_active" bson:"is_active"`
+	SrcRef            IdentifierTypeSTIX            `json:"src_ref" bson:"src_ref"`
+	DstRef            IdentifierTypeSTIX            `json:"dst_ref" bson:"dst_ref"`
+	SrcPort           int                           `json:"src_port" bson:"src_port"`
+	DstPort           int                           `json:"dst_port" bson:"dst_port"`
+	Protocols         []string                      `json:"protocols" bson:"protocols"`
+	SrcByteCount      uint64                        `json:"src_byte_count" bson:"src_byte_count"`
+	DstByteCount      uint64                        `json:"dst_byte_count" bson:"dst_byte_count"`
+	SrcPackets        int                           `json:"src_packets" bson:"src_packets"`
+	DstPackets        int                           `json:"dst_packets" bson:"dst_packets"`
+	IPFix             map[string]DictionaryTypeSTIX `json:"ipfix" bson:"ipfix"`
+	SrcPayloadRef     IdentifierTypeSTIX            `json:"src_payload_ref" bson:"src_payload_ref"`
+	DstPayloadRef     IdentifierTypeSTIX            `json:"dst_payload_ref" bson:"dst_payload_ref"`
+	EncapsulatesRefs  []IdentifierTypeSTIX          `json:"encapsulates_refs" bson:"encapsulates_refs"`
+	EncapsulatedByRef IdentifierTypeSTIX            `json:"encapsulated_by_ref" bson:"encapsulated_by_ref"`
 }
 
 //NetworkTrafficCyberObservableObjectSTIX объект "Network Traffic Object", по терминалогии STIX, содержит объект Сетевого трафика представляющий собой произвольный сетевой трафик,
@@ -743,24 +743,24 @@ type CommonNetworkTrafficCyberObservableObjectSTIX struct {
 type NetworkTrafficCyberObservableObjectSTIX struct {
 	CommonPropertiesObjectSTIX
 	OptionalCommonPropertiesCyberObservableObjectSTIX
-	Extensions        map[string]interface{}         `json:"extensions" bson:"extensions"`
-	Start             time.Time                      `json:"start" bson:"start"`
-	End               time.Time                      `json:"end" bson:"end"`
-	IsActive          bool                           `json:"is_active" bson:"is_active"`
-	SrcRef            IdentifierTypeSTIX             `json:"src_ref" bson:"src_ref"`
-	DstRef            IdentifierTypeSTIX             `json:"dst_ref" bson:"dst_ref"`
-	SrcPort           int                            `json:"src_port" bson:"src_port"`
-	DstPort           int                            `json:"dst_port" bson:"dst_port"`
-	Protocols         []string                       `json:"protocols" bson:"protocols"`
-	SrcByteCount      uint64                         `json:"src_byte_count" bson:"src_byte_count"`
-	DstByteCount      uint64                         `json:"dst_byte_count" bson:"dst_byte_count"`
-	SrcPackets        int                            `json:"src_packets" bson:"src_packets"`
-	DstPackets        int                            `json:"dst_packets" bson:"dst_packets"`
-	IPFix             map[string]*DictionaryTypeSTIX `json:"ipfix" bson:"ipfix"`
-	SrcPayloadRef     IdentifierTypeSTIX             `json:"src_payload_ref" bson:"src_payload_ref"`
-	DstPayloadRef     IdentifierTypeSTIX             `json:"dst_payload_ref" bson:"dst_payload_ref"`
-	EncapsulatesRefs  []*IdentifierTypeSTIX          `json:"encapsulates_refs" bson:"encapsulates_refs"`
-	EncapsulatedByRef IdentifierTypeSTIX             `json:"encapsulated_by_ref" bson:"encapsulated_by_ref"`
+	Extensions        map[string]interface{}        `json:"extensions" bson:"extensions"`
+	Start             time.Time                     `json:"start" bson:"start"`
+	End               time.Time                     `json:"end" bson:"end"`
+	IsActive          bool                          `json:"is_active" bson:"is_active"`
+	SrcRef            IdentifierTypeSTIX            `json:"src_ref" bson:"src_ref"`
+	DstRef            IdentifierTypeSTIX            `json:"dst_ref" bson:"dst_ref"`
+	SrcPort           int                           `json:"src_port" bson:"src_port"`
+	DstPort           int                           `json:"dst_port" bson:"dst_port"`
+	Protocols         []string                      `json:"protocols" bson:"protocols"`
+	SrcByteCount      uint64                        `json:"src_byte_count" bson:"src_byte_count"`
+	DstByteCount      uint64                        `json:"dst_byte_count" bson:"dst_byte_count"`
+	SrcPackets        int                           `json:"src_packets" bson:"src_packets"`
+	DstPackets        int                           `json:"dst_packets" bson:"dst_packets"`
+	IPFix             map[string]DictionaryTypeSTIX `json:"ipfix" bson:"ipfix"`
+	SrcPayloadRef     IdentifierTypeSTIX            `json:"src_payload_ref" bson:"src_payload_ref"`
+	DstPayloadRef     IdentifierTypeSTIX            `json:"dst_payload_ref" bson:"dst_payload_ref"`
+	EncapsulatesRefs  []IdentifierTypeSTIX          `json:"encapsulates_refs" bson:"encapsulates_refs"`
+	EncapsulatedByRef IdentifierTypeSTIX            `json:"encapsulated_by_ref" bson:"encapsulated_by_ref"`
 }
 
 //CommonProcessCyberObservableObjectSTIX общий объект "Process Object", по терминологии STIX, содержит общие свойства экземпляра компьютерной программы,
@@ -784,18 +784,18 @@ type NetworkTrafficCyberObservableObjectSTIX struct {
 type CommonProcessCyberObservableObjectSTIX struct {
 	CommonPropertiesObjectSTIX
 	OptionalCommonPropertiesCyberObservableObjectSTIX
-	Extensions           map[string]*json.RawMessage    `json:"extensions" bson:"extensions"`
-	IsHidden             bool                           `json:"is_hidden" bson:"is_hidden"`
-	PID                  int                            `json:"pid" bson:"pid"`
-	CreatedTime          time.Time                      `json:"created_time" bson:"created_time"`
-	Cwd                  string                         `json:"cwd" bson:"cwd"`
-	CommandLine          string                         `json:"command_line" bson:"command_line"`
-	EnvironmentVariables map[string]*DictionaryTypeSTIX `json:"environment_variables" bson:"environment_variables"`
-	OpenedConnectionRefs []*IdentifierTypeSTIX          `json:"opened_connection_refs" bson:"opened_connection_refs"`
-	CreatorUserRef       IdentifierTypeSTIX             `json:"creator_user_ref" bson:"creator_user_ref"`
-	ImageRef             IdentifierTypeSTIX             `json:"image_ref" bson:"image_ref"`
-	ParentRef            IdentifierTypeSTIX             `json:"parent_ref" bson:"parent_ref"`
-	ChildRefs            []*IdentifierTypeSTIX          `json:"child_refs" bson:"child_refs"`
+	Extensions           map[string]*json.RawMessage   `json:"extensions" bson:"extensions"`
+	IsHidden             bool                          `json:"is_hidden" bson:"is_hidden"`
+	PID                  int                           `json:"pid" bson:"pid"`
+	CreatedTime          time.Time                     `json:"created_time" bson:"created_time"`
+	Cwd                  string                        `json:"cwd" bson:"cwd"`
+	CommandLine          string                        `json:"command_line" bson:"command_line"`
+	EnvironmentVariables map[string]DictionaryTypeSTIX `json:"environment_variables" bson:"environment_variables"`
+	OpenedConnectionRefs []IdentifierTypeSTIX          `json:"opened_connection_refs" bson:"opened_connection_refs"`
+	CreatorUserRef       IdentifierTypeSTIX            `json:"creator_user_ref" bson:"creator_user_ref"`
+	ImageRef             IdentifierTypeSTIX            `json:"image_ref" bson:"image_ref"`
+	ParentRef            IdentifierTypeSTIX            `json:"parent_ref" bson:"parent_ref"`
+	ChildRefs            []IdentifierTypeSTIX          `json:"child_refs" bson:"child_refs"`
 }
 
 //ProcessCyberObservableObjectSTIX объект "Process Object", по терминологии STIX, содержит общие свойства экземпляра компьютерной программы,
@@ -819,18 +819,18 @@ type CommonProcessCyberObservableObjectSTIX struct {
 type ProcessCyberObservableObjectSTIX struct {
 	CommonPropertiesObjectSTIX
 	OptionalCommonPropertiesCyberObservableObjectSTIX
-	Extensions           map[string]interface{}         `json:"extensions" bson:"extensions"`
-	IsHidden             bool                           `json:"is_hidden" bson:"is_hidden"`
-	PID                  int                            `json:"pid" bson:"pid"`
-	CreatedTime          time.Time                      `json:"created_time" bson:"created_time"`
-	Cwd                  string                         `json:"cwd" bson:"cwd"`
-	CommandLine          string                         `json:"command_line" bson:"command_line"`
-	EnvironmentVariables map[string]*DictionaryTypeSTIX `json:"environment_variables" bson:"environment_variables"`
-	OpenedConnectionRefs []*IdentifierTypeSTIX          `json:"opened_connection_refs" bson:"opened_connection_refs"`
-	CreatorUserRef       IdentifierTypeSTIX             `json:"creator_user_ref" bson:"creator_user_ref"`
-	ImageRef             IdentifierTypeSTIX             `json:"image_ref" bson:"image_ref"`
-	ParentRef            IdentifierTypeSTIX             `json:"parent_ref" bson:"parent_ref"`
-	ChildRefs            []*IdentifierTypeSTIX          `json:"child_refs" bson:"child_refs"`
+	Extensions           map[string]interface{}        `json:"extensions" bson:"extensions"`
+	IsHidden             bool                          `json:"is_hidden" bson:"is_hidden"`
+	PID                  int                           `json:"pid" bson:"pid"`
+	CreatedTime          time.Time                     `json:"created_time" bson:"created_time"`
+	Cwd                  string                        `json:"cwd" bson:"cwd"`
+	CommandLine          string                        `json:"command_line" bson:"command_line"`
+	EnvironmentVariables map[string]DictionaryTypeSTIX `json:"environment_variables" bson:"environment_variables"`
+	OpenedConnectionRefs []IdentifierTypeSTIX          `json:"opened_connection_refs" bson:"opened_connection_refs"`
+	CreatorUserRef       IdentifierTypeSTIX            `json:"creator_user_ref" bson:"creator_user_ref"`
+	ImageRef             IdentifierTypeSTIX            `json:"image_ref" bson:"image_ref"`
+	ParentRef            IdentifierTypeSTIX            `json:"parent_ref" bson:"parent_ref"`
+	ChildRefs            []IdentifierTypeSTIX          `json:"child_refs" bson:"child_refs"`
 }
 
 //SoftwareCyberObservableObjectSTIX объект "Software Object", по терминологии STIX, содержит свойства, связанные с программным обеспечением, включая программные продукты.

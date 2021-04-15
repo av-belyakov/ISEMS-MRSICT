@@ -17,7 +17,7 @@ import (
 type EnumTypeSTIX string
 
 //ExternalReferencesTypeSTIX тип "external-reference", по терминалогии STIX, является списком с информацией о внешних ссылках не относящихся к STIX информации
-type ExternalReferencesTypeSTIX []*ExternalReferenceTypeElementSTIX
+type ExternalReferencesTypeSTIX []ExternalReferenceTypeElementSTIX
 
 //CheckExternalReferencesTypeSTIX выполняет проверку значений типа ExternalReferencesTypeSTIX
 func (ertstix *ExternalReferencesTypeSTIX) CheckExternalReferencesTypeSTIX() bool {
@@ -41,10 +41,10 @@ func (ertstix ExternalReferencesTypeSTIX) SanitizeStructExternalReferencesTypeST
 		return ertstix
 	}
 
-	ert := make([]*ExternalReferenceTypeElementSTIX, 0, size)
+	ert := make([]ExternalReferenceTypeElementSTIX, 0, size)
 	for _, v := range ertstix {
 		tmp := v.SanitizeStructExternalReferenceTypeElementSTIX()
-		ert = append(ert, &tmp)
+		ert = append(ert, tmp)
 	}
 
 	return ert
@@ -127,7 +127,7 @@ func (itstix *IdentifierTypeSTIX) AddValue(str string) {
 }
 
 //KillChainPhasesTypeSTIX тип "kill-chain-phases", по терминалогии STIX, содержащий цепочки фактов, приведших к какому либо урону
-type KillChainPhasesTypeSTIX []*KillChainPhasesTypeElementSTIX
+type KillChainPhasesTypeSTIX []KillChainPhasesTypeElementSTIX
 
 //SanitizeStructKillChainPhasesTypeSTIX выполняет замену некоторых специальных символов на их HTML код
 func (kcptstix KillChainPhasesTypeSTIX) SanitizeStructKillChainPhasesTypeSTIX() KillChainPhasesTypeSTIX {
@@ -264,7 +264,7 @@ type LanguageContentTypeSTIX struct {
 	Labels             []string                   `json:"labels" bson:"labels"`
 	Сonfidence         int                        `json:"confidence" bson:"confidence"`
 	ExternalReferences ExternalReferencesTypeSTIX `json:"external_references" bson:"external_references"`
-	ObjectMarkingRefs  []*IdentifierTypeSTIX      `json:"object_marking_refs" bson:"object_marking_refs"`
+	ObjectMarkingRefs  []IdentifierTypeSTIX       `json:"object_marking_refs" bson:"object_marking_refs"`
 	GranularMarkings   GranularMarkingsTypeSTIX   `json:"granular_markings" bson:"granular_markings"`
 }
 
@@ -329,7 +329,7 @@ type MarkingDefinitionObjectSTIX struct {
 	Definition         map[string]string          `json:"definition" bson:"definition"`
 	CreatedByRef       IdentifierTypeSTIX         `json:"created_by_ref" bson:"created_by_ref"`
 	ExternalReferences ExternalReferencesTypeSTIX `json:"external_references" bson:"external_references"`
-	ObjectMarkingRefs  []*IdentifierTypeSTIX      `json:"object_marking_refs" bson:"object_marking_refs"`
+	ObjectMarkingRefs  []IdentifierTypeSTIX       `json:"object_marking_refs" bson:"object_marking_refs"`
 	GranularMarkings   GranularMarkingsTypeSTIX   `json:"granular_markings" bson:"granular_markings"`
 }
 

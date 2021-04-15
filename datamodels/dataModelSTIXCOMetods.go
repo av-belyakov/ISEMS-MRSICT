@@ -40,13 +40,13 @@ func (ocpcstix *OptionalCommonPropertiesCyberObservableObjectSTIX) checkingTypeC
 func (ocpcstix OptionalCommonPropertiesCyberObservableObjectSTIX) sanitizeStruct() OptionalCommonPropertiesCyberObservableObjectSTIX {
 	//обработка содержимого списка поля Extensions
 	if len(ocpcstix.Extensions) > 0 {
-		ext := make(map[string]*DictionaryTypeSTIX, len(ocpcstix.Extensions))
+		ext := make(map[string]DictionaryTypeSTIX, len(ocpcstix.Extensions))
 		for k, v := range ocpcstix.Extensions {
 			switch v := v.dictionary.(type) {
 			case string:
-				ext[k] = &DictionaryTypeSTIX{commonlibs.StringSanitize(string(v))}
+				ext[k] = DictionaryTypeSTIX{commonlibs.StringSanitize(string(v))}
 			default:
-				ext[k] = &DictionaryTypeSTIX{v}
+				ext[k] = DictionaryTypeSTIX{v}
 			}
 		}
 		ocpcstix.Extensions = ext
@@ -58,10 +58,10 @@ func (ocpcstix OptionalCommonPropertiesCyberObservableObjectSTIX) sanitizeStruct
 func (ocpcstix OptionalCommonPropertiesCyberObservableObjectSTIX) ToStringBeautiful() string {
 	var str string
 	str += fmt.Sprintf("spec_version: '%s'\n", ocpcstix.SpecVersion)
-	str += fmt.Sprintf("object_marking_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+	str += fmt.Sprintf("object_marking_refs: \n%v", func(l []IdentifierTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tobject_marking_ref '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\tobject_marking_ref '%d': '%v'\n", k, v)
 		}
 		return str
 	}(ocpcstix.ObjectMarkingRefs))
@@ -69,10 +69,10 @@ func (ocpcstix OptionalCommonPropertiesCyberObservableObjectSTIX) ToStringBeauti
 	str += fmt.Sprintf("\tlang: '%s'\n", ocpcstix.GranularMarkings.Lang)
 	str += fmt.Sprintf("\tmarking_ref: '%v'\n", ocpcstix.GranularMarkings.MarkingRef)
 	str += fmt.Sprintf("defanged: '%v'\n", ocpcstix.Defanged)
-	str += fmt.Sprintf("extensions: \n%v", func(l map[string]*DictionaryTypeSTIX) string {
+	str += fmt.Sprintf("extensions: \n%v", func(l map[string]DictionaryTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\t'%s': '%v'\n", k, *v)
+			str += fmt.Sprintf("\t'%s': '%v'\n", k, v)
 		}
 		return str
 	}(ocpcstix.Extensions))
@@ -290,10 +290,10 @@ func (dstix DirectoryCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str += fmt.Sprintf("ctime: '%v'\n", dstix.Ctime)
 	str += fmt.Sprintf("mtime: '%v'\n", dstix.Mtime)
 	str += fmt.Sprintf("atime: '%s'\n", dstix.Atime)
-	str += fmt.Sprintf("contains_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+	str += fmt.Sprintf("contains_refs: \n%v", func(l []IdentifierTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tcontains_ref '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\tcontains_ref '%d': '%v'\n", k, v)
 		}
 		return str
 	}(dstix.ContainsRefs))
@@ -361,10 +361,10 @@ func (dnstix DomainNameCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := dnstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += dnstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
 	str += fmt.Sprintf("value: '%s'\n", dnstix.Value)
-	str += fmt.Sprintf("resolves_to_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+	str += fmt.Sprintf("resolves_to_refs: \n%v", func(l []IdentifierTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tresolves_to_ref '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\tresolves_to_ref '%d': '%v'\n", k, v)
 		}
 		return str
 	}(dnstix.ResolvesToRefs))
@@ -528,13 +528,13 @@ func (emstix EmailMessageCyberObservableObjectSTIX) SanitizeStruct() EmailMessag
 	}
 
 	if len(emstix.AdditionalHeaderFields) > 0 {
-		tmp := make(map[string]*DictionaryTypeSTIX, len(emstix.AdditionalHeaderFields))
+		tmp := make(map[string]DictionaryTypeSTIX, len(emstix.AdditionalHeaderFields))
 		for k, v := range emstix.AdditionalHeaderFields {
 			switch v := v.dictionary.(type) {
 			case string:
-				tmp[k] = &DictionaryTypeSTIX{commonlibs.StringSanitize(string(v))}
+				tmp[k] = DictionaryTypeSTIX{commonlibs.StringSanitize(string(v))}
 			default:
-				tmp[k] = &DictionaryTypeSTIX{v}
+				tmp[k] = DictionaryTypeSTIX{v}
 			}
 		}
 		emstix.AdditionalHeaderFields = tmp
@@ -543,9 +543,9 @@ func (emstix EmailMessageCyberObservableObjectSTIX) SanitizeStruct() EmailMessag
 	emstix.Body = commonlibs.StringSanitize(emstix.Body)
 
 	if len(emstix.BodyMultipart) > 0 {
-		tmp := make([]*EmailMIMEPartTypeSTIX, 0, len(emstix.BodyMultipart))
+		tmp := make([]EmailMIMEPartTypeSTIX, 0, len(emstix.BodyMultipart))
 		for _, v := range emstix.BodyMultipart {
-			tmp = append(tmp, &EmailMIMEPartTypeSTIX{
+			tmp = append(tmp, EmailMIMEPartTypeSTIX{
 				Body:               commonlibs.StringSanitize(v.Body),
 				BodyRawRef:         v.BodyRawRef,
 				ContentType:        commonlibs.StringSanitize(v.ContentType),
@@ -572,24 +572,24 @@ func (emstix EmailMessageCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str += fmt.Sprintf("content_type: '%s'\n", emstix.ContentType)
 	str += fmt.Sprintf("from_ref: '%v'\n", emstix.FromRef)
 	str += fmt.Sprintf("sender_ref: '%v'\n", emstix.SenderRef)
-	str += fmt.Sprintf("to_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+	str += fmt.Sprintf("to_refs: \n%v", func(l []IdentifierTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tto_ref '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\tto_ref '%d': '%v'\n", k, v)
 		}
 		return str
 	}(emstix.ToRefs))
-	str += fmt.Sprintf("cc_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+	str += fmt.Sprintf("cc_refs: \n%v", func(l []IdentifierTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tcc_ref '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\tcc_ref '%d': '%v'\n", k, v)
 		}
 		return str
 	}(emstix.CcRefs))
-	str += fmt.Sprintf("bcc_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+	str += fmt.Sprintf("bcc_refs: \n%v", func(l []IdentifierTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tbcc_ref '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\tbcc_ref '%d': '%v'\n", k, v)
 		}
 		return str
 	}(emstix.BccRefs))
@@ -602,15 +602,15 @@ func (emstix EmailMessageCyberObservableObjectSTIX) ToStringBeautiful() string {
 		}
 		return str
 	}(emstix.ReceivedLines))
-	str += fmt.Sprintf("additional_header_fields: \n%v", func(l map[string]*DictionaryTypeSTIX) string {
+	str += fmt.Sprintf("additional_header_fields: \n%v", func(l map[string]DictionaryTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\t'%s': '%v'\n", k, *v)
+			str += fmt.Sprintf("\t'%s': '%v'\n", k, v)
 		}
 		return str
 	}(emstix.AdditionalHeaderFields))
 	str += fmt.Sprintf("body: '%v'\n", emstix.Body)
-	str += fmt.Sprintf("body_multipart: \n%v", func(l []*EmailMIMEPartTypeSTIX) string {
+	str += fmt.Sprintf("body_multipart: \n%v", func(l []EmailMIMEPartTypeSTIX) string {
 		var str string
 		for k, v := range l {
 			str += fmt.Sprintf("\tbody_multipart '%d':\n", k)
@@ -765,7 +765,7 @@ func (fstix FileCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str += fmt.Sprintf("mtime: '%v'\n", fstix.Mtime)
 	str += fmt.Sprintf("atime: '%v'\n", fstix.Atime)
 	str += fmt.Sprintf("parent_directory_ref: '%v'\n", fstix.ParentDirectoryRef)
-	str += fmt.Sprintf("contains_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+	str += fmt.Sprintf("contains_refs: \n%v", func(l []IdentifierTypeSTIX) string {
 		var str string
 		for k, v := range l {
 			str += fmt.Sprintf("\tcontains_ref '%d': '%v'\n", k, v)
@@ -860,14 +860,14 @@ func (ip4stix IPv4AddressCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := ip4stix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += ip4stix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
 	str += fmt.Sprintf("value: '%s'\n", ip4stix.Value)
-	str += fmt.Sprintf("resolves_to_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+	str += fmt.Sprintf("resolves_to_refs: \n%v", func(l []IdentifierTypeSTIX) string {
 		var str string
 		for k, v := range l {
 			str += fmt.Sprintf("\tresolves_to_ref '%d': '%v'\n", k, v)
 		}
 		return str
 	}(ip4stix.ResolvesToRefs))
-	str += fmt.Sprintf("belongs_to_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+	str += fmt.Sprintf("belongs_to_refs: \n%v", func(l []IdentifierTypeSTIX) string {
 		var str string
 		for k, v := range l {
 			str += fmt.Sprintf("\tbelongs_to_ref '%d': '%v'\n", k, v)
@@ -948,14 +948,14 @@ func (ip6stix IPv6AddressCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := ip6stix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += ip6stix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
 	str += fmt.Sprintf("value: '%s'\n", ip6stix.Value)
-	str += fmt.Sprintf("resolves_to_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+	str += fmt.Sprintf("resolves_to_refs: \n%v", func(l []IdentifierTypeSTIX) string {
 		var str string
 		for k, v := range l {
 			str += fmt.Sprintf("\tresolves_to_ref '%d': '%v'\n", k, v)
 		}
 		return str
 	}(ip6stix.ResolvesToRefs))
-	str += fmt.Sprintf("belongs_to_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+	str += fmt.Sprintf("belongs_to_refs: \n%v", func(l []IdentifierTypeSTIX) string {
 		var str string
 		for k, v := range l {
 			str += fmt.Sprintf("\tbelongs_to_ref '%d': '%v'\n", k, v)
@@ -1201,13 +1201,13 @@ func (ntstix NetworkTrafficCyberObservableObjectSTIX) SanitizeStruct() NetworkTr
 
 	sizeIPFix := len(ntstix.IPFix)
 	if sizeIPFix > 0 {
-		tmp := make(map[string]*DictionaryTypeSTIX, sizeIPFix)
+		tmp := make(map[string]DictionaryTypeSTIX, sizeIPFix)
 		for k, v := range ntstix.IPFix {
 			switch v := v.dictionary.(type) {
 			case string:
-				tmp[k] = &DictionaryTypeSTIX{commonlibs.StringSanitize(string(v))}
+				tmp[k] = DictionaryTypeSTIX{commonlibs.StringSanitize(string(v))}
 			default:
-				tmp[k] = &DictionaryTypeSTIX{v}
+				tmp[k] = DictionaryTypeSTIX{v}
 			}
 		}
 		ntstix.IPFix = tmp
@@ -1250,19 +1250,19 @@ func (ntstix NetworkTrafficCyberObservableObjectSTIX) ToStringBeautiful() string
 	str += fmt.Sprintf("dst_byte_count: '%d'\n", ntstix.DstByteCount)
 	str += fmt.Sprintf("src_packets: '%d'\n", ntstix.SrcPackets)
 	str += fmt.Sprintf("dst_packets: '%d'\n", ntstix.DstPackets)
-	str += fmt.Sprintf("ipfix: \n%v", func(l map[string]*DictionaryTypeSTIX) string {
+	str += fmt.Sprintf("ipfix: \n%v", func(l map[string]DictionaryTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\t'%s': '%v'\n", k, *v)
+			str += fmt.Sprintf("\t'%s': '%v'\n", k, v)
 		}
 		return str
 	}(ntstix.IPFix))
 	str += fmt.Sprintf("src_payload_ref: '%v'\n", ntstix.SrcPayloadRef)
 	str += fmt.Sprintf("dst_payload_ref: '%v'\n", ntstix.DstPayloadRef)
-	str += fmt.Sprintf("encapsulates_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+	str += fmt.Sprintf("encapsulates_refs: \n%v", func(l []IdentifierTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tencapsulates_ref '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\tencapsulates_ref '%d': '%v'\n", k, v)
 		}
 		return str
 	}(ntstix.EncapsulatesRefs))
@@ -1381,13 +1381,13 @@ func (pstix ProcessCyberObservableObjectSTIX) SanitizeStruct() ProcessCyberObser
 
 	sizeEnv := len(pstix.EnvironmentVariables)
 	if sizeEnv > 0 {
-		tmp := make(map[string]*DictionaryTypeSTIX, sizeEnv)
+		tmp := make(map[string]DictionaryTypeSTIX, sizeEnv)
 		for k, v := range pstix.EnvironmentVariables {
 			switch v := v.dictionary.(type) {
 			case string:
-				tmp[k] = &DictionaryTypeSTIX{commonlibs.StringSanitize(string(v))}
+				tmp[k] = DictionaryTypeSTIX{commonlibs.StringSanitize(string(v))}
 			default:
-				tmp[k] = &DictionaryTypeSTIX{v}
+				tmp[k] = DictionaryTypeSTIX{v}
 			}
 		}
 		pstix.EnvironmentVariables = tmp
@@ -1418,27 +1418,27 @@ func (pstix ProcessCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str += fmt.Sprintf("created_time: '%v'\n", pstix.CreatedTime)
 	str += fmt.Sprintf("cwd: '%s'\n", pstix.Cwd)
 	str += fmt.Sprintf("command_line: '%s'\n", pstix.CommandLine)
-	str += fmt.Sprintf("environment_variables: \n%v", func(l map[string]*DictionaryTypeSTIX) string {
+	str += fmt.Sprintf("environment_variables: \n%v", func(l map[string]DictionaryTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\t'%s': '%v'\n", k, *v)
+			str += fmt.Sprintf("\t'%s': '%v'\n", k, v)
 		}
 		return str
 	}(pstix.EnvironmentVariables))
-	str += fmt.Sprintf("opened_connection_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+	str += fmt.Sprintf("opened_connection_refs: \n%v", func(l []IdentifierTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\topened_connection_ref '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\topened_connection_ref '%d': '%v'\n", k, v)
 		}
 		return str
 	}(pstix.OpenedConnectionRefs))
 	str += fmt.Sprintf("creator_user_ref: '%v'\n", pstix.CreatorUserRef)
 	str += fmt.Sprintf("image_ref: '%v'\n", pstix.ImageRef)
 	str += fmt.Sprintf("parent_ref: '%v'\n", pstix.ParentRef)
-	str += fmt.Sprintf("child_refs: \n%v", func(l []*IdentifierTypeSTIX) string {
+	str += fmt.Sprintf("child_refs: \n%v", func(l []IdentifierTypeSTIX) string {
 		var str string
 		for k, v := range l {
-			str += fmt.Sprintf("\tchild_ref '%d': '%v'\n", k, *v)
+			str += fmt.Sprintf("\tchild_ref '%d': '%v'\n", k, v)
 		}
 		return str
 	}(pstix.ChildRefs))

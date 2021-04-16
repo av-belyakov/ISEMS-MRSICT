@@ -83,6 +83,7 @@ func (cpdostix CommonPropertiesDomainObjectSTIX) sanitizeStruct() CommonProperti
 	return cpdostix
 }
 
+//comparisonTypeCommonFields выполняет сравнение двух объектов типа CommonPropertiesDomainObjectSTIX
 func (cpdostix *CommonPropertiesDomainObjectSTIX) comparisonTypeCommonFields(coNew *CommonPropertiesDomainObjectSTIX) (bool, []OldFieldValueObjectType) {
 	var (
 		isEqual bool = true
@@ -95,8 +96,6 @@ func (cpdostix *CommonPropertiesDomainObjectSTIX) comparisonTypeCommonFields(coN
 	newValue := reflect.ValueOf(*coNew)
 	typeOfNewValue := newValue.Type()
 
-	//fmt.Println("---=== func 'comparisonTypeCommonFields', only for 'CommonPropertiesDomainObjectSTIX' ===---")
-
 	for i := 0; i < oldValue.NumField(); i++ {
 		for j := 0; j < newValue.NumField(); j++ {
 			if typeOfOldValue.Field(i).Name != typeOfNewValue.Field(j).Name {
@@ -106,8 +105,6 @@ func (cpdostix *CommonPropertiesDomainObjectSTIX) comparisonTypeCommonFields(coN
 			if reflect.DeepEqual(oldValue.Field(i).Interface(), newValue.Field(j).Interface()) {
 				continue
 			}
-
-			//fmt.Printf("---=== func 'comparisonTypeCommonFields', old value '%v' ===---\n", oldValue.Field(i).Interface())
 
 			fieldType := typeOfOldValue.Field(i).Type.Name()
 			if fieldType == "" {
@@ -244,6 +241,7 @@ func (apstix AttackPatternDomainObjectsSTIX) GetID() string {
 	return apstix.ID
 }
 
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа AttackPatternDomainObjectsSTIX
 func (apstix *AttackPatternDomainObjectsSTIX) ComparisonTypeCommonFields(apNew *AttackPatternDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -260,8 +258,6 @@ func (apstix *AttackPatternDomainObjectsSTIX) ComparisonTypeCommonFields(apNew *
 
 	newValue := reflect.ValueOf(*apNew)
 	typeOfNewValue := newValue.Type()
-
-	fmt.Println("---=== func 'ComparisonTypeCommonFields', only for 'AttackPatternDomainObjectsSTIX' ===---")
 
 	for i := 0; i < oldValue.NumField(); i++ {
 		for j := 0; j < newValue.NumField(); j++ {
@@ -287,10 +283,6 @@ func (apstix *AttackPatternDomainObjectsSTIX) ComparisonTypeCommonFields(apNew *
 				}
 
 				isEqual = false
-
-				fmt.Println("---=== func 'ComparisonTypeCommonFields', only for 'AttackPatternDomainObjectsSTIX' ===---")
-				fmt.Println(result)
-				fmt.Println("________ END __________")
 
 				for _, v := range result {
 					cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
@@ -395,6 +387,75 @@ func (cstix CampaignDomainObjectsSTIX) GetID() string {
 	return cstix.ID
 }
 
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа CampaignDomainObjectsSTIX
+func (cstix *CampaignDomainObjectsSTIX) ComparisonTypeCommonFields(cNew *CampaignDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             cstix.ID,
+		}
+	)
+
+	oldValue := reflect.ValueOf(*cstix)
+	typeOfOldValue := oldValue.Type()
+
+	newValue := reflect.ValueOf(*cNew)
+	typeOfNewValue := newValue.Type()
+
+	for i := 0; i < oldValue.NumField(); i++ {
+		for j := 0; j < newValue.NumField(); j++ {
+			if typeOfOldValue.Field(i).Name != typeOfNewValue.Field(j).Name {
+				continue
+			}
+
+			if typeOfOldValue.Field(i).Name == "CommonPropertiesDomainObjectSTIX" {
+				//привести значение к типу CommonPropertiesDomainObjectSTIX
+				cpdoOld, ok := oldValue.Field(i).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				cpdoNew, ok := newValue.Field(j).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				ok, result := cpdoOld.comparisonTypeCommonFields(&cpdoNew)
+				if ok {
+					continue
+				}
+
+				isEqual = false
+
+				for _, v := range result {
+					cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+						FeildType: v.FeildType,
+						Path:      path.Join("CampaignDomainObjectsSTIX", v.Path),
+						Value:     v.Value,
+					})
+				}
+
+				continue
+			}
+
+			if !reflect.DeepEqual(oldValue.Field(i).Interface(), newValue.Field(j).Interface()) {
+				cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+					FeildType: typeOfOldValue.Field(i).Type.Name(),
+					Path:      path.Join("CampaignDomainObjectsSTIX", typeOfOldValue.Field(i).Name),
+					Value:     oldValue.Field(i).Interface(),
+				})
+
+				isEqual = false
+			}
+		}
+	}
+
+	return isEqual, cot, nil
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (cstix CampaignDomainObjectsSTIX) ToStringBeautiful() string {
 	str := cstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -461,6 +522,75 @@ func (castix CourseOfActionDomainObjectsSTIX) SanitizeStruct() CourseOfActionDom
 //GetID возвращает ID STIX объекта
 func (castix CourseOfActionDomainObjectsSTIX) GetID() string {
 	return castix.ID
+}
+
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа CourseOfActionDomainObjectsSTIX
+func (cofastix *CourseOfActionDomainObjectsSTIX) ComparisonTypeCommonFields(cofaNew *CourseOfActionDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             cofastix.ID,
+		}
+	)
+
+	oldValue := reflect.ValueOf(*cofastix)
+	typeOfOldValue := oldValue.Type()
+
+	newValue := reflect.ValueOf(*cofaNew)
+	typeOfNewValue := newValue.Type()
+
+	for i := 0; i < oldValue.NumField(); i++ {
+		for j := 0; j < newValue.NumField(); j++ {
+			if typeOfOldValue.Field(i).Name != typeOfNewValue.Field(j).Name {
+				continue
+			}
+
+			if typeOfOldValue.Field(i).Name == "CommonPropertiesDomainObjectSTIX" {
+				//привести значение к типу CommonPropertiesDomainObjectSTIX
+				cpdoOld, ok := oldValue.Field(i).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				cpdoNew, ok := newValue.Field(j).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				ok, result := cpdoOld.comparisonTypeCommonFields(&cpdoNew)
+				if ok {
+					continue
+				}
+
+				isEqual = false
+
+				for _, v := range result {
+					cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+						FeildType: v.FeildType,
+						Path:      path.Join("CourseOfActionDomainObjectsSTIX", v.Path),
+						Value:     v.Value,
+					})
+				}
+
+				continue
+			}
+
+			if !reflect.DeepEqual(oldValue.Field(i).Interface(), newValue.Field(j).Interface()) {
+				cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+					FeildType: typeOfOldValue.Field(i).Type.Name(),
+					Path:      path.Join("CourseOfActionDomainObjectsSTIX", typeOfOldValue.Field(i).Name),
+					Value:     oldValue.Field(i).Interface(),
+				})
+
+				isEqual = false
+			}
+		}
+	}
+
+	return isEqual, cot, nil
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -535,6 +665,75 @@ func (gstix GroupingDomainObjectsSTIX) SanitizeStruct() GroupingDomainObjectsSTI
 //GetID возвращает ID STIX объекта
 func (gstix GroupingDomainObjectsSTIX) GetID() string {
 	return gstix.ID
+}
+
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа GroupingDomainObjectsSTIX
+func (gstix *GroupingDomainObjectsSTIX) ComparisonTypeCommonFields(gNew *GroupingDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             gstix.ID,
+		}
+	)
+
+	oldValue := reflect.ValueOf(*gstix)
+	typeOfOldValue := oldValue.Type()
+
+	newValue := reflect.ValueOf(*gNew)
+	typeOfNewValue := newValue.Type()
+
+	for i := 0; i < oldValue.NumField(); i++ {
+		for j := 0; j < newValue.NumField(); j++ {
+			if typeOfOldValue.Field(i).Name != typeOfNewValue.Field(j).Name {
+				continue
+			}
+
+			if typeOfOldValue.Field(i).Name == "CommonPropertiesDomainObjectSTIX" {
+				//привести значение к типу CommonPropertiesDomainObjectSTIX
+				cpdoOld, ok := oldValue.Field(i).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				cpdoNew, ok := newValue.Field(j).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				ok, result := cpdoOld.comparisonTypeCommonFields(&cpdoNew)
+				if ok {
+					continue
+				}
+
+				isEqual = false
+
+				for _, v := range result {
+					cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+						FeildType: v.FeildType,
+						Path:      path.Join("GroupingDomainObjectsSTIX", v.Path),
+						Value:     v.Value,
+					})
+				}
+
+				continue
+			}
+
+			if !reflect.DeepEqual(oldValue.Field(i).Interface(), newValue.Field(j).Interface()) {
+				cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+					FeildType: typeOfOldValue.Field(i).Type.Name(),
+					Path:      path.Join("GroupingDomainObjectsSTIX", typeOfOldValue.Field(i).Name),
+					Value:     oldValue.Field(i).Interface(),
+				})
+
+				isEqual = false
+			}
+		}
+	}
+
+	return isEqual, cot, nil
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -622,6 +821,75 @@ func (istix IdentityDomainObjectsSTIX) SanitizeStruct() IdentityDomainObjectsSTI
 //GetID возвращает ID STIX объекта
 func (istix IdentityDomainObjectsSTIX) GetID() string {
 	return istix.ID
+}
+
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа IdentityDomainObjectsSTIX
+func (istix *IdentityDomainObjectsSTIX) ComparisonTypeCommonFields(iNew *IdentityDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             istix.ID,
+		}
+	)
+
+	oldValue := reflect.ValueOf(*istix)
+	typeOfOldValue := oldValue.Type()
+
+	newValue := reflect.ValueOf(*iNew)
+	typeOfNewValue := newValue.Type()
+
+	for i := 0; i < oldValue.NumField(); i++ {
+		for j := 0; j < newValue.NumField(); j++ {
+			if typeOfOldValue.Field(i).Name != typeOfNewValue.Field(j).Name {
+				continue
+			}
+
+			if typeOfOldValue.Field(i).Name == "CommonPropertiesDomainObjectSTIX" {
+				//привести значение к типу CommonPropertiesDomainObjectSTIX
+				cpdoOld, ok := oldValue.Field(i).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				cpdoNew, ok := newValue.Field(j).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				ok, result := cpdoOld.comparisonTypeCommonFields(&cpdoNew)
+				if ok {
+					continue
+				}
+
+				isEqual = false
+
+				for _, v := range result {
+					cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+						FeildType: v.FeildType,
+						Path:      path.Join("IdentityDomainObjectsSTIX", v.Path),
+						Value:     v.Value,
+					})
+				}
+
+				continue
+			}
+
+			if !reflect.DeepEqual(oldValue.Field(i).Interface(), newValue.Field(j).Interface()) {
+				cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+					FeildType: typeOfOldValue.Field(i).Type.Name(),
+					Path:      path.Join("IdentityDomainObjectsSTIX", typeOfOldValue.Field(i).Name),
+					Value:     oldValue.Field(i).Interface(),
+				})
+
+				isEqual = false
+			}
+		}
+	}
+
+	return isEqual, cot, nil
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -726,6 +994,75 @@ func (istix IndicatorDomainObjectsSTIX) GetID() string {
 	return istix.ID
 }
 
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа IndicatorDomainObjectsSTIX
+func (istix *IndicatorDomainObjectsSTIX) ComparisonTypeCommonFields(iNew *IndicatorDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             istix.ID,
+		}
+	)
+
+	oldValue := reflect.ValueOf(*istix)
+	typeOfOldValue := oldValue.Type()
+
+	newValue := reflect.ValueOf(*iNew)
+	typeOfNewValue := newValue.Type()
+
+	for i := 0; i < oldValue.NumField(); i++ {
+		for j := 0; j < newValue.NumField(); j++ {
+			if typeOfOldValue.Field(i).Name != typeOfNewValue.Field(j).Name {
+				continue
+			}
+
+			if typeOfOldValue.Field(i).Name == "CommonPropertiesDomainObjectSTIX" {
+				//привести значение к типу CommonPropertiesDomainObjectSTIX
+				cpdoOld, ok := oldValue.Field(i).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				cpdoNew, ok := newValue.Field(j).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				ok, result := cpdoOld.comparisonTypeCommonFields(&cpdoNew)
+				if ok {
+					continue
+				}
+
+				isEqual = false
+
+				for _, v := range result {
+					cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+						FeildType: v.FeildType,
+						Path:      path.Join("IndicatorDomainObjectsSTIX", v.Path),
+						Value:     v.Value,
+					})
+				}
+
+				continue
+			}
+
+			if !reflect.DeepEqual(oldValue.Field(i).Interface(), newValue.Field(j).Interface()) {
+				cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+					FeildType: typeOfOldValue.Field(i).Type.Name(),
+					Path:      path.Join("IndicatorDomainObjectsSTIX", typeOfOldValue.Field(i).Name),
+					Value:     oldValue.Field(i).Interface(),
+				})
+
+				isEqual = false
+			}
+		}
+	}
+
+	return isEqual, cot, nil
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (istix IndicatorDomainObjectsSTIX) ToStringBeautiful() string {
 	str := istix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -824,6 +1161,75 @@ func (istix InfrastructureDomainObjectsSTIX) SanitizeStruct() InfrastructureDoma
 //GetID возвращает ID STIX объекта
 func (istix InfrastructureDomainObjectsSTIX) GetID() string {
 	return istix.ID
+}
+
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа InfrastructureDomainObjectsSTIX
+func (istix *InfrastructureDomainObjectsSTIX) ComparisonTypeCommonFields(iNew *InfrastructureDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             istix.ID,
+		}
+	)
+
+	oldValue := reflect.ValueOf(*istix)
+	typeOfOldValue := oldValue.Type()
+
+	newValue := reflect.ValueOf(*iNew)
+	typeOfNewValue := newValue.Type()
+
+	for i := 0; i < oldValue.NumField(); i++ {
+		for j := 0; j < newValue.NumField(); j++ {
+			if typeOfOldValue.Field(i).Name != typeOfNewValue.Field(j).Name {
+				continue
+			}
+
+			if typeOfOldValue.Field(i).Name == "CommonPropertiesDomainObjectSTIX" {
+				//привести значение к типу CommonPropertiesDomainObjectSTIX
+				cpdoOld, ok := oldValue.Field(i).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				cpdoNew, ok := newValue.Field(j).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				ok, result := cpdoOld.comparisonTypeCommonFields(&cpdoNew)
+				if ok {
+					continue
+				}
+
+				isEqual = false
+
+				for _, v := range result {
+					cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+						FeildType: v.FeildType,
+						Path:      path.Join("InfrastructureDomainObjectsSTIX", v.Path),
+						Value:     v.Value,
+					})
+				}
+
+				continue
+			}
+
+			if !reflect.DeepEqual(oldValue.Field(i).Interface(), newValue.Field(j).Interface()) {
+				cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+					FeildType: typeOfOldValue.Field(i).Type.Name(),
+					Path:      path.Join("InfrastructureDomainObjectsSTIX", typeOfOldValue.Field(i).Name),
+					Value:     oldValue.Field(i).Interface(),
+				})
+
+				isEqual = false
+			}
+		}
+	}
+
+	return isEqual, cot, nil
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -939,6 +1345,75 @@ func (istix IntrusionSetDomainObjectsSTIX) GetID() string {
 	return istix.ID
 }
 
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа IntrusionSetDomainObjectsSTIX
+func (istix *IntrusionSetDomainObjectsSTIX) ComparisonTypeCommonFields(iNew *IntrusionSetDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             istix.ID,
+		}
+	)
+
+	oldValue := reflect.ValueOf(*istix)
+	typeOfOldValue := oldValue.Type()
+
+	newValue := reflect.ValueOf(*iNew)
+	typeOfNewValue := newValue.Type()
+
+	for i := 0; i < oldValue.NumField(); i++ {
+		for j := 0; j < newValue.NumField(); j++ {
+			if typeOfOldValue.Field(i).Name != typeOfNewValue.Field(j).Name {
+				continue
+			}
+
+			if typeOfOldValue.Field(i).Name == "CommonPropertiesDomainObjectSTIX" {
+				//привести значение к типу CommonPropertiesDomainObjectSTIX
+				cpdoOld, ok := oldValue.Field(i).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				cpdoNew, ok := newValue.Field(j).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				ok, result := cpdoOld.comparisonTypeCommonFields(&cpdoNew)
+				if ok {
+					continue
+				}
+
+				isEqual = false
+
+				for _, v := range result {
+					cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+						FeildType: v.FeildType,
+						Path:      path.Join("IntrusionSetDomainObjectsSTIX", v.Path),
+						Value:     v.Value,
+					})
+				}
+
+				continue
+			}
+
+			if !reflect.DeepEqual(oldValue.Field(i).Interface(), newValue.Field(j).Interface()) {
+				cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+					FeildType: typeOfOldValue.Field(i).Type.Name(),
+					Path:      path.Join("IntrusionSetDomainObjectsSTIX", typeOfOldValue.Field(i).Name),
+					Value:     oldValue.Field(i).Interface(),
+				})
+
+				isEqual = false
+			}
+		}
+	}
+
+	return isEqual, cot, nil
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (istix IntrusionSetDomainObjectsSTIX) ToStringBeautiful() string {
 	str := istix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -1037,6 +1512,75 @@ func (lstix LocationDomainObjectsSTIX) SanitizeStruct() LocationDomainObjectsSTI
 //GetID возвращает ID STIX объекта
 func (lstix LocationDomainObjectsSTIX) GetID() string {
 	return lstix.ID
+}
+
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа LocationDomainObjectsSTIX
+func (lstix *LocationDomainObjectsSTIX) ComparisonTypeCommonFields(lNew *LocationDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             lstix.ID,
+		}
+	)
+
+	oldValue := reflect.ValueOf(*lstix)
+	typeOfOldValue := oldValue.Type()
+
+	newValue := reflect.ValueOf(*lNew)
+	typeOfNewValue := newValue.Type()
+
+	for i := 0; i < oldValue.NumField(); i++ {
+		for j := 0; j < newValue.NumField(); j++ {
+			if typeOfOldValue.Field(i).Name != typeOfNewValue.Field(j).Name {
+				continue
+			}
+
+			if typeOfOldValue.Field(i).Name == "CommonPropertiesDomainObjectSTIX" {
+				//привести значение к типу CommonPropertiesDomainObjectSTIX
+				cpdoOld, ok := oldValue.Field(i).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				cpdoNew, ok := newValue.Field(j).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				ok, result := cpdoOld.comparisonTypeCommonFields(&cpdoNew)
+				if ok {
+					continue
+				}
+
+				isEqual = false
+
+				for _, v := range result {
+					cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+						FeildType: v.FeildType,
+						Path:      path.Join("LocationDomainObjectsSTIX", v.Path),
+						Value:     v.Value,
+					})
+				}
+
+				continue
+			}
+
+			if !reflect.DeepEqual(oldValue.Field(i).Interface(), newValue.Field(j).Interface()) {
+				cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+					FeildType: typeOfOldValue.Field(i).Type.Name(),
+					Path:      path.Join("LocationDomainObjectsSTIX", typeOfOldValue.Field(i).Name),
+					Value:     oldValue.Field(i).Interface(),
+				})
+
+				isEqual = false
+			}
+		}
+	}
+
+	return isEqual, cot, nil
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -1168,6 +1712,75 @@ func (mstix MalwareDomainObjectsSTIX) SanitizeStruct() MalwareDomainObjectsSTIX 
 //GetID возвращает ID STIX объекта
 func (mstix MalwareDomainObjectsSTIX) GetID() string {
 	return mstix.ID
+}
+
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа MalwareDomainObjectsSTIX
+func (mstix *MalwareDomainObjectsSTIX) ComparisonTypeCommonFields(mNew *MalwareDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             mstix.ID,
+		}
+	)
+
+	oldValue := reflect.ValueOf(*mstix)
+	typeOfOldValue := oldValue.Type()
+
+	newValue := reflect.ValueOf(*mNew)
+	typeOfNewValue := newValue.Type()
+
+	for i := 0; i < oldValue.NumField(); i++ {
+		for j := 0; j < newValue.NumField(); j++ {
+			if typeOfOldValue.Field(i).Name != typeOfNewValue.Field(j).Name {
+				continue
+			}
+
+			if typeOfOldValue.Field(i).Name == "CommonPropertiesDomainObjectSTIX" {
+				//привести значение к типу CommonPropertiesDomainObjectSTIX
+				cpdoOld, ok := oldValue.Field(i).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				cpdoNew, ok := newValue.Field(j).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				ok, result := cpdoOld.comparisonTypeCommonFields(&cpdoNew)
+				if ok {
+					continue
+				}
+
+				isEqual = false
+
+				for _, v := range result {
+					cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+						FeildType: v.FeildType,
+						Path:      path.Join("MalwareDomainObjectsSTIX", v.Path),
+						Value:     v.Value,
+					})
+				}
+
+				continue
+			}
+
+			if !reflect.DeepEqual(oldValue.Field(i).Interface(), newValue.Field(j).Interface()) {
+				cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+					FeildType: typeOfOldValue.Field(i).Type.Name(),
+					Path:      path.Join("MalwareDomainObjectsSTIX", typeOfOldValue.Field(i).Name),
+					Value:     oldValue.Field(i).Interface(),
+				})
+
+				isEqual = false
+			}
+		}
+	}
+
+	return isEqual, cot, nil
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -1335,6 +1948,75 @@ func (mastix MalwareAnalysisDomainObjectsSTIX) GetID() string {
 	return mastix.ID
 }
 
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа MalwareAnalysisDomainObjectsSTIX
+func (mstix *MalwareAnalysisDomainObjectsSTIX) ComparisonTypeCommonFields(mNew *MalwareAnalysisDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             mstix.ID,
+		}
+	)
+
+	oldValue := reflect.ValueOf(*mstix)
+	typeOfOldValue := oldValue.Type()
+
+	newValue := reflect.ValueOf(*mNew)
+	typeOfNewValue := newValue.Type()
+
+	for i := 0; i < oldValue.NumField(); i++ {
+		for j := 0; j < newValue.NumField(); j++ {
+			if typeOfOldValue.Field(i).Name != typeOfNewValue.Field(j).Name {
+				continue
+			}
+
+			if typeOfOldValue.Field(i).Name == "CommonPropertiesDomainObjectSTIX" {
+				//привести значение к типу CommonPropertiesDomainObjectSTIX
+				cpdoOld, ok := oldValue.Field(i).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				cpdoNew, ok := newValue.Field(j).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				ok, result := cpdoOld.comparisonTypeCommonFields(&cpdoNew)
+				if ok {
+					continue
+				}
+
+				isEqual = false
+
+				for _, v := range result {
+					cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+						FeildType: v.FeildType,
+						Path:      path.Join("MalwareAnalysisDomainObjectsSTIX", v.Path),
+						Value:     v.Value,
+					})
+				}
+
+				continue
+			}
+
+			if !reflect.DeepEqual(oldValue.Field(i).Interface(), newValue.Field(j).Interface()) {
+				cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+					FeildType: typeOfOldValue.Field(i).Type.Name(),
+					Path:      path.Join("MalwareAnalysisDomainObjectsSTIX", typeOfOldValue.Field(i).Name),
+					Value:     oldValue.Field(i).Interface(),
+				})
+
+				isEqual = false
+			}
+		}
+	}
+
+	return isEqual, cot, nil
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (mastix MalwareAnalysisDomainObjectsSTIX) ToStringBeautiful() string {
 	str := mastix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -1442,6 +2124,75 @@ func (nstix NoteDomainObjectsSTIX) GetID() string {
 	return nstix.ID
 }
 
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа NoteDomainObjectsSTIX
+func (nstix *NoteDomainObjectsSTIX) ComparisonTypeCommonFields(nNew *NoteDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             nstix.ID,
+		}
+	)
+
+	oldValue := reflect.ValueOf(*nstix)
+	typeOfOldValue := oldValue.Type()
+
+	newValue := reflect.ValueOf(*nNew)
+	typeOfNewValue := newValue.Type()
+
+	for i := 0; i < oldValue.NumField(); i++ {
+		for j := 0; j < newValue.NumField(); j++ {
+			if typeOfOldValue.Field(i).Name != typeOfNewValue.Field(j).Name {
+				continue
+			}
+
+			if typeOfOldValue.Field(i).Name == "CommonPropertiesDomainObjectSTIX" {
+				//привести значение к типу CommonPropertiesDomainObjectSTIX
+				cpdoOld, ok := oldValue.Field(i).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				cpdoNew, ok := newValue.Field(j).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				ok, result := cpdoOld.comparisonTypeCommonFields(&cpdoNew)
+				if ok {
+					continue
+				}
+
+				isEqual = false
+
+				for _, v := range result {
+					cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+						FeildType: v.FeildType,
+						Path:      path.Join("NoteDomainObjectsSTIX", v.Path),
+						Value:     v.Value,
+					})
+				}
+
+				continue
+			}
+
+			if !reflect.DeepEqual(oldValue.Field(i).Interface(), newValue.Field(j).Interface()) {
+				cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+					FeildType: typeOfOldValue.Field(i).Type.Name(),
+					Path:      path.Join("NoteDomainObjectsSTIX", typeOfOldValue.Field(i).Name),
+					Value:     oldValue.Field(i).Interface(),
+				})
+
+				isEqual = false
+			}
+		}
+	}
+
+	return isEqual, cot, nil
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (nstix NoteDomainObjectsSTIX) ToStringBeautiful() string {
 	str := nstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -1523,6 +2274,75 @@ func (odstix ObservedDataDomainObjectsSTIX) SanitizeStruct() ObservedDataDomainO
 //GetID возвращает ID STIX объекта
 func (odstix ObservedDataDomainObjectsSTIX) GetID() string {
 	return odstix.ID
+}
+
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа ObservedDataDomainObjectsSTIX
+func (ostix *ObservedDataDomainObjectsSTIX) ComparisonTypeCommonFields(oNew *ObservedDataDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             ostix.ID,
+		}
+	)
+
+	oldValue := reflect.ValueOf(*ostix)
+	typeOfOldValue := oldValue.Type()
+
+	newValue := reflect.ValueOf(*oNew)
+	typeOfNewValue := newValue.Type()
+
+	for i := 0; i < oldValue.NumField(); i++ {
+		for j := 0; j < newValue.NumField(); j++ {
+			if typeOfOldValue.Field(i).Name != typeOfNewValue.Field(j).Name {
+				continue
+			}
+
+			if typeOfOldValue.Field(i).Name == "CommonPropertiesDomainObjectSTIX" {
+				//привести значение к типу CommonPropertiesDomainObjectSTIX
+				cpdoOld, ok := oldValue.Field(i).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				cpdoNew, ok := newValue.Field(j).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				ok, result := cpdoOld.comparisonTypeCommonFields(&cpdoNew)
+				if ok {
+					continue
+				}
+
+				isEqual = false
+
+				for _, v := range result {
+					cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+						FeildType: v.FeildType,
+						Path:      path.Join("ObservedDataDomainObjectsSTIX", v.Path),
+						Value:     v.Value,
+					})
+				}
+
+				continue
+			}
+
+			if !reflect.DeepEqual(oldValue.Field(i).Interface(), newValue.Field(j).Interface()) {
+				cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+					FeildType: typeOfOldValue.Field(i).Type.Name(),
+					Path:      path.Join("ObservedDataDomainObjectsSTIX", typeOfOldValue.Field(i).Name),
+					Value:     oldValue.Field(i).Interface(),
+				})
+
+				isEqual = false
+			}
+		}
+	}
+
+	return isEqual, cot, nil
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -1610,6 +2430,75 @@ func (ostix OpinionDomainObjectsSTIX) SanitizeStruct() OpinionDomainObjectsSTIX 
 //GetID возвращает ID STIX объекта
 func (ostix OpinionDomainObjectsSTIX) GetID() string {
 	return ostix.ID
+}
+
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа OpinionDomainObjectsSTIX
+func (ostix *OpinionDomainObjectsSTIX) ComparisonTypeCommonFields(oNew *OpinionDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             ostix.ID,
+		}
+	)
+
+	oldValue := reflect.ValueOf(*ostix)
+	typeOfOldValue := oldValue.Type()
+
+	newValue := reflect.ValueOf(*oNew)
+	typeOfNewValue := newValue.Type()
+
+	for i := 0; i < oldValue.NumField(); i++ {
+		for j := 0; j < newValue.NumField(); j++ {
+			if typeOfOldValue.Field(i).Name != typeOfNewValue.Field(j).Name {
+				continue
+			}
+
+			if typeOfOldValue.Field(i).Name == "CommonPropertiesDomainObjectSTIX" {
+				//привести значение к типу CommonPropertiesDomainObjectSTIX
+				cpdoOld, ok := oldValue.Field(i).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				cpdoNew, ok := newValue.Field(j).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				ok, result := cpdoOld.comparisonTypeCommonFields(&cpdoNew)
+				if ok {
+					continue
+				}
+
+				isEqual = false
+
+				for _, v := range result {
+					cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+						FeildType: v.FeildType,
+						Path:      path.Join("OpinionDomainObjectsSTIX", v.Path),
+						Value:     v.Value,
+					})
+				}
+
+				continue
+			}
+
+			if !reflect.DeepEqual(oldValue.Field(i).Interface(), newValue.Field(j).Interface()) {
+				cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+					FeildType: typeOfOldValue.Field(i).Type.Name(),
+					Path:      path.Join("OpinionDomainObjectsSTIX", typeOfOldValue.Field(i).Name),
+					Value:     oldValue.Field(i).Interface(),
+				})
+
+				isEqual = false
+			}
+		}
+	}
+
+	return isEqual, cot, nil
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -1709,6 +2598,75 @@ func (rstix ReportDomainObjectsSTIX) SanitizeStruct() ReportDomainObjectsSTIX {
 //GetID возвращает ID STIX объекта
 func (rstix ReportDomainObjectsSTIX) GetID() string {
 	return rstix.ID
+}
+
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа ReportDomainObjectsSTIX
+func (rstix *ReportDomainObjectsSTIX) ComparisonTypeCommonFields(rNew *ReportDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             rstix.ID,
+		}
+	)
+
+	oldValue := reflect.ValueOf(*rstix)
+	typeOfOldValue := oldValue.Type()
+
+	newValue := reflect.ValueOf(*rNew)
+	typeOfNewValue := newValue.Type()
+
+	for i := 0; i < oldValue.NumField(); i++ {
+		for j := 0; j < newValue.NumField(); j++ {
+			if typeOfOldValue.Field(i).Name != typeOfNewValue.Field(j).Name {
+				continue
+			}
+
+			if typeOfOldValue.Field(i).Name == "CommonPropertiesDomainObjectSTIX" {
+				//привести значение к типу CommonPropertiesDomainObjectSTIX
+				cpdoOld, ok := oldValue.Field(i).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				cpdoNew, ok := newValue.Field(j).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				ok, result := cpdoOld.comparisonTypeCommonFields(&cpdoNew)
+				if ok {
+					continue
+				}
+
+				isEqual = false
+
+				for _, v := range result {
+					cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+						FeildType: v.FeildType,
+						Path:      path.Join("ReportDomainObjectsSTIX", v.Path),
+						Value:     v.Value,
+					})
+				}
+
+				continue
+			}
+
+			if !reflect.DeepEqual(oldValue.Field(i).Interface(), newValue.Field(j).Interface()) {
+				cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+					FeildType: typeOfOldValue.Field(i).Type.Name(),
+					Path:      path.Join("ReportDomainObjectsSTIX", typeOfOldValue.Field(i).Name),
+					Value:     oldValue.Field(i).Interface(),
+				})
+
+				isEqual = false
+			}
+		}
+	}
+
+	return isEqual, cot, nil
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -1846,6 +2804,75 @@ func (tastix ThreatActorDomainObjectsSTIX) GetID() string {
 	return tastix.ID
 }
 
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа ThreatActorDomainObjectsSTIX
+func (tastix *ThreatActorDomainObjectsSTIX) ComparisonTypeCommonFields(taNew *ThreatActorDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             tastix.ID,
+		}
+	)
+
+	oldValue := reflect.ValueOf(*tastix)
+	typeOfOldValue := oldValue.Type()
+
+	newValue := reflect.ValueOf(*taNew)
+	typeOfNewValue := newValue.Type()
+
+	for i := 0; i < oldValue.NumField(); i++ {
+		for j := 0; j < newValue.NumField(); j++ {
+			if typeOfOldValue.Field(i).Name != typeOfNewValue.Field(j).Name {
+				continue
+			}
+
+			if typeOfOldValue.Field(i).Name == "CommonPropertiesDomainObjectSTIX" {
+				//привести значение к типу CommonPropertiesDomainObjectSTIX
+				cpdoOld, ok := oldValue.Field(i).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				cpdoNew, ok := newValue.Field(j).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				ok, result := cpdoOld.comparisonTypeCommonFields(&cpdoNew)
+				if ok {
+					continue
+				}
+
+				isEqual = false
+
+				for _, v := range result {
+					cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+						FeildType: v.FeildType,
+						Path:      path.Join("ThreatActorDomainObjectsSTIX", v.Path),
+						Value:     v.Value,
+					})
+				}
+
+				continue
+			}
+
+			if !reflect.DeepEqual(oldValue.Field(i).Interface(), newValue.Field(j).Interface()) {
+				cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+					FeildType: typeOfOldValue.Field(i).Type.Name(),
+					Path:      path.Join("ThreatActorDomainObjectsSTIX", typeOfOldValue.Field(i).Name),
+					Value:     oldValue.Field(i).Interface(),
+				})
+
+				isEqual = false
+			}
+		}
+	}
+
+	return isEqual, cot, nil
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (tastix ThreatActorDomainObjectsSTIX) ToStringBeautiful() string {
 	str := tastix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -1974,6 +3001,75 @@ func (tstix ToolDomainObjectsSTIX) GetID() string {
 	return tstix.ID
 }
 
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа ToolDomainObjectsSTIX
+func (tstix *ToolDomainObjectsSTIX) ComparisonTypeCommonFields(tNew *ToolDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             tstix.ID,
+		}
+	)
+
+	oldValue := reflect.ValueOf(*tstix)
+	typeOfOldValue := oldValue.Type()
+
+	newValue := reflect.ValueOf(*tNew)
+	typeOfNewValue := newValue.Type()
+
+	for i := 0; i < oldValue.NumField(); i++ {
+		for j := 0; j < newValue.NumField(); j++ {
+			if typeOfOldValue.Field(i).Name != typeOfNewValue.Field(j).Name {
+				continue
+			}
+
+			if typeOfOldValue.Field(i).Name == "CommonPropertiesDomainObjectSTIX" {
+				//привести значение к типу CommonPropertiesDomainObjectSTIX
+				cpdoOld, ok := oldValue.Field(i).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				cpdoNew, ok := newValue.Field(j).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				ok, result := cpdoOld.comparisonTypeCommonFields(&cpdoNew)
+				if ok {
+					continue
+				}
+
+				isEqual = false
+
+				for _, v := range result {
+					cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+						FeildType: v.FeildType,
+						Path:      path.Join("ToolDomainObjectsSTIX", v.Path),
+						Value:     v.Value,
+					})
+				}
+
+				continue
+			}
+
+			if !reflect.DeepEqual(oldValue.Field(i).Interface(), newValue.Field(j).Interface()) {
+				cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+					FeildType: typeOfOldValue.Field(i).Type.Name(),
+					Path:      path.Join("ToolDomainObjectsSTIX", typeOfOldValue.Field(i).Name),
+					Value:     oldValue.Field(i).Interface(),
+				})
+
+				isEqual = false
+			}
+		}
+	}
+
+	return isEqual, cot, nil
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (tstix ToolDomainObjectsSTIX) ToStringBeautiful() string {
 	str := tstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -2055,6 +3151,75 @@ func (vstix VulnerabilityDomainObjectsSTIX) SanitizeStruct() VulnerabilityDomain
 //GetID возвращает ID STIX объекта
 func (vstix VulnerabilityDomainObjectsSTIX) GetID() string {
 	return vstix.ID
+}
+
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа VulnerabilityDomainObjectsSTIX
+func (vstix *VulnerabilityDomainObjectsSTIX) ComparisonTypeCommonFields(vNew *VulnerabilityDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             vstix.ID,
+		}
+	)
+
+	oldValue := reflect.ValueOf(*vstix)
+	typeOfOldValue := oldValue.Type()
+
+	newValue := reflect.ValueOf(*vNew)
+	typeOfNewValue := newValue.Type()
+
+	for i := 0; i < oldValue.NumField(); i++ {
+		for j := 0; j < newValue.NumField(); j++ {
+			if typeOfOldValue.Field(i).Name != typeOfNewValue.Field(j).Name {
+				continue
+			}
+
+			if typeOfOldValue.Field(i).Name == "CommonPropertiesDomainObjectSTIX" {
+				//привести значение к типу CommonPropertiesDomainObjectSTIX
+				cpdoOld, ok := oldValue.Field(i).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				cpdoNew, ok := newValue.Field(j).Interface().(CommonPropertiesDomainObjectSTIX)
+				if !ok {
+					return false, cot, fmt.Errorf("type conversion error")
+				}
+
+				ok, result := cpdoOld.comparisonTypeCommonFields(&cpdoNew)
+				if ok {
+					continue
+				}
+
+				isEqual = false
+
+				for _, v := range result {
+					cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+						FeildType: v.FeildType,
+						Path:      path.Join("VulnerabilityDomainObjectsSTIX", v.Path),
+						Value:     v.Value,
+					})
+				}
+
+				continue
+			}
+
+			if !reflect.DeepEqual(oldValue.Field(i).Interface(), newValue.Field(j).Interface()) {
+				cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+					FeildType: typeOfOldValue.Field(i).Type.Name(),
+					Path:      path.Join("VulnerabilityDomainObjectsSTIX", typeOfOldValue.Field(i).Name),
+					Value:     oldValue.Field(i).Interface(),
+				})
+
+				isEqual = false
+			}
+		}
+	}
+
+	return isEqual, cot, nil
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе

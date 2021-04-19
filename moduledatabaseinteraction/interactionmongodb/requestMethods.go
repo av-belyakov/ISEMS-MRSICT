@@ -67,7 +67,7 @@ func (qp *QueryParameters) DeleteOneData(elem interface{}) error {
 }
 
 //DeleteManyData удаляет группу элементов
-func (qp *QueryParameters) DeleteManyData(list []interface{}) error {
+func (qp *QueryParameters) DeleteManyData(list interface{}) error {
 	collection := qp.ConnectDB.Database(qp.NameDB).Collection(qp.CollectionName)
 	if _, err := collection.DeleteMany(context.TODO(), list); err != nil {
 		return err

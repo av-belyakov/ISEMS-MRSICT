@@ -11,6 +11,7 @@ type HandlerSTIXObject interface {
 	EncoderJSONObject
 	ValidatorJSONObject
 	GetterIDSTIXObject
+	ComparatorSTIXObject
 }
 
 //DecoderJSONObject интерфейс реализующий обработчик для декодирования JSON объекта в STIX объект
@@ -31,6 +32,11 @@ type ValidatorJSONObject interface {
 //GetterIDSTIXObject интерфейс реализующий обработчик для получения ID STIX объекта
 type GetterIDSTIXObject interface {
 	GetID() string
+}
+
+//ComparatorSTIXObject интерфейс реализующий обработчик для сравнения STIX объектов одного типа
+type ComparatorSTIXObject interface {
+	ComparisonTypeCommonFields(interface{}, string) (bool, DifferentObjectType, error)
 }
 
 //ToBeautifulOutputConverter интерфейс реализующий обработчик для красивого представления данных хранящихся в пользовательской структуре

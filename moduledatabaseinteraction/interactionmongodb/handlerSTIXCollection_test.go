@@ -11,6 +11,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 
 	"ISEMS-MRSICT/datamodels"
@@ -177,14 +178,15 @@ var _ = Describe("HandlerSTIXCollection", func() {
 		})
 	})
 
-	/*Context("Тест 5. Взаимодействие с коллекцией STIX объектов", func() {
-		It("При добавлении STIX объектов не должно быть ошибок", func() {
-			ok, err := SetListElementSTIXObject(qp, l)
+	Context("Тест 5. Взаимодействие с коллекцией STIX объектов.", func() {
+		It("При добавлении STIX объектов не должно быть ошибок. STIX объекты идентификаторы которых уже есть в БД добавлятся не должны.", func() {
+			err := ReplacementElementsSTIXObject(qp, l)
 
-			Expect(ok).Should(BeTrue())
+			fmt.Printf("Error : %v\n", err)
+
 			Expect(err).ShouldNot(HaveOccurred())
 		})
-	})*/
+	})
 
 	Context("Тест 6. Получаем информацию о STIX объект с ID 'indicator--8e2e2d2b-17d4-4cbf-938f-98ee46b3cd3f'", func() {
 		It("должен быть получен список из 1 STIX объекта, ошибок быть не должно", func() {
@@ -1184,17 +1186,138 @@ var _ = Describe("HandlerSTIXCollection", func() {
 		})
 	})
 
-	/*
-		Написал функции apOld.ComparisonTypeCommonFields() для ВСЕХ объектов типа DomainObject и протестировал их, теперь
-		могу выполнять сравнения двух объектов подобного типа.
+	Context("Тест 25. Проверяем возможность перебора значений для списка STIX объектов", func() {
+		It("При переборе значений ошибок быть не должно и при выполнении сравнения должны быть найдены одинаковые объекты содержащие разные значения", func() {
+			listOldSTIXObj := []datamodels.ElementSTIXObject{
+				{
+					DataType: "tool",
+					Data: datamodels.ToolDomainObjectsSTIX{
+						CommonPropertiesObjectSTIX: datamodels.CommonPropertiesObjectSTIX{
+							Type: "tool",
+							ID:   "tool--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
+						},
+						CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
+						Name:                             "new name 1",
+						Description:                      "new description 1",
+						Aliases:                          []string{"cvvv", "vbbb"},
+						ToolVersion:                      "v23.1",
+						ToolTypes:                        []datamodels.OpenVocabTypeSTIX{datamodels.OpenVocabTypeSTIX("ikk")},
+					},
+				}, {
+					DataType: "threat-actor",
+					Data: datamodels.ThreatActorDomainObjectsSTIX{
+						CommonPropertiesObjectSTIX: datamodels.CommonPropertiesObjectSTIX{
+							Type: "threat-actor",
+							ID:   "threat-actor--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
+						},
+						CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
+						Name:                             "new name 1",
+						Description:                      "new description 1",
+						ThreatActorTypes: []datamodels.OpenVocabTypeSTIX{
+							datamodels.OpenVocabTypeSTIX("bbnd d"),
+							datamodels.OpenVocabTypeSTIX("mnbfdd"),
+						},
+						Aliases:   []string{"cvvv", "vbbb"},
+						FirstSeen: time.Now(),
+						Roles:     []datamodels.OpenVocabTypeSTIX{datamodels.OpenVocabTypeSTIX("mmm")},
+						Goals:     []string{"1cc1", "22sc"},
+					},
+				}, {
+					DataType: "opinion",
+					Data: datamodels.OpinionDomainObjectsSTIX{
+						CommonPropertiesObjectSTIX: datamodels.CommonPropertiesObjectSTIX{
+							Type: "opinion",
+							ID:   "opinion--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
+						},
+						CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
+						Explanation:                      "notes",
+						Authors:                          []string{"authors_5", "authors_3"},
+						Opinion:                          datamodels.EnumTypeSTIX("vbbb"),
+						ObjectRefs:                       []datamodels.IdentifierTypeSTIX{datamodels.IdentifierTypeSTIX("mongodb")},
+					},
+				},
+			}
 
-		Кроме того есть функция GetListElementSTIXObject() возвращающая список STIX объектов в виде []*datamodels.ElementSTIXObject
+			listNewSTIXObj := []datamodels.ElementSTIXObject{
+				{
+					DataType: "opinion",
+					Data: datamodels.OpinionDomainObjectsSTIX{
+						CommonPropertiesObjectSTIX: datamodels.CommonPropertiesObjectSTIX{
+							Type: "opinion",
+							ID:   "opinion--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
+						},
+						CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
+						Explanation:                      "notes ddd",                        //change
+						Authors:                          []string{"authors_3"},              //change
+						Opinion:                          datamodels.EnumTypeSTIX("11 vbbb"), //change
+					},
+				}, {
+					DataType: "threat-actor",
+					Data: datamodels.ThreatActorDomainObjectsSTIX{
+						CommonPropertiesObjectSTIX: datamodels.CommonPropertiesObjectSTIX{
+							Type: "threat-actor",
+							ID:   "threat-actor--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
+						},
+						CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
+						Name:                             "new name 122",                                                         //change
+						Description:                      "new description 1333",                                                 //change
+						ThreatActorTypes:                 []datamodels.OpenVocabTypeSTIX{datamodels.OpenVocabTypeSTIX("mnbfdd")}, //change
+						Aliases:                          []string{"cvvv", "vbbb", "vvvv"},                                       //change
+						FirstSeen:                        time.Now(),                                                             //change
+						LastSeen:                         time.Now(),                                                             //change
+						Roles:                            []datamodels.OpenVocabTypeSTIX{datamodels.OpenVocabTypeSTIX("m000m")},  //change
+						Goals:                            []string{"1cc1"},                                                       //change
+					},
+				}, {
+					DataType: "tool",
+					Data: datamodels.ToolDomainObjectsSTIX{
+						CommonPropertiesObjectSTIX: datamodels.CommonPropertiesObjectSTIX{
+							Type: "tool",
+							ID:   "tool--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
+						},
+						Name:        "new name 122",                   //change
+						Description: "new description 1333",           //change
+						Aliases:     []string{"cvvv", "vbbb", "vvvv"}, //change
+						ToolVersion: "v30.23",                         //change
+						ToolTypes: []datamodels.OpenVocabTypeSTIX{
+							datamodels.OpenVocabTypeSTIX("ikk"),
+							datamodels.OpenVocabTypeSTIX("iopp"),
+							datamodels.OpenVocabTypeSTIX("yyu"),
+						}, //change
+					},
+				}, {
+					DataType: "malware-analysis",
+					Data: datamodels.MalwareAnalysisDomainObjectsSTIX{
+						CommonPropertiesObjectSTIX: datamodels.CommonPropertiesObjectSTIX{
+							Type: "malware-analysis",
+							ID:   "malware-analysis--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
+						},
+						CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
+						Product:                          "App Soft",                           //change
+						Version:                          "1.24.56",                            //change
+						HostVMRef:                        datamodels.IdentifierTypeSTIX("cv5"), //change
+						//change
+						ConfigurationVersion:      "v12.61",                          //change
+						Modules:                   []string{"x1", "x2", "v3", "v12"}, //change
+						AnalysisEngineVersion:     "rus version 12.3",                //change
+						AnalysisDefinitionVersion: "def version 65.111",              //change
+						Submitted:                 time.Now(),                        //change
+						AnalysisStarted:           time.Now(),                        //change
+						AnalysisEnded:             time.Now(),                        //change
+						//change
+						AnalysisScoRefs: []datamodels.IdentifierTypeSTIX{datamodels.IdentifierTypeSTIX("bbbb")}, //change
+					},
+				},
+			}
 
-		!!! Теперь надо написать функцию ReplacementElementsSTIXObject() которая должна выполнять замену, в БД, STIX объекта
-		если он существует или добавлять новый. По идее она должна сначала удалить все объекты которые планируются заменить,
-		а потом добавить новые. !!!
-		Проверка, требует ли объект замены выполняется, в том числе, через метод ComparisonTypeCommonFields
-	*/
+			listDifferentResult := ComparasionListSTIXObject(ComparasionListTypeSTIXObject{
+				OldList: listOldSTIXObj,
+				NewList: listNewSTIXObj,
+			})
+
+			Expect(len(listDifferentResult)).Should(Equal(3))
+		})
+	})
 
 	/*
 			Context("", func() {
@@ -1246,6 +1369,109 @@ func ComparisonTypeCommonFields(before, after datamodels.CommonPropertiesDomainO
 
 type definingTypeSTIXObject struct {
 	datamodels.CommonPropertiesObjectSTIX
+}
+
+//ComparasionListTypeSTIXObject содержит два списка STIX объектов, предназначенных для сравнения
+type ComparasionListTypeSTIXObject struct {
+	OldList, NewList []datamodels.ElementSTIXObject
+}
+
+//ComparasionListSTIXObject выполняет сравнение двух списков STIX объектов, cписка STIX объектов, полученных из БД и принятых от клиента API
+func ComparasionListSTIXObject(clt ComparasionListTypeSTIXObject) []datamodels.DifferentObjectType {
+	var (
+		listDifferentResult []datamodels.DifferentObjectType
+		dot                 datamodels.DifferentObjectType
+		err                 error
+		isEqual             = true
+	)
+
+	for _, vo := range clt.OldList {
+		for _, vn := range clt.NewList {
+			if vo.DataType != vn.DataType {
+				continue
+			}
+
+			switch vn.DataType {
+			//только для Domain Objects STIX
+			case "attack-pattern":
+				isEqual, dot, err = vo.Data.ComparisonTypeCommonFields(vn.GetAttackPatternDomainObjectsSTIX(), "test source")
+			case "campaign":
+				isEqual, dot, err = vo.Data.ComparisonTypeCommonFields(vn.GetCampaignDomainObjectsSTIX(), "test source")
+			case "course-of-action":
+				isEqual, dot, err = vo.Data.ComparisonTypeCommonFields(vn.GetCourseOfActionDomainObjectsSTIX(), "test source")
+			case "grouping":
+				isEqual, dot, err = vo.Data.ComparisonTypeCommonFields(vn.GetGroupingDomainObjectsSTIX(), "test source")
+			case "identity":
+				isEqual, dot, err = vo.Data.ComparisonTypeCommonFields(vn.GetIdentityDomainObjectsSTIX(), "test source")
+			case "indicator":
+				isEqual, dot, err = vo.Data.ComparisonTypeCommonFields(vn.GetIndicatorDomainObjectsSTIX(), "test source")
+			case "infrastructure":
+				isEqual, dot, err = vo.Data.ComparisonTypeCommonFields(vn.GetInfrastructureDomainObjectsSTIX(), "test source")
+			case "intrusion-set":
+				isEqual, dot, err = vo.Data.ComparisonTypeCommonFields(vn.GetIntrusionSetDomainObjectsSTIX(), "test source")
+			case "location":
+				isEqual, dot, err = vo.Data.ComparisonTypeCommonFields(vn.GetLocationDomainObjectsSTIX(), "test source")
+			case "malware":
+				isEqual, dot, err = vo.Data.ComparisonTypeCommonFields(vn.GetMalwareDomainObjectsSTIX(), "test source")
+			case "malware-analysis":
+				isEqual, dot, err = vo.Data.ComparisonTypeCommonFields(vn.GetMalwareAnalysisDomainObjectsSTIX(), "test source")
+			case "note":
+				isEqual, dot, err = vo.Data.ComparisonTypeCommonFields(vn.GetNoteDomainObjectsSTIX(), "test source")
+			case "observed-data":
+				isEqual, dot, err = vo.Data.ComparisonTypeCommonFields(vn.GetObservedDataDomainObjectsSTIX(), "test source")
+			case "opinion":
+				isEqual, dot, err = vo.Data.ComparisonTypeCommonFields(vn.GetOpinionDomainObjectsSTIX(), "test source")
+			case "report":
+				isEqual, dot, err = vo.Data.ComparisonTypeCommonFields(vn.GetReportDomainObjectsSTIX(), "test source")
+			case "threat-actor":
+				isEqual, dot, err = vo.Data.ComparisonTypeCommonFields(vn.GetThreatActorDomainObjectsSTIX(), "test source")
+			case "tool":
+				isEqual, dot, err = vo.Data.ComparisonTypeCommonFields(vn.GetToolDomainObjectsSTIX(), "test source")
+			case "vulnerability":
+				isEqual, dot, err = vo.Data.ComparisonTypeCommonFields(vn.GetVulnerabilityDomainObjectsSTIX(), "test source")
+			}
+
+			if err != nil {
+				continue
+			}
+
+			if isEqual {
+				continue
+			}
+
+			listDifferentResult = append(listDifferentResult, dot)
+		}
+	}
+
+	return listDifferentResult
+}
+
+//ReplacementElementsSTIXObject выполняет замену в БД, списка STIX объектов или добовляет новые объекты если их нет в БД
+func ReplacementElementsSTIXObject(qp interactionmongodb.QueryParameters, l []*datamodels.ElementSTIXObject) error {
+	listSize := len(l)
+	listObj := make([]interface{}, 0, listSize)
+	//reqDeleteID := make([]interface{}, 0, listSize)
+	reqDeleteID := primitive.A{}
+
+	for _, v := range l {
+		reqDeleteID = append(reqDeleteID, v.Data.GetID())
+		//reqDeleteID = append(reqDeleteID, bson.D{{Key: "commonpropertiesobjectstix.id", Value: v.Data.GetID()}})
+		//reqDeleteID = append(reqDeleteID, bson.E{Key: "commonpropertiesobjectstix.id", Value: v.Data.GetID()})
+		listObj = append(listObj, v.Data)
+	}
+
+	//err := qp.DeleteManyData(reqDeleteID)
+	err := qp.DeleteManyData(bson.D{bson.E{Key: "commonpropertiesobjectstix.id", Value: bson.E{Key: "$in", Value: reqDeleteID}}})
+	if err != nil {
+		return err
+	}
+
+	_, err = qp.InsertData(listObj)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func SetListElementSTIXObject(qp interactionmongodb.QueryParameters, l []*datamodels.ElementSTIXObject) (bool, error) {

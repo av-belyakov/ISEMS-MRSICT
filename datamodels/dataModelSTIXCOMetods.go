@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"regexp"
+	"time"
 
 	"ISEMS-MRSICT/commonlibs"
 
@@ -143,6 +144,29 @@ func (astix ArtifactCyberObservableObjectSTIX) GetID() string {
 	return astix.ID
 }
 
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа ArtifactCyberObservableObjectSTIX
+func (astix ArtifactCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             astix.ID,
+		}
+	)
+
+	/*
+				!!! ПОКА ЭТО ТОЛЬКО ЗАГЛУШКА необходимая для совместимости !!!
+		vNew, ok := newObj.(*)
+		if !ok {
+			return isEqual, cot, fmt.Errorf("type conversion error")
+		}
+	*/
+
+	return isEqual, cot, nil
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (astix ArtifactCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := astix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -205,6 +229,29 @@ func (asstix AutonomousSystemCyberObservableObjectSTIX) SanitizeStruct() Autonom
 //GetID возвращает ID STIX объекта
 func (asstix AutonomousSystemCyberObservableObjectSTIX) GetID() string {
 	return asstix.ID
+}
+
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа AutonomousSystemCyberObservableObjectSTIX
+func (asstix AutonomousSystemCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             asstix.ID,
+		}
+	)
+
+	/*
+				!!! ПОКА ЭТО ТОЛЬКО ЗАГЛУШКА необходимая для совместимости !!!
+		vNew, ok := newObj.(*)
+		if !ok {
+			return isEqual, cot, fmt.Errorf("type conversion error")
+		}
+	*/
+
+	return isEqual, cot, nil
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -279,6 +326,29 @@ func (dstix DirectoryCyberObservableObjectSTIX) SanitizeStruct() DirectoryCyberO
 //GetID возвращает ID STIX объекта
 func (dstix DirectoryCyberObservableObjectSTIX) GetID() string {
 	return dstix.ID
+}
+
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа DirectoryCyberObservableObjectSTIX
+func (dstix DirectoryCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             dstix.ID,
+		}
+	)
+
+	/*
+				!!! ПОКА ЭТО ТОЛЬКО ЗАГЛУШКА необходимая для совместимости !!!
+		vNew, ok := newObj.(*)
+		if !ok {
+			return isEqual, cot, fmt.Errorf("type conversion error")
+		}
+	*/
+
+	return isEqual, cot, nil
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -356,6 +426,29 @@ func (dnstix DomainNameCyberObservableObjectSTIX) GetID() string {
 	return dnstix.ID
 }
 
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа DomainNameCyberObservableObjectSTIX
+func (dnstix DomainNameCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             dnstix.ID,
+		}
+	)
+
+	/*
+				!!! ПОКА ЭТО ТОЛЬКО ЗАГЛУШКА необходимая для совместимости !!!
+		vNew, ok := newObj.(*)
+		if !ok {
+			return isEqual, cot, fmt.Errorf("type conversion error")
+		}
+	*/
+
+	return isEqual, cot, nil
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (dnstix DomainNameCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := dnstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -425,6 +518,29 @@ func (eastix EmailAddressCyberObservableObjectSTIX) GetID() string {
 	return eastix.ID
 }
 
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа EmailAddressCyberObservableObjectSTIX
+func (eastix EmailAddressCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             eastix.ID,
+		}
+	)
+
+	/*
+				!!! ПОКА ЭТО ТОЛЬКО ЗАГЛУШКА необходимая для совместимости !!!
+		vNew, ok := newObj.(*)
+		if !ok {
+			return isEqual, cot, fmt.Errorf("type conversion error")
+		}
+	*/
+
+	return isEqual, cot, nil
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (eastix EmailAddressCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := eastix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -436,7 +552,7 @@ func (eastix EmailAddressCyberObservableObjectSTIX) ToStringBeautiful() string {
 	return str
 }
 
-/* --- EmailAddressCyberObservableObjectSTIX --- */
+/* --- EmailMessageCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
 func (emstix EmailMessageCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
@@ -561,6 +677,29 @@ func (emstix EmailMessageCyberObservableObjectSTIX) SanitizeStruct() EmailMessag
 //GetID возвращает ID STIX объекта
 func (emstix EmailMessageCyberObservableObjectSTIX) GetID() string {
 	return emstix.ID
+}
+
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа EmailMessageCyberObservableObjectSTIX
+func (emstix EmailMessageCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             emstix.ID,
+		}
+	)
+
+	/*
+				!!! ПОКА ЭТО ТОЛЬКО ЗАГЛУШКА необходимая для совместимости !!!
+		vNew, ok := newObj.(*)
+		if !ok {
+			return isEqual, cot, fmt.Errorf("type conversion error")
+		}
+	*/
+
+	return isEqual, cot, nil
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -751,6 +890,29 @@ func (fstix FileCyberObservableObjectSTIX) GetID() string {
 	return fstix.ID
 }
 
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа FileCyberObservableObjectSTIX
+func (fstix FileCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             fstix.ID,
+		}
+	)
+
+	/*
+				!!! ПОКА ЭТО ТОЛЬКО ЗАГЛУШКА необходимая для совместимости !!!
+		vNew, ok := newObj.(*)
+		if !ok {
+			return isEqual, cot, fmt.Errorf("type conversion error")
+		}
+	*/
+
+	return isEqual, cot, nil
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (fstix FileCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := fstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -855,6 +1017,29 @@ func (ip4stix IPv4AddressCyberObservableObjectSTIX) GetID() string {
 	return ip4stix.ID
 }
 
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа IPv4AddressCyberObservableObjectSTIX
+func (ipv4stix IPv4AddressCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             ipv4stix.ID,
+		}
+	)
+
+	/*
+				!!! ПОКА ЭТО ТОЛЬКО ЗАГЛУШКА необходимая для совместимости !!!
+		vNew, ok := newObj.(*)
+		if !ok {
+			return isEqual, cot, fmt.Errorf("type conversion error")
+		}
+	*/
+
+	return isEqual, cot, nil
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (ip4stix IPv4AddressCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := ip4stix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -943,6 +1128,29 @@ func (ip6stix IPv6AddressCyberObservableObjectSTIX) GetID() string {
 	return ip6stix.ID
 }
 
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа IPv6AddressCyberObservableObjectSTIX
+func (ipv6stix IPv6AddressCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             ipv6stix.ID,
+		}
+	)
+
+	/*
+				!!! ПОКА ЭТО ТОЛЬКО ЗАГЛУШКА необходимая для совместимости !!!
+		vNew, ok := newObj.(*)
+		if !ok {
+			return isEqual, cot, fmt.Errorf("type conversion error")
+		}
+	*/
+
+	return isEqual, cot, nil
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (ip6stix IPv6AddressCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := ip6stix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -1012,6 +1220,29 @@ func (macstix MACAddressCyberObservableObjectSTIX) GetID() string {
 	return macstix.ID
 }
 
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа MACAddressCyberObservableObjectSTIX
+func (macstix MACAddressCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             macstix.ID,
+		}
+	)
+
+	/*
+				!!! ПОКА ЭТО ТОЛЬКО ЗАГЛУШКА необходимая для совместимости !!!
+		vNew, ok := newObj.(*)
+		if !ok {
+			return isEqual, cot, fmt.Errorf("type conversion error")
+		}
+	*/
+
+	return isEqual, cot, nil
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (macstix MACAddressCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := macstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -1067,6 +1298,29 @@ func (mstix MutexCyberObservableObjectSTIX) SanitizeStruct() MutexCyberObservabl
 //GetID возвращает ID STIX объекта
 func (mstix MutexCyberObservableObjectSTIX) GetID() string {
 	return mstix.ID
+}
+
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа MutexCyberObservableObjectSTIX
+func (mstix MutexCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             mstix.ID,
+		}
+	)
+
+	/*
+				!!! ПОКА ЭТО ТОЛЬКО ЗАГЛУШКА необходимая для совместимости !!!
+		vNew, ok := newObj.(*)
+		if !ok {
+			return isEqual, cot, fmt.Errorf("type conversion error")
+		}
+	*/
+
+	return isEqual, cot, nil
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -1226,6 +1480,29 @@ func (ntstix NetworkTrafficCyberObservableObjectSTIX) SanitizeStruct() NetworkTr
 //GetID возвращает ID STIX объекта
 func (ntstix NetworkTrafficCyberObservableObjectSTIX) GetID() string {
 	return ntstix.ID
+}
+
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа NetworkTrafficCyberObservableObjectSTIX
+func (ntstix NetworkTrafficCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             ntstix.ID,
+		}
+	)
+
+	/*
+				!!! ПОКА ЭТО ТОЛЬКО ЗАГЛУШКА необходимая для совместимости !!!
+		vNew, ok := newObj.(*)
+		if !ok {
+			return isEqual, cot, fmt.Errorf("type conversion error")
+		}
+	*/
+
+	return isEqual, cot, nil
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -1409,6 +1686,29 @@ func (pstix ProcessCyberObservableObjectSTIX) GetID() string {
 	return pstix.ID
 }
 
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа ProcessCyberObservableObjectSTIX
+func (pstix ProcessCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             pstix.ID,
+		}
+	)
+
+	/*
+				!!! ПОКА ЭТО ТОЛЬКО ЗАГЛУШКА необходимая для совместимости !!!
+		vNew, ok := newObj.(*)
+		if !ok {
+			return isEqual, cot, fmt.Errorf("type conversion error")
+		}
+	*/
+
+	return isEqual, cot, nil
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (pstix ProcessCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := pstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -1513,6 +1813,29 @@ func (sstix SoftwareCyberObservableObjectSTIX) GetID() string {
 	return sstix.ID
 }
 
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа SoftwareCyberObservableObjectSTIX
+func (sstix SoftwareCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             sstix.ID,
+		}
+	)
+
+	/*
+				!!! ПОКА ЭТО ТОЛЬКО ЗАГЛУШКА необходимая для совместимости !!!
+		vNew, ok := newObj.(*)
+		if !ok {
+			return isEqual, cot, fmt.Errorf("type conversion error")
+		}
+	*/
+
+	return isEqual, cot, nil
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (sstix SoftwareCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := sstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -1578,6 +1901,29 @@ func (urlstix URLCyberObservableObjectSTIX) SanitizeStruct() URLCyberObservableO
 //GetID возвращает ID STIX объекта
 func (urlstix URLCyberObservableObjectSTIX) GetID() string {
 	return urlstix.ID
+}
+
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа URLCyberObservableObjectSTIX
+func (urlstix URLCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             urlstix.ID,
+		}
+	)
+
+	/*
+				!!! ПОКА ЭТО ТОЛЬКО ЗАГЛУШКА необходимая для совместимости !!!
+		vNew, ok := newObj.(*)
+		if !ok {
+			return isEqual, cot, fmt.Errorf("type conversion error")
+		}
+	*/
+
+	return isEqual, cot, nil
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -1646,6 +1992,29 @@ func (uastix UserAccountCyberObservableObjectSTIX) SanitizeStruct() UserAccountC
 //GetID возвращает ID STIX объекта
 func (uastix UserAccountCyberObservableObjectSTIX) GetID() string {
 	return uastix.ID
+}
+
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа UserAccountCyberObservableObjectSTIX
+func (uastix UserAccountCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             uastix.ID,
+		}
+	)
+
+	/*
+				!!! ПОКА ЭТО ТОЛЬКО ЗАГЛУШКА необходимая для совместимости !!!
+		vNew, ok := newObj.(*)
+		if !ok {
+			return isEqual, cot, fmt.Errorf("type conversion error")
+		}
+	*/
+
+	return isEqual, cot, nil
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
@@ -1734,6 +2103,29 @@ func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) GetID() string {
 	return wrkstix.ID
 }
 
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа WindowsRegistryKeyCyberObservableObjectSTIX
+func (wrstix WindowsRegistryKeyCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             wrstix.ID,
+		}
+	)
+
+	/*
+				!!! ПОКА ЭТО ТОЛЬКО ЗАГЛУШКА необходимая для совместимости !!!
+		vNew, ok := newObj.(*)
+		if !ok {
+			return isEqual, cot, fmt.Errorf("type conversion error")
+		}
+	*/
+
+	return isEqual, cot, nil
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := wrkstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -1811,6 +2203,29 @@ func (x509sstix X509CertificateCyberObservableObjectSTIX) SanitizeStruct() X509C
 //GetID возвращает ID STIX объекта
 func (x509sstix X509CertificateCyberObservableObjectSTIX) GetID() string {
 	return x509sstix.ID
+}
+
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа X509CertificateCyberObservableObjectSTIX
+func (x509sstix X509CertificateCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             x509sstix.ID,
+		}
+	)
+
+	/*
+				!!! ПОКА ЭТО ТОЛЬКО ЗАГЛУШКА необходимая для совместимости !!!
+		vNew, ok := newObj.(*)
+		if !ok {
+			return isEqual, cot, fmt.Errorf("type conversion error")
+		}
+	*/
+
+	return isEqual, cot, nil
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе

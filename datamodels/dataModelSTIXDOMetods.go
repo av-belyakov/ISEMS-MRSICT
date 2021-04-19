@@ -242,7 +242,7 @@ func (apstix AttackPatternDomainObjectsSTIX) GetID() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа AttackPatternDomainObjectsSTIX
-func (apstix *AttackPatternDomainObjectsSTIX) ComparisonTypeCommonFields(apNew *AttackPatternDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+func (apstix AttackPatternDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*apNew *AttackPatternDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -253,7 +253,12 @@ func (apstix *AttackPatternDomainObjectsSTIX) ComparisonTypeCommonFields(apNew *
 		}
 	)
 
-	oldValue := reflect.ValueOf(*apstix)
+	apNew, ok := newObj.(*AttackPatternDomainObjectsSTIX)
+	if !ok {
+		return isEqual, cot, fmt.Errorf("type conversion error")
+	}
+
+	oldValue := reflect.ValueOf(apstix)
 	typeOfOldValue := oldValue.Type()
 
 	newValue := reflect.ValueOf(*apNew)
@@ -388,7 +393,7 @@ func (cstix CampaignDomainObjectsSTIX) GetID() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа CampaignDomainObjectsSTIX
-func (cstix *CampaignDomainObjectsSTIX) ComparisonTypeCommonFields(cNew *CampaignDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+func (cstix CampaignDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*cNew *CampaignDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -399,7 +404,12 @@ func (cstix *CampaignDomainObjectsSTIX) ComparisonTypeCommonFields(cNew *Campaig
 		}
 	)
 
-	oldValue := reflect.ValueOf(*cstix)
+	cNew, ok := newObj.(*CampaignDomainObjectsSTIX)
+	if !ok {
+		return isEqual, cot, fmt.Errorf("type conversion error")
+	}
+
+	oldValue := reflect.ValueOf(cstix)
 	typeOfOldValue := oldValue.Type()
 
 	newValue := reflect.ValueOf(*cNew)
@@ -525,7 +535,7 @@ func (castix CourseOfActionDomainObjectsSTIX) GetID() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа CourseOfActionDomainObjectsSTIX
-func (cofastix *CourseOfActionDomainObjectsSTIX) ComparisonTypeCommonFields(cofaNew *CourseOfActionDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+func (cofastix CourseOfActionDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*cofaNew *CourseOfActionDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -536,7 +546,12 @@ func (cofastix *CourseOfActionDomainObjectsSTIX) ComparisonTypeCommonFields(cofa
 		}
 	)
 
-	oldValue := reflect.ValueOf(*cofastix)
+	cofaNew, ok := newObj.(*CourseOfActionDomainObjectsSTIX)
+	if !ok {
+		return isEqual, cot, fmt.Errorf("type conversion error")
+	}
+
+	oldValue := reflect.ValueOf(cofastix)
 	typeOfOldValue := oldValue.Type()
 
 	newValue := reflect.ValueOf(*cofaNew)
@@ -668,7 +683,7 @@ func (gstix GroupingDomainObjectsSTIX) GetID() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа GroupingDomainObjectsSTIX
-func (gstix *GroupingDomainObjectsSTIX) ComparisonTypeCommonFields(gNew *GroupingDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+func (gstix GroupingDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*gNew *GroupingDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -679,7 +694,12 @@ func (gstix *GroupingDomainObjectsSTIX) ComparisonTypeCommonFields(gNew *Groupin
 		}
 	)
 
-	oldValue := reflect.ValueOf(*gstix)
+	gNew, ok := newObj.(*GroupingDomainObjectsSTIX)
+	if !ok {
+		return isEqual, cot, fmt.Errorf("type conversion error")
+	}
+
+	oldValue := reflect.ValueOf(gstix)
 	typeOfOldValue := oldValue.Type()
 
 	newValue := reflect.ValueOf(*gNew)
@@ -824,7 +844,7 @@ func (istix IdentityDomainObjectsSTIX) GetID() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа IdentityDomainObjectsSTIX
-func (istix *IdentityDomainObjectsSTIX) ComparisonTypeCommonFields(iNew *IdentityDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+func (istix IdentityDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*iNew *IdentityDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -835,7 +855,12 @@ func (istix *IdentityDomainObjectsSTIX) ComparisonTypeCommonFields(iNew *Identit
 		}
 	)
 
-	oldValue := reflect.ValueOf(*istix)
+	iNew, ok := newObj.(*IdentityDomainObjectsSTIX)
+	if !ok {
+		return isEqual, cot, fmt.Errorf("type conversion error")
+	}
+
+	oldValue := reflect.ValueOf(istix)
 	typeOfOldValue := oldValue.Type()
 
 	newValue := reflect.ValueOf(*iNew)
@@ -995,7 +1020,7 @@ func (istix IndicatorDomainObjectsSTIX) GetID() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа IndicatorDomainObjectsSTIX
-func (istix *IndicatorDomainObjectsSTIX) ComparisonTypeCommonFields(iNew *IndicatorDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+func (istix IndicatorDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*iNew *IndicatorDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -1006,7 +1031,12 @@ func (istix *IndicatorDomainObjectsSTIX) ComparisonTypeCommonFields(iNew *Indica
 		}
 	)
 
-	oldValue := reflect.ValueOf(*istix)
+	iNew, ok := newObj.(*IndicatorDomainObjectsSTIX)
+	if !ok {
+		return isEqual, cot, fmt.Errorf("type conversion error")
+	}
+
+	oldValue := reflect.ValueOf(istix)
 	typeOfOldValue := oldValue.Type()
 
 	newValue := reflect.ValueOf(*iNew)
@@ -1164,7 +1194,7 @@ func (istix InfrastructureDomainObjectsSTIX) GetID() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа InfrastructureDomainObjectsSTIX
-func (istix *InfrastructureDomainObjectsSTIX) ComparisonTypeCommonFields(iNew *InfrastructureDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+func (istix InfrastructureDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*iNew *InfrastructureDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -1175,7 +1205,12 @@ func (istix *InfrastructureDomainObjectsSTIX) ComparisonTypeCommonFields(iNew *I
 		}
 	)
 
-	oldValue := reflect.ValueOf(*istix)
+	iNew, ok := newObj.(*InfrastructureDomainObjectsSTIX)
+	if !ok {
+		return isEqual, cot, fmt.Errorf("type conversion error")
+	}
+
+	oldValue := reflect.ValueOf(istix)
 	typeOfOldValue := oldValue.Type()
 
 	newValue := reflect.ValueOf(*iNew)
@@ -1346,7 +1381,7 @@ func (istix IntrusionSetDomainObjectsSTIX) GetID() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа IntrusionSetDomainObjectsSTIX
-func (istix *IntrusionSetDomainObjectsSTIX) ComparisonTypeCommonFields(iNew *IntrusionSetDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+func (istix IntrusionSetDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*iNew *IntrusionSetDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -1357,7 +1392,12 @@ func (istix *IntrusionSetDomainObjectsSTIX) ComparisonTypeCommonFields(iNew *Int
 		}
 	)
 
-	oldValue := reflect.ValueOf(*istix)
+	iNew, ok := newObj.(*IntrusionSetDomainObjectsSTIX)
+	if !ok {
+		return isEqual, cot, fmt.Errorf("type conversion error")
+	}
+
+	oldValue := reflect.ValueOf(istix)
 	typeOfOldValue := oldValue.Type()
 
 	newValue := reflect.ValueOf(*iNew)
@@ -1515,7 +1555,7 @@ func (lstix LocationDomainObjectsSTIX) GetID() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа LocationDomainObjectsSTIX
-func (lstix *LocationDomainObjectsSTIX) ComparisonTypeCommonFields(lNew *LocationDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+func (lstix LocationDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*lNew *LocationDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -1526,7 +1566,12 @@ func (lstix *LocationDomainObjectsSTIX) ComparisonTypeCommonFields(lNew *Locatio
 		}
 	)
 
-	oldValue := reflect.ValueOf(*lstix)
+	lNew, ok := newObj.(*LocationDomainObjectsSTIX)
+	if !ok {
+		return isEqual, cot, fmt.Errorf("type conversion error")
+	}
+
+	oldValue := reflect.ValueOf(lstix)
 	typeOfOldValue := oldValue.Type()
 
 	newValue := reflect.ValueOf(*lNew)
@@ -1715,7 +1760,7 @@ func (mstix MalwareDomainObjectsSTIX) GetID() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа MalwareDomainObjectsSTIX
-func (mstix *MalwareDomainObjectsSTIX) ComparisonTypeCommonFields(mNew *MalwareDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+func (mstix MalwareDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*mNew *MalwareDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -1726,7 +1771,12 @@ func (mstix *MalwareDomainObjectsSTIX) ComparisonTypeCommonFields(mNew *MalwareD
 		}
 	)
 
-	oldValue := reflect.ValueOf(*mstix)
+	mNew, ok := newObj.(*MalwareDomainObjectsSTIX)
+	if !ok {
+		return isEqual, cot, fmt.Errorf("type conversion error")
+	}
+
+	oldValue := reflect.ValueOf(mstix)
 	typeOfOldValue := oldValue.Type()
 
 	newValue := reflect.ValueOf(*mNew)
@@ -1949,7 +1999,7 @@ func (mastix MalwareAnalysisDomainObjectsSTIX) GetID() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа MalwareAnalysisDomainObjectsSTIX
-func (mstix *MalwareAnalysisDomainObjectsSTIX) ComparisonTypeCommonFields(mNew *MalwareAnalysisDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+func (mstix MalwareAnalysisDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*mNew *MalwareAnalysisDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -1960,7 +2010,12 @@ func (mstix *MalwareAnalysisDomainObjectsSTIX) ComparisonTypeCommonFields(mNew *
 		}
 	)
 
-	oldValue := reflect.ValueOf(*mstix)
+	mNew, ok := newObj.(*MalwareAnalysisDomainObjectsSTIX)
+	if !ok {
+		return isEqual, cot, fmt.Errorf("type conversion error")
+	}
+
+	oldValue := reflect.ValueOf(mstix)
 	typeOfOldValue := oldValue.Type()
 
 	newValue := reflect.ValueOf(*mNew)
@@ -2125,7 +2180,7 @@ func (nstix NoteDomainObjectsSTIX) GetID() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа NoteDomainObjectsSTIX
-func (nstix *NoteDomainObjectsSTIX) ComparisonTypeCommonFields(nNew *NoteDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+func (nstix NoteDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*nNew *NoteDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -2136,7 +2191,12 @@ func (nstix *NoteDomainObjectsSTIX) ComparisonTypeCommonFields(nNew *NoteDomainO
 		}
 	)
 
-	oldValue := reflect.ValueOf(*nstix)
+	nNew, ok := newObj.(*NoteDomainObjectsSTIX)
+	if !ok {
+		return isEqual, cot, fmt.Errorf("type conversion error")
+	}
+
+	oldValue := reflect.ValueOf(nstix)
 	typeOfOldValue := oldValue.Type()
 
 	newValue := reflect.ValueOf(*nNew)
@@ -2277,7 +2337,7 @@ func (odstix ObservedDataDomainObjectsSTIX) GetID() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа ObservedDataDomainObjectsSTIX
-func (ostix *ObservedDataDomainObjectsSTIX) ComparisonTypeCommonFields(oNew *ObservedDataDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+func (ostix ObservedDataDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*oNew *ObservedDataDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -2288,7 +2348,12 @@ func (ostix *ObservedDataDomainObjectsSTIX) ComparisonTypeCommonFields(oNew *Obs
 		}
 	)
 
-	oldValue := reflect.ValueOf(*ostix)
+	oNew, ok := newObj.(*ObservedDataDomainObjectsSTIX)
+	if !ok {
+		return isEqual, cot, fmt.Errorf("type conversion error")
+	}
+
+	oldValue := reflect.ValueOf(ostix)
 	typeOfOldValue := oldValue.Type()
 
 	newValue := reflect.ValueOf(*oNew)
@@ -2433,7 +2498,7 @@ func (ostix OpinionDomainObjectsSTIX) GetID() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа OpinionDomainObjectsSTIX
-func (ostix *OpinionDomainObjectsSTIX) ComparisonTypeCommonFields(oNew *OpinionDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+func (ostix OpinionDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*oNew *OpinionDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -2444,7 +2509,12 @@ func (ostix *OpinionDomainObjectsSTIX) ComparisonTypeCommonFields(oNew *OpinionD
 		}
 	)
 
-	oldValue := reflect.ValueOf(*ostix)
+	oNew, ok := newObj.(*OpinionDomainObjectsSTIX)
+	if !ok {
+		return isEqual, cot, fmt.Errorf("type conversion error")
+	}
+
+	oldValue := reflect.ValueOf(ostix)
 	typeOfOldValue := oldValue.Type()
 
 	newValue := reflect.ValueOf(*oNew)
@@ -2601,7 +2671,7 @@ func (rstix ReportDomainObjectsSTIX) GetID() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа ReportDomainObjectsSTIX
-func (rstix *ReportDomainObjectsSTIX) ComparisonTypeCommonFields(rNew *ReportDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+func (rstix ReportDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*rNew *ReportDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -2612,7 +2682,12 @@ func (rstix *ReportDomainObjectsSTIX) ComparisonTypeCommonFields(rNew *ReportDom
 		}
 	)
 
-	oldValue := reflect.ValueOf(*rstix)
+	rNew, ok := newObj.(*ReportDomainObjectsSTIX)
+	if !ok {
+		return isEqual, cot, fmt.Errorf("type conversion error")
+	}
+
+	oldValue := reflect.ValueOf(rstix)
 	typeOfOldValue := oldValue.Type()
 
 	newValue := reflect.ValueOf(*rNew)
@@ -2805,7 +2880,7 @@ func (tastix ThreatActorDomainObjectsSTIX) GetID() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа ThreatActorDomainObjectsSTIX
-func (tastix *ThreatActorDomainObjectsSTIX) ComparisonTypeCommonFields(taNew *ThreatActorDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+func (tastix ThreatActorDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*taNew *ThreatActorDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -2816,7 +2891,12 @@ func (tastix *ThreatActorDomainObjectsSTIX) ComparisonTypeCommonFields(taNew *Th
 		}
 	)
 
-	oldValue := reflect.ValueOf(*tastix)
+	taNew, ok := newObj.(*ThreatActorDomainObjectsSTIX)
+	if !ok {
+		return isEqual, cot, fmt.Errorf("type conversion error")
+	}
+
+	oldValue := reflect.ValueOf(tastix)
 	typeOfOldValue := oldValue.Type()
 
 	newValue := reflect.ValueOf(*taNew)
@@ -3002,7 +3082,7 @@ func (tstix ToolDomainObjectsSTIX) GetID() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа ToolDomainObjectsSTIX
-func (tstix *ToolDomainObjectsSTIX) ComparisonTypeCommonFields(tNew *ToolDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+func (tstix ToolDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*tNew *ToolDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -3013,7 +3093,12 @@ func (tstix *ToolDomainObjectsSTIX) ComparisonTypeCommonFields(tNew *ToolDomainO
 		}
 	)
 
-	oldValue := reflect.ValueOf(*tstix)
+	tNew, ok := newObj.(*ToolDomainObjectsSTIX)
+	if !ok {
+		return isEqual, cot, fmt.Errorf("type conversion error")
+	}
+
+	oldValue := reflect.ValueOf(tstix)
 	typeOfOldValue := oldValue.Type()
 
 	newValue := reflect.ValueOf(*tNew)
@@ -3154,7 +3239,7 @@ func (vstix VulnerabilityDomainObjectsSTIX) GetID() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа VulnerabilityDomainObjectsSTIX
-func (vstix *VulnerabilityDomainObjectsSTIX) ComparisonTypeCommonFields(vNew *VulnerabilityDomainObjectsSTIX, src string) (bool, DifferentObjectType, error) {
+func (vstix VulnerabilityDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*vNew *VulnerabilityDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -3165,7 +3250,12 @@ func (vstix *VulnerabilityDomainObjectsSTIX) ComparisonTypeCommonFields(vNew *Vu
 		}
 	)
 
-	oldValue := reflect.ValueOf(*vstix)
+	vNew, ok := newObj.(*VulnerabilityDomainObjectsSTIX)
+	if !ok {
+		return isEqual, cot, fmt.Errorf("type conversion error")
+	}
+
+	oldValue := reflect.ValueOf(vstix)
 	typeOfOldValue := oldValue.Type()
 
 	newValue := reflect.ValueOf(*vNew)

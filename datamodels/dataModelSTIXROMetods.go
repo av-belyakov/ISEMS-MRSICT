@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"regexp"
+	"time"
 
 	"ISEMS-MRSICT/commonlibs"
 )
@@ -93,6 +94,29 @@ func (rstix RelationshipObjectSTIX) GetID() string {
 	return rstix.ID
 }
 
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа RelationshipObjectSTIX
+func (rstix RelationshipObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             rstix.ID,
+		}
+	)
+
+	/*
+				!!! ПОКА ЭТО ТОЛЬКО ЗАГЛУШКА необходимая для совместимости !!!
+		vNew, ok := newObj.(*)
+		if !ok {
+			return isEqual, cot, fmt.Errorf("type conversion error")
+		}
+	*/
+
+	return isEqual, cot, nil
+}
+
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (rstix RelationshipObjectSTIX) ToStringBeautiful() string {
 	str := rstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
@@ -168,6 +192,29 @@ func (sstix SightingObjectSTIX) SanitizeStruct() SightingObjectSTIX {
 //GetID возвращает ID STIX объекта
 func (sstix SightingObjectSTIX) GetID() string {
 	return sstix.ID
+}
+
+//ComparisonTypeCommonFields выполняет сравнение двух объектов типа SightingObjectSTIX
+func (sstix SightingObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
+	var (
+		isEqual bool = true
+		cot          = DifferentObjectType{
+			SourceReceivingChanges: src,
+			ModifiedTime:           time.Now(),
+			CollectionName:         "stix_object_collection",
+			DocumentID:             sstix.ID,
+		}
+	)
+
+	/*
+				!!! ПОКА ЭТО ТОЛЬКО ЗАГЛУШКА необходимая для совместимости !!!
+		vNew, ok := newObj.(*)
+		if !ok {
+			return isEqual, cot, fmt.Errorf("type conversion error")
+		}
+	*/
+
+	return isEqual, cot, nil
 }
 
 //ToStringBeautiful выполняет красивое представление информации содержащейся в типе

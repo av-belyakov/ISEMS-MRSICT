@@ -34,12 +34,22 @@ type ModAPIRequestProcessingReqHandlingSTIXObjectJSON []*json.RawMessage
 //ModAPIRequestProcessingResJSON содержит описание формата JSON ответа, передаваемого через модуль ModuleAPIRequestProcessing
 // Description - дополнительное детальное описание. При возникновении ошибки, сюда пишется максимально подробное описание ошибки.
 // IsSuccessful - индикатор успешности выполнения задачи (false - неуспешно, true - успешно).
+// InformationMessage - информационное сообщение
 // AdditionalParameters - дополнительные параметры связанные с выполняемой задачей.
 type ModAPIRequestProcessingResJSON struct {
 	ModAPIRequestProcessingCommonJSON
-	IsSuccessful         bool        `json:"is_successful"`
-	Description          string      `json:"description"`
-	AdditionalParameters interface{} `json:"additional_parameters"`
+	IsSuccessful         bool                                      `json:"is_successful"`
+	Description          string                                    `json:"description"`
+	InformationMessage   ModAPIRequestProcessingResJSONInfoMsgType `json:"information_message"`
+	AdditionalParameters interface{}                               `json:"additional_parameters"`
+}
+
+//ModAPIRequestProcessingResJSONInfoMsgType подробное описание InformationMessage
+// MsgType - тип информационного сообщения ('info', 'success', 'warning', 'danger')
+// Msg - информационное сообщение
+type ModAPIRequestProcessingResJSONInfoMsgType struct {
+	MsgType string `json:"msg_type"`
+	Msg     string `json:"msg"`
 }
 
 /*

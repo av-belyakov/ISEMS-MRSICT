@@ -13,9 +13,40 @@ import (
 )
 
 //TypePatternUserMessage тип для функции PatternUserMessage
-type TypePatternUserMessage struct {
-	SourceID                      int
-	TaskType, TaskAction, Message string
+// Section - секция в которой выполнялась задача
+// TaskType - тип выполняемой задачи задачи (например, добавление, поиск, удаление и т.д.)
+// FinalResult - финальный результат выполненного, над задачей, действия
+// Message - информационное сообщение
+type PatternUserMessageType struct {
+	Section, TaskType, FinalResult, Message string
+}
+
+//PatternUserMessage шаблон для сообщения пользователю
+func PatternUserMessage(tpum *PatternUserMessageType) string {
+	var (
+		section     = "?"
+		taskType    = "?"
+		finalResult = "останов"
+	)
+
+	if tpum.Section != "" {
+		section = tpum.Section
+	}
+
+	if tpum.TaskType != "" {
+		taskType = tpum.TaskType
+	}
+
+	if tpum.FinalResult != "" {
+		finalResult = tpum.FinalResult
+	}
+
+	var message string
+	if tpum.Message != "" {
+		message = fmt.Sprintf(" Сообщение: '%v'", tpum.Message)
+	}
+
+	return fmt.Sprintf("Секция: '%v'. Тип: '%v'. Действие: '%v'.%v", section, taskType, finalResult, message)
 }
 
 //GetUniqIDFormatMD5 генерирует уникальный идентификатор в формате md5
@@ -119,31 +150,6 @@ func GetChunkListFiles(numPart, sizeChunk, countParts int, listFilesFilter map[s
 
 	}
 	return lff
-}
-
-//PatternUserMessage шаблон для сообщения пользователю
-func PatternUserMessage(tpum *TypePatternUserMessage) string {
-	sourceID := strconv.Itoa(tpum.SourceID)
-	if sourceID == "0" {
-		sourceID = "?"
-	}
-
-	taskType := "?"
-	if tpum.TaskType != "" {
-		taskType = tpum.TaskType
-	}
-
-	taskAction := "останов"
-	if tpum.TaskAction != "" {
-		taskAction = tpum.TaskAction
-	}
-
-	var message string
-	if tpum.Message != "" {
-		message = fmt.Sprintf(" Сообщение: '%v'", tpum.Message)
-	}
-
-	return fmt.Sprintf("Источник: '%v'. Тип: '%v'. Действие: '%v'.%v", sourceID, taskType, taskAction, message)
 }
 
 //MothPrintIntAsString выводит месяц в виде числа как строку

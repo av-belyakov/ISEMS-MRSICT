@@ -232,9 +232,14 @@ var _ = Describe("HandlerSTIXCollection", func() {
 
 	Context("Тест 8. Получаем информацию обо всех STIX объектах", func() {
 		It("должен быть получен список из 65 STIX объектов, ошибок быть не должно", func() {
-			cur, err := qp.Find(bson.D{})
+			var objID primitive.A
 
-			l := GetListElementSTIXObject(cur)
+			for _, v := range l {
+				objID = append(objID, v.Data.GetID())
+			}
+
+			cur, err := qp.Find((bson.D{{Key: "commonpropertiesobjectstix.id", Value: bson.D{{Key: "$in", Value: objID}}}}))
+			lr := GetListElementSTIXObject(cur)
 
 			/*
 				fmt.Println("Test 8. Check result func'GetListElementSTIXObject'")
@@ -244,7 +249,7 @@ var _ = Describe("HandlerSTIXCollection", func() {
 			*/
 
 			Expect(err).ShouldNot(HaveOccurred())
-			Expect(len(l)).Should(Equal(65))
+			Expect(len(lr)).Should(Equal(65))
 		})
 	})
 
@@ -1450,18 +1455,14 @@ func ComparasionListSTIXObject(clt ComparasionListTypeSTIXObject) []datamodels.D
 func ReplacementElementsSTIXObject(qp interactionmongodb.QueryParameters, l []*datamodels.ElementSTIXObject) error {
 	listSize := len(l)
 	listObj := make([]interface{}, 0, listSize)
-	//reqDeleteID := make([]interface{}, 0, listSize)
 	reqDeleteID := primitive.A{}
 
 	for _, v := range l {
 		reqDeleteID = append(reqDeleteID, v.Data.GetID())
-		//reqDeleteID = append(reqDeleteID, bson.D{{Key: "commonpropertiesobjectstix.id", Value: v.Data.GetID()}})
-		//reqDeleteID = append(reqDeleteID, bson.E{Key: "commonpropertiesobjectstix.id", Value: v.Data.GetID()})
 		listObj = append(listObj, v.Data)
 	}
 
-	//err := qp.DeleteManyData(reqDeleteID)
-	err := qp.DeleteManyData(bson.D{bson.E{Key: "commonpropertiesobjectstix.id", Value: bson.E{Key: "$in", Value: reqDeleteID}}})
+	_, err := qp.DeleteManyData(bson.D{{Key: "commonpropertiesobjectstix.id", Value: bson.D{{Key: "$in", Value: reqDeleteID}}}})
 	if err != nil {
 		return err
 	}
@@ -1472,42 +1473,6 @@ func ReplacementElementsSTIXObject(qp interactionmongodb.QueryParameters, l []*d
 	}
 
 	return nil
-}
-
-func SetListElementSTIXObject(qp interactionmongodb.QueryParameters, l []*datamodels.ElementSTIXObject) (bool, error) {
-	sizeListSTIXObject := len(l)
-
-	/*
-		ПОКА ПРИДЕТСЯ ЗАКОМЕНТИТЬ, надо сделать функцию GetListElementSTIXObject
-		//получаем список ID STIX объектов для их поиска в БД
-		reqSearchID := primitive.A{}
-		for _, v := range l {
-			reqSearchID = append(reqSearchID, bson.D{{Key: "commonpropertiesobjectstix.id", Value: v.Data.GetID()}})
-		}
-
-		//делаем запрос к БД на ниличие STIX объектов которые хотим добавить
-		cur, err := qp.Find(bson.D{{Key: "$or", Value: reqSearchID}})
-		if err != nil {
-			return false, err
-		}
-
-		listFromDB := GetListElementSTIXObject(cur)
-
-		fmt.Printf("func 'SetListElementSTIXObject', count list from DB: '%d'\n", len(listFromDB))
-
-		//сравниваем все параметры STIX объектов полученных из БД и STIX объектов которые мы хотим добавить
-	*/
-
-	//добавляем только те элементы которых нет в БД и делаем обновление тех которые изменились
-	addInfo := make([]interface{}, 0, sizeListSTIXObject)
-	for _, v := range l {
-
-		//				fmt.Printf("___ STIX object ID:'%s'\n", v.Data.GetID())
-
-		addInfo = append(addInfo, v.Data)
-	}
-
-	return qp.InsertData(addInfo)
 }
 
 func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject {

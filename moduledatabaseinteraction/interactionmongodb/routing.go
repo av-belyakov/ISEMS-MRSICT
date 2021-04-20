@@ -5,20 +5,17 @@ import (
 
 	"ISEMS-MRSICT/datamodels"
 	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
-	"ISEMS-MRSICT/modulelogginginformationerrors"
 )
 
 type wrappersSetting struct {
 	DataRequest                 datamodels.ModuleDataBaseInteractionChannel
 	AdditionalRequestParameters interface{}
 	NameDB                      string
-	ChanSaveLog                 chan<- modulelogginginformationerrors.LogMessageType
 	ConnectionDB                ConnectionDescriptorMongoDB
 }
 
 //Routing обеспечивает маршрутизацию информации между базой данных MongoDB и ядром приложения
 func Routing(
-	chanSaveLog chan<- modulelogginginformationerrors.LogMessageType,
 	chanOutput chan<- datamodels.ModuleDataBaseInteractionChannel,
 	nameDb string,
 	cdmdb ConnectionDescriptorMongoDB,
@@ -29,7 +26,6 @@ func Routing(
 
 	ws := wrappersSetting{
 		NameDB:       nameDb,
-		ChanSaveLog:  chanSaveLog,
 		ConnectionDB: cdmdb,
 	}
 

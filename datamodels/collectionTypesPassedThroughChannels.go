@@ -14,8 +14,16 @@ package datamodels
 type CommanDataTypePassedThroughChannels struct {
 	ModuleGeneratorMessage string
 	ModuleReceiverMessage  string
-	InformationMessage     string
+	InformationMessage     InformationDataTypePassedThroughChannels
 	ErrorMessage           ErrorDataTypePassedThroughChannels
+}
+
+//InformationDataTypePassedThroughChannels подробное описание информационного сообщения
+// Type - тип информационного сообщения ('info', 'success', 'warning', 'danger')
+// Message - информационное сообщение
+type InformationDataTypePassedThroughChannels struct {
+	Type    string
+	Message string
 }
 
 //ErrorDataTypePassedThroughChannels подробное описание сообщения об ошибке

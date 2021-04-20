@@ -73,7 +73,7 @@ func InteractionMongoDB(
 	}
 
 	//инициализируем маршрутизатор запросов
-	go Routing(chanSaveLog, cmdbi.OutputModule, mdbs.NameDB, cdmdb, tst, cmdbi.InputModule)
+	go Routing(cmdbi.OutputModule, mdbs.NameDB, cdmdb, tst, cmdbi.InputModule)
 
 	return cmdbi, nil
 }

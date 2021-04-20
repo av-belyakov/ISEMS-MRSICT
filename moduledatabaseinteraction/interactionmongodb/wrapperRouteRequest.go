@@ -6,7 +6,6 @@ import (
 	"ISEMS-MRSICT/commonhandlers"
 	"ISEMS-MRSICT/datamodels"
 	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
-	"ISEMS-MRSICT/modulelogginginformationerrors"
 )
 
 //WrapperFuncTypeHandlingSTIXObject набор обработчиков для работы с запросами связанными со STIX объектами
@@ -14,20 +13,22 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 	chanOutput chan<- datamodels.ModuleDataBaseInteractionChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) {
 
-	fn := "wrapperFuncTypeHandlingSTIXObject"
+	var (
+		err error
+		fn  = "wrapperFuncTypeHandlingSTIXObject"
+		qp  = QueryParameters{
+			NameDB:         ws.NameDB,
+			CollectionName: "stix_object_collection",
+			ConnectDB:      ws.ConnectionDB.Connection,
+		}
+	)
 
 	fmt.Println("func 'wrapperFuncTypeHandlingSTIXObject', START...")
 	fmt.Printf("func 'wrapperFuncTypeHandlingSTIXObject', received message: '%v'\n", ws)
 
-	//получаем всю информацию о выполняемой задаче
+	//получаем всю информацию о выполняемой задаче из временного хранилища задач
 	_, taskInfo, err := tst.GetTaskByID(ws.DataRequest.AppTaskID)
 	if err != nil {
-		ws.ChanSaveLog <- modulelogginginformationerrors.LogMessageType{
-			TypeMessage: "error",
-			Description: fmt.Sprint(err),
-			FuncName:    fn,
-		}
-
 		chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
 			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
 				ModuleGeneratorMessage: "module database interaction",
@@ -49,14 +50,6 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 
 	ti, ok := taskInfo.TaskParameters.([]*datamodels.ElementSTIXObject)
 	if !ok {
-		msg := "type conversion error"
-
-		ws.ChanSaveLog <- modulelogginginformationerrors.LogMessageType{
-			TypeMessage: "error",
-			Description: msg,
-			FuncName:    fn,
-		}
-
 		chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
 			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
 				ModuleGeneratorMessage: "module database interaction",
@@ -64,7 +57,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 				ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
 					FuncName:                                fn,
 					ModuleAPIRequestProcessingSettingSendTo: true,
-					Error:                                   fmt.Errorf(msg),
+					Error:                                   fmt.Errorf("type conversion error"),
 				},
 			},
 			Section:   "handling stix object",
@@ -79,28 +72,89 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 
 	fmt.Printf("func 'wrapperFuncTypeHandlingSTIXObject', list ID: '%v'\n", listID)
 
-	//делаем запрос к БД для получения полной информации об STIX объектах по их ID
+	//выполняем запрос к БД, для получения полной информации об STIX объектах по их ID
+	listElemetSTIXObject, err := FindSTIXObjectByID(qp, listID)
+	if err != nil {
+		chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
+			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+				ModuleGeneratorMessage: "module database interaction",
+				ModuleReceiverMessage:  "module core application",
+				ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
+					FuncName:                                fn,
+					ModuleAPIRequestProcessingSettingSendTo: true,
+					Error:                                   err,
+				},
+			},
+			Section:   "handling stix object",
+			AppTaskID: ws.DataRequest.AppTaskID,
+		}
+
+		return
+	}
 
 	//выполняем сравнение объектов и ищем внесенные изменения для каждого из STIX объектов
+	listDifferentObject := ComparasionListSTIXObject(ComparasionListTypeSTIXObject{
+		CollectionType: qp.CollectionName,
+		OldList:        listElemetSTIXObject,
+		NewList:        ti,
+	})
 
-	//логируем изменения в STIX объектах в отдельную коллекцию построенную на основе JSON patch (однако в JSON patch нет времени изменения
-	// и кто внес изменения), по этому JSON patch нужно будет немного модифицировать
+	//логируем изменения в STIX объектах в отдельную коллекцию 'accounting_differences_objects_collection'
+	if len(listDifferentObject) > 0 {
+		qp.CollectionName = "accounting_differences_objects_collection"
+
+		_, err := qp.InsertData([]interface{}{listDifferentObject})
+		if err != nil {
+			chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
+				CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+					ModuleGeneratorMessage: "module database interaction",
+					ModuleReceiverMessage:  "module core application",
+					ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
+						FuncName:                                fn,
+						ModuleAPIRequestProcessingSettingSendTo: true,
+						Error:                                   err,
+					},
+				},
+				Section:   "handling stix object",
+				AppTaskID: ws.DataRequest.AppTaskID,
+			}
+
+			return
+		}
+	}
 
 	//добавляем или обновляем STIX объекты в БД
+	err = ReplacementElementsSTIXObject(qp, ti)
+	if err != nil {
+		chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
+			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+				ModuleGeneratorMessage: "module database interaction",
+				ModuleReceiverMessage:  "module core application",
+				ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
+					FuncName:                                fn,
+					ModuleAPIRequestProcessingSettingSendTo: true,
+					Error:                                   err,
+				},
+			},
+			Section:   "handling stix object",
+			AppTaskID: ws.DataRequest.AppTaskID,
+		}
 
-	/* последние ДВА пункта можно делать параллельно */
+		return
+	}
 
-	/*
-		   Так как это обработка STIX объектов то определение и выбор действий по команде не нужен
-		   - получаем информацию о задаче по ее ID в memorytemporarystoragecommoninformation.TemporaryStorageType
-		   - надо выполнить проверку наличия в БД каждого STIX объекта из полученного среза и если он есть в БД
-		    проверить чем они отличаются
-		   - нужен какой то промежуточный обработчик для логирования изменений в STIX объекте (возможно на основе JSON patch),
-		    для этого необходимо получить все поля со всеми изменениями. Фактически есть три случая:
-			1. Объект в БД отсутствует. Проверку на наличие изменений не производим.
-			2. Объект в БД есть, но он полностью совпадает с полученным объектом (тогда его не нужно загружать в БД)
-			3. Объект в БД есть и он отличается от полученного (тогда нужно найти внесенные изменения)
-	*/
+	chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
+		CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+			ModuleGeneratorMessage: "module database interaction",
+			ModuleReceiverMessage:  "module core application",
+			InformationMessage: datamodels.InformationDataTypePassedThroughChannels{
+				Type:    "success",
+				Message: "Информация о структурированных данных успешно добавлена",
+			},
+		},
+		Section:   "handling stix object",
+		AppTaskID: ws.DataRequest.AppTaskID,
+	}
 }
 
 //wrapperFuncTypeHandlingSearchRequests набор обработчиков для работы с запросами направленными на обработку поисковой машине

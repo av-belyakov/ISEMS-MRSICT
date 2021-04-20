@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"ISEMS-MRSICT/commonlibs"
 	"ISEMS-MRSICT/datamodels"
 	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
 	"ISEMS-MRSICT/moduleapirequestprocessing/auxiliaryfunctions"
@@ -20,6 +21,10 @@ func RoutingCoreApp(
 	clim *moddatamodels.ChannelsListInteractingModules) {
 
 	log.Printf("Start application ISEMS-MRSICT, version '%q'\n", appConfig.VersionApp)
+
+	var (
+		section string
+	)
 
 	for {
 		select {
@@ -60,10 +65,19 @@ func RoutingCoreApp(
 
 				*/
 
-				if err := auxiliaryfunctions.SendCriticalErrorMessageJSON(&auxiliaryfunctions.ErrorMessageType{
+				if data.Section == "handling stix object" {
+					section = "обработка структурированных данных"
+				}
+
+				if err := auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{
 					ClientID: ClientID,
-					Error:    data.ErrorMessage.Error,
-					C:        clim.ChannelsModuleAPIRequestProcessing.InputModule,
+					Notification: commonlibs.PatternUserMessage(&commonlibs.PatternUserMessageType{
+						Section:     section,
+						TaskType:    "изменение статуса задачи на 'завершена'",
+						FinalResult: "задача успешно выполнена",
+						Message:     data.InformationMessage.Message,
+					}),
+					C: clim.ChannelsModuleAPIRequestProcessing.InputModule,
 				}); err != nil {
 					//запись информации в лог-файл
 					chanSaveLog <- modulelogginginformationerrors.LogMessageType{
@@ -74,15 +88,52 @@ func RoutingCoreApp(
 
 					return
 				}
+
+				/*if err := auxiliaryfunctions.SendCriticalErrorMessageJSON(&auxiliaryfunctions.ErrorMessageType{
+					ClientID: ClientID,
+					Error:    data.ErrorMessage.Error,
+					C:        clim.ChannelsModuleAPIRequestProcessing.InputModule,
+				})*/
 			}
 
 			//обработка информационных сообщений получаемых от БД MongoDB
-			if data.InformationMessage != "" {
+			if data.InformationMessage.Type != "" {
 				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 					TypeMessage: "info",
-					Description: data.InformationMessage,
+					Description: data.InformationMessage.Message,
 				}
+
+				/*
+														!!!!!!
+										Здесь нужно отправить информационное сообщение клиенту API
+														!!!!!!
+
+					common.PatternUserMessage(&common.TypePatternUserMessage{
+													TaskType:   "изменение статуса задачи на 'завершена'",
+													TaskAction: "задача отклонена",
+													Message:    "внутренняя ошибка приложения",
+												})
+
+														notifications.SendNotificationToClientAPI(
+											outCoreChans.OutCoreChanAPI,
+											notifications.NotificationSettingsToClientAPI{
+												MsgType: "danger",
+												MsgDescription: common.PatternUserMessage(&common.TypePatternUserMessage{
+													TaskType:   "изменение статуса задачи на 'завершена'",
+													TaskAction: "задача отклонена",
+													Message:    "внутренняя ошибка приложения",
+												}),
+											},
+											res.TaskIDClientAPI,
+											res.IDClientAPI)
+				*/
 			}
+
+			//определяем тип задачи по команде, если в результате обработки запроса к БД должны быть получены какие либо данные
+
+			//делаем запрос к временному хранилищу для получении информации о задаче и результатов ее обработки
+			//по секции задачи и команде определить выполняемые в результате нее действия
+			//отправлять результаты обработки единым целом или кусочками
 
 		case data := <-clim.ChannelsModuleAPIRequestProcessing.OutputModule:
 			fmt.Printf("func 'Routing', Input data from 'moduleAPIRequestProcessing'. Reseived data: '%v'\n", data)

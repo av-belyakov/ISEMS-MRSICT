@@ -10,32 +10,38 @@ import (
 // ClientID - идентификатор клиента moduleapirequestprocessing
 // TaskID - ID задачи
 // Section - секция, в которой возникла ошибка
+// TypeNotification - тип информационного сообщения
 // Notification - подробное информационное сообщение
 type SendNotificationTypeModuleAPI struct {
-	ClientID     string
-	TaskID       string
-	Section      string
-	Notification string
-	C            chan<- datamodels.ModuleReguestProcessingChannel
+	ClientID         string
+	TaskID           string
+	Section          string
+	TypeNotification string
+	Notification     string
+	C                chan<- datamodels.ModuleReguestProcessingChannel
 }
 
 //SendNotificationModuleAPI формирует информационное сообщение в формате JSON
 func SendNotificationModuleAPI(n *SendNotificationTypeModuleAPI) error {
-	msg, err := json.Marshal(datamodels.ModAPIRequestProcessingResJSON{Description: n.Notification})
+	var isSuccess bool
+
+	if n.TypeNotification == "success" || n.TypeNotification == "info" {
+		isSuccess = true
+	}
+
+	msg, err := json.Marshal(datamodels.ModAPIRequestProcessingResJSON{
+		ModAPIRequestProcessingCommonJSON: datamodels.ModAPIRequestProcessingCommonJSON{
+			TaskID:  n.TaskID,
+			Section: n.Section,
+		},
+		IsSuccessful: isSuccess,
+		InformationMessage: datamodels.ModAPIRequestProcessingResJSONInfoMsgType{
+			MsgType: n.TypeNotification,
+			Msg:     n.Notification,
+		}})
 	if err != nil {
 		return err
 	}
-
-	/*
-	   Переделать все сообщения отправляемые клиенту API под это сообщение и с учетом\
-	   type ModAPIRequestProcessingResJSON struct {
-	   	ModAPIRequestProcessingCommonJSON
-	   	IsSuccessful         bool                                      `json:"is_successful"`
-	   	Description          string                                    `json:"description"`
-	   	InformationMessage   ModAPIRequestProcessingResJSONInfoMsgType `json:"information_message"`
-	   	AdditionalParameters interface{}                               `json:"additional_parameters"`
-	   }
-	*/
 
 	n.C <- datamodels.ModuleReguestProcessingChannel{
 		CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{

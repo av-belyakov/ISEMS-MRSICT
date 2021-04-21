@@ -149,7 +149,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 			ModuleReceiverMessage:  "module core application",
 			InformationMessage: datamodels.InformationDataTypePassedThroughChannels{
 				Type:    "success",
-				Message: "Информация о структурированных данных успешно добавлена",
+				Message: "информация о структурированных данных успешно добавлена",
 			},
 		},
 		Section:   "handling stix object",

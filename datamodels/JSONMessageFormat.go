@@ -19,7 +19,6 @@ type ModAPIRequestProcessingCommonJSON struct {
 // TaskWasGeneratedAutomatically - задача была сгенерирована автоматически (true - да)
 // UserNameGeneratedTask - имя пользователя сгенерировавшего задачу
 // RequestDetails - подробности запроса
-// DetailedInformation - подбробная информация о запросе
 type ModAPIRequestProcessingReqJSON struct {
 	ModAPIRequestProcessingCommonJSON
 	TaskWasGeneratedAutomatically bool             `json:"task_was_generated_automatically"`

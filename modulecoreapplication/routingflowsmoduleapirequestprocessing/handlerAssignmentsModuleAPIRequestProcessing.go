@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"ISEMS-MRSICT/commonlibs"
 	"ISEMS-MRSICT/datamodels"
 	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
 	"ISEMS-MRSICT/moduleapirequestprocessing/auxiliaryfunctions"
@@ -26,18 +27,20 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 			FuncName:    "unmarshalJSONCommonReq",
 		}
 
-		if err := auxiliaryfunctions.SendCriticalErrorMessageJSON(&auxiliaryfunctions.ErrorMessageType{
-			ClientID: data.ClientID,
-			Error:    fmt.Errorf("error: error when decoding a JSON document"),
-			C:        clim.ChannelsModuleAPIRequestProcessing.InputModule,
+		if err = auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{
+			ClientID:         data.ClientID,
+			TypeNotification: "danger",
+			Notification: commonlibs.PatternUserMessage(&commonlibs.PatternUserMessageType{
+				FinalResult: "задача отклонена",
+				Message:     "ошибка при декодировании JSON документа",
+			}),
+			C: clim.ChannelsModuleAPIRequestProcessing.InputModule,
 		}); err != nil {
 			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 				TypeMessage: "error",
 				Description: fmt.Sprint(err),
 				FuncName:    "unmarshalJSONCommonReq",
 			}
-
-			return
 		}
 
 		return
@@ -48,6 +51,9 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 
 		/* *** обработчик JSON сообщений со STIX объектами *** */
 
+		section := "обработка структурированных данных"
+		taskType := "добавление или обновление структурированных данных"
+
 		l, err := UnmarshalJSONObjectSTIXReq(*commonMsgReq)
 		//если полностью не возможно декодировать список STIX объектов
 		if err != nil {
@@ -57,15 +63,23 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 				FuncName:    "unmarshalJSONObjectSTIXReq",
 			}
 
-			if err := auxiliaryfunctions.SendCriticalErrorMessageJSON(&auxiliaryfunctions.ErrorMessageType{
-				ClientID: data.ClientID,
-				Error:    fmt.Errorf("error: error when decoding a JSON document. Section: '%v'", commonMsgReq.Section),
-				C:        clim.ChannelsModuleAPIRequestProcessing.InputModule,
+			if err = auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{
+				ClientID:         data.ClientID,
+				TaskID:           commonMsgReq.TaskID,
+				Section:          commonMsgReq.Section,
+				TypeNotification: "danger",
+				Notification: commonlibs.PatternUserMessage(&commonlibs.PatternUserMessageType{
+					Section:     section,
+					TaskType:    taskType,
+					FinalResult: "задача отклонена",
+					Message:     "ошибка при декодировании JSON документа",
+				}),
+				C: clim.ChannelsModuleAPIRequestProcessing.InputModule,
 			}); err != nil {
 				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 					TypeMessage: "error",
 					Description: fmt.Sprint(err),
-					FuncName:    "unmarshalJSONObjectSTIXReq",
+					FuncName:    "unmarshalJSONCommonReq",
 				}
 			}
 
@@ -80,15 +94,23 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 				FuncName:    "unmarshalJSONObjectSTIXReq",
 			}
 
-			if err := auxiliaryfunctions.SendCriticalErrorMessageJSON(&auxiliaryfunctions.ErrorMessageType{
-				ClientID: data.ClientID,
-				Error:    fmt.Errorf("error: non-valid STIX objects were received. Section: '%v'", commonMsgReq.Section),
-				C:        clim.ChannelsModuleAPIRequestProcessing.InputModule,
+			if err = auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{
+				ClientID:         data.ClientID,
+				TaskID:           commonMsgReq.TaskID,
+				Section:          commonMsgReq.Section,
+				TypeNotification: "danger",
+				Notification: commonlibs.PatternUserMessage(&commonlibs.PatternUserMessageType{
+					Section:     section,
+					TaskType:    taskType,
+					FinalResult: "задача отклонена",
+					Message:     "получения невалидный JSON документ",
+				}),
+				C: clim.ChannelsModuleAPIRequestProcessing.InputModule,
 			}); err != nil {
 				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 					TypeMessage: "error",
 					Description: fmt.Sprint(err),
-					FuncName:    "unmarshalJSONObjectSTIXReq",
+					FuncName:    "unmarshalJSONCommonReq",
 				}
 			}
 

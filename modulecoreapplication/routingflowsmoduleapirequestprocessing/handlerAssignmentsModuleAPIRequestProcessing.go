@@ -39,7 +39,7 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 				TypeMessage: "error",
 				Description: fmt.Sprint(err),
-				FuncName:    "unmarshalJSONCommonReq",
+				FuncName:    "SendNotificationModuleAPI",
 			}
 		}
 
@@ -55,12 +55,11 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 		taskType := "добавление или обновление структурированных данных"
 
 		l, err := UnmarshalJSONObjectSTIXReq(*commonMsgReq)
-		//если полностью не возможно декодировать список STIX объектов
 		if err != nil {
 			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 				TypeMessage: "error",
 				Description: fmt.Sprint(err),
-				FuncName:    "unmarshalJSONObjectSTIXReq",
+				FuncName:    "UnmarshalJSONObjectSTIXReq",
 			}
 
 			if err = auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{
@@ -79,7 +78,7 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 					TypeMessage: "error",
 					Description: fmt.Sprint(err),
-					FuncName:    "unmarshalJSONCommonReq",
+					FuncName:    "SendNotificationModuleAPI",
 				}
 			}
 
@@ -91,7 +90,7 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 				TypeMessage: "error",
 				Description: fmt.Sprint(err),
-				FuncName:    "unmarshalJSONObjectSTIXReq",
+				FuncName:    "CheckSTIXObjects",
 			}
 
 			if err = auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{
@@ -110,7 +109,7 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 					TypeMessage: "error",
 					Description: fmt.Sprint(err),
-					FuncName:    "unmarshalJSONCommonReq",
+					FuncName:    "SendNotificationModuleAPI",
 				}
 			}
 
@@ -132,11 +131,11 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 				TypeMessage: "error",
 				Description: fmt.Sprint(err),
-				FuncName:    "unmarshalJSONObjectSTIXReq",
+				FuncName:    "AddNewTask",
 			}
 		}
 
-		fmt.Println(l)
+		fmt.Printf("List STIX object:'%v'\n", l)
 		fmt.Printf("Application task ID: '%s'\n", appTaskID)
 
 		clim.ChannelsModuleDataBaseInteraction.ChannelsMongoDB.InputModule <- datamodels.ModuleDataBaseInteractionChannel{
@@ -151,6 +150,44 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 	case "handling search requests":
 
 		/* *** обработчик JSON сообщений с запросами к поисковой машине приложения *** */
+
+		section := "обработка поискового запроса"
+		taskType := "поиск структурированных данных"
+
+		l, err := UnmarshalJSONObjectReqSearchParameters(commonMsgReq.RequestDetails)
+		if err != nil {
+			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+				TypeMessage: "error",
+				Description: fmt.Sprint(err),
+				FuncName:    "UnmarshalJSONObjectReqSearchParameters",
+			}
+
+			if err = auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{
+				ClientID:         data.ClientID,
+				TaskID:           commonMsgReq.TaskID,
+				Section:          commonMsgReq.Section,
+				TypeNotification: "danger",
+				Notification: commonlibs.PatternUserMessage(&commonlibs.PatternUserMessageType{
+					Section:     section,
+					TaskType:    taskType,
+					FinalResult: "задача отклонена",
+					Message:     "ошибка при декодировании JSON документа",
+				}),
+				C: clim.ChannelsModuleAPIRequestProcessing.InputModule,
+			}); err != nil {
+				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+					TypeMessage: "error",
+					Description: fmt.Sprint(err),
+					FuncName:    "SendNotificationModuleAPI",
+				}
+			}
+
+			return
+		}
+
+		fmt.Printf("Search data in STIX object:'%v'\n", l)
+
+		//выполняем валидацию и санитаризацию поискового запроса
 
 	case "handling reference book":
 

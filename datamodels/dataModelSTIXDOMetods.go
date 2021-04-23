@@ -241,6 +241,11 @@ func (apstix AttackPatternDomainObjectsSTIX) GetID() string {
 	return apstix.ID
 }
 
+//GetType возвращает Type STIX объекта
+func (apstix AttackPatternDomainObjectsSTIX) GetType() string {
+	return apstix.Type
+}
+
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа AttackPatternDomainObjectsSTIX
 func (apstix AttackPatternDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*apNew *AttackPatternDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
 	var (
@@ -392,6 +397,11 @@ func (cstix CampaignDomainObjectsSTIX) GetID() string {
 	return cstix.ID
 }
 
+//GetType возвращает Type STIX объекта
+func (cstix CampaignDomainObjectsSTIX) GetType() string {
+	return cstix.Type
+}
+
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа CampaignDomainObjectsSTIX
 func (cstix CampaignDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*cNew *CampaignDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
 	var (
@@ -532,6 +542,11 @@ func (castix CourseOfActionDomainObjectsSTIX) SanitizeStruct() CourseOfActionDom
 //GetID возвращает ID STIX объекта
 func (castix CourseOfActionDomainObjectsSTIX) GetID() string {
 	return castix.ID
+}
+
+//GetType возвращает Type STIX объекта
+func (castix CourseOfActionDomainObjectsSTIX) GetType() string {
+	return castix.Type
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа CourseOfActionDomainObjectsSTIX
@@ -680,6 +695,11 @@ func (gstix GroupingDomainObjectsSTIX) SanitizeStruct() GroupingDomainObjectsSTI
 //GetID возвращает ID STIX объекта
 func (gstix GroupingDomainObjectsSTIX) GetID() string {
 	return gstix.ID
+}
+
+//GetType возвращает Type STIX объекта
+func (gstix GroupingDomainObjectsSTIX) GetType() string {
+	return gstix.Type
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа GroupingDomainObjectsSTIX
@@ -841,6 +861,11 @@ func (istix IdentityDomainObjectsSTIX) SanitizeStruct() IdentityDomainObjectsSTI
 //GetID возвращает ID STIX объекта
 func (istix IdentityDomainObjectsSTIX) GetID() string {
 	return istix.ID
+}
+
+//GetType возвращает Type STIX объекта
+func (istix IdentityDomainObjectsSTIX) GetType() string {
+	return istix.Type
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа IdentityDomainObjectsSTIX
@@ -1019,6 +1044,11 @@ func (istix IndicatorDomainObjectsSTIX) GetID() string {
 	return istix.ID
 }
 
+//GetType возвращает Type STIX объекта
+func (istix IndicatorDomainObjectsSTIX) GetType() string {
+	return istix.Type
+}
+
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа IndicatorDomainObjectsSTIX
 func (istix IndicatorDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*iNew *IndicatorDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
 	var (
@@ -1191,6 +1221,11 @@ func (istix InfrastructureDomainObjectsSTIX) SanitizeStruct() InfrastructureDoma
 //GetID возвращает ID STIX объекта
 func (istix InfrastructureDomainObjectsSTIX) GetID() string {
 	return istix.ID
+}
+
+//GetType возвращает Type STIX объекта
+func (istix InfrastructureDomainObjectsSTIX) GetType() string {
+	return istix.Type
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа InfrastructureDomainObjectsSTIX
@@ -1380,6 +1415,11 @@ func (istix IntrusionSetDomainObjectsSTIX) GetID() string {
 	return istix.ID
 }
 
+//GetType возвращает Type STIX объекта
+func (istix IntrusionSetDomainObjectsSTIX) GetType() string {
+	return istix.Type
+}
+
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа IntrusionSetDomainObjectsSTIX
 func (istix IntrusionSetDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*iNew *IntrusionSetDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
 	var (
@@ -1552,6 +1592,11 @@ func (lstix LocationDomainObjectsSTIX) SanitizeStruct() LocationDomainObjectsSTI
 //GetID возвращает ID STIX объекта
 func (lstix LocationDomainObjectsSTIX) GetID() string {
 	return lstix.ID
+}
+
+//GetType возвращает Type STIX объекта
+func (lstix LocationDomainObjectsSTIX) GetType() string {
+	return lstix.Type
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа LocationDomainObjectsSTIX
@@ -1757,6 +1802,11 @@ func (mstix MalwareDomainObjectsSTIX) SanitizeStruct() MalwareDomainObjectsSTIX 
 //GetID возвращает ID STIX объекта
 func (mstix MalwareDomainObjectsSTIX) GetID() string {
 	return mstix.ID
+}
+
+//GetType возвращает Type STIX объекта
+func (mstix MalwareDomainObjectsSTIX) GetType() string {
+	return mstix.Type
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа MalwareDomainObjectsSTIX
@@ -1998,6 +2048,11 @@ func (mastix MalwareAnalysisDomainObjectsSTIX) GetID() string {
 	return mastix.ID
 }
 
+//GetType возвращает Type STIX объекта
+func (mastix MalwareAnalysisDomainObjectsSTIX) GetType() string {
+	return mastix.Type
+}
+
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа MalwareAnalysisDomainObjectsSTIX
 func (mstix MalwareAnalysisDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*mNew *MalwareAnalysisDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
 	var (
@@ -2179,6 +2234,11 @@ func (nstix NoteDomainObjectsSTIX) GetID() string {
 	return nstix.ID
 }
 
+//GetType возвращает Type STIX объекта
+func (nstix NoteDomainObjectsSTIX) GetType() string {
+	return nstix.Type
+}
+
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа NoteDomainObjectsSTIX
 func (nstix NoteDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*nNew *NoteDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
 	var (
@@ -2334,6 +2394,11 @@ func (odstix ObservedDataDomainObjectsSTIX) SanitizeStruct() ObservedDataDomainO
 //GetID возвращает ID STIX объекта
 func (odstix ObservedDataDomainObjectsSTIX) GetID() string {
 	return odstix.ID
+}
+
+//GetType возвращает Type STIX объекта
+func (odstix ObservedDataDomainObjectsSTIX) GetType() string {
+	return odstix.Type
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа ObservedDataDomainObjectsSTIX
@@ -2495,6 +2560,11 @@ func (ostix OpinionDomainObjectsSTIX) SanitizeStruct() OpinionDomainObjectsSTIX 
 //GetID возвращает ID STIX объекта
 func (ostix OpinionDomainObjectsSTIX) GetID() string {
 	return ostix.ID
+}
+
+//GetType возвращает Type STIX объекта
+func (ostix OpinionDomainObjectsSTIX) GetType() string {
+	return ostix.Type
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа OpinionDomainObjectsSTIX
@@ -2668,6 +2738,11 @@ func (rstix ReportDomainObjectsSTIX) SanitizeStruct() ReportDomainObjectsSTIX {
 //GetID возвращает ID STIX объекта
 func (rstix ReportDomainObjectsSTIX) GetID() string {
 	return rstix.ID
+}
+
+//GetType возвращает Type STIX объекта
+func (rstix ReportDomainObjectsSTIX) GetType() string {
+	return rstix.Type
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа ReportDomainObjectsSTIX
@@ -2879,6 +2954,11 @@ func (tastix ThreatActorDomainObjectsSTIX) GetID() string {
 	return tastix.ID
 }
 
+//GetType возвращает Type STIX объекта
+func (tastix ThreatActorDomainObjectsSTIX) GetType() string {
+	return tastix.Type
+}
+
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа ThreatActorDomainObjectsSTIX
 func (tastix ThreatActorDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*taNew *ThreatActorDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
 	var (
@@ -3081,6 +3161,11 @@ func (tstix ToolDomainObjectsSTIX) GetID() string {
 	return tstix.ID
 }
 
+//GetType возвращает Type STIX объекта
+func (tstix ToolDomainObjectsSTIX) GetType() string {
+	return tstix.Type
+}
+
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа ToolDomainObjectsSTIX
 func (tstix ToolDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*tNew *ToolDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
 	var (
@@ -3236,6 +3321,11 @@ func (vstix VulnerabilityDomainObjectsSTIX) SanitizeStruct() VulnerabilityDomain
 //GetID возвращает ID STIX объекта
 func (vstix VulnerabilityDomainObjectsSTIX) GetID() string {
 	return vstix.ID
+}
+
+//GetType возвращает Type STIX объекта
+func (vstix VulnerabilityDomainObjectsSTIX) GetType() string {
+	return vstix.Type
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа VulnerabilityDomainObjectsSTIX

@@ -2,9 +2,12 @@ package interactionmongodb
 
 import (
 	"context"
+	"fmt"
 
+	"ISEMS-MRSICT/commonlibs"
 	"ISEMS-MRSICT/datamodels"
 
+	ipv4conv "github.com/signalsciences/ipv4"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -428,7 +431,8 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 			})
 
 		case "ipv4-addr":
-			tmpObj := datamodels.IPv4AddressCyberObservableObjectSTIX{}
+			tmpObj := datamodels.IPv4AddressCyberObservableSimilarObjectSTIX{}
+			//tmpObj := datamodels.IPv4AddressCyberObservableObjectSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -436,7 +440,13 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data: datamodels.IPv4AddressCyberObservableObjectSTIX{
+					CommonPropertiesObjectSTIX:                        tmpObj.CommonPropertiesObjectSTIX,
+					OptionalCommonPropertiesCyberObservableObjectSTIX: tmpObj.OptionalCommonPropertiesCyberObservableObjectSTIX,
+					Value:          tmpObj.Value,
+					ResolvesToRefs: tmpObj.ResolvesToRefs,
+					BelongsToRefs:  tmpObj.BelongsToRefs,
+				},
 			})
 
 		case "ipv6-addr":
@@ -589,7 +599,66 @@ func ReplacementElementsSTIXObject(qp QueryParameters, l []*datamodels.ElementST
 	reqDeleteID := primitive.A{}
 
 	for _, v := range l {
+		var hmax, hmin uint32
 		reqDeleteID = append(reqDeleteID, v.Data.GetID())
+
+		if v.Data.GetType() == "ipv4-addr" {
+			ipv4addr, ok := v.Data.(datamodels.IPv4AddressCyberObservableObjectSTIX)
+			if !ok {
+				continue
+			}
+
+			if hostMin, hostMax, err := ipv4conv.CIDR2Range(ipv4addr.Value); err == nil {
+				hmax, _ = commonlibs.Ip2long(hostMax)
+				hmin, _ = commonlibs.Ip2long(hostMin)
+			} else {
+				hmax, _ = commonlibs.Ip2long(ipv4addr.Value)
+				hmin, _ = commonlibs.Ip2long(ipv4addr.Value)
+			}
+
+			fmt.Printf("\tfunc 'ReplacementElementsSTIXObject', ipsrt: '%s', HostMin (int): '%v', HostMax (int): '%v'\n", ipv4addr.Value, hmin, hmax)
+			hmaxstr := commonlibs.Long2ip(hmax)
+			hminstr := commonlibs.Long2ip(hmin)
+			fmt.Printf("\tfunc 'ReplacementElementsSTIXObject', ipsrt: '%s', HostMin (int): '%v', HostMax (int): '%v'\n", ipv4addr.Value, hminstr, hmaxstr)
+
+			listObj = append(listObj, datamodels.IPv4AddressCyberObservableSimilarObjectSTIX{
+				CommonPropertiesObjectSTIX:                        ipv4addr.CommonPropertiesObjectSTIX,
+				OptionalCommonPropertiesCyberObservableObjectSTIX: ipv4addr.OptionalCommonPropertiesCyberObservableObjectSTIX,
+				HostMin:        hmin,
+				HostMax:        hmax,
+				Value:          ipv4addr.Value,
+				ResolvesToRefs: ipv4addr.ResolvesToRefs,
+				BelongsToRefs:  ipv4addr.BelongsToRefs,
+			})
+
+			continue
+		}
+
+		if v.Data.GetType() == "ipv6-addr" {
+			ipv6addr, ok := v.Data.(datamodels.IPv6AddressCyberObservableObjectSTIX)
+			if !ok {
+				continue
+			}
+
+			/*
+				Cделал конвертацию IPv4 в uint32 с сохранением в БД как min, max адреса из подсети. Это работает как для одиночного
+				адреса тик и для подсети, тогда префикс подсети делется на min, max IPv4 из данной подсети
+
+				Теперь бы это повторить для IPv6!!! И еще сделать проверку является ли адрес IPv6, при чем с учетом префикса сети
+				К сожалению функции Long2ipv6, IntToIPv6 НЕ РАБОТАЮТ! Надо думать дальше.
+			*/
+
+			//ipv6 := net.ParseIP(ipv6addr.Value)
+			ipv6int, err := commonlibs.Ip2longv6(ipv6addr.Value)
+
+			fmt.Println("--------- IPv6 --------")
+			fmt.Printf("First value IPv6 = '%s'\n ipv6 to INTEGER: '%v'\n", ipv6addr.Value, ipv6int)
+			fmt.Printf("ipv6 to STRING 111: '%v'\n", commonlibs.Long2ipv6(ipv6int))
+			fmt.Printf("ipv6 to STRING 222: '%v'\n", commonlibs.IntToIPv6(ipv6int))
+			fmt.Printf("ERROR: %v\n", err)
+			fmt.Println("-----------------------")
+		}
+
 		listObj = append(listObj, v.Data)
 	}
 

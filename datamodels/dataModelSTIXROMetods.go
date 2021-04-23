@@ -94,6 +94,11 @@ func (rstix RelationshipObjectSTIX) GetID() string {
 	return rstix.ID
 }
 
+//GetType возвращает Type STIX объекта
+func (rstix RelationshipObjectSTIX) GetType() string {
+	return rstix.Type
+}
+
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа RelationshipObjectSTIX
 func (rstix RelationshipObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
@@ -192,6 +197,11 @@ func (sstix SightingObjectSTIX) SanitizeStruct() SightingObjectSTIX {
 //GetID возвращает ID STIX объекта
 func (sstix SightingObjectSTIX) GetID() string {
 	return sstix.ID
+}
+
+//GetType возвращает Type STIX объекта
+func (sstix SightingObjectSTIX) GetType() string {
+	return sstix.Type
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа SightingObjectSTIX

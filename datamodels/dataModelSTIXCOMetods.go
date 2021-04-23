@@ -144,6 +144,11 @@ func (astix ArtifactCyberObservableObjectSTIX) GetID() string {
 	return astix.ID
 }
 
+//GetType возвращает Type STIX объекта
+func (astix ArtifactCyberObservableObjectSTIX) GetType() string {
+	return astix.Type
+}
+
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа ArtifactCyberObservableObjectSTIX
 func (astix ArtifactCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
@@ -229,6 +234,11 @@ func (asstix AutonomousSystemCyberObservableObjectSTIX) SanitizeStruct() Autonom
 //GetID возвращает ID STIX объекта
 func (asstix AutonomousSystemCyberObservableObjectSTIX) GetID() string {
 	return asstix.ID
+}
+
+//GetType возвращает Type STIX объекта
+func (asstix AutonomousSystemCyberObservableObjectSTIX) GetType() string {
+	return asstix.Type
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа AutonomousSystemCyberObservableObjectSTIX
@@ -326,6 +336,11 @@ func (dstix DirectoryCyberObservableObjectSTIX) SanitizeStruct() DirectoryCyberO
 //GetID возвращает ID STIX объекта
 func (dstix DirectoryCyberObservableObjectSTIX) GetID() string {
 	return dstix.ID
+}
+
+//GetType возвращает Type STIX объекта
+func (dstix DirectoryCyberObservableObjectSTIX) GetType() string {
+	return dstix.Type
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа DirectoryCyberObservableObjectSTIX
@@ -426,6 +441,11 @@ func (dnstix DomainNameCyberObservableObjectSTIX) GetID() string {
 	return dnstix.ID
 }
 
+//GetType возвращает Type STIX объекта
+func (dnstix DomainNameCyberObservableObjectSTIX) GetType() string {
+	return dnstix.Type
+}
+
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа DomainNameCyberObservableObjectSTIX
 func (dnstix DomainNameCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
@@ -516,6 +536,11 @@ func (eastix EmailAddressCyberObservableObjectSTIX) SanitizeStruct() EmailAddres
 //GetID возвращает ID STIX объекта
 func (eastix EmailAddressCyberObservableObjectSTIX) GetID() string {
 	return eastix.ID
+}
+
+//GetType возвращает Type STIX объекта
+func (eastix EmailAddressCyberObservableObjectSTIX) GetType() string {
+	return eastix.Type
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа EmailAddressCyberObservableObjectSTIX
@@ -677,6 +702,11 @@ func (emstix EmailMessageCyberObservableObjectSTIX) SanitizeStruct() EmailMessag
 //GetID возвращает ID STIX объекта
 func (emstix EmailMessageCyberObservableObjectSTIX) GetID() string {
 	return emstix.ID
+}
+
+//GetType возвращает Type STIX объекта
+func (emstix EmailMessageCyberObservableObjectSTIX) GetType() string {
+	return emstix.Type
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа EmailMessageCyberObservableObjectSTIX
@@ -890,6 +920,11 @@ func (fstix FileCyberObservableObjectSTIX) GetID() string {
 	return fstix.ID
 }
 
+//GetType возвращает Type STIX объекта
+func (fstix FileCyberObservableObjectSTIX) GetType() string {
+	return fstix.Type
+}
+
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа FileCyberObservableObjectSTIX
 func (fstix FileCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
@@ -1017,6 +1052,11 @@ func (ip4stix IPv4AddressCyberObservableObjectSTIX) GetID() string {
 	return ip4stix.ID
 }
 
+//GetType возвращает Type STIX объекта
+func (ip4stix IPv4AddressCyberObservableObjectSTIX) GetType() string {
+	return ip4stix.Type
+}
+
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа IPv4AddressCyberObservableObjectSTIX
 func (ipv4stix IPv4AddressCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
@@ -1128,6 +1168,11 @@ func (ip6stix IPv6AddressCyberObservableObjectSTIX) GetID() string {
 	return ip6stix.ID
 }
 
+//GetType возвращает Type STIX объекта
+func (ip6stix IPv6AddressCyberObservableObjectSTIX) GetType() string {
+	return ip6stix.Type
+}
+
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа IPv6AddressCyberObservableObjectSTIX
 func (ipv6stix IPv6AddressCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
@@ -1220,6 +1265,11 @@ func (macstix MACAddressCyberObservableObjectSTIX) GetID() string {
 	return macstix.ID
 }
 
+//GetType возвращает Type STIX объекта
+func (macstix MACAddressCyberObservableObjectSTIX) GetType() string {
+	return macstix.Type
+}
+
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа MACAddressCyberObservableObjectSTIX
 func (macstix MACAddressCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
@@ -1298,6 +1348,11 @@ func (mstix MutexCyberObservableObjectSTIX) SanitizeStruct() MutexCyberObservabl
 //GetID возвращает ID STIX объекта
 func (mstix MutexCyberObservableObjectSTIX) GetID() string {
 	return mstix.ID
+}
+
+//GetType возвращает Type STIX объекта
+func (mstix MutexCyberObservableObjectSTIX) GetType() string {
+	return mstix.Type
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа MutexCyberObservableObjectSTIX
@@ -1480,6 +1535,11 @@ func (ntstix NetworkTrafficCyberObservableObjectSTIX) SanitizeStruct() NetworkTr
 //GetID возвращает ID STIX объекта
 func (ntstix NetworkTrafficCyberObservableObjectSTIX) GetID() string {
 	return ntstix.ID
+}
+
+//GetType возвращает Type STIX объекта
+func (ntstix NetworkTrafficCyberObservableObjectSTIX) GetType() string {
+	return ntstix.Type
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа NetworkTrafficCyberObservableObjectSTIX
@@ -1686,6 +1746,11 @@ func (pstix ProcessCyberObservableObjectSTIX) GetID() string {
 	return pstix.ID
 }
 
+//GetType возвращает Type STIX объекта
+func (pstix ProcessCyberObservableObjectSTIX) GetType() string {
+	return pstix.Type
+}
+
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа ProcessCyberObservableObjectSTIX
 func (pstix ProcessCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
@@ -1813,6 +1878,11 @@ func (sstix SoftwareCyberObservableObjectSTIX) GetID() string {
 	return sstix.ID
 }
 
+//GetType возвращает Type STIX объекта
+func (sstix SoftwareCyberObservableObjectSTIX) GetType() string {
+	return sstix.Type
+}
+
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа SoftwareCyberObservableObjectSTIX
 func (sstix SoftwareCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
@@ -1901,6 +1971,11 @@ func (urlstix URLCyberObservableObjectSTIX) SanitizeStruct() URLCyberObservableO
 //GetID возвращает ID STIX объекта
 func (urlstix URLCyberObservableObjectSTIX) GetID() string {
 	return urlstix.ID
+}
+
+//GetType возвращает Type STIX объекта
+func (urlstix URLCyberObservableObjectSTIX) GetType() string {
+	return urlstix.Type
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа URLCyberObservableObjectSTIX
@@ -1992,6 +2067,11 @@ func (uastix UserAccountCyberObservableObjectSTIX) SanitizeStruct() UserAccountC
 //GetID возвращает ID STIX объекта
 func (uastix UserAccountCyberObservableObjectSTIX) GetID() string {
 	return uastix.ID
+}
+
+//GetType возвращает Type STIX объекта
+func (uastix UserAccountCyberObservableObjectSTIX) GetType() string {
+	return uastix.Type
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа UserAccountCyberObservableObjectSTIX
@@ -2103,6 +2183,11 @@ func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) GetID() string {
 	return wrkstix.ID
 }
 
+//GetType возвращает Type STIX объекта
+func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) GetType() string {
+	return wrkstix.Type
+}
+
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа WindowsRegistryKeyCyberObservableObjectSTIX
 func (wrstix WindowsRegistryKeyCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
@@ -2203,6 +2288,11 @@ func (x509sstix X509CertificateCyberObservableObjectSTIX) SanitizeStruct() X509C
 //GetID возвращает ID STIX объекта
 func (x509sstix X509CertificateCyberObservableObjectSTIX) GetID() string {
 	return x509sstix.ID
+}
+
+//GetType возвращает Type STIX объекта
+func (x509sstix X509CertificateCyberObservableObjectSTIX) GetType() string {
+	return x509sstix.Type
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа X509CertificateCyberObservableObjectSTIX

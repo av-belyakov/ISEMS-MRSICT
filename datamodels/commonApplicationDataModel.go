@@ -10,7 +10,7 @@ type HandlerSTIXObject interface {
 	DecoderJSONObject
 	EncoderJSONObject
 	ValidatorJSONObject
-	GetterIDSTIXObject
+	GetterParametersSTIXObject
 	ComparatorSTIXObject
 }
 
@@ -29,9 +29,10 @@ type ValidatorJSONObject interface {
 	CheckingTypeFields() bool
 }
 
-//GetterIDSTIXObject интерфейс реализующий обработчик для получения ID STIX объекта
-type GetterIDSTIXObject interface {
+//GetterParametersSTIXObject интерфейс реализующий обработчик для получения ID STIX объекта
+type GetterParametersSTIXObject interface {
 	GetID() string
+	GetType() string
 }
 
 //ComparatorSTIXObject интерфейс реализующий обработчик для сравнения STIX объектов одного типа

@@ -171,7 +171,7 @@ func checkSearchFieldsValue(valueType string, l []string) bool {
 
 		case "ipv6-addr":
 			/*
-
+						!!!!!!!!!!!!!!!!!!
 				Здесь все же надо сделать проверку IPv6
 
 			*/

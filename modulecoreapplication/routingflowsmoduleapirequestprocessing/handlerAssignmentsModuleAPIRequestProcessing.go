@@ -133,6 +133,8 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 				Description: fmt.Sprint(err),
 				FuncName:    "AddNewTask",
 			}
+
+			return
 		}
 
 		fmt.Printf("List STIX object:'%v'\n", l)
@@ -188,6 +190,66 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 		fmt.Printf("Search data in STIX object:'%v'\n", l)
 
 		//выполняем валидацию и санитаризацию поискового запроса
+		l, err = CheckSearchSTIXObject(&l)
+		if err != nil {
+			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+				TypeMessage: "error",
+				Description: fmt.Sprint(err),
+				FuncName:    "CheckSearchSTIXObject",
+			}
+
+			if err = auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{
+				ClientID:         data.ClientID,
+				TaskID:           commonMsgReq.TaskID,
+				Section:          commonMsgReq.Section,
+				TypeNotification: "danger",
+				Notification: commonlibs.PatternUserMessage(&commonlibs.PatternUserMessageType{
+					Section:     section,
+					TaskType:    taskType,
+					FinalResult: "задача отклонена",
+					Message:     "получены невалидные параметры поискового запроса",
+				}),
+				C: clim.ChannelsModuleAPIRequestProcessing.InputModule,
+			}); err != nil {
+				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+					TypeMessage: "error",
+					Description: fmt.Sprint(err),
+					FuncName:    "SendNotificationModuleAPI",
+				}
+			}
+
+			return
+		}
+
+		//добавляем информацию о задаче в хранилище задач
+		appTaskID, err := tst.AddNewTask(&memorytemporarystoragecommoninformation.TemporaryStorageTaskType{
+			TaskGenerator:        data.ModuleGeneratorMessage,
+			ClientID:             data.ClientID,
+			ClientName:           data.ClientName,
+			ClientTaskID:         commonMsgReq.TaskID,
+			AdditionalClientName: commonMsgReq.UserNameGeneratedTask,
+			Section:              commonMsgReq.Section,
+			Command:              "", //в случае с запросом к поисковой машине, команда не указывается
+			TaskParameters:       l,
+		})
+		if err != nil {
+			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+				TypeMessage: "error",
+				Description: fmt.Sprint(err),
+				FuncName:    "AddNewTask",
+			}
+
+			return
+		}
+
+		clim.ChannelsModuleDataBaseInteraction.ChannelsMongoDB.InputModule <- datamodels.ModuleDataBaseInteractionChannel{
+			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+				ModuleGeneratorMessage: "module core application",
+				ModuleReceiverMessage:  "module database interaction",
+			},
+			Section:   "handling search requests",
+			AppTaskID: appTaskID,
+		}
 
 	case "handling reference book":
 

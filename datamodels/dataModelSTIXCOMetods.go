@@ -3,6 +3,7 @@ package datamodels
 import (
 	"encoding/json"
 	"fmt"
+	"net"
 	"regexp"
 	"time"
 
@@ -1135,6 +1136,16 @@ func (ip6stix IPv6AddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
 		return false
 	}
 
+	if ipv6Addr, _, err := net.ParseCIDR(ip6stix.Value); err == nil {
+		if !govalidator.IsIPv6(ipv6Addr.String()) {
+			return false
+		}
+	} else {
+		if !govalidator.IsIPv6(ip6stix.Value) {
+			return false
+		}
+	}
+
 	if len(ip6stix.ResolvesToRefs) > 0 {
 		for _, v := range ip6stix.ResolvesToRefs {
 			if !v.CheckIdentifierTypeSTIX() {
@@ -1157,8 +1168,6 @@ func (ip6stix IPv6AddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
 //SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (ip6stix IPv6AddressCyberObservableObjectSTIX) SanitizeStruct() IPv6AddressCyberObservableObjectSTIX {
 	ip6stix.OptionalCommonPropertiesCyberObservableObjectSTIX = ip6stix.sanitizeStruct()
-
-	ip6stix.Value = commonlibs.StringSanitize(ip6stix.Value)
 
 	return ip6stix
 }

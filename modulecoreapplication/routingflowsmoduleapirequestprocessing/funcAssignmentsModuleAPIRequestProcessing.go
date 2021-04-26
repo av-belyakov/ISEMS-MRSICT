@@ -3,6 +3,7 @@ package routingflowsmoduleapirequestprocessing
 import (
 	"encoding/json"
 	"fmt"
+	"net"
 	"regexp"
 
 	"ISEMS-MRSICT/commonlibs"
@@ -54,7 +55,7 @@ func UnmarshalJSONObjectReqSearchParameters(msgReq *json.RawMessage) (datamodels
 	return result, nil
 }
 
-//CheckSearchSTIXObject выполняет валидацию параметров запроса, к поисковой машине, который выполняется для поиска информации по STIX объектам
+//CheckSearchSTIXObject выполняет валидацию параметров запроса для поиска информации по STIX объектам
 func CheckSearchSTIXObject(req *datamodels.ModAPIRequestProcessingResJSONSearchReqType) (datamodels.ModAPIRequestProcessingResJSONSearchReqType, error) {
 	sp, ok := req.SearchParameters.(datamodels.SearchThroughCollectionSTIXObjectsType)
 	if !ok {
@@ -63,8 +64,8 @@ func CheckSearchSTIXObject(req *datamodels.ModAPIRequestProcessingResJSONSearchR
 
 	if len(sp.DocumentsID) > 0 {
 		for _, v := range sp.DocumentsID {
-			if !(regexp.MustCompile(`^[a-z](--)[0-9a-f|-]+$`).MatchString(v)) {
-				return *req, fmt.Errorf("invalid search value accepted")
+			if !(regexp.MustCompile(`^([0-9a-z|-]+)(--)([0-9a-f|-]+)$`).MatchString(v)) {
+				return *req, fmt.Errorf("invalid search value accepted in 'DocumentsID' field")
 			}
 		}
 	}
@@ -72,7 +73,7 @@ func CheckSearchSTIXObject(req *datamodels.ModAPIRequestProcessingResJSONSearchR
 	if len(sp.DocumentsType) > 0 {
 		for _, v := range sp.DocumentsType {
 			if !(regexp.MustCompile(`^[0-9a-z|-]+$`).MatchString(v)) {
-				return *req, fmt.Errorf("invalid search value accepted")
+				return *req, fmt.Errorf("invalid search value accepted in 'DocumentsType' field")
 			}
 		}
 	}
@@ -82,7 +83,7 @@ func CheckSearchSTIXObject(req *datamodels.ModAPIRequestProcessingResJSONSearchR
 
 	if tcsn > 0 && tcen > 0 {
 		if tcsn >= tcen {
-			return *req, fmt.Errorf("invalid search value accepted")
+			return *req, fmt.Errorf("invalid search value accepted in 'Created.Start' or 'Created.End' fields")
 		}
 	}
 
@@ -91,12 +92,13 @@ func CheckSearchSTIXObject(req *datamodels.ModAPIRequestProcessingResJSONSearchR
 
 	if tmsn > 0 && tmen > 0 {
 		if tmsn >= tmen {
-			return *req, fmt.Errorf("invalid search value accepted")
+			return *req, fmt.Errorf("invalid search value accepted in 'Modified.Start' or 'Modified.End' fields")
 		}
 	}
 
 	sp.CreatedByRef = commonlibs.StringSanitize(sp.CreatedByRef)
 
+	//наличие дополнительных полей
 	if len(sp.SpecificSearchFields) == 0 {
 		return *req, nil
 	}
@@ -115,7 +117,7 @@ func CheckSearchSTIXObject(req *datamodels.ModAPIRequestProcessingResJSONSearchR
 
 		if tcsn > 0 && tcen > 0 {
 			if tcsn >= tcen {
-				return *req, fmt.Errorf("invalid search value accepted")
+				return *req, fmt.Errorf("invalid search value accepted in 'FirstSeen.Start' or 'FirstSeen.End' fields")
 			}
 		}
 
@@ -127,7 +129,7 @@ func CheckSearchSTIXObject(req *datamodels.ModAPIRequestProcessingResJSONSearchR
 
 		if v.SearchFields.Country != "" {
 			if !(regexp.MustCompile(`^[a-zA-Z]+$`).MatchString(v.SearchFields.Country)) {
-				return *req, fmt.Errorf("invalid search value accepted")
+				return *req, fmt.Errorf("invalid search value accepted in 'Country' field")
 			}
 		}
 
@@ -135,13 +137,13 @@ func CheckSearchSTIXObject(req *datamodels.ModAPIRequestProcessingResJSONSearchR
 
 		if v.SearchFields.URL != "" {
 			if !govalidator.IsURL(v.SearchFields.URL) {
-				return *req, fmt.Errorf("invalid search value accepted")
+				return *req, fmt.Errorf("invalid search value accepted in 'URL' field")
 			}
 		}
 
 		if len(v.SearchFields.Value) > 0 {
-			if ok := checkSearchFieldsValue(req.CollectionName, v.SearchFields.Value); !ok {
-				return *req, fmt.Errorf("invalid search value accepted")
+			if err := checkSearchFieldsValue(req.CollectionName, v.SearchFields.Value); err != nil {
+				return *req, err
 			}
 		}
 	}
@@ -149,41 +151,45 @@ func CheckSearchSTIXObject(req *datamodels.ModAPIRequestProcessingResJSONSearchR
 	return *req, nil
 }
 
-func checkSearchFieldsValue(valueType string, l []string) bool {
+func checkSearchFieldsValue(valueType string, l []string) error {
 	for _, v := range l {
 		switch valueType {
 		case "domain-name":
 			if !govalidator.IsDNSName(v) {
-				return false
+				return fmt.Errorf("invalid search value accepted in 'Value' field, type 'domain-name'")
 			}
 
 		case "email-addr":
 			if !govalidator.IsEmail(v) {
-				return false
+				return fmt.Errorf("invalid search value accepted in 'Value' field, type 'email-addr'")
 			}
 
 		case "ipv4-addr":
 			isIPv4 := commonlibs.IsIPv4Address(v)
 			isNetworkIPv4 := commonlibs.IsComputerNetAddrIPv4Range(v)
 			if !isIPv4 && !isNetworkIPv4 {
-				return false
+				return fmt.Errorf("invalid search value accepted in 'Value' field, type 'ipv4-addr'")
 			}
 
 		case "ipv6-addr":
-			/*
-						!!!!!!!!!!!!!!!!!!
-				Здесь все же надо сделать проверку IPv6
-
-			*/
+			if ipv6Addr, _, err := net.ParseCIDR(v); err == nil {
+				if !govalidator.IsIPv6(ipv6Addr.String()) {
+					return fmt.Errorf("invalid search value accepted in 'Value' field, type 'ipv6-addr'")
+				}
+			} else {
+				if !govalidator.IsIPv6(v) {
+					return fmt.Errorf("invalid search value accepted in 'Value' field, type 'ipv6-addr'")
+				}
+			}
 
 		case "url":
 			if !govalidator.IsURL(v) {
-				return false
+				return fmt.Errorf("invalid search value accepted in 'Value' field, type 'url'")
 			}
 		}
 	}
 
-	return true
+	return nil
 }
 
 //CheckSTIXObjects выполняет валидацию списка STIX объектов

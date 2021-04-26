@@ -39,10 +39,10 @@ func Routing(
 			go ws.wrapperFuncTypeHandlingSTIXObject(chanOutput, tst)
 
 		case "handling search requests":
-			go ws.wrapperFuncTypeHandlingSearchRequests(tst)
+			go ws.wrapperFuncTypeHandlingSearchRequests(chanOutput, tst)
 
 		case "handling reference book":
-			go ws.wrapperFuncTypeHandlingReferenceBook(tst)
+			go ws.wrapperFuncTypeHandlingReferenceBook(chanOutput, tst)
 
 		}
 	}

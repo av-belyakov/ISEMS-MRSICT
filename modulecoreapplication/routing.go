@@ -37,6 +37,12 @@ func RoutingCoreApp(
 			if data.Section == "handling stix object" {
 				section = "обработка структурированных данных"
 				taskType = "добавление или обновление структурированных данных"
+			} else if data.Section == "handling search requests" {
+				section = "обработка поискового запроса"
+				taskType = "осуществление поиска информации"
+			} else {
+				section = "не определена"
+				taskType = "не определен"
 			}
 
 			//получаем всю информацию о задаче

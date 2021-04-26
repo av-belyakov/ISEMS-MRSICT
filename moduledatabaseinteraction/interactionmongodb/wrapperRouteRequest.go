@@ -158,19 +158,76 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 }
 
 //wrapperFuncTypeHandlingSearchRequests набор обработчиков для работы с запросами направленными на обработку поисковой машине
-func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(tst *memorytemporarystoragecommoninformation.TemporaryStorageType) {
-	/*switch wt.command {
-	case "find_all":
+func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
+	chanOutput chan<- datamodels.ModuleDataBaseInteractionChannel,
+	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) {
 
-	case "find_all_for_client_API":
+	fmt.Println("func 'wrapperFuncTypeHandlingSearchRequests', START...")
+
+	var (
+		err error
+		fn  = "wrapperFuncTypeHandlingSearchRequests"
+		qp  = QueryParameters{
+			NameDB:         ws.NameDB,
+			CollectionName: "stix_object_collection",
+			ConnectDB:      ws.ConnectionDB.Connection,
+		}
+	)
+
+	//получаем всю информацию о выполняемой задаче из временного хранилища задач
+	_, taskInfo, err := tst.GetTaskByID(ws.DataRequest.AppTaskID)
+	if err != nil {
+		chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
+			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+				ModuleGeneratorMessage: "module database interaction",
+				ModuleReceiverMessage:  "module core application",
+				ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
+					FuncName:                                fn,
+					ModuleAPIRequestProcessingSettingSendTo: true,
+					Error:                                   fmt.Errorf("no information about the task by its id was found in the temporary storage"),
+				},
+			},
+			Section:   "handling search requests",
+			AppTaskID: ws.DataRequest.AppTaskID,
+		}
+
+		return
+	}
+
+	fmt.Printf("func 'wrapperFuncTypeHandlingSearchRequests', task info: '%v'\n", taskInfo)
+
+	psr, ok := taskInfo.TaskParameters.(datamodels.ModAPIRequestProcessingResJSONSearchReqType)
+	if !ok {
+		chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
+			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+				ModuleGeneratorMessage: "module database interaction",
+				ModuleReceiverMessage:  "module core application",
+				ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
+					FuncName:                                fn,
+					ModuleAPIRequestProcessingSettingSendTo: true,
+					Error:                                   fmt.Errorf("type conversion error"),
+				},
+			},
+			Section:   "handling search requests",
+			AppTaskID: ws.DataRequest.AppTaskID,
+		}
+
+		return
+	}
+
+	switch psr.CollectionName {
+	case "stix object":
+		searchEngineFindingInformationCollectionSTIXDocuments(qp)
 
 	case "":
 
-	}*/
+	}
 }
 
 //wrapperFuncTypeHandlingReferenceBook набор обработчиков для работы с запросами к справочнику
-func (ws *wrappersSetting) wrapperFuncTypeHandlingReferenceBook(tst *memorytemporarystoragecommoninformation.TemporaryStorageType) {
+func (ws *wrappersSetting) wrapperFuncTypeHandlingReferenceBook(
+	chanOutput chan<- datamodels.ModuleDataBaseInteractionChannel,
+	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) {
 	/*switch wt.command {
 	case "find_all":
 

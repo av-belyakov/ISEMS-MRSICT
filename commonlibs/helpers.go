@@ -239,27 +239,9 @@ func Ip2long(ipAddr string) (uint32, error) {
 	return binary.BigEndian.Uint32(ip), nil
 }
 
-func Ip2longv6(ipAddr string) (uint64, error) {
-	ip := net.ParseIP(ipAddr)
-	if ip == nil {
-		return 0, errors.New("wrong ipAddr format")
-	}
-	ip = ip.To16()
-
-	return binary.BigEndian.Uint64(ip), nil
-}
-
 func Long2ip(ipLong uint32) string {
 	ipByte := make([]byte, 4)
 	binary.BigEndian.PutUint32(ipByte, ipLong)
-	ip := net.IP(ipByte)
-
-	return ip.String()
-}
-
-func Long2ipv6(ipLong uint64) string {
-	ipByte := make([]byte, 16)
-	binary.BigEndian.PutUint64(ipByte, ipLong)
 	ip := net.IP(ipByte)
 
 	return ip.String()
@@ -271,20 +253,6 @@ func IntToIP(ip uint32) string {
 	result[1] = byte(ip >> 8)
 	result[2] = byte(ip >> 16)
 	result[3] = byte(ip >> 24)
-
-	return result.String()
-}
-
-func IntToIPv6(ip uint64) string {
-	result := make(net.IP, 16)
-	result[0] = byte(ip)
-	result[1] = byte(ip >> 8)
-	result[2] = byte(ip >> 16)
-	result[3] = byte(ip >> 24)
-	result[0] = byte(ip >> 32)
-	result[1] = byte(ip >> 40)
-	result[2] = byte(ip >> 48)
-	result[3] = byte(ip >> 56)
 
 	return result.String()
 }

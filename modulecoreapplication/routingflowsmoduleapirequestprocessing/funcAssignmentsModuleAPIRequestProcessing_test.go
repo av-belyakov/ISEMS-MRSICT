@@ -14,18 +14,18 @@ import (
 
 var _ = Describe("FuncAssignmentsModuleAPIRequestProcessing", func() {
 	var (
-		errReadFile, errUnmarchalReq, errUnmarchalToSTIX, errCheckSTIXObjects error
-		errDecSearch                                                          error
-		docJSON                                                               []byte
-		l, sanitizeListElement                                                []*datamodels.ElementSTIXObject
-		modAPIRequestProcessingReqJSON                                        datamodels.ModAPIRequestProcessingReqJSON
-		searchReq                                                             datamodels.ModAPIRequestProcessingResJSONSearchReqType
+		errReadFile, errUnmarchalReq, errUnmarchalToSTIX error
+		errCheckSTIXObjects, errDecSearch, errChecker    error
+		docJSON                                          []byte
+		l, sanitizeListElement                           []*datamodels.ElementSTIXObject
+		modAPIRequestProcessingReqJSON                   datamodels.ModAPIRequestProcessingReqJSON
+		searchReq, newSearchReq                          datamodels.ModAPIRequestProcessingResJSONSearchReqType
 	)
 
 	testSearchReq := json.RawMessage([]byte(`{
 		"collection_name": "stix object",
 		"search_parameters": {
-			"documents_id": ["attack-pattern--c7v7e7vge7e-vbdv8e8ev8-byvc7wc777cew7f77ef7eg7fe", "tool--cbducbudu3bu838fefueuue-fub3f38fef"],
+			"documents_id": ["attack-pattern--1853f6a4-458f-5b4e-9b0f-ded361ae1002", "tool--0853f6a4-638f-5b4e-9b0f-ded001ae3822"],
 			"documents_type": ["attack-pattern"],
 			"created": {
 				"start": "2015-12-21T19:59:11.000Z",
@@ -35,14 +35,14 @@ var _ = Describe("FuncAssignmentsModuleAPIRequestProcessing", func() {
 				{
 					"object_name": "attack-pattern",
 					"search_fields": {
-						"name": "attack pattern example to yahoo.com",
+						"name": "attack pattern$$ example to yahoo.com",
 						"aliases": ["ap aliase 1", "ap aliase 2"]
 					}
 				},	
 				{
 					"object_name": "campaign",
 					"search_fields": {
-						"name": "comp name example",
+						"name": "comp name example\n",
 						"first_seen": {
 							"start": "2016-05-12T08:17:27.000Z",
 							"end": "2016-05-12T12:31:17.000Z"
@@ -57,6 +57,12 @@ var _ = Describe("FuncAssignmentsModuleAPIRequestProcessing", func() {
 					"object_name": "ipv4-addr",
 					"search_fields": {
 						"value": ["124.12.5.33/31", "67.45.2.1/32", "89.0.213.4"]
+					}
+				},
+				{
+					"object_name": "ipv6-addr",
+					"search_fields": {
+						"value": ["2001:0db8::/96", "2001:0ab8:85a3:0000:0000:9a1e:0370:7334"]
 					}
 				},
 				{
@@ -76,6 +82,7 @@ var _ = Describe("FuncAssignmentsModuleAPIRequestProcessing", func() {
 		errCheckSTIXObjects = routingflowsmoduleapirequestprocessing.CheckSTIXObjects(l)
 		sanitizeListElement = routingflowsmoduleapirequestprocessing.SanitizeSTIXObject(l)
 		searchReq, errDecSearch = routingflowsmoduleapirequestprocessing.UnmarshalJSONObjectReqSearchParameters(&testSearchReq)
+		newSearchReq, errChecker = routingflowsmoduleapirequestprocessing.CheckSearchSTIXObject(&searchReq)
 	})
 
 	Context("Тест 1. Проверка на наличие ошибок при предварительном преобразовании из JSON", func() {
@@ -115,7 +122,17 @@ var _ = Describe("FuncAssignmentsModuleAPIRequestProcessing", func() {
 
 	Context("Тест 6. Выполнение валидации и саниторизации запросов к поисковой машине", func() {
 		It("Должна быть успешно выполненна валидация и саниторизация запросов", func() {
-			//Expect(searchReq.SearchParameters.CheckingTypeFields()).Should(BeTrue())
+
+			if sp, ok := newSearchReq.SearchParameters.(datamodels.SearchThroughCollectionSTIXObjectsType); ok {
+				fmt.Printf("DocumentsID: '%s'\n", sp.DocumentsID)
+				fmt.Printf("DocumentsType: '%s'\n", sp.DocumentsType)
+				fmt.Printf("Created: '%v'\n", sp.Created)
+				for _, v := range sp.SpecificSearchFields {
+					fmt.Printf("NEW search request, SpecificSearchFields.ObjectName:'%s', Name: '%s'\n", v.ObjectName, v.SearchFields.Name)
+				}
+			}
+
+			Expect(errChecker).ShouldNot(HaveOccurred())
 		})
 	})
 })

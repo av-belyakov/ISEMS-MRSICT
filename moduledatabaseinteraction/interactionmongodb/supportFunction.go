@@ -2,11 +2,12 @@ package interactionmongodb
 
 import (
 	"context"
-	"fmt"
+	"net"
 
 	"ISEMS-MRSICT/commonlibs"
 	"ISEMS-MRSICT/datamodels"
 
+	"github.com/asaskevich/govalidator"
 	ipv4conv "github.com/signalsciences/ipv4"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -602,6 +603,7 @@ func ReplacementElementsSTIXObject(qp QueryParameters, l []*datamodels.ElementST
 		var hmax, hmin uint32
 		reqDeleteID = append(reqDeleteID, v.Data.GetID())
 
+		//добавляем поля HostMin и HostMax с цифровым минимальным и максимальным значением IPv4 (это нужно для быстрого поиска в БД)
 		if v.Data.GetType() == "ipv4-addr" {
 			ipv4addr, ok := v.Data.(datamodels.IPv4AddressCyberObservableObjectSTIX)
 			if !ok {
@@ -616,11 +618,6 @@ func ReplacementElementsSTIXObject(qp QueryParameters, l []*datamodels.ElementST
 				hmin, _ = commonlibs.Ip2long(ipv4addr.Value)
 			}
 
-			fmt.Printf("\tfunc 'ReplacementElementsSTIXObject', ipsrt: '%s', HostMin (int): '%v', HostMax (int): '%v'\n", ipv4addr.Value, hmin, hmax)
-			hmaxstr := commonlibs.Long2ip(hmax)
-			hminstr := commonlibs.Long2ip(hmin)
-			fmt.Printf("\tfunc 'ReplacementElementsSTIXObject', ipsrt: '%s', HostMin (int): '%v', HostMax (int): '%v'\n", ipv4addr.Value, hminstr, hmaxstr)
-
 			listObj = append(listObj, datamodels.IPv4AddressCyberObservableSimilarObjectSTIX{
 				CommonPropertiesObjectSTIX:                        ipv4addr.CommonPropertiesObjectSTIX,
 				OptionalCommonPropertiesCyberObservableObjectSTIX: ipv4addr.OptionalCommonPropertiesCyberObservableObjectSTIX,
@@ -634,29 +631,37 @@ func ReplacementElementsSTIXObject(qp QueryParameters, l []*datamodels.ElementST
 			continue
 		}
 
+		//убираем "0000" из актетов IPv6, например было "2001:0db8:85a3:0000:0000:8a2e:0370:7334", стало "2001:0db8:85a3::8a2e:0370:7334"
 		if v.Data.GetType() == "ipv6-addr" {
 			ipv6addr, ok := v.Data.(datamodels.IPv6AddressCyberObservableObjectSTIX)
 			if !ok {
 				continue
 			}
 
-			/*
-				Cделал конвертацию IPv4 в uint32 с сохранением в БД как min, max адреса из подсети. Это работает как для одиночного
-				адреса тик и для подсети, тогда префикс подсети делется на min, max IPv4 из данной подсети
+			var ip = ipv6addr.Value
 
-				Теперь бы это повторить для IPv6!!! И еще сделать проверку является ли адрес IPv6, при чем с учетом префикса сети
-				К сожалению функции Long2ipv6, IntToIPv6 НЕ РАБОТАЮТ! Надо думать дальше.
-			*/
+			if ipv6Addr, _, err := net.ParseCIDR(ipv6addr.Value); err == nil {
+				if !govalidator.IsIPv6(ipv6Addr.String()) {
+					continue
+				}
+			} else {
+				ipv6 := net.ParseIP(ipv6addr.Value)
+				if ipv6 == nil {
+					continue
+				}
 
-			//ipv6 := net.ParseIP(ipv6addr.Value)
-			ipv6int, err := commonlibs.Ip2longv6(ipv6addr.Value)
+				ip = ipv6.To16().String()
+			}
 
-			fmt.Println("--------- IPv6 --------")
-			fmt.Printf("First value IPv6 = '%s'\n ipv6 to INTEGER: '%v'\n", ipv6addr.Value, ipv6int)
-			fmt.Printf("ipv6 to STRING 111: '%v'\n", commonlibs.Long2ipv6(ipv6int))
-			fmt.Printf("ipv6 to STRING 222: '%v'\n", commonlibs.IntToIPv6(ipv6int))
-			fmt.Printf("ERROR: %v\n", err)
-			fmt.Println("-----------------------")
+			listObj = append(listObj, datamodels.IPv6AddressCyberObservableObjectSTIX{
+				CommonPropertiesObjectSTIX:                        ipv6addr.CommonPropertiesObjectSTIX,
+				OptionalCommonPropertiesCyberObservableObjectSTIX: ipv6addr.OptionalCommonPropertiesCyberObservableObjectSTIX,
+				Value:          ip,
+				ResolvesToRefs: ipv6addr.ResolvesToRefs,
+				BelongsToRefs:  ipv6addr.BelongsToRefs,
+			})
+
+			continue
 		}
 
 		listObj = append(listObj, v.Data)

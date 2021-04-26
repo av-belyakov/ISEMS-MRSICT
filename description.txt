@@ -58,7 +58,8 @@ About Computer Threats (ISEMS-MRSICT).
     request_details: {
         collection_name: STRING // наименование коллекции документов. Для поиска STIX объектов collection_name = "stix object"
         search_parameters: {} // параметры поиска (для разных коллекций параметры поиска отличаются)
-        
+        min: ""
+
         /* параметры поиска для коллекции типа "stix object" */
         search_parameters: {
             // между параметрами "id_documents", "type_documents", "created", "modified", "created_by_ref" используется логика "И"

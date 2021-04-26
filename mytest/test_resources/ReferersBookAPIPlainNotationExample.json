@@ -1,0 +1,138 @@
+[
+  
+    {
+        "task_id": "ni883f838ggr8h9ehr3rgr38rg8f8g8wgd8g38",
+        "section": "handling reference book",
+        "task_was_generated_automatically": true,
+        "user_name_generated_task": "Иванов Петр Васильевич",
+        "request_details": {
+            "op": "replace",
+            "parameters": {
+                "doc-x-test":[
+                    {"key0/[]":"test_value_array далее какой то текст"},
+                    {"key1/[2]":"test_value_index_array далее какой то текст"},
+                    {"key3/[]/key4":"test_value_array_key далее какой то текст"},
+                    {"key5/[3]/key6":"test_value_index_array_key далее какой то текст"},
+                ],
+                "windows-integrity-level-enum": [
+                    {"low/shortDescription":"низкий"},
+                    {"low/fullDescription": "низкий уровень целостности"},
+                    {"high/shortDescription":"средний"},
+                    {"high/fullDescription": "средний уровень целостности"},
+                    {"system/shortDescription":"системный"},
+                    {"system/fullDescription": "системный уровень целостности"},
+                    {"shortDescription":""},
+                    {"fullDescription": ""}
+                ],
+                "account-type-ov":[
+                    {"facebook/shortDescription":"аккаунт Facebook"},
+                    {"facebook/fullDescription": ""},
+                    {"ldap/shortDescription":"аккаунт LDAP"},
+                    {"ldap/fullDescription": ""},
+                    {"nis/shortDescription":"аккаунт NIS"},
+                    {"nis/fullDescription": ""},
+                    {"openid/shortDescription":"аккаунт OpenID"},
+                    {"openid/fullDescription": ""},
+                    {"radius/shortDescription":"аккаунт RADIUS"},
+                    {"radius/fullDescription": ""},
+                    {"skype/shortDescription":"аккаунт Skype"},
+                    {"skype/fullDescription": ""},
+                    {"tacacs/shortDescription":"аккаунт TACACS"},
+                    {"tacacs/fullDescription": ""},
+                    {"twitter/shortDescription":"аккаунт Twitter"},
+                    {"twitter/fullDescription": ""},
+                    {"unix/shortDescription":"аккаунт POSIX"},
+                    {"unix/fullDescription": ""},
+                    {"windows-local/shortDescription":"локальный аккаунт Windows"},
+                    {"windows-local/fullDescription": ""},
+                    {"windows-domain/shortDescription":"аккаунт в домене Windows"},
+                    {"windows-domain/fullDescription": ""},
+                    {"unix/shortDescription":"аккаунт POSIX"},
+                    {"unix/fullDescription": ""},
+                    {"shortDescription":"Словарь содержащий типы учетных записей в настоящее время используется в следующих STIX-объектах: User Account"},
+                    {"fullDescription": "Словарь содержащий типы учетных записей в настоящее время используется в следующих STIX-объектах: User Account"}
+                ] 
+            }
+        }
+    },
+    {
+        "task_id": "ni883f838ggr8h9ehr3rgr38rg8f8g8wgd8g38",
+        "section": "handling reference book",
+        "task_was_generated_automatically": true,
+        "user_name_generated_task": "Иванов Петр Васильевич",
+        "request_details": {
+            "op": "get",
+            "parameters": {
+                "test_zero":[],
+                "all_ov": ["shortDescription","fullDescription"],
+                "all_enum": [],
+                "all_others": [],
+                "windows-integrity-level-enum": ["high/shortDescription","system/shortDescription","fullDescription"],
+                "account-type-ov": []
+            }
+        }
+    },
+    {
+        "task_id": "ni883f838ggr8h9ehr3rgr38rg8f8g8wgd8g38",
+        "section": "handling reference book",
+        "task_was_generated_automatically": true,
+        "user_name_generated_task": "Иванов Петр Васильевич",
+        "request_details": {
+            "op": "remove",
+            "parameters": {
+                "windows-integrity-level-enum":["medium","low/fullDescription"],
+                "account-type-ov":[]
+            }
+        }
+    },
+    {
+        "task_id": "ni883f838ggr8h9ehr3rgr38rg8f8g8wgd8g38",
+        "section": "handling reference book",
+        "task_was_generated_automatically": true,
+        "user_name_generated_task": "Иванов Петр Васильевич",
+        "request_details": {
+            "op": "add",
+            "parameters": {
+                "windows-integrity-level-enum": [
+                    {"low/shortDescription":"низкий"},
+                    {"low/fullDescription": "низкий уровень целостности"},
+                    {"high/shortDescription":"средний"},
+                    {"high/fullDescription": "средний уровень целостности"},
+                    {"system/shortDescription":"системный"},
+                    {"system/fullDescription": "системный уровень целостности"},
+                    {"shortDescription":""},
+                    {"fullDescription": ""}
+                ],
+                "account-type-ov":[
+                    {"facebook/shortDescription":"аккаунт Facebook"},
+                    {"facebook/fullDescription": ""},
+                    {"ldap/shortDescription":"аккаунт LDAP"},
+                    {"ldap/fullDescription": ""},
+                    {"nis/shortDescription":"аккаунт NIS"},
+                    {"nis/fullDescription": ""},
+                    {"openid/shortDescription":"аккаунт OpenID"},
+                    {"openid/fullDescription": ""},
+                    {"radius/shortDescription":"аккаунт RADIUS"},
+                    {"radius/fullDescription": ""},
+                    {"skype/shortDescription":"аккаунт Skype"},
+                    {"skype/fullDescription": ""},
+                    {"tacacs/shortDescription":"аккаунт TACACS"},
+                    {"tacacs/fullDescription": ""},
+                    {"twitter/shortDescription":"аккаунт Twitter"},
+                    {"twitter/fullDescription": ""},
+                    {"unix/shortDescription":"аккаунт POSIX"},
+                    {"unix/fullDescription": ""},
+                    {"windows-local/shortDescription":"локальный аккаунт Windows"},
+                    {"windows-local/fullDescription": ""},
+                    {"windows-domain/shortDescription":"аккаунт в домене Windows"},
+                    {"windows-domain/fullDescription": ""},
+                    {"unix/shortDescription":"аккаунт POSIX"},
+                    {"unix/fullDescription": ""},
+                    {"shortDescription":"Словарь содержащий типы учетных записей в настоящее время используется в следующих STIX-объектах: User Account"},
+                    {"fullDescription": "Словарь содержащий типы учетных записей в настоящее время используется в следующих STIX-объектах: User Account"}
+                ] 
+            }
+        }
+    }
+
+]

@@ -254,7 +254,49 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 	case "handling reference book":
 
 		/* *** обработчик JSON сообщений с параметрами связанными со справочниками *** */
+		l, err := UnmarshalJSONReferenceBookReq(*commonMsgReq)
+		if err != nil {
+			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+				TypeMessage: "error",
+				Description: fmt.Sprint(err),
+				FuncName:    "UnmarshalJSONReferenceBookReq",
+			}
+			if err := auxiliaryfunctions.SendCriticalErrorMessageJSON(&auxiliaryfunctions.ErrorMessageType{
+				ClientID: data.ClientID,
+				Error:    fmt.Errorf("Error: error when decoding a JSON document. Section: '%v'", commonMsgReq.Section),
+				C:        clim.ChannelsModuleAPIRequestProcessing.InputModule,
+			}); err != nil {
+				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+					TypeMessage: "error",
+					Description: fmt.Sprint(err),
+					FuncName:    "UnmarshalJSONReferenceBookReq",
+				}
 
+				return
+			}
+
+			return
+		}
+		//добавляем информацию о задаче в хранилище задач
+		appTaskID, err := tst.AddNewTask(&memorytemporarystoragecommoninformation.TemporaryStorageTaskType{
+			TaskGenerator:        data.ModuleGeneratorMessage,
+			ClientID:             data.ClientID,
+			ClientName:           data.ClientName,
+			ClientTaskID:         commonMsgReq.TaskID,
+			AdditionalClientName: commonMsgReq.UserNameGeneratedTask,
+			Section:              commonMsgReq.Section,
+			Command:              "", //в случае с объектами STIX команда не указывается (автоматически подразумевается добавление или обновление объектов STIX)
+			TaskParameters:       l,
+		})
+		if err != nil {
+			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+				TypeMessage: "error",
+				Description: fmt.Sprint(err),
+				FuncName:    "UnmarshalJSONReferenceBookReq",
+			}
+		}
+		fmt.Println(l)
+		fmt.Printf("Application task ID: '%s'\n", appTaskID)
 	case "":
 
 		/* *** обработчик JSON сообщений с иными запросами  *** */

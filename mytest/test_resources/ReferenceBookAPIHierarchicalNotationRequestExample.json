@@ -1,0 +1,93 @@
+{
+    "task_id": "ni883f838ggr8h9ehr3rgr38rg8f8g8wgd8g38",
+    "section": "handling reference book",
+    "response_details": [
+        {
+            "op": "add",
+            "is_successful":false,
+            "description":"Редактирование документа запрещено",
+            "name": "windows-integrity-level-enum"
+        },
+        {
+            "op":"add",
+            "is_successful":true,
+            "description":"Документ создан. Добавление содержимого выполнено",
+            "name":"account-type-ov"
+        },
+        {
+            "op":"add",
+            "is_successful":true,
+            "description":"Добавление содержимого выполнено",
+            "name":"account-type-ov"
+        },
+        {
+            "op":"add",
+            "is_successful":false,
+            "description":"Eлементы с такими именами .... уже существуют в документе",
+            "name":"account-type-ov"
+        },
+        {
+            "op":"get",
+            "is_successful":true,
+            "description":"Выборка успешна",
+            "name": "windows-integrity-level-enum",
+            "shortDescription": "",
+            "fullDescription": "",
+            "elements": [
+                {
+                    "name": "low",
+                    "shortDescription": "низкий",
+                    "fullDescription": "низкий уровень целостности"
+                },
+                {
+                    "name": "high",
+                    "shortDescription": "средний",
+                    "fullDescription": "средний уровень целостности"
+                },
+                {
+                    "name": "system",
+                    "shortDescription": "системный",
+                    "fullDescription": "системный уровень целостности"
+                }
+            ]
+        },
+        {
+            "op":"get",
+            "is_successful":false,
+            "description":"Документ не найден",
+            "name":"test-doc-x"
+        },
+        {
+            "op":"remove",
+            "is_successful":false,
+            "description":"Удаление документа запрещено",
+            "name":"windows-integrity-level-enum"
+        },
+        {
+            "op":"remove",
+            "is_successful":true,
+            "description":"Документ успешно удален",
+            "name":"account-type-ov"
+        },
+        {
+            "op":"remove",
+            "is_successful":true,
+            "description":"Элементы:.... в документе успешно удалены",
+            "name":"account-type-ov"
+        },
+        {
+            "op":"replace",
+            "is_successful":true,
+            "description":"Элементы:.... в документе успешно изменены",
+            "name":"account-type-ov"
+        },
+        {
+            "op":"replace",
+            "is_successful":false,
+            "description":"Изменение документа запрещено",
+            "name":"windows-integrity-level-enum"
+        }
+
+
+    ]
+}

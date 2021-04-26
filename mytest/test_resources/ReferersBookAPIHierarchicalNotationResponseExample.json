@@ -1,0 +1,165 @@
+
+    {
+        "task_id": "ni883f838ggr8h9ehr3rgr38rg8f8g8wgd8g38",
+        "section": "handling reference book",
+        "task_was_generated_automatically": true,
+        "user_name_generated_task": "Иванов Петр Васильевич",
+        "request_details": [      
+                {
+                    "op": "add",
+                    "name": "windows-integrity-level-enum",
+                    "shortDescription": "",
+                    "fullDescription": "",
+                    "elements": [
+                        {
+                            "name": "low",
+                            "shortDescription": "низкий",
+                            "fullDescription": "низкий уровень целостности"
+                        },
+                        {
+                            "name": "high",
+                            "shortDescription": "средний",
+                            "fullDescription": "средний уровень целостности"
+                        },
+                        {
+                            "name": "system",
+                            "shortDescription": "системный",
+                            "fullDescription": "системный уровень целостности"
+                        }
+                    ]
+                },
+                {
+                    "op":"add",
+                    "name":"account-type-ov",
+                    "shortDescription":"Словарь содержащий типы учетных записей в настоящее время используется в следующих STIX-объектах: User Account",
+                    "fullDescription": "Словарь содержащий типы учетных записей в настоящее время используется в следующих STIX-объектах: User Account",
+                    "elements":[
+                    {
+                        "name": "facebook",
+                        "shortDescription": "аккаунт Facebook",
+                        "fullDescription": ""
+                    },
+                    {
+                        "name": "ldap",
+                        "shortDescription": "аккаунт LDAP",
+                        "fullDescription": ""
+                    },
+                    {
+                        "name": "nis",
+                        "shortDescription": "аккаунт NIS",
+                        "fullDescription": ""
+                    },
+                    {
+                        "name": "openid",
+                        "shortDescription": "аккаунт OpenID",
+                        "fullDescription": ""
+                    },
+                    {
+                        "name": "radius",
+                        "shortDescription": "аккаунт RADIUS",
+                        "fullDescription": ""
+                    },
+                    {
+                        "name": "skype",
+                        "shortDescription": "аккаунт Skype",
+                        "fullDescription": ""
+                    },
+                    {
+                        "name": "tacacs",
+                        "shortDescription": "аккаунт TACACS",
+                        "fullDescription": ""
+                    },
+                    {
+                        "name": "twitter",
+                        "shortDescription": "аккаунт Twitter",
+                        "fullDescription": ""
+                    },
+                    {
+                        "name": "windows-local",
+                        "shortDescription": "локальный аккаунт Windows",
+                        "fullDescription": ""
+                    },
+                    {
+                        "name": "windows-domain",
+                        "shortDescription": "аккаунт в домене Windows",
+                        "fullDescription": ""
+                    },
+                    {
+                        "name": "unix",
+                        "shortDescription": "аккаунт POSIX",
+                        "fullDescription": ""
+                    }
+                ]
+
+                },
+                {
+                    "op":"get",
+                    "name":"windows-integrity-level-enum" 
+                },
+                {
+                    "op":"get",
+                    "name":"account-type-ov"
+                },
+                {
+                    "op":"get",
+                    "name":"test-doc-x"
+                },
+                {
+                    "op":"remove",
+                    "name":"windows-integrity-level-enum"
+                },
+                {
+                    "op":"remove",
+                    "name":"account-type-ov"
+                },
+                {
+                    "op":"remove",
+                    "name":"account-type-ov",
+                    "elements":[
+                        {
+                            "name": "unix"
+                        },
+                        {
+                            "name": "twitter"
+                        }
+                    ]
+
+                },
+                {
+                    "op":"remove",
+                    "name": "windows-integrity-level-enum",
+                    "elements":[
+                        {
+                            "name": "low"
+                        }
+                    ]
+                },
+                {
+                    "op":"replace",
+                    "name":"account-type-ov",
+                    "shortDescription":"ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ",
+                    "elements":[
+                        {
+                            "name": "facebook",
+                            "fullDescription": "PPPPPPPPPPPPPPPPPP"
+                        },
+                        {
+                            "name": "windows-local",
+                            "shortDescription": "ZZZZZZZZZZZZZZZZZZZZ"
+                        }
+                    ]
+                },
+                {
+                    "op":"replace",
+                    "name":"windows-integrity-level-enum",
+                    "shortDescription":"ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ",
+                    "elements":[
+                        {"name": "low",
+                        "shortDescription": "CCCCCCCCCCC",
+                        "fullDescription": "MMMMMMMMMMMMM"}
+                    ]
+                }        
+            ]                  
+    }
+
+

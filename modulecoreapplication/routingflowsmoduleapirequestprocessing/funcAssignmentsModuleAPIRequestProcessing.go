@@ -55,6 +55,19 @@ func UnmarshalJSONObjectReqSearchParameters(msgReq *json.RawMessage) (datamodels
 	return result, nil
 }
 
+//UnmarshalJSONReferenceBookReq декодирует JSON документ, помступающий от модуля 'moduleapirequestprocessing', который модержит список действий со справочной информацией
+// и перечень справочников
+func UnmarshalJSONReferenceBookReq(msgReq datamodels.ModAPIRequestProcessingReqJSON) ([]datamodels.ReferencesBookReqParameter, error) {
+	var (
+		listRefernceBooksOperation []datamodels.ReferencesBookReqParameter
+		err                        error
+	)
+	if err = json.Unmarshal(*msgReq.RequestDetails, &listRefernceBooksOperation); err != nil {
+		return nil, err
+	}
+	return listRefernceBooksOperation, err
+}
+
 //CheckSearchSTIXObject выполняет валидацию параметров запроса для поиска информации по STIX объектам
 func CheckSearchSTIXObject(req *datamodels.ModAPIRequestProcessingResJSONSearchReqType) (datamodels.ModAPIRequestProcessingResJSONSearchReqType, error) {
 	sp, ok := req.SearchParameters.(datamodels.SearchThroughCollectionSTIXObjectsType)

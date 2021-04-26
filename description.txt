@@ -57,8 +57,12 @@ About Computer Threats (ISEMS-MRSICT).
     user_name_generated_task: STRING // имя пользователя сгенерировавшего задачу (необязательный параметр)
     request_details: {
         collection_name: STRING // наименование коллекции документов. Для поиска STIX объектов collection_name = "stix object"
+        //параметры разбиения на страницы
+        paginate_parameters: {
+            max_part_size: INT // размер части, то есть максимальное количество найденных элементов, которое может содержаться в одном ответе
+            current_part_number: INT // номер текущей части (0 или 1 считаются за первую часть)
+        }
         search_parameters: {} // параметры поиска (для разных коллекций параметры поиска отличаются)
-        min: ""
 
         /* параметры поиска для коллекции типа "stix object" */
         search_parameters: {

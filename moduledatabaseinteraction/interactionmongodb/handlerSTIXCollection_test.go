@@ -45,7 +45,7 @@ var _ = Describe("HandlerSTIXCollection", func() {
 			NameDB:   "isems-mrsict",
 		})
 
-		docJSON, errReadFile = ioutil.ReadFile("../../mytest/jsonSTIXExample.json")
+		docJSON, errReadFile = ioutil.ReadFile("../../mytest/test_resources/jsonSTIXExample.json")
 		errUnmarchalReq = json.Unmarshal(docJSON, &modAPIRequestProcessingReqJSON)
 		l, errUnmarchalToSTIX = routingflowsmoduleapirequestprocessing.UnmarshalJSONObjectSTIXReq(modAPIRequestProcessingReqJSON)
 

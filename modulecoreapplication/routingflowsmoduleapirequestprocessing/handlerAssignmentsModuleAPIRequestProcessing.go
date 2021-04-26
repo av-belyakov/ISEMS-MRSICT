@@ -261,22 +261,30 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 				Description: fmt.Sprint(err),
 				FuncName:    "UnmarshalJSONReferenceBookReq",
 			}
-			if err := auxiliaryfunctions.SendCriticalErrorMessageJSON(&auxiliaryfunctions.ErrorMessageType{
-				ClientID: data.ClientID,
-				Error:    fmt.Errorf("Error: error when decoding a JSON document. Section: '%v'", commonMsgReq.Section),
-				C:        clim.ChannelsModuleAPIRequestProcessing.InputModule,
+
+			if err = auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{
+				ClientID:         data.ClientID,
+				TaskID:           commonMsgReq.TaskID,
+				Section:          commonMsgReq.Section,
+				TypeNotification: "danger",
+				Notification: commonlibs.PatternUserMessage(&commonlibs.PatternUserMessageType{
+					Section:     "обработка справочной информации",
+					TaskType:    "выполнение действий над данными",
+					FinalResult: "задача отклонена",
+					Message:     "получены невалидные параметры поискового запроса",
+				}),
+				C: clim.ChannelsModuleAPIRequestProcessing.InputModule,
 			}); err != nil {
 				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 					TypeMessage: "error",
 					Description: fmt.Sprint(err),
-					FuncName:    "UnmarshalJSONReferenceBookReq",
+					FuncName:    "SendNotificationModuleAPI",
 				}
-
-				return
 			}
 
 			return
 		}
+
 		//добавляем информацию о задаче в хранилище задач
 		appTaskID, err := tst.AddNewTask(&memorytemporarystoragecommoninformation.TemporaryStorageTaskType{
 			TaskGenerator:        data.ModuleGeneratorMessage,
@@ -288,6 +296,7 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 			Command:              "", //в случае с объектами STIX команда не указывается (автоматически подразумевается добавление или обновление объектов STIX)
 			TaskParameters:       l,
 		})
+
 		if err != nil {
 			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 				TypeMessage: "error",
@@ -295,6 +304,7 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 				FuncName:    "UnmarshalJSONReferenceBookReq",
 			}
 		}
+
 		fmt.Println(l)
 		fmt.Printf("Application task ID: '%s'\n", appTaskID)
 	case "":

@@ -189,7 +189,7 @@ var _ = Describe("HandlerSTIXCollection", func() {
 
 	Context("Тест 6. Получаем информацию о STIX объект с ID 'indicator--8e2e2d2b-17d4-4cbf-938f-98ee46b3cd3f'", func() {
 		It("должен быть получен список из 1 STIX объекта, ошибок быть не должно", func() {
-			cur, err := qp.Find(bson.D{bson.E{Key: "commonpropertiesobjectstix.id", Value: "indicator--8e2e2d2b-17d4-4cbf-938f-98ee46b3cd3f"}})
+			cur, err := qp.Find(bson.D{bson.E{Key: "commonpropertiesobjectstix.id", Value: "indicator--d38a99ae-c5ee-4542-bc12-dfe68b48cc08"}})
 
 			l := []*datamodels.IndicatorDomainObjectsSTIX{}
 			for cur.Next(context.Background()) {
@@ -1325,6 +1325,75 @@ var _ = Describe("HandlerSTIXCollection", func() {
 		})
 	})
 
+	Context("Тест 26. Получаем информацию о ПЕРВЫХ 10 STIX объектах при выполнении поиска БЕЗ поисковых параметров", func() {
+		It("Должен быть получен список из ПЕРВЫХ 10 объектов, ошибки при этом быть не должно", func() {
+			cur, err := qp.FindAllWithLimit(bson.D{}, &interactionmongodb.FindAllWithLimitOptions{
+				Offset:        1,
+				LimitMaxSize:  10,
+				SortAscending: false,
+			})
+
+			elemSTIXObj := interactionmongodb.GetListElementSTIXObject(cur)
+
+			fmt.Println("____ first 10 elements ___")
+			for _, v := range elemSTIXObj {
+				fmt.Printf("\tid: '%s'\n", v.Data.GetID())
+			}
+
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(len(elemSTIXObj)).Should(Equal(10))
+		})
+	})
+
+	Context("Тест 27. Получаем информацию о ВТОРЫХ 10 STIX объектах при выполнении поиска БЕЗ поисковых параметров", func() {
+		It("Должен быть получен список из ВТОРЫХ 10 объектов, ошибки при этом быть не должно", func() {
+			cur, err := qp.FindAllWithLimit(bson.D{}, &interactionmongodb.FindAllWithLimitOptions{
+				Offset:        2,
+				LimitMaxSize:  10,
+				SortAscending: false,
+			})
+
+			elemSTIXObj := interactionmongodb.GetListElementSTIXObject(cur)
+
+			fmt.Println("____ second 10 elements ___")
+			for _, v := range elemSTIXObj {
+				fmt.Printf("\tid: '%s'\n", v.Data.GetID())
+			}
+
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(len(elemSTIXObj)).Should(Equal(10))
+		})
+	})
+
+	Context("Тест 28. Получаем информацию о ПОСЛЕДНИЕ 10 STIX объектах при выполнении поиска БЕЗ поисковых параметров", func() {
+		It("Должен быть получен список из ПОСЛЕДНИХ 10 объектов, ошибки при этом быть не должно", func() {
+			cur, err := qp.FindAllWithLimit(bson.D{}, &interactionmongodb.FindAllWithLimitOptions{
+				Offset:        7,
+				LimitMaxSize:  10,
+				SortAscending: false,
+			})
+
+			elemSTIXObj := interactionmongodb.GetListElementSTIXObject(cur)
+
+			fmt.Println("____ last 10 elements ___")
+			for _, v := range elemSTIXObj {
+				fmt.Printf("\tid: '%s'\n", v.Data.GetID())
+			}
+
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(len(elemSTIXObj)).Should(Equal(5))
+		})
+	})
+
+	Context("Тест 29. Получаем ВСЮ информацию STIX объектах при выполнении поиска БЕЗ поисковых параметров", func() {
+		It("Должен быть получен ВЕСЬ список ОТСОРТИРОВАННЫХ объектов, ошибки при этом быть не должно", func() {
+			sizeElem, err := qp.CountDocuments(bson.D{})
+
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(sizeElem).Should(Equal(int64(65)))
+		})
+	})
+
 	/*
 			Context("", func() {
 			It("", func(){
@@ -1333,6 +1402,74 @@ var _ = Describe("HandlerSTIXCollection", func() {
 		})
 	*/
 })
+
+/*
+		1. id: 'x509-certificate--b595eaf0-0b28-5dad-9e8e-0fab9c1facc9'
+        2. id: 'x509-certificate--463d7b2a-8516-5a50-a3d7-6f801465d5de'
+        3. id: 'windows-registry-key--2ba37ae7-2745-5082-9dfd-9486dad41016'
+        4. id: 'user-account--0d5b424b-93b8-5cd8-ac36-306e1789d63c'
+        5. id: 'user-account--0d5b424b-93b8-5cd8-ac36-306e1789d63c'
+        6. id: 'url--c1477287-23ac-5971-a010-5c287877fa60'
+        7. id: 'software--a1827f6d-ca53-5605-9e93-4316cd22a00a'
+        8. id: 'process--99ab297d-4c39-48ea-9d64-052d596864df'
+        9. id: 'process--07bc30cad-ebc2-4579-881d-b9cdc7f2b33c'
+        10. id: 'process--f52a906a-0dfc-40bd-92f1-e7778ead38a9'
+        11. id: 'network-traffic--09ca55c3-97e5-5966-bad0-1d41d557ae13'
+        12. id: 'network-traffic--15a157a8-26e3-56e0-820b-0c2a8e553a2c'
+        13. id: 'network-traffic--c95e972a-20a4-5307-b00d-b8393faf02c5'
+        14. id: 'network-traffic--e7a939ca-78c6-5f27-8ae0-4ad112454626'
+        15. id: 'network-traffic--f8ae967a-3dc3-5cdf-8f94-8505abff00c2'
+        16. id: 'network-traffic--ac267abc-1a41-536d-8e8d-98458d9bf491'
+        17. id: 'network-traffic--630d7bb1-0bbc-53a6-a6d4-f3c2d35c2734'
+        18. id: 'network-traffic--15a157a8-26e3-56e0-820b-0c2a1e553a2c'
+        19. id: 'mutex--eba44954-d4e4-5d3b-814c-2b17dd8de300'
+        20. id: 'mac-addr--65cfcf98-8a6e-5a1b-8f61-379ac4f92d00'
+        21. id: 'ipv6-addr--5daf7456-8863-5481-9d42-237d477697f4'
+        22. id: 'ipv6-addr--1e61d36c-a16c-53b7-a80f-2a00161c96b1'
+        23. id: 'ipv4-addr--5853f6a4-638f-5b4e-9b0f-ded361ae3812'
+        24. id: 'ipv4-addr--ff26c055-6336-5bc5-b98d-13d6226742dd'
+        25. id: 'file--fb0419a8-f09c-57f8-be64-71a80417591c'
+        26. id: 'file--e277603e-1060-5ad4-9937-c26c97f1ca68'
+        27. id: 'file--ec3415cc-5f4f-5ec8-bdb1-6f86996ae66d'
+        28. id: 'file--c7d1e135-8b34-549a-bb47-302f5cf998ed'
+        29. id: 'file--73c4cd13-7206-5100-88ef-822c42d3f02c'
+        30. id: 'file--9a1f834d-2506-5367-baec-7aa63996ac43'
+        31. id: 'file--e277603e-1060-5ad4-9937-c26c97f1ca68'
+        32. id: 'file--9a1f834d-2506-5367-baec-7aa63996ac43'
+        33. id: 'email-message--cf9b4b7f-14c8-5955-8065-020e0316b559'
+        34. id: 'email-addr--d1b3bf0c-f02a-51a1-8102-11aba7959868'
+        35. id: 'email-addr--9b7e29b3-fd8d-562e-b3f0-8fc8134f5dda'
+        36. id: 'email-message--0c57a381-2a17-5e61-8754-5ef96efb286c'
+        37. id: 'email-addr--2d77a846-6264-5d51-b586-e43822ea1ea3'
+        38. id: 'domain-name--3c10e93f-798e-5a26-a0c1-08156efab7f5'
+        39. id: 'directory--93c0a9b0-520d-545d-9094-1a08ddf46b05'
+        40. id: 'autonomous-system--f720c34b-98ae-597f-ade5-27dc241e8c74'
+        41. id: 'artifact--6f437177-6e48-5cf8-9d9e-872a2bddd641'
+        42. id: 'vulnerability--0c7b5b88-8ff7-4a4d-aa9d-feb398cd0061'
+        43. id: 'tool--a80c07ac-45f7-4d16-ab17-406d3a50b726'
+        44. id: 'threat-actor--5b1fdb52-bdab-4a05-8daa-08d6a68f10b1'
+        45. id: 'report--84e4d88f-44ea-4bcd-bbf3-b2c1c320bcb3'
+        46. id: 'opinion--b01efc25-77b4-4003-b18b-f6e24b5cd9f7'
+        47. id: 'observed-data--b67d30ff-02ac-498a-92f9-32f845f448cf'
+        48. id: 'note--eebf5811-e34a-48ef-8831-b8d6dbe4cf3f'
+        49. id: 'malware-analysis--d25167b7-fed0-4068-9ccd-a73dd2c5b07c'
+        50. id: 'malware--8bcf14e9-2ba2-44ef-9e32-fbbc9d2608b2'
+        51. id: 'malware--e82e93f6-7911-40d9-8b4a-5abc9dfc1efa'
+        52. id: 'location--9dc0370c-c6ec-4a9f-b1dd-44ddbd9bd5e9'
+        53. id: 'location--a6e9345f-5a15-4c29-8bb3-7dcc5d234d64'
+        54. id: 'location--a6e9345f-5a15-4c29-8bb3-8dac5d168d64'
+        55. id: 'intrusion-set--4e78f46f-a023-4e5f-bc24-71b3ca22ec29'
+        56. id: 'infrastructure--38c47d93-d984-4fd9-b87b-d69d0841628d'
+        57. id: 'indicator--d38a99ae-c5ee-4542-bc12-dfe68b48cc08'
+        58. id: 'identity--023d105b-752e-4e3c-941c-7d3f3cb15e9e'
+        59. id: 'grouping--911f0f23-2e7c-4f07-9436-d6e7bdd3b236'
+        60. id: 'course-of-action--fdcb81ce-b5d3-4ed2-b962-c8287fba2d6a'
+        61. id: 'campaign--ce88a5a8-69ff-4349-86da-ac59b35c5672'
+        62. id: 'intrusion-set--0c7e22ad-b099-4dc3-b0df-2ea3f49ae2e6'
+        63. id: 'sighting--ee20065d-2555-424f-ad9e-0f8428623c75'
+        64. id: 'relationship--57b56a43-b8b0-4cba-9deb-34e3e1faed9e'
+        65. id: 'attack-pattern--7e33a43e-e34b-40ec-89da-36c9bb2cacd5'
+*/
 
 func ComparisonTypeCommonFields(before, after datamodels.CommonPropertiesDomainObjectSTIX) (bool, datamodels.DifferentObjectType, error) {
 	var isEqual bool = true

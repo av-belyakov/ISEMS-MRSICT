@@ -56,9 +56,16 @@ type ModAPIRequestProcessingResJSONInfoMsgType struct {
 
 //CommonModAPIRequestProcessingResJSONSearchReqType содержит описание формата JSON запроса к поисковой машине
 // CollectionName - наименование коллекции документов. Для поиска STIX объектов collection_name = "stix object"
+// PaginateParameters - параметры разбиения на страницы
+//  MaxPartNum - размер части, то есть максимальное количество найденных элементов, которое может содержаться в одном ответе
+//	CurrentPartNumber - номер текущей части (0 или 1 считаются за первую часть)
 // SearchParameters - параметры поиска (для разных коллекций параметры поиска отличаются)
 type CommonModAPIRequestProcessingResJSONSearchReqType struct {
-	CollectionName   string           `json:"collection_name"`
+	CollectionName     string `json:"collection_name"`
+	PaginateParameters struct {
+		MaxPartNum        int `json:"max_part_num"`
+		CurrentPartNumber int `json:"current_part_number"`
+	} `json:"paginate_parameters"`
 	SearchParameters *json.RawMessage `json:"search_parameters"`
 }
 

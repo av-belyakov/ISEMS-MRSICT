@@ -28,7 +28,7 @@ var _ = Describe("DecoderFromJSONToSTIXObject", func() {
 	countSTIXObj := map[string]int{}
 
 	var _ = BeforeSuite(func() {
-		docJSON, errReadFile = ioutil.ReadFile("../mytest/jsonSTIXExample.json")
+		docJSON, errReadFile = ioutil.ReadFile("../mytest/test_resources/jsonSTIXExample.json")
 		errUnmarchalReq = json.Unmarshal(docJSON, &modAPIRequestProcessingReqJSON)
 		errUnmarchalList = json.Unmarshal(*modAPIRequestProcessingReqJSON.RequestDetails, &listSTIXObjectJSON)
 

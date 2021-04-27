@@ -226,6 +226,7 @@ func SanitizeSTIXObject(l []*datamodels.ElementSTIXObject) []*datamodels.Element
 	listElements := make([]*datamodels.ElementSTIXObject, 0, len(l))
 
 	for _, item := range l {
+
 		switch element := item.Data.(type) {
 		case datamodels.AttackPatternDomainObjectsSTIX:
 			elem = element.SanitizeStruct()

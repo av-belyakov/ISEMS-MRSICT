@@ -217,7 +217,86 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 
 	switch psr.CollectionName {
 	case "stix object":
-		searchEngineFindingInformationCollectionSTIXDocuments(qp)
+		searchParameters, ok := psr.SearchParameters.(datamodels.SearchThroughCollectionSTIXObjectsType)
+		if !ok {
+			chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
+				CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+					ModuleGeneratorMessage: "module database interaction",
+					ModuleReceiverMessage:  "module core application",
+					ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
+						FuncName:                                fn,
+						ModuleAPIRequestProcessingSettingSendTo: true,
+						Error:                                   fmt.Errorf("type conversion error"),
+					},
+				},
+				Section:   "handling search requests",
+				AppTaskID: ws.DataRequest.AppTaskID,
+			}
+
+			return
+		}
+
+		//получить только общее количество найденных документов
+		if (psr.PaginateParameters.CurrentPartNumber <= 0) || (psr.PaginateParameters.MaxPartNum <= 0) {
+			resSize, err := qp.CountDocuments(CreateSearchQueriesSTIXObject(&searchParameters))
+			if err != nil {
+				chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
+					CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+						ModuleGeneratorMessage: "module database interaction",
+						ModuleReceiverMessage:  "module core application",
+						ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
+							FuncName:                                fn,
+							ModuleAPIRequestProcessingSettingSendTo: true,
+							Error:                                   err,
+						},
+					},
+					Section:   "handling search requests",
+					AppTaskID: ws.DataRequest.AppTaskID,
+				}
+
+				return
+			}
+
+			fmt.Printf("func '%s', search for collection name 'stix object', RESULT COUNT ELEMENTS: '%d'\n", fn, resSize)
+
+			//сохраняем общее количество найденных значений во временном хранилище
+
+			//отправляем в канал идентификатор задачи и специальные параметры которые информируют что задача была выполненна
+
+			return
+		}
+
+		//получить все найденные документы, с учетом лимита
+		cur, err := qp.FindAllWithLimit(CreateSearchQueriesSTIXObject(&searchParameters), &FindAllWithLimitOptions{
+			Offset:        int64(psr.PaginateParameters.CurrentPartNumber),
+			LimitMaxSize:  int64(psr.PaginateParameters.MaxPartNum),
+			SortAscending: false,
+		})
+		if err != nil {
+			chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
+				CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+					ModuleGeneratorMessage: "module database interaction",
+					ModuleReceiverMessage:  "module core application",
+					ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
+						FuncName:                                fn,
+						ModuleAPIRequestProcessingSettingSendTo: true,
+						Error:                                   err,
+					},
+				},
+				Section:   "handling search requests",
+				AppTaskID: ws.DataRequest.AppTaskID,
+			}
+
+			return
+		}
+
+		result := GetListElementSTIXObject(cur)
+
+		fmt.Printf("func '%s', search for collection name 'stix object', RESULT: '%v'\n", fn, result)
+
+		//сохраняем найденные значения во временном хранилище
+
+		//отправляем в канал идентификатор задачи и специальные параметры которые информируют что задача была выполненна
 
 	case "":
 

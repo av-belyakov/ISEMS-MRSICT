@@ -16,7 +16,7 @@ import (
 /********** 			Cyber-observable Objects STIX (МЕТОДЫ)			**********/
 /*********************************************************************************/
 
-func (ocpcstix *OptionalCommonPropertiesCyberObservableObjectSTIX) checkingTypeCommonFields() bool {
+func (ocpcstix *OptionalCommonPropertiesCyberObservableObjectSTIX) validateStructCommonFields() bool {
 	//валидация содержимого поля SpecVersion
 	if !(regexp.MustCompile(`^[0-9a-z.]+$`).MatchString(ocpcstix.SpecVersion)) {
 		return false
@@ -100,13 +100,13 @@ func (astix ArtifactCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе ArtifactCyberObservableObjectSTIX
-func (astix ArtifactCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе ArtifactCyberObservableObjectSTIX
+func (astix ArtifactCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(artifact--)[0-9a-f|-]+$`).MatchString(astix.ID)) {
 		return false
 	}
 
-	if !astix.checkingTypeCommonFields() {
+	if !astix.validateStructCommonFields() {
 		return false
 	}
 
@@ -205,13 +205,13 @@ func (asstix AutonomousSystemCyberObservableObjectSTIX) EncoderJSON(interface{})
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AutonomousSystemCyberObservableObjectSTIX
-func (asstix AutonomousSystemCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе AutonomousSystemCyberObservableObjectSTIX
+func (asstix AutonomousSystemCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(autonomous-system--)[0-9a-f|-]+$`).MatchString(asstix.ID)) {
 		return false
 	}
 
-	if !asstix.checkingTypeCommonFields() {
+	if !asstix.validateStructCommonFields() {
 		return false
 	}
 
@@ -294,13 +294,13 @@ func (dstix DirectoryCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byt
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе DirectoryCyberObservableObjectSTIX
-func (dstix DirectoryCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе DirectoryCyberObservableObjectSTIX
+func (dstix DirectoryCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(directory--)[0-9a-f|-]+$`).MatchString(dstix.ID)) {
 		return false
 	}
 
-	if !dstix.checkingTypeCommonFields() {
+	if !dstix.validateStructCommonFields() {
 		return false
 	}
 
@@ -405,13 +405,13 @@ func (dnstix DomainNameCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]b
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе DomainNameCyberObservableObjectSTIX
-func (dnstix DomainNameCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе DomainNameCyberObservableObjectSTIX
+func (dnstix DomainNameCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(domain-name--)[0-9a-f|-]+$`).MatchString(dnstix.ID)) {
 		return false
 	}
 
-	if !dnstix.checkingTypeCommonFields() {
+	if !dnstix.validateStructCommonFields() {
 		return false
 	}
 
@@ -504,13 +504,13 @@ func (eastix EmailAddressCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе EmailAddressCyberObservableObjectSTIX
-func (eastix EmailAddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе EmailAddressCyberObservableObjectSTIX
+func (eastix EmailAddressCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(email-addr--)[0-9a-f|-]+$`).MatchString(eastix.ID)) {
 		return false
 	}
 
-	if !eastix.checkingTypeCommonFields() {
+	if !eastix.validateStructCommonFields() {
 		return false
 	}
 
@@ -596,13 +596,13 @@ func (emstix EmailMessageCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе EmailMessageCyberObservableObjectSTIX
-func (emstix EmailMessageCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе EmailMessageCyberObservableObjectSTIX
+func (emstix EmailMessageCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(email-message--)[0-9a-f|-]+$`).MatchString(emstix.ID)) {
 		return false
 	}
 
-	if !emstix.checkingTypeCommonFields() {
+	if !emstix.validateStructCommonFields() {
 		return false
 	}
 
@@ -851,13 +851,13 @@ func (fstix *FileCyberObservableObjectSTIX) GetFileCyberObservableObjectSTIX() *
 	return fstix
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе FileCyberObservableObjectSTIX
-func (fstix FileCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе FileCyberObservableObjectSTIX
+func (fstix FileCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(file--)[0-9a-f|-]+$`).MatchString(fstix.ID)) {
 		return false
 	}
 
-	if !fstix.checkingTypeCommonFields() {
+	if !fstix.validateStructCommonFields() {
 		return false
 	}
 
@@ -1002,13 +1002,13 @@ func (fstix *IPv4AddressCyberObservableObjectSTIX) GetIPv4AddressCyberObservable
 	return fstix
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе IPv4AddressCyberObservableObjectSTIX
-func (ip4stix IPv4AddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе IPv4AddressCyberObservableObjectSTIX
+func (ip4stix IPv4AddressCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(ipv4-addr--)[0-9a-f|-]+$`).MatchString(ip4stix.ID)) {
 		return false
 	}
 
-	if !ip4stix.checkingTypeCommonFields() {
+	if !ip4stix.validateStructCommonFields() {
 		return false
 	}
 
@@ -1122,13 +1122,13 @@ func (ip6stix IPv6AddressCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе IPv6AddressCyberObservableObjectSTIX
-func (ip6stix IPv6AddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе IPv6AddressCyberObservableObjectSTIX
+func (ip6stix IPv6AddressCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(ipv6-addr--)[0-9a-f|-]+$`).MatchString(ip6stix.ID)) {
 		return false
 	}
 
-	if !ip6stix.checkingTypeCommonFields() {
+	if !ip6stix.validateStructCommonFields() {
 		return false
 	}
 
@@ -1245,13 +1245,13 @@ func (macstix MACAddressCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе MACAddressCyberObservableObjectSTIX
-func (macstix MACAddressCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе MACAddressCyberObservableObjectSTIX
+func (macstix MACAddressCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(mac-addr--)[0-9a-f|-]+$`).MatchString(macstix.ID)) {
 		return false
 	}
 
-	if !macstix.checkingTypeCommonFields() {
+	if !macstix.validateStructCommonFields() {
 		return false
 	}
 
@@ -1329,13 +1329,13 @@ func (mstix MutexCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte, e
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе MutexCyberObservableObjectSTIX
-func (mstix MutexCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе MutexCyberObservableObjectSTIX
+func (mstix MutexCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(mutex--)[0-9a-f|-]+$`).MatchString(mstix.ID)) {
 		return false
 	}
 
-	if !mstix.checkingTypeCommonFields() {
+	if !mstix.validateStructCommonFields() {
 		return false
 	}
 
@@ -1446,13 +1446,13 @@ func (ntstix NetworkTrafficCyberObservableObjectSTIX) EncoderJSON(interface{}) (
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе NetworkTrafficCyberObservableObjectSTIX
-func (ntstix NetworkTrafficCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе NetworkTrafficCyberObservableObjectSTIX
+func (ntstix NetworkTrafficCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(network-traffic--)[0-9a-f|-]+$`).MatchString(ntstix.ID)) {
 		return false
 	}
 
-	if !ntstix.checkingTypeCommonFields() {
+	if !ntstix.validateStructCommonFields() {
 		return false
 	}
 
@@ -1669,13 +1669,13 @@ func (pstix ProcessCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte,
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе ProcessCyberObservableObjectSTIX
-func (pstix ProcessCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе ProcessCyberObservableObjectSTIX
+func (pstix ProcessCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(process--)[0-9a-f|-]+$`).MatchString(pstix.ID)) {
 		return false
 	}
 
-	if !pstix.checkingTypeCommonFields() {
+	if !pstix.validateStructCommonFields() {
 		return false
 	}
 
@@ -1842,13 +1842,13 @@ func (sstix SoftwareCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе SoftwareCyberObservableObjectSTIX
-func (sstix SoftwareCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе SoftwareCyberObservableObjectSTIX
+func (sstix SoftwareCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(software--)[0-9a-f|-]+$`).MatchString(sstix.ID)) {
 		return false
 	}
 
-	if !sstix.checkingTypeCommonFields() {
+	if !sstix.validateStructCommonFields() {
 		return false
 	}
 
@@ -1953,13 +1953,13 @@ func (urlstix URLCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte, e
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе URLCyberObservableObjectSTIX
-func (urlstix URLCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе URLCyberObservableObjectSTIX
+func (urlstix URLCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(url--)[0-9a-f|-]+$`).MatchString(urlstix.ID)) {
 		return false
 	}
 
-	if !urlstix.checkingTypeCommonFields() {
+	if !urlstix.validateStructCommonFields() {
 		return false
 	}
 
@@ -2037,13 +2037,13 @@ func (uastix UserAccountCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе UserAccountCyberObservableObjectSTIX
-func (uastix UserAccountCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе UserAccountCyberObservableObjectSTIX
+func (uastix UserAccountCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(user-account--)[0-9a-f|-]+$`).MatchString(uastix.ID)) {
 		return false
 	}
 
-	if !uastix.checkingTypeCommonFields() {
+	if !uastix.validateStructCommonFields() {
 		return false
 	}
 
@@ -2150,13 +2150,13 @@ func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) EncoderJSON(interface
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе WindowsRegistryKeyCyberObservableObjectSTIX
-func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе WindowsRegistryKeyCyberObservableObjectSTIX
+func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(windows-registry-key--)[0-9a-f|-]+$`).MatchString(wrkstix.ID)) {
 		return false
 	}
 
-	if !wrkstix.checkingTypeCommonFields() {
+	if !wrkstix.validateStructCommonFields() {
 		return false
 	}
 
@@ -2260,13 +2260,13 @@ func (x509sstix X509CertificateCyberObservableObjectSTIX) EncoderJSON(interface{
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе X509CertificateCyberObservableObjectSTIX
-func (x509sstix X509CertificateCyberObservableObjectSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе X509CertificateCyberObservableObjectSTIX
+func (x509sstix X509CertificateCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(x509-certificate--)[0-9a-f|-]+$`).MatchString(x509sstix.ID)) {
 		return false
 	}
 
-	if !x509sstix.checkingTypeCommonFields() {
+	if !x509sstix.validateStructCommonFields() {
 		return false
 	}
 

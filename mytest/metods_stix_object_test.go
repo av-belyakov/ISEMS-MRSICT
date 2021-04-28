@@ -12,7 +12,7 @@ import (
 
 var _ = Describe("MetodsStixObject", func() {
 
-	Context("Тест 1. Выполняем проверку типа 'attack-pattern' методом CheckingTypeFields", func() {
+	Context("Тест 1. Выполняем проверку типа 'attack-pattern' методом ValidateStruct", func() {
 		It("На валидное содержимое типа AttackPatternDomainObjectsSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			apbyte := json.RawMessage([]byte(`{
 	"type": "attack-pattern",
@@ -32,7 +32,7 @@ var _ = Describe("MetodsStixObject", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newapo, ok := apoTmp.(datamodels.AttackPatternDomainObjectsSTIX)
-			apoIsTrue := newapo.CheckingTypeFields()
+			apoIsTrue := newapo.ValidateStruct()
 			newapo = newapo.SanitizeStruct()
 
 			Expect(ok).Should(BeTrue())
@@ -42,7 +42,7 @@ var _ = Describe("MetodsStixObject", func() {
 		})
 	})
 
-	Context("Тест 2. Выполняем проверку типа 'campaign' методом CheckingTypeFields", func() {
+	Context("Тест 2. Выполняем проверку типа 'campaign' методом ValidateStruct", func() {
 		It("На валидное содержимое типа CampaignDomainObjectsSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			cobyte := json.RawMessage([]byte(`{
 				"type": "campaign",
@@ -63,7 +63,7 @@ var _ = Describe("MetodsStixObject", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newco, ok := coTmp.(datamodels.CampaignDomainObjectsSTIX)
-			coIsTrue := newco.CheckingTypeFields()
+			coIsTrue := newco.ValidateStruct()
 			newco = newco.SanitizeStruct()
 
 			Expect(ok).Should(BeTrue())
@@ -74,7 +74,7 @@ var _ = Describe("MetodsStixObject", func() {
 		})
 	})
 
-	Context("Тест 3. Выполняем проверку типа 'course-of-action' методом CheckingTypeFields", func() {
+	Context("Тест 3. Выполняем проверку типа 'course-of-action' методом ValidateStruct", func() {
 		It("На валидное содержимое типа CourseOfActionDomainObjectsSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			cabyte := json.RawMessage([]byte(`{
 				"type": "course-of-action",
@@ -92,7 +92,7 @@ var _ = Describe("MetodsStixObject", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newca, ok := caTmp.(datamodels.CourseOfActionDomainObjectsSTIX)
-			coIsTrue := newca.CheckingTypeFields()
+			coIsTrue := newca.ValidateStruct()
 			newca = newca.SanitizeStruct()
 
 			Expect(ok).Should(BeTrue())
@@ -103,7 +103,7 @@ var _ = Describe("MetodsStixObject", func() {
 		})
 	})
 
-	Context("Тест 4. Выполняем проверку типа 'grouping' методом CheckingTypeFields", func() {
+	Context("Тест 4. Выполняем проверку типа 'grouping' методом ValidateStruct", func() {
 		It("На валидное содержимое типа GroupingDomainObjectsSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			gdbyte := json.RawMessage([]byte(`{
 				"type": "grouping",
@@ -128,7 +128,7 @@ var _ = Describe("MetodsStixObject", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newgd, ok := gdTmp.(datamodels.GroupingDomainObjectsSTIX)
-			coIsTrue := newgd.CheckingTypeFields()
+			coIsTrue := newgd.ValidateStruct()
 			newgd = newgd.SanitizeStruct()
 
 			Expect(ok).Should(BeTrue())
@@ -139,7 +139,7 @@ var _ = Describe("MetodsStixObject", func() {
 		})
 	})
 
-	Context("Тест 5. Выполняем проверку типа 'identity' методом CheckingTypeFields", func() {
+	Context("Тест 5. Выполняем проверку типа 'identity' методом ValidateStruct", func() {
 		It("На валидное содержимое типа IdentityDomainObjectsSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			idbyte := json.RawMessage([]byte(`{
 				"type": "identity",
@@ -157,7 +157,7 @@ var _ = Describe("MetodsStixObject", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newid, ok := idTmp.(datamodels.IdentityDomainObjectsSTIX)
-			coIsTrue := newid.CheckingTypeFields()
+			coIsTrue := newid.ValidateStruct()
 			newid = newid.SanitizeStruct()
 
 			Expect(ok).Should(BeTrue())
@@ -168,7 +168,7 @@ var _ = Describe("MetodsStixObject", func() {
 		})
 	})
 
-	Context("Тест 6. Выполняем проверку типа 'indicator' методом CheckingTypeFields", func() {
+	Context("Тест 6. Выполняем проверку типа 'indicator' методом ValidateStruct", func() {
 		It("На валидное содержимое типа IndicatorDomainObjectsSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			idbyte := json.RawMessage([]byte(`{
 				"type": "indicator",
@@ -190,7 +190,7 @@ var _ = Describe("MetodsStixObject", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newid, ok := idTmp.(datamodels.IndicatorDomainObjectsSTIX)
-			coIsTrue := newid.CheckingTypeFields()
+			coIsTrue := newid.ValidateStruct()
 			newid = newid.SanitizeStruct()
 
 			Expect(ok).Should(BeTrue())
@@ -201,7 +201,7 @@ var _ = Describe("MetodsStixObject", func() {
 		})
 	})
 
-	Context("Тест 7. Выполняем проверку типа 'infrastructure' методом CheckingTypeFields", func() {
+	Context("Тест 7. Выполняем проверку типа 'infrastructure' методом ValidateStruct", func() {
 		It("На валидное содержимое типа InfrastructureDomainObjectsSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			idbyte := json.RawMessage([]byte(`{
 				"type":"infrastructure",
@@ -218,7 +218,7 @@ var _ = Describe("MetodsStixObject", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newid, ok := idTmp.(datamodels.InfrastructureDomainObjectsSTIX)
-			coIsTrue := newid.CheckingTypeFields()
+			coIsTrue := newid.ValidateStruct()
 			newid = newid.SanitizeStruct()
 
 			Expect(ok).Should(BeTrue())
@@ -229,7 +229,7 @@ var _ = Describe("MetodsStixObject", func() {
 		})
 	})
 
-	Context("Тест 8. Выполняем проверку типа 'infrastructure' методом CheckingTypeFields", func() {
+	Context("Тест 8. Выполняем проверку типа 'infrastructure' методом ValidateStruct", func() {
 		It("На валидное содержимое типа IntrusionSetDomainObjectsSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			isdbyte := json.RawMessage([]byte(`{
 				"type": "intrusion-set",
@@ -249,7 +249,7 @@ var _ = Describe("MetodsStixObject", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newisd, ok := isdTmp.(datamodels.IntrusionSetDomainObjectsSTIX)
-			coIsTrue := newisd.CheckingTypeFields()
+			coIsTrue := newisd.ValidateStruct()
 			newisd = newisd.SanitizeStruct()
 
 			Expect(ok).Should(BeTrue())
@@ -260,7 +260,7 @@ var _ = Describe("MetodsStixObject", func() {
 		})
 	})
 
-	Context("Тест 9. Выполняем проверку типа 'location' методом CheckingTypeFields", func() {
+	Context("Тест 9. Выполняем проверку типа 'location' методом ValidateStruct", func() {
 		It("На валидное содержимое типа LocationDomainObjectsSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			ldbyte := json.RawMessage([]byte(`{
 				"type": "location",
@@ -282,7 +282,7 @@ var _ = Describe("MetodsStixObject", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newld, ok := ldTmp.(datamodels.LocationDomainObjectsSTIX)
-			coIsTrue := newld.CheckingTypeFields()
+			coIsTrue := newld.ValidateStruct()
 			newld = newld.SanitizeStruct()
 
 			Expect(ok).Should(BeTrue())
@@ -293,7 +293,7 @@ var _ = Describe("MetodsStixObject", func() {
 		})
 	})
 
-	Context("Тест 10. Выполняем проверку типа 'malware' методом CheckingTypeFields", func() {
+	Context("Тест 10. Выполняем проверку типа 'malware' методом ValidateStruct", func() {
 		It("На валидное содержимое типа MalwareDomainObjectsSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 				"type": "malware",
@@ -312,7 +312,7 @@ var _ = Describe("MetodsStixObject", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.MalwareDomainObjectsSTIX)
-			coIsTrue := newmd.CheckingTypeFields()
+			coIsTrue := newmd.ValidateStruct()
 			newmd = newmd.SanitizeStruct()
 
 			Expect(ok).Should(BeTrue())
@@ -323,7 +323,7 @@ var _ = Describe("MetodsStixObject", func() {
 		})
 	})
 
-	Context("Тест 11. Выполняем проверку типа 'malware-analysis' методом CheckingTypeFields", func() {
+	Context("Тест 11. Выполняем проверку типа 'malware-analysis' методом ValidateStruct", func() {
 		It("На валидное содержимое типа MalwareAnalysisDomainObjectsSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 				"type": "malware-analysis",
@@ -344,7 +344,7 @@ var _ = Describe("MetodsStixObject", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.MalwareAnalysisDomainObjectsSTIX)
-			coIsTrue := newmd.CheckingTypeFields()
+			coIsTrue := newmd.ValidateStruct()
 			newmd = newmd.SanitizeStruct()
 
 			Expect(ok).Should(BeTrue())
@@ -355,7 +355,7 @@ var _ = Describe("MetodsStixObject", func() {
 		})
 	})
 
-	Context("Тест 12. Выполняем проверку типа 'note' методом CheckingTypeFields", func() {
+	Context("Тест 12. Выполняем проверку типа 'note' методом ValidateStruct", func() {
 		It("На валидное содержимое типа NoteDomainObjectsSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 				"type": "note",
@@ -380,7 +380,7 @@ var _ = Describe("MetodsStixObject", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.NoteDomainObjectsSTIX)
-			coIsTrue := newmd.CheckingTypeFields()
+			coIsTrue := newmd.ValidateStruct()
 			newmd = newmd.SanitizeStruct()
 
 			Expect(ok).Should(BeTrue())
@@ -391,7 +391,7 @@ var _ = Describe("MetodsStixObject", func() {
 		})
 	})
 
-	Context("Тест 13. Выполняем проверку типа 'observed-data' методом CheckingTypeFields", func() {
+	Context("Тест 13. Выполняем проверку типа 'observed-data' методом ValidateStruct", func() {
 		It("На валидное содержимое типа ObservedDataDomainObjectsSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 				"type": "observed-data",
@@ -414,7 +414,7 @@ var _ = Describe("MetodsStixObject", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.ObservedDataDomainObjectsSTIX)
-			coIsTrue := newmd.CheckingTypeFields()
+			coIsTrue := newmd.ValidateStruct()
 			newmd = newmd.SanitizeStruct()
 
 			Expect(ok).Should(BeTrue())
@@ -425,7 +425,7 @@ var _ = Describe("MetodsStixObject", func() {
 		})
 	})
 
-	Context("Тест 14. Выполняем проверку типа 'opinion' методом CheckingTypeFields", func() {
+	Context("Тест 14. Выполняем проверку типа 'opinion' методом ValidateStruct", func() {
 		It("На валидное содержимое типа OpinionDomainObjectsSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 				"type": "opinion",
@@ -444,7 +444,7 @@ var _ = Describe("MetodsStixObject", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.OpinionDomainObjectsSTIX)
-			coIsTrue := newmd.CheckingTypeFields()
+			coIsTrue := newmd.ValidateStruct()
 			newmd = newmd.SanitizeStruct()
 
 			Expect(ok).Should(BeTrue())
@@ -455,7 +455,7 @@ var _ = Describe("MetodsStixObject", func() {
 		})
 	})
 
-	Context("Тест 15. Выполняем проверку типа 'report' методом CheckingTypeFields", func() {
+	Context("Тест 15. Выполняем проверку типа 'report' методом ValidateStruct", func() {
 		It("На валидное содержимое типа ReportDomainObjectsSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 				"type": "report",
@@ -480,7 +480,7 @@ var _ = Describe("MetodsStixObject", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.ReportDomainObjectsSTIX)
-			coIsTrue := newmd.CheckingTypeFields()
+			coIsTrue := newmd.ValidateStruct()
 			newmd = newmd.SanitizeStruct()
 
 			Expect(ok).Should(BeTrue())
@@ -491,7 +491,7 @@ var _ = Describe("MetodsStixObject", func() {
 		})
 	})
 
-	Context("Тест 16. Выполняем проверку типа 'threat-actor' методом CheckingTypeFields", func() {
+	Context("Тест 16. Выполняем проверку типа 'threat-actor' методом ValidateStruct", func() {
 		It("На валидное содержимое типа ThreatActorDomainObjectsSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 				"type": "threat-actor",
@@ -516,7 +516,7 @@ var _ = Describe("MetodsStixObject", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.ThreatActorDomainObjectsSTIX)
-			coIsTrue := newmd.CheckingTypeFields()
+			coIsTrue := newmd.ValidateStruct()
 			newmd = newmd.SanitizeStruct()
 
 			Expect(ok).Should(BeTrue())
@@ -527,7 +527,7 @@ var _ = Describe("MetodsStixObject", func() {
 		})
 	})
 
-	Context("Тест 17. Выполняем проверку типа 'tool' методом CheckingTypeFields", func() {
+	Context("Тест 17. Выполняем проверку типа 'tool' методом ValidateStruct", func() {
 		It("На валидное содержимое типа ToolDomainObjectsSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 				"type": "tool",
@@ -545,7 +545,7 @@ var _ = Describe("MetodsStixObject", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.ToolDomainObjectsSTIX)
-			coIsTrue := newmd.CheckingTypeFields()
+			coIsTrue := newmd.ValidateStruct()
 			newmd = newmd.SanitizeStruct()
 
 			Expect(ok).Should(BeTrue())
@@ -556,7 +556,7 @@ var _ = Describe("MetodsStixObject", func() {
 		})
 	})
 
-	Context("Тест 18. Выполняем проверку типа 'vulnerability' методом CheckingTypeFields", func() {
+	Context("Тест 18. Выполняем проверку типа 'vulnerability' методом ValidateStruct", func() {
 		It("На валидное содержимое типа VulnerabilityDomainObjectsSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 				"type": "vulnerability",
@@ -579,7 +579,7 @@ var _ = Describe("MetodsStixObject", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.VulnerabilityDomainObjectsSTIX)
-			coIsTrue := newmd.CheckingTypeFields()
+			coIsTrue := newmd.ValidateStruct()
 			newmd = newmd.SanitizeStruct()
 
 			Expect(ok).Should(BeTrue())
@@ -590,7 +590,7 @@ var _ = Describe("MetodsStixObject", func() {
 		})
 	})
 
-	Context("Тест 19. Выполняем проверку типа 'relationship' методом CheckingTypeFields", func() {
+	Context("Тест 19. Выполняем проверку типа 'relationship' методом ValidateStruct", func() {
 		It("На валидное содержимое типа RelationshipObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 				"type": "relationship",
@@ -608,7 +608,7 @@ var _ = Describe("MetodsStixObject", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.RelationshipObjectSTIX)
-			coIsTrue := newmd.CheckingTypeFields()
+			coIsTrue := newmd.ValidateStruct()
 			newmd = newmd.SanitizeStruct()
 
 			Expect(ok).Should(BeTrue())
@@ -619,7 +619,7 @@ var _ = Describe("MetodsStixObject", func() {
 		})
 	})
 
-	Context("Тест 20. Выполняем проверку типа 'sighting' методом CheckingTypeFields", func() {
+	Context("Тест 20. Выполняем проверку типа 'sighting' методом ValidateStruct", func() {
 		It("На валидное содержимое типа SightingObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 				"type": "sighting",
@@ -641,7 +641,7 @@ var _ = Describe("MetodsStixObject", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.SightingObjectSTIX)
-			coIsTrue := newmd.CheckingTypeFields()
+			coIsTrue := newmd.ValidateStruct()
 			newmd = newmd.SanitizeStruct()
 
 			Expect(ok).Should(BeTrue())
@@ -652,7 +652,7 @@ var _ = Describe("MetodsStixObject", func() {
 		})
 	})
 
-	Context("Тест 21. Выполняем проверку типа 'artifact' методом CheckingTypeFields", func() {
+	Context("Тест 21. Выполняем проверку типа 'artifact' методом ValidateStruct", func() {
 		It("На валидное содержимое типа ArtifactCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 				"type": "artifact",
@@ -676,11 +676,11 @@ var _ = Describe("MetodsStixObject", func() {
 
 			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
 
-			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+			Expect(newmd.ValidateStruct()).Should(BeTrue())
 		})
 	})
 
-	Context("Тест 21. Выполняем проверку типа 'autonomous-system' методом CheckingTypeFields", func() {
+	Context("Тест 21. Выполняем проверку типа 'autonomous-system' методом ValidateStruct", func() {
 		It("На валидное содержимое типа AutonomousSystemCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 				"type": "autonomous-system",
@@ -702,11 +702,11 @@ var _ = Describe("MetodsStixObject", func() {
 
 			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
 
-			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+			Expect(newmd.ValidateStruct()).Should(BeTrue())
 		})
 	})
 
-	Context("Тест 22. Выполняем проверку типа 'directory' методом CheckingTypeFields", func() {
+	Context("Тест 22. Выполняем проверку типа 'directory' методом ValidateStruct", func() {
 		It("На валидное содержимое типа DirectoryCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 				"type": "directory",
@@ -726,11 +726,11 @@ var _ = Describe("MetodsStixObject", func() {
 
 			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
 
-			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+			Expect(newmd.ValidateStruct()).Should(BeTrue())
 		})
 	})
 
-	Context("Тест 23. Выполняем проверку типа 'domain-name' методом CheckingTypeFields", func() {
+	Context("Тест 23. Выполняем проверку типа 'domain-name' методом ValidateStruct", func() {
 		It("На валидное содержимое типа DomainNameCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 				"type": "domain-name",
@@ -751,11 +751,11 @@ var _ = Describe("MetodsStixObject", func() {
 
 			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
 
-			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+			Expect(newmd.ValidateStruct()).Should(BeTrue())
 		})
 	})
 
-	Context("Тест 24. Выполняем проверку типа 'email-addr' методом CheckingTypeFields", func() {
+	Context("Тест 24. Выполняем проверку типа 'email-addr' методом ValidateStruct", func() {
 		It("На валидное содержимое типа EmailAddressCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 				"type": "email-addr",
@@ -776,11 +776,11 @@ var _ = Describe("MetodsStixObject", func() {
 
 			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
 
-			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+			Expect(newmd.ValidateStruct()).Should(BeTrue())
 		})
 	})
 
-	Context("Тест 25. Выполняем проверку типа 'email-message' методом CheckingTypeFields", func() {
+	Context("Тест 25. Выполняем проверку типа 'email-message' методом ValidateStruct", func() {
 		It("На валидное содержимое типа EmailMessageCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 				"type": "email-message",
@@ -831,11 +831,11 @@ var _ = Describe("MetodsStixObject", func() {
 
 			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
 
-			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+			Expect(newmd.ValidateStruct()).Should(BeTrue())
 		})
 	})
 
-	Context("Тест 25. Выполняем проверку типа 'file' методом CheckingTypeFields", func() {
+	Context("Тест 25. Выполняем проверку типа 'file' методом ValidateStruct", func() {
 		It("На валидное содержимое типа FileCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 				"type": "file",
@@ -917,11 +917,11 @@ var _ = Describe("MetodsStixObject", func() {
 
 			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
 
-			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+			Expect(newmd.ValidateStruct()).Should(BeTrue())
 		})
 	})
 
-	Context("Тест 26. Выполняем проверку типа 'ipv4-addr' методом CheckingTypeFields", func() {
+	Context("Тест 26. Выполняем проверку типа 'ipv4-addr' методом ValidateStruct", func() {
 		It("На валидное содержимое типа IPv4AddressCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 				"type": "ipv4-addr",
@@ -941,11 +941,11 @@ var _ = Describe("MetodsStixObject", func() {
 
 			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
 
-			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+			Expect(newmd.ValidateStruct()).Should(BeTrue())
 		})
 	})
 
-	Context("Тест 27. Выполняем проверку типа 'ipv6-addr' методом CheckingTypeFields", func() {
+	Context("Тест 27. Выполняем проверку типа 'ipv6-addr' методом ValidateStruct", func() {
 		It("На валидное содержимое типа IPv6AddressCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 				"type": "ipv6-addr",
@@ -965,11 +965,11 @@ var _ = Describe("MetodsStixObject", func() {
 
 			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
 
-			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+			Expect(newmd.ValidateStruct()).Should(BeTrue())
 		})
 	})
 
-	Context("Тест 28. Выполняем проверку типа 'mac-addr' методом CheckingTypeFields", func() {
+	Context("Тест 28. Выполняем проверку типа 'mac-addr' методом ValidateStruct", func() {
 		It("На валидное содержимое типа MACAddressCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 				"type": "mac-addr",
@@ -989,11 +989,11 @@ var _ = Describe("MetodsStixObject", func() {
 
 			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
 
-			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+			Expect(newmd.ValidateStruct()).Should(BeTrue())
 		})
 	})
 
-	Context("Тест 29. Выполняем проверку типа 'mac-addr' методом CheckingTypeFields", func() {
+	Context("Тест 29. Выполняем проверку типа 'mac-addr' методом ValidateStruct", func() {
 		It("На валидное содержимое типа MutexCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 				"type": "mutex",
@@ -1013,11 +1013,11 @@ var _ = Describe("MetodsStixObject", func() {
 
 			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
 
-			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+			Expect(newmd.ValidateStruct()).Should(BeTrue())
 		})
 	})
 
-	Context("Тест 30. Выполняем проверку типа 'network-traffic' методом CheckingTypeFields", func() {
+	Context("Тест 30. Выполняем проверку типа 'network-traffic' методом ValidateStruct", func() {
 		It("На валидное содержимое типа NetworkTrafficCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 				"type": "network-traffic",
@@ -1066,11 +1066,11 @@ var _ = Describe("MetodsStixObject", func() {
 
 			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
 
-			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+			Expect(newmd.ValidateStruct()).Should(BeTrue())
 		})
 	})
 
-	Context("Тест 31. Выполняем проверку типа 'process' методом CheckingTypeFields", func() {
+	Context("Тест 31. Выполняем проверку типа 'process' методом ValidateStruct", func() {
 		It("На валидное содержимое типа ProcessCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 				"type": "process",
@@ -1101,11 +1101,11 @@ var _ = Describe("MetodsStixObject", func() {
 
 			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
 
-			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+			Expect(newmd.ValidateStruct()).Should(BeTrue())
 		})
 	})
 
-	Context("Тест 32. Выполняем проверку типа 'software' методом CheckingTypeFields", func() {
+	Context("Тест 32. Выполняем проверку типа 'software' методом ValidateStruct", func() {
 		It("На валидное содержимое типа SoftwareCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 				"type": "software",
@@ -1128,11 +1128,11 @@ var _ = Describe("MetodsStixObject", func() {
 
 			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
 
-			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+			Expect(newmd.ValidateStruct()).Should(BeTrue())
 		})
 	})
 
-	Context("Тест 32. Выполняем проверку типа 'url' методом CheckingTypeFields", func() {
+	Context("Тест 32. Выполняем проверку типа 'url' методом ValidateStruct", func() {
 		It("На валидное содержимое типа URLCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 				"type": "url",
@@ -1152,11 +1152,11 @@ var _ = Describe("MetodsStixObject", func() {
 
 			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
 
-			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+			Expect(newmd.ValidateStruct()).Should(BeTrue())
 		})
 	})
 
-	Context("Тест 33. Выполняем проверку типа 'user-account' методом CheckingTypeFields", func() {
+	Context("Тест 33. Выполняем проверку типа 'user-account' методом ValidateStruct", func() {
 		It("На валидное содержимое типа UserAccountCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 				"type": "user-account",
@@ -1194,11 +1194,11 @@ var _ = Describe("MetodsStixObject", func() {
 
 			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
 
-			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+			Expect(newmd.ValidateStruct()).Should(BeTrue())
 		})
 	})
 
-	Context("Тест 34. Выполняем проверку типа 'windows-registry-key' методом CheckingTypeFields", func() {
+	Context("Тест 34. Выполняем проверку типа 'windows-registry-key' методом ValidateStruct", func() {
 		It("На валидное содержимое типа WindowsRegistryKeyCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 				"type": "windows-registry-key",
@@ -1230,11 +1230,11 @@ var _ = Describe("MetodsStixObject", func() {
 
 			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
 
-			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+			Expect(newmd.ValidateStruct()).Should(BeTrue())
 		})
 	})
 
-	Context("Тест 35. Выполняем проверку типа 'windows-registry-key' методом CheckingTypeFields", func() {
+	Context("Тест 35. Выполняем проверку типа 'windows-registry-key' методом ValidateStruct", func() {
 		It("На валидное содержимое типа X509CertificateCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 				"type":"x509-certificate",
@@ -1274,7 +1274,7 @@ var _ = Describe("MetodsStixObject", func() {
 
 			fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
 
-			Expect(newmd.CheckingTypeFields()).Should(BeTrue())
+			Expect(newmd.ValidateStruct()).Should(BeTrue())
 		})
 	})
 })

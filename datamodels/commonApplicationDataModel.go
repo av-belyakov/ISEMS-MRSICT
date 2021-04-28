@@ -26,7 +26,7 @@ type EncoderJSONObject interface {
 
 //ValidatorJSONObject интерфейс реализующий обработчик для валидации STIX объектов
 type ValidatorJSONObject interface {
-	CheckingTypeFields() bool
+	ValidateStruct() bool
 }
 
 //GetterParametersSTIXObject интерфейс реализующий обработчик для получения ID STIX объекта

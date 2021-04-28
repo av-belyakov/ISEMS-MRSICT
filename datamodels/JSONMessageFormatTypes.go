@@ -91,7 +91,7 @@ type ModAPIRequestProcessingResJSONSearchReqType struct {
 // Created - время создания объекта, в формате "2016-05-12T08:17:27.000Z" (только для DO или RO STIX)
 // Modified - время модификации объекта, в формате "2016-05-12T08:17:27.000Z" (только для DO или RO STIX)
 // CreatedByRef - содержит идентификатор источника создавшего данный объект (только для DO STIX)
-// SpecificSearchFields - содержит список специфичных полй объектов
+// SpecificSearchFields - содержит список специфичных полей объектов (при этом используется логика "ИЛИ" между объектами предназначенными для поиска)
 type SearchThroughCollectionSTIXObjectsType struct {
 	DocumentsID   []string `json:"documents_id"`
 	DocumentsType []string `json:"documents_type"`
@@ -107,16 +107,8 @@ type SearchThroughCollectionSTIXObjectsType struct {
 	SpecificSearchFields []SpecificSearchFieldsSTIXObjectType `json:"specific_search_fields"`
 }
 
-//SpecificSearchFieldsSTIXObjectType содержит набор полей для поиска, которые являются специфичными для объектов STIX
-// ObjectName - содержит наименование STIX объекта
-// SearchFields - содержит перечень уникальных полей соответствующих определенному STIX объекту, внутри данного объекта действует логика "И"
-type SpecificSearchFieldsSTIXObjectType struct {
-	ObjectName   string                     `json:"object_name"`
-	SearchFields SearchFieldsSTIXObjectType `json:"search_fields"`
-}
-
-//SearchFieldsSTIXObjectType содержит перечень полей STIX объекта по которым выполняется поиск, не все поля для каждого STIX объекта будут заполнятся
-// У некоторых STIX объектов может не хватать одного или более полей
+//SpecificSearchFieldsSTIXObjectType содержит набор полей для поиска, которые являются специфичными для объектов STIX (между полями используется
+//  логика "И")
 // Name - имя используемое для идентификации типа STIX объекта
 // Aliases - альтернативные имена используемые для идентификации типа STIX объекта
 // FirstSeen - интервал времени когда сущность была обнаружена впервые
@@ -127,7 +119,7 @@ type SpecificSearchFieldsSTIXObjectType struct {
 // URL - унифицированный указатель ресурса
 // Number - номер для идентификации
 // Value - список каких либо значений
-type SearchFieldsSTIXObjectType struct {
+type SpecificSearchFieldsSTIXObjectType struct {
 	Name      string   `json:"name"`
 	Aliases   []string `json:"aliases"`
 	FirstSeen struct {

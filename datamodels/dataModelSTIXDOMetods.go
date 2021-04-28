@@ -15,7 +15,7 @@ import (
 /********** 			Domain Objects STIX (МЕТОДЫ)			**********/
 /*************************************************************************/
 
-func (cpdostix *CommonPropertiesDomainObjectSTIX) checkingTypeCommonFields() bool {
+func (cpdostix *CommonPropertiesDomainObjectSTIX) validateStructCommonFields() bool {
 	//валидация содержимого поля SpecVersion
 	if !(regexp.MustCompile(`^[0-9a-z.]+$`).MatchString(cpdostix.SpecVersion)) {
 		return false
@@ -198,12 +198,12 @@ func (apstix AttackPatternDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, 
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
+//ValidateStruct является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
 // возвращает ВАЛИДНЫЙ объект AttackPatternDomainObjectsSTIX (к сожалению нельзя править существующий объект
 // из-за ошибки 'cannot use e (variable of type datamodels.AttackPatternDomainObjectsSTIX) as datamodels.HandlerSTIXObject
-// value in struct literal: missing method CheckingTypeFields (CheckingTypeFields has pointer receiver)' возникающей в
-// функции GetListSTIXObjectFromJSON если приемник CheckingTypeFields работает по ссылке)
-func (apstix AttackPatternDomainObjectsSTIX) CheckingTypeFields() bool {
+// value in struct literal: missing method ValidateStruct (ValidateStruct has pointer receiver)' возникающей в
+// функции GetListSTIXObjectFromJSON если приемник ValidateStruct работает по ссылке)
+func (apstix AttackPatternDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(attack-pattern--)[0-9a-f|-]+$`).MatchString(apstix.ID)) {
 		return false
 	}
@@ -213,7 +213,7 @@ func (apstix AttackPatternDomainObjectsSTIX) CheckingTypeFields() bool {
 		return false
 	}
 
-	return apstix.checkingTypeCommonFields()
+	return apstix.validateStructCommonFields()
 }
 
 //SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
@@ -363,13 +363,13 @@ func (cstix CampaignDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error)
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе CampaignDomainObjectsSTIX
-func (cstix CampaignDomainObjectsSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе CampaignDomainObjectsSTIX
+func (cstix CampaignDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(campaign--)[0-9a-f|-]+$`).MatchString(cstix.ID)) {
 		return false
 	}
 
-	return cstix.checkingTypeCommonFields()
+	return cstix.validateStructCommonFields()
 }
 
 //SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
@@ -514,8 +514,8 @@ func (castix CourseOfActionDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte,
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе CourseOfActionDomainObjectsSTIX
-func (castix CourseOfActionDomainObjectsSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе CourseOfActionDomainObjectsSTIX
+func (castix CourseOfActionDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(course-of-action--)[0-9a-f|-]+$`).MatchString(castix.ID)) {
 		return false
 	}
@@ -525,7 +525,7 @@ func (castix CourseOfActionDomainObjectsSTIX) CheckingTypeFields() bool {
 		return false
 	}
 
-	return castix.checkingTypeCommonFields()
+	return castix.validateStructCommonFields()
 }
 
 //SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
@@ -652,13 +652,13 @@ func (gstix GroupingDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error)
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе GroupingDomainObjectsSTIX
-func (gstix GroupingDomainObjectsSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе GroupingDomainObjectsSTIX
+func (gstix GroupingDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(grouping--)[0-9a-f|-]+$`).MatchString(gstix.ID)) {
 		return false
 	}
 
-	if !gstix.checkingTypeCommonFields() {
+	if !gstix.validateStructCommonFields() {
 		return false
 	}
 
@@ -812,8 +812,8 @@ func (istix IdentityDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error)
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе IdentityDomainObjectsSTIX
-func (istix IdentityDomainObjectsSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе IdentityDomainObjectsSTIX
+func (istix IdentityDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(identity--)[0-9a-f|-]+$`).MatchString(istix.ID)) {
 		return false
 	}
@@ -823,7 +823,7 @@ func (istix IdentityDomainObjectsSTIX) CheckingTypeFields() bool {
 		return false
 	}
 
-	return istix.checkingTypeCommonFields()
+	return istix.validateStructCommonFields()
 }
 
 //SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
@@ -986,13 +986,13 @@ func (istix IndicatorDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе IndicatorDomainObjectsSTIX
-func (istix IndicatorDomainObjectsSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе IndicatorDomainObjectsSTIX
+func (istix IndicatorDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(indicator--)[0-9a-f|-]+$`).MatchString(istix.ID)) {
 		return false
 	}
 
-	if !istix.checkingTypeCommonFields() {
+	if !istix.validateStructCommonFields() {
 		return false
 	}
 
@@ -1170,13 +1170,13 @@ func (istix InfrastructureDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, 
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе InfrastructureDomainObjectsSTIX
-func (istix InfrastructureDomainObjectsSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе InfrastructureDomainObjectsSTIX
+func (istix InfrastructureDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(infrastructure--)[0-9a-f|-]+$`).MatchString(istix.ID)) {
 		return false
 	}
 
-	if !istix.checkingTypeCommonFields() {
+	if !istix.validateStructCommonFields() {
 		return false
 	}
 
@@ -1353,13 +1353,13 @@ func (istix IntrusionSetDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, er
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе IntrusionSetDomainObjectsSTIX
-func (istix IntrusionSetDomainObjectsSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе IntrusionSetDomainObjectsSTIX
+func (istix IntrusionSetDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(intrusion-set--)[0-9a-f|-]+$`).MatchString(istix.ID)) {
 		return false
 	}
 
-	if !istix.checkingTypeCommonFields() {
+	if !istix.validateStructCommonFields() {
 		return false
 	}
 
@@ -1547,13 +1547,13 @@ func (lstix LocationDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error)
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе LocationDomainObjectsSTIX
-func (lstix LocationDomainObjectsSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе LocationDomainObjectsSTIX
+func (lstix LocationDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(location--)[0-9a-f|-]+$`).MatchString(lstix.ID)) {
 		return false
 	}
 
-	if !lstix.checkingTypeCommonFields() {
+	if !lstix.validateStructCommonFields() {
 		return false
 	}
 
@@ -1710,13 +1710,13 @@ func (mstix MalwareDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error) 
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе MalwareDomainObjectsSTIX
-func (mstix MalwareDomainObjectsSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе MalwareDomainObjectsSTIX
+func (mstix MalwareDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(malware--)[0-9a-f|-]+$`).MatchString(mstix.ID)) {
 		return false
 	}
 
-	if !mstix.checkingTypeCommonFields() {
+	if !mstix.validateStructCommonFields() {
 		return false
 	}
 
@@ -1971,13 +1971,13 @@ func (mastix MalwareAnalysisDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе MalwareAnalysisDomainObjectsSTIX
-func (mastix MalwareAnalysisDomainObjectsSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе MalwareAnalysisDomainObjectsSTIX
+func (mastix MalwareAnalysisDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(malware-analysis--)[0-9a-f|-]+$`).MatchString(mastix.ID)) {
 		return false
 	}
 
-	if !mastix.checkingTypeCommonFields() {
+	if !mastix.validateStructCommonFields() {
 		return false
 	}
 
@@ -2188,13 +2188,13 @@ func (nstix NoteDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе NoteDomainObjectsSTIX
-func (nstix NoteDomainObjectsSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе NoteDomainObjectsSTIX
+func (nstix NoteDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(note--)[0-9a-f|-]+$`).MatchString(nstix.ID)) {
 		return false
 	}
 
-	if !nstix.checkingTypeCommonFields() {
+	if !nstix.validateStructCommonFields() {
 		return false
 	}
 
@@ -2355,8 +2355,8 @@ func (odstix ObservedDataDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, e
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе ObservedDataDomainObjectsSTIX
-func (odstix ObservedDataDomainObjectsSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе ObservedDataDomainObjectsSTIX
+func (odstix ObservedDataDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(observed-data--)[0-9a-f|-]+$`).MatchString(odstix.ID)) {
 		return false
 	}
@@ -2369,7 +2369,7 @@ func (odstix ObservedDataDomainObjectsSTIX) CheckingTypeFields() bool {
 		return false
 	}
 
-	if !odstix.checkingTypeCommonFields() {
+	if !odstix.validateStructCommonFields() {
 		return false
 	}
 
@@ -2511,13 +2511,13 @@ func (ostix OpinionDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error) 
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе OpinionDomainObjectsSTIX
-func (ostix OpinionDomainObjectsSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе OpinionDomainObjectsSTIX
+func (ostix OpinionDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(opinion--)[0-9a-f|-]+$`).MatchString(ostix.ID)) {
 		return false
 	}
 
-	if !ostix.checkingTypeCommonFields() {
+	if !ostix.validateStructCommonFields() {
 		return false
 	}
 
@@ -2683,13 +2683,13 @@ func (rstix ReportDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе ReportDomainObjectsSTIX
-func (rstix ReportDomainObjectsSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе ReportDomainObjectsSTIX
+func (rstix ReportDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(report--)[0-9a-f|-]+$`).MatchString(rstix.ID)) {
 		return false
 	}
 
-	if !rstix.checkingTypeCommonFields() {
+	if !rstix.validateStructCommonFields() {
 		return false
 	}
 
@@ -2862,13 +2862,13 @@ func (tastix ThreatActorDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, er
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе ThreatActorDomainObjectsSTIX
-func (tastix ThreatActorDomainObjectsSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе ThreatActorDomainObjectsSTIX
+func (tastix ThreatActorDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(threat-actor--)[0-9a-f|-]+$`).MatchString(tastix.ID)) {
 		return false
 	}
 
-	if !tastix.checkingTypeCommonFields() {
+	if !tastix.validateStructCommonFields() {
 		return false
 	}
 
@@ -3108,13 +3108,13 @@ func (tstix ToolDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе ToolDomainObjectsSTIX
-func (tstix ToolDomainObjectsSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе ToolDomainObjectsSTIX
+func (tstix ToolDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(tool--)[0-9a-f|-]+$`).MatchString(tstix.ID)) {
 		return false
 	}
 
-	if !tstix.checkingTypeCommonFields() {
+	if !tstix.validateStructCommonFields() {
 		return false
 	}
 
@@ -3291,13 +3291,13 @@ func (vstix VulnerabilityDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, e
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе VulnerabilityDomainObjectsSTIX
-func (vstix VulnerabilityDomainObjectsSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе VulnerabilityDomainObjectsSTIX
+func (vstix VulnerabilityDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(vulnerability--)[0-9a-f|-]+$`).MatchString(vstix.ID)) {
 		return false
 	}
 
-	if !vstix.checkingTypeCommonFields() {
+	if !vstix.validateStructCommonFields() {
 		return false
 	}
 

@@ -117,16 +117,16 @@ func CheckSearchSTIXObject(req *datamodels.ModAPIRequestProcessingResJSONSearchR
 	}
 
 	for k, v := range sp.SpecificSearchFields {
-		sp.SpecificSearchFields[k].SearchFields.Name = commonlibs.StringSanitize(v.SearchFields.Name)
+		sp.SpecificSearchFields[k].Name = commonlibs.StringSanitize(v.Name)
 
-		if len(v.SearchFields.Aliases) > 0 {
-			for key, value := range v.SearchFields.Aliases {
-				sp.SpecificSearchFields[k].SearchFields.Aliases[key] = commonlibs.StringSanitize(value)
+		if len(v.Aliases) > 0 {
+			for key, value := range v.Aliases {
+				sp.SpecificSearchFields[k].Aliases[key] = commonlibs.StringSanitize(value)
 			}
 		}
 
-		tcsn := v.SearchFields.FirstSeen.Start.Unix()
-		tcen := v.SearchFields.FirstSeen.End.Unix()
+		tcsn := v.FirstSeen.Start.Unix()
+		tcen := v.FirstSeen.End.Unix()
 
 		if tcsn > 0 && tcen > 0 {
 			if tcsn >= tcen {
@@ -134,28 +134,29 @@ func CheckSearchSTIXObject(req *datamodels.ModAPIRequestProcessingResJSONSearchR
 			}
 		}
 
-		if len(v.SearchFields.Roles) > 0 {
-			for key, value := range v.SearchFields.Roles {
-				sp.SpecificSearchFields[k].SearchFields.Roles[key] = commonlibs.StringSanitize(value)
+		if len(v.Roles) > 0 {
+			for key, value := range v.Roles {
+				sp.SpecificSearchFields[k].Roles[key] = commonlibs.StringSanitize(value)
 			}
 		}
 
-		if v.SearchFields.Country != "" {
-			if !(regexp.MustCompile(`^[a-zA-Z]+$`).MatchString(v.SearchFields.Country)) {
+		if v.Country != "" {
+			if !(regexp.MustCompile(`^[a-zA-Z]+$`).MatchString(v.Country)) {
 				return *req, fmt.Errorf("invalid search value accepted in 'Country' field")
 			}
 		}
 
-		sp.SpecificSearchFields[k].SearchFields.City = commonlibs.StringSanitize(v.SearchFields.City)
+		sp.SpecificSearchFields[k].City = commonlibs.StringSanitize(v.City)
 
-		if v.SearchFields.URL != "" {
-			if !govalidator.IsURL(v.SearchFields.URL) {
+		if v.URL != "" {
+			if !govalidator.IsURL(v.URL) {
 				return *req, fmt.Errorf("invalid search value accepted in 'URL' field")
 			}
 		}
 
-		if len(v.SearchFields.Value) > 0 {
-			if err := checkSearchFieldsValue(req.CollectionName, v.SearchFields.Value); err != nil {
+		if len(v.Value) > 0 {
+			//if err := checkSearchFieldsValue(req.CollectionName, v.Value); err != nil {
+			if err := checkSearchFieldsValue(v.Value); err != nil {
 				return *req, err
 			}
 		}
@@ -164,7 +165,49 @@ func CheckSearchSTIXObject(req *datamodels.ModAPIRequestProcessingResJSONSearchR
 	return *req, nil
 }
 
-func checkSearchFieldsValue(valueType string, l []string) error {
+//checkSearchFieldsValue выполняет проверку поля "Value" на соответствие одному из типов значений "domain-name", "email-addr", "ipv4-addr", "ipv6-addr"
+// или "url"
+func checkSearchFieldsValue(l []string) error {
+	for _, v := range l {
+		if govalidator.IsDNSName(v) {
+			return nil
+		} else if govalidator.IsEmail(v) {
+			return nil
+		} else if govalidator.IsURL(v) {
+			return nil
+		} else {
+			isIPv4 := commonlibs.IsIPv4Address(v)
+			isNetworkIPv4 := commonlibs.IsComputerNetAddrIPv4Range(v)
+			if isIPv4 || isNetworkIPv4 {
+				return nil
+			}
+
+			if ipv6Addr, _, err := net.ParseCIDR(v); err == nil {
+				if govalidator.IsIPv6(ipv6Addr.String()) {
+					return nil
+				}
+			} else {
+				if govalidator.IsIPv6(v) {
+					return nil
+				}
+
+				if ipv6Addr, _, err := net.ParseCIDR(v); err == nil {
+					if govalidator.IsIPv6(ipv6Addr.String()) {
+						return nil
+					}
+				} else {
+					if govalidator.IsIPv6(v) {
+						return nil
+					}
+				}
+			}
+		}
+	}
+
+	return fmt.Errorf("invalid search value accepted in 'Value' field, type undefined")
+}
+
+/*func checkSearchFieldsValue(valueType string, l []string) error {
 	for _, v := range l {
 		switch valueType {
 		case "domain-name":
@@ -203,12 +246,12 @@ func checkSearchFieldsValue(valueType string, l []string) error {
 	}
 
 	return nil
-}
+}*/
 
 //CheckSTIXObjects выполняет валидацию списка STIX объектов
 func CheckSTIXObjects(l []*datamodels.ElementSTIXObject) error {
 	for _, item := range l {
-		if item.Data.CheckingTypeFields() {
+		if item.Data.ValidateStruct() {
 			continue
 		}
 

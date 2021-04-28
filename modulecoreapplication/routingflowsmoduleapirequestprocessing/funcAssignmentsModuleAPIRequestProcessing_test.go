@@ -82,7 +82,7 @@ var _ = Describe("FuncAssignmentsModuleAPIRequestProcessing", func() {
 				fmt.Printf("DocumentsType: '%s'\n", sp.DocumentsType)
 				fmt.Printf("Created: '%v'\n", sp.Created)
 				for _, v := range sp.SpecificSearchFields {
-					fmt.Printf("NEW search request, SpecificSearchFields.ObjectName:'%s', Name: '%s'\n", v.ObjectName, v.SearchFields.Name)
+					fmt.Printf("NEW search request, Name: '%s'\n", v.Name)
 				}
 			}
 

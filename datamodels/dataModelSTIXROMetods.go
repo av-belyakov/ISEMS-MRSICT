@@ -13,7 +13,7 @@ import (
 /********** 			Relationship Objects STIX (МЕТОДЫ)			**********/
 /*****************************************************************************/
 
-func (oc *OptionalCommonPropertiesRelationshipObjectSTIX) checkingTypeCommonFields() bool {
+func (oc *OptionalCommonPropertiesRelationshipObjectSTIX) validateStructCommonFields() bool {
 	if !(regexp.MustCompile(`^[0-9a-z.]+$`).MatchString(oc.SpecVersion)) {
 		return false
 	}
@@ -57,13 +57,13 @@ func (rstix RelationshipObjectSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе RelationshipObjectSTIX
-func (rstix RelationshipObjectSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе RelationshipObjectSTIX
+func (rstix RelationshipObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(relationship--)[0-9a-f|-]+$`).MatchString(rstix.ID)) {
 		return false
 	}
 
-	if !rstix.checkingTypeCommonFields() {
+	if !rstix.validateStructCommonFields() {
 		return false
 	}
 
@@ -79,7 +79,7 @@ func (rstix RelationshipObjectSTIX) CheckingTypeFields() bool {
 		return false
 	}
 
-	return rstix.checkingTypeCommonFields()
+	return rstix.validateStructCommonFields()
 }
 
 //SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
@@ -154,13 +154,13 @@ func (sstix SightingObjectSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	return &result, err
 }
 
-//CheckingTypeFields является валидатором параметров содержащихся в типе SightingObjectSTIX
-func (sstix SightingObjectSTIX) CheckingTypeFields() bool {
+//ValidateStruct является валидатором параметров содержащихся в типе SightingObjectSTIX
+func (sstix SightingObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(sighting--)[0-9a-f|-]+$`).MatchString(sstix.ID)) {
 		return false
 	}
 
-	if !sstix.checkingTypeCommonFields() {
+	if !sstix.validateStructCommonFields() {
 		return false
 	}
 
@@ -184,7 +184,7 @@ func (sstix SightingObjectSTIX) CheckingTypeFields() bool {
 		}
 	}
 
-	return sstix.checkingTypeCommonFields()
+	return sstix.validateStructCommonFields()
 }
 
 //SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код

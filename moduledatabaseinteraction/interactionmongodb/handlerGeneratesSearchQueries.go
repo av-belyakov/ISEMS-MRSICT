@@ -16,7 +16,6 @@ func CreateSearchQueriesSTIXObject(sp *datamodels.SearchThroughCollectionSTIXObj
 		documentsType           bson.E
 		dataTimeActionForObject bson.E
 		createdByRef            bson.E
-		specificSearchFields    bson.E
 	)
 
 	if len(sp.DocumentsID) > 0 {
@@ -57,7 +56,9 @@ func CreateSearchQueriesSTIXObject(sp *datamodels.SearchThroughCollectionSTIXObj
 		createdByRef = bson.E{Key: "commonpropertiesdomainobjectstix.created_by_ref", Value: sp.CreatedByRef}
 	}
 
-	if len(sp.SpecificSearchFields) == 0 {
+	sizessf := len(sp.SpecificSearchFields)
+
+	if sizessf == 0 {
 		return bson.D{
 			documentsType,
 			dataTimeActionForObject,
@@ -65,37 +66,20 @@ func CreateSearchQueriesSTIXObject(sp *datamodels.SearchThroughCollectionSTIXObj
 		}
 	}
 
+	//между всеми объектами sp.SpecificSearchFields применяется логика "ИЛИ"
+	if sizessf == 1 {
+
+	} else {
+
+	}
+
 	return bson.D{
 		documentsType,
 		dataTimeActionForObject,
 		createdByRef,
-		specificSearchFields,
 	}
 
 	/*
-		type SpecificSearchFieldsSTIXObjectType struct {
-			ObjectName   string                     `json:"object_name"`
-			SearchFields SearchFieldsSTIXObjectType `json:"search_fields"`
-		}
-
-		type SearchFieldsSTIXObjectType struct {
-			Name      string   `json:"name"`
-			Aliases   []string `json:"aliases"`
-			FirstSeen struct {
-				Start time.Time `json:"start"`
-				End   time.Time `json:"end"`
-			} `json:"first_seen"`
-			LastSeen struct {
-				Start time.Time `json:"start"`
-				End   time.Time `json:"end"`
-			} `json:"last_seen"`
-			Roles   []string `json:"roles"`
-			Country string   `json:"country"`
-			City    string   `json:"city"`
-			URL     string   `json:"url"`
-			Number  int      `json:"number"`
-			Value   []string `json:"value"`
-		}
 
 		queryTemplate := map[string]bson.E{
 						"sourceID":             (bson.E{Key: "source_id", Value: bson.D{{Key: "$eq", Value: sp.ID}}}),
@@ -137,4 +121,116 @@ func CreateSearchQueriesSTIXObject(sp *datamodels.SearchThroughCollectionSTIXObj
 									модификации), но только что бы не повторяли ДОСЛОВНО название полей из коллекции (или может быть наоборот
 									совпадали, но валидировались до того как будут включены в запрос)
 	*/
+}
+
+func handlerSpecificSearchFields(ssf *datamodels.SpecificSearchFieldsSTIXObjectType) bson.E {
+	var (
+		name    bson.D
+		aliases bson.D
+		seens   bson.D
+		roles   bson.D
+		country bson.D
+		city    bson.D
+		url     bson.D
+		number  bson.D
+		value   bson.D
+	)
+
+	timeFirstSeenIsExist := ssf.FirstSeen.Start.Unix() > 0 && ssf.FirstSeen.End.Unix() > 0
+	timeLastSeenIsExist := ssf.LastSeen.Start.Unix() > 0 && ssf.LastSeen.End.Unix() > 0
+
+	/*type SearchFieldsSTIXObjectType struct {
+		Name      string   `json:"name"`
+		Aliases   []string `json:"aliases"`
+		FirstSeen struct {
+			Start time.Time `json:"start"`
+			End   time.Time `json:"end"`
+		} `json:"first_seen"`
+		LastSeen struct {
+			Start time.Time `json:"start"`
+			End   time.Time `json:"end"`
+		} `json:"last_seen"`
+		Roles   []string `json:"roles"`
+		Country string   `json:"country"`
+		City    string   `json:"city"`
+		URL     string   `json:"url"`
+		Number  int      `json:"number"`
+		Value   []string `json:"value"`
+	}*/
+
+	/*
+											!!!!!!!!!!!!!!!!!!!!
+		Необходимо протестировать формирование запроса, особенно поиск по first_seen и last_seen
+
+	*/
+
+	if timeFirstSeenIsExist && timeLastSeenIsExist {
+		seens = bson.D{{Key: "$or", Value: bson.A{
+			bson.D{{Key: "first_seen", Value: bson.D{
+				{Key: "$gte", Value: ssf.FirstSeen.Start},
+				{Key: "$lte", Value: ssf.FirstSeen.End},
+			}}},
+			bson.D{{Key: "last_seen", Value: bson.D{
+				{Key: "$gte", Value: ssf.LastSeen.Start},
+				{Key: "$lte", Value: ssf.LastSeen.End},
+			}}},
+		}}}
+	} else if timeFirstSeenIsExist && !timeLastSeenIsExist {
+		seens = bson.D{{Key: "first_seen", Value: bson.D{
+			{Key: "$gte", Value: ssf.FirstSeen.Start},
+			{Key: "$lte", Value: ssf.FirstSeen.End},
+		}}}
+	} else if !timeFirstSeenIsExist && timeLastSeenIsExist {
+		seens = bson.D{{Key: "last_seen", Value: bson.D{
+			{Key: "$gte", Value: ssf.LastSeen.Start},
+			{Key: "$lte", Value: ssf.LastSeen.End},
+		}}}
+	}
+
+	if ssf.Name != "" {
+		name = bson.D{{Key: "name", Value: ssf.Name}}
+	}
+
+	if len(ssf.Aliases) > 0 {
+		aliases = bson.D{{Key: "aliases", Value: bson.D{{Key: "$in", Value: ssf.Aliases}}}}
+	}
+
+	if len(ssf.Roles) > 0 {
+		roles = bson.D{{Key: "roles", Value: bson.D{{Key: "$in", Value: ssf.Roles}}}}
+	}
+
+	if ssf.Country != "" {
+		country = bson.D{{Key: "country", Value: ssf.Country}}
+	}
+
+	if ssf.City != "" {
+		city = bson.D{{Key: "city", Value: ssf.City}}
+	}
+
+	if ssf.URL != "" {
+		url = bson.D{{Key: "url", Value: ssf.URL}}
+	}
+
+	if ssf.NumberAutonomousSystem > 0 {
+		number = bson.D{{Key: "$eq", Value: bson.D{{Key: "number", Value: ssf.NumberAutonomousSystem}}}}
+	}
+
+	if len(ssf.Value) > 0 {
+		roles = bson.D{{Key: "value", Value: bson.D{{Key: "$in", Value: ssf.Value}}}}
+	}
+
+	return bson.E{
+		Key: "$and",
+		Value: bson.A{
+			name,
+			aliases,
+			seens,
+			roles,
+			country,
+			city,
+			url,
+			number,
+			value,
+		},
+	}
 }

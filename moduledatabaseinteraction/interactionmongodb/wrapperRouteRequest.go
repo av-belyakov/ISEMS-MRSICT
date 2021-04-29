@@ -165,12 +165,23 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 	fmt.Println("func 'wrapperFuncTypeHandlingSearchRequests', START...")
 
 	var (
-		err error
-		fn  = "wrapperFuncTypeHandlingSearchRequests"
-		qp  = QueryParameters{
+		err           error
+		fn            = "wrapperFuncTypeHandlingSearchRequests"
+		sortableField string
+		qp            = QueryParameters{
 			NameDB:         ws.NameDB,
 			CollectionName: "stix_object_collection",
 			ConnectDB:      ws.ConnectionDB.Connection,
+		}
+		sf = map[string]string{
+			"document_type":   "commonpropertiesobjectstix.type",
+			"data_created":    "commonpropertiesdomainobjectstix.created",
+			"data_modified":   "commonpropertiesdomainobjectstix.modified",
+			"data_first_seen": "first_seen",
+			"data_last_seen":  "last_seen",
+			"ipv4":            "value",
+			"ipv6":            "value",
+			"country":         "country",
 		}
 	)
 
@@ -266,10 +277,17 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 			return
 		}
 
+		if field, ok := sf[psr.SortableField]; ok {
+			sortableField = field
+		}
+
+		fmt.Printf("func '%s', search for collection name 'stix object', SORTABLE FIELD: '%s'\n", fn, sortableField)
+
 		//получить все найденные документы, с учетом лимита
 		cur, err := qp.FindAllWithLimit(CreateSearchQueriesSTIXObject(&searchParameters), &FindAllWithLimitOptions{
 			Offset:        int64(psr.PaginateParameters.CurrentPartNumber),
 			LimitMaxSize:  int64(psr.PaginateParameters.MaxPartNum),
+			SortField:     sortableField,
 			SortAscending: false,
 		})
 		if err != nil {
@@ -293,6 +311,11 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 		result := GetListElementSTIXObject(cur)
 
 		fmt.Printf("func '%s', search for collection name 'stix object', RESULT: '%v'\n", fn, result)
+
+		/*
+		   Надо проверить сортировку по полям которые, возможно, окажутся не во всех найденных документах.
+		   Как при этом поведет себя MongoDB, не будет ли ошибки?
+		*/
 
 		//сохраняем найденные значения во временном хранилище
 

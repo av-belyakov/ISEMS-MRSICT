@@ -64,6 +64,9 @@ About Computer Threats (ISEMS-MRSICT).
             max_part_size: INT // размер части, то есть максимальное количество найденных элементов, которое может содержаться в одном ответе (данное значение не должно быть меньше '1')
             current_part_number: INT // номер текущей части (данное значение не должно быть меньше '1')
         }
+        sortable field: STRING // параметр в котором можно указать значение, по которому будет выполнятся сортировка полей. Параметр должен содержать
+                               // одно из следующих значений: "document_type", "data_created", "data_modified", "data_first_seen", "data_last_seen", 
+                               // "ipv4", "ipv6", "country". Если данное поле пустое, то сортировка будет выполнятся по свойству ObjectId БД MongoDB
         search_parameters: {} // параметры поиска (для разных коллекций параметры поиска отличаются)
 
         /* параметры поиска для коллекции типа "stix object" */
@@ -109,7 +112,7 @@ About Computer Threats (ISEMS-MRSICT).
                     country: STRING // наименование страны
                     city: STRING // наименование города
                     url: STRING // URL
-                    number: INT // номер для идентификации Автономной системы
+                    number_autonomous_system: INT // номер для идентификации Автономной системы
                     value: [STRING] // может содержать какое либо из следующих типов значений: "domain-name", "email-addr", "ipv4-addr", 
                                        "ipv6-addr" или "url"
                 }

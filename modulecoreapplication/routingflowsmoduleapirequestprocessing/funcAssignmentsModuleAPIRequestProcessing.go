@@ -117,6 +117,13 @@ func CheckSearchSTIXObject(req *datamodels.ModAPIRequestProcessingResJSONSearchR
 	}
 
 	for k, v := range sp.SpecificSearchFields {
+		if len(v.Value) > 0 {
+			//if err := checkSearchFieldsValue(req.CollectionName, v.Value); err != nil {
+			if err := checkSearchFieldsValue(v.Value); err != nil {
+				return *req, err
+			}
+		}
+
 		sp.SpecificSearchFields[k].Name = commonlibs.StringSanitize(v.Name)
 
 		if len(v.Aliases) > 0 {
@@ -153,100 +160,34 @@ func CheckSearchSTIXObject(req *datamodels.ModAPIRequestProcessingResJSONSearchR
 				return *req, fmt.Errorf("invalid search value accepted in 'URL' field")
 			}
 		}
-
-		if len(v.Value) > 0 {
-			//if err := checkSearchFieldsValue(req.CollectionName, v.Value); err != nil {
-			if err := checkSearchFieldsValue(v.Value); err != nil {
-				return *req, err
-			}
-		}
 	}
 
 	return *req, nil
 }
 
-//checkSearchFieldsValue выполняет проверку поля "Value" на соответствие одному из типов значений "domain-name", "email-addr", "ipv4-addr", "ipv6-addr"
-// или "url"
+//checkSearchFieldsValue выполняет проверку поля "Value" на соответствие одному из типов значений "domain-name", "email-addr", "ipv4-addr",
+// "ipv6-addr" или "url"
 func checkSearchFieldsValue(l []string) error {
 	for _, v := range l {
-		if govalidator.IsDNSName(v) {
-			return nil
+		ipCIDR, _, _ := net.ParseCIDR(v)
+
+		if ipCIDR != nil {
+			continue
+		} else if net.ParseIP(v) != nil {
+			continue
+		} else if govalidator.IsDNSName(v) {
+			continue
 		} else if govalidator.IsEmail(v) {
-			return nil
+			continue
 		} else if govalidator.IsURL(v) {
-			return nil
+			continue
 		} else {
-			isIPv4 := commonlibs.IsIPv4Address(v)
-			isNetworkIPv4 := commonlibs.IsComputerNetAddrIPv4Range(v)
-			if isIPv4 || isNetworkIPv4 {
-				return nil
-			}
-
-			if ipv6Addr, _, err := net.ParseCIDR(v); err == nil {
-				if govalidator.IsIPv6(ipv6Addr.String()) {
-					return nil
-				}
-			} else {
-				if govalidator.IsIPv6(v) {
-					return nil
-				}
-
-				if ipv6Addr, _, err := net.ParseCIDR(v); err == nil {
-					if govalidator.IsIPv6(ipv6Addr.String()) {
-						return nil
-					}
-				} else {
-					if govalidator.IsIPv6(v) {
-						return nil
-					}
-				}
-			}
-		}
-	}
-
-	return fmt.Errorf("invalid search value accepted in 'Value' field, type undefined")
-}
-
-/*func checkSearchFieldsValue(valueType string, l []string) error {
-	for _, v := range l {
-		switch valueType {
-		case "domain-name":
-			if !govalidator.IsDNSName(v) {
-				return fmt.Errorf("invalid search value accepted in 'Value' field, type 'domain-name'")
-			}
-
-		case "email-addr":
-			if !govalidator.IsEmail(v) {
-				return fmt.Errorf("invalid search value accepted in 'Value' field, type 'email-addr'")
-			}
-
-		case "ipv4-addr":
-			isIPv4 := commonlibs.IsIPv4Address(v)
-			isNetworkIPv4 := commonlibs.IsComputerNetAddrIPv4Range(v)
-			if !isIPv4 && !isNetworkIPv4 {
-				return fmt.Errorf("invalid search value accepted in 'Value' field, type 'ipv4-addr'")
-			}
-
-		case "ipv6-addr":
-			if ipv6Addr, _, err := net.ParseCIDR(v); err == nil {
-				if !govalidator.IsIPv6(ipv6Addr.String()) {
-					return fmt.Errorf("invalid search value accepted in 'Value' field, type 'ipv6-addr'")
-				}
-			} else {
-				if !govalidator.IsIPv6(v) {
-					return fmt.Errorf("invalid search value accepted in 'Value' field, type 'ipv6-addr'")
-				}
-			}
-
-		case "url":
-			if !govalidator.IsURL(v) {
-				return fmt.Errorf("invalid search value accepted in 'Value' field, type 'url'")
-			}
+			return fmt.Errorf("invalid search value accepted in 'Value' field, type undefined")
 		}
 	}
 
 	return nil
-}*/
+}
 
 //CheckSTIXObjects выполняет валидацию списка STIX объектов
 func CheckSTIXObjects(l []*datamodels.ElementSTIXObject) error {
@@ -254,8 +195,6 @@ func CheckSTIXObjects(l []*datamodels.ElementSTIXObject) error {
 		if item.Data.ValidateStruct() {
 			continue
 		}
-
-		fmt.Printf("Error checking type STIX object: '%s'\n", item.DataType)
 
 		return fmt.Errorf("one or more STIX objects are invalid")
 	}

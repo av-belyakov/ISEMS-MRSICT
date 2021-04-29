@@ -14,13 +14,13 @@ import (
 
 var _ = Describe("FuncAssignmentsModuleAPIRequestProcessing", func() {
 	var (
-		errReadFile, errUnmarchalReq, errUnmarchalToSTIX, errUnmarchalSearchReq         error
-		errCheckSTIXObjects, errDecSearch, errChecker, errReadFileJSONSearchSTIXExample error
-		docJSON, docJSONSearchSTIX                                                      []byte
-		l, sanitizeListElement                                                          []*datamodels.ElementSTIXObject
-		modAPIRequestProcessingReqJSON                                                  datamodels.ModAPIRequestProcessingReqJSON
-		modAPIRequestProcessingSearchReqJSON                                            datamodels.ModAPIRequestProcessingReqJSON
-		searchReq, newSearchReq                                                         datamodels.ModAPIRequestProcessingResJSONSearchReqType
+		errReadFile, errUnmarchalReq, errUnmarchalToSTIX, errUnmarchalSearchReq error
+		errCheckSTIXObjects, errDecSearch, errReadFileJSONSearchSTIXExample     error
+		docJSON, docJSONSearchSTIX                                              []byte
+		l, sanitizeListElement                                                  []*datamodels.ElementSTIXObject
+		modAPIRequestProcessingReqJSON                                          datamodels.ModAPIRequestProcessingReqJSON
+		modAPIRequestProcessingSearchReqJSON                                    datamodels.ModAPIRequestProcessingReqJSON
+		searchReq                                                               datamodels.ModAPIRequestProcessingResJSONSearchReqType
 	)
 
 	var _ = BeforeSuite(func() {
@@ -33,7 +33,6 @@ var _ = Describe("FuncAssignmentsModuleAPIRequestProcessing", func() {
 		docJSONSearchSTIX, errReadFileJSONSearchSTIXExample = ioutil.ReadFile("../../mytest/test_resources/jsonSearchSTIXExample.json")
 		errUnmarchalSearchReq = json.Unmarshal(docJSONSearchSTIX, &modAPIRequestProcessingSearchReqJSON)
 		searchReq, errDecSearch = routingflowsmoduleapirequestprocessing.UnmarshalJSONObjectReqSearchParameters(modAPIRequestProcessingSearchReqJSON.RequestDetails)
-		newSearchReq, errChecker = routingflowsmoduleapirequestprocessing.CheckSearchSTIXObject(&searchReq)
 	})
 
 	Context("Тест 1. Проверка на наличие ошибок при предварительном преобразовании из JSON", func() {
@@ -68,7 +67,7 @@ var _ = Describe("FuncAssignmentsModuleAPIRequestProcessing", func() {
 	Context("Тест 5. Декодирование JSON документа, содержащего запросы к поисковой машине", func() {
 		It("При декодирования запроса ошибок быть не должно", func() {
 
-			fmt.Printf("Search Result:'%v'\n", searchReq)
+			//fmt.Printf("Search Result:'%v'\n", searchReq)
 
 			Expect(errDecSearch).ShouldNot(HaveOccurred())
 		})
@@ -76,13 +75,14 @@ var _ = Describe("FuncAssignmentsModuleAPIRequestProcessing", func() {
 
 	Context("Тест 6. Выполнение валидации и саниторизации запросов к поисковой машине", func() {
 		It("Должна быть успешно выполненна валидация и саниторизация запросов", func() {
+			newSearchReq, errChecker := routingflowsmoduleapirequestprocessing.CheckSearchSTIXObject(&searchReq)
 
 			if sp, ok := newSearchReq.SearchParameters.(datamodels.SearchThroughCollectionSTIXObjectsType); ok {
 				fmt.Printf("DocumentsID: '%s'\n", sp.DocumentsID)
 				fmt.Printf("DocumentsType: '%s'\n", sp.DocumentsType)
 				fmt.Printf("Created: '%v'\n", sp.Created)
 				for _, v := range sp.SpecificSearchFields {
-					fmt.Printf("NEW search request, Name: '%s'\n", v.Name)
+					fmt.Printf("NEW search request: '%v'\n", v)
 				}
 			}
 

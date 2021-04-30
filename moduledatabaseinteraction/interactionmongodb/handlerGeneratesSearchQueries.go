@@ -2,16 +2,18 @@ package interactionmongodb
 
 import (
 	"fmt"
+	"net"
 
+	"ISEMS-MRSICT/commonlibs"
 	"ISEMS-MRSICT/datamodels"
 
+	"github.com/asaskevich/govalidator"
+	ipv4conv "github.com/signalsciences/ipv4"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
 //CreateSearchQueriesSTIXObject обработчик формирующий поисковые запросы для осуществления поиска по коллекции содержащей документы в формате STIX
 func CreateSearchQueriesSTIXObject(sp *datamodels.SearchThroughCollectionSTIXObjectsType) bson.D {
-	fmt.Println("func 'CreateSearchQueriesSTIXObject', START...")
-
 	var (
 		documentsType           bson.E
 		dataTimeActionForObject bson.E
@@ -68,15 +70,23 @@ func CreateSearchQueriesSTIXObject(sp *datamodels.SearchThroughCollectionSTIXObj
 
 	//между всеми объектами sp.SpecificSearchFields применяется логика "ИЛИ"
 	if sizessf == 1 {
-
-	} else {
-
+		return bson.D{
+			documentsType,
+			dataTimeActionForObject,
+			createdByRef,
+			HandlerSpecificSearchFields(&sp.SpecificSearchFields[0]),
+		}
+	}
+	var ssf bson.A
+	for _, v := range sp.SpecificSearchFields {
+		ssf = append(ssf, bson.D{HandlerSpecificSearchFields(&v)})
 	}
 
 	return bson.D{
 		documentsType,
 		dataTimeActionForObject,
 		createdByRef,
+		bson.E{Key: "$or", Value: ssf},
 	}
 
 	/*
@@ -108,22 +118,11 @@ func CreateSearchQueriesSTIXObject(sp *datamodels.SearchThroughCollectionSTIXObj
 						"transportProtocol":      (bson.E{Key: "filtering_option.protocol", Value: sp.InstalledFilteringOption.Protocol}),
 						"statusFilteringTask":    (bson.E{Key: "detailed_information_on_filtering.task_status", Value: sp.StatusFilteringTask}),
 						"statusFileDownloadTask": (bson.E{Key: "detailed_information_on_downloading.task_status", Value: sp.StatusFileDownloadTask}),
-					}
-
-						!!! Тут надо написать формирование поискового запроса на основе полученных параметров !!!
-									ПОКА ЭТО ПРОСТО ЗАГЛУШКА
-
-									что бы не забыть: IPv4 нужно искать с учетом числового диапазона, а IPv6 как строку
-
-									и еще надо подумать что делать с полями по которым необходимо выполнять сортировку
-									пока, по умолчанию сортировка выполняется по стандартному полу MongoDB ObjectId
-									Может быть в запрос ввести параметр для сортировки по полям (тип STIX объекта, время создания или
-									модификации), но только что бы не повторяли ДОСЛОВНО название полей из коллекции (или может быть наоборот
-									совпадали, но валидировались до того как будут включены в запрос)
-	*/
+					}*/
 }
 
-func handlerSpecificSearchFields(ssf *datamodels.SpecificSearchFieldsSTIXObjectType) bson.E {
+//HandlerSpecificSearchFields обработчик поля "specific_search_fields"
+func HandlerSpecificSearchFields(ssf *datamodels.SpecificSearchFieldsSTIXObjectType) bson.E {
 	var (
 		name    bson.D
 		aliases bson.D
@@ -131,38 +130,12 @@ func handlerSpecificSearchFields(ssf *datamodels.SpecificSearchFieldsSTIXObjectT
 		roles   bson.D
 		country bson.D
 		city    bson.D
-		url     bson.D
 		number  bson.D
 		value   bson.D
 	)
 
 	timeFirstSeenIsExist := ssf.FirstSeen.Start.Unix() > 0 && ssf.FirstSeen.End.Unix() > 0
 	timeLastSeenIsExist := ssf.LastSeen.Start.Unix() > 0 && ssf.LastSeen.End.Unix() > 0
-
-	/*type SearchFieldsSTIXObjectType struct {
-		Name      string   `json:"name"`
-		Aliases   []string `json:"aliases"`
-		FirstSeen struct {
-			Start time.Time `json:"start"`
-			End   time.Time `json:"end"`
-		} `json:"first_seen"`
-		LastSeen struct {
-			Start time.Time `json:"start"`
-			End   time.Time `json:"end"`
-		} `json:"last_seen"`
-		Roles   []string `json:"roles"`
-		Country string   `json:"country"`
-		City    string   `json:"city"`
-		URL     string   `json:"url"`
-		Number  int      `json:"number"`
-		Value   []string `json:"value"`
-	}*/
-
-	/*
-											!!!!!!!!!!!!!!!!!!!!
-		Необходимо протестировать формирование запроса, особенно поиск по first_seen и last_seen
-
-	*/
 
 	if timeFirstSeenIsExist && timeLastSeenIsExist {
 		seens = bson.D{{Key: "$or", Value: bson.A{
@@ -207,16 +180,12 @@ func handlerSpecificSearchFields(ssf *datamodels.SpecificSearchFieldsSTIXObjectT
 		city = bson.D{{Key: "city", Value: ssf.City}}
 	}
 
-	if ssf.URL != "" {
-		url = bson.D{{Key: "url", Value: ssf.URL}}
-	}
-
 	if ssf.NumberAutonomousSystem > 0 {
 		number = bson.D{{Key: "$eq", Value: bson.D{{Key: "number", Value: ssf.NumberAutonomousSystem}}}}
 	}
 
 	if len(ssf.Value) > 0 {
-		roles = bson.D{{Key: "value", Value: bson.D{{Key: "$in", Value: ssf.Value}}}}
+		value = HandlerValueField(ssf.Value)
 	}
 
 	return bson.E{
@@ -228,9 +197,95 @@ func handlerSpecificSearchFields(ssf *datamodels.SpecificSearchFieldsSTIXObjectT
 			roles,
 			country,
 			city,
-			url,
 			number,
 			value,
 		},
 	}
+}
+
+//HandlerValueField обработка поля "value" которое может содержать любые из следующих типов значений: "domain-name", "email-addr", "ipv4-addr",
+// "ipv6-addr" или "url"
+func HandlerValueField(listValue []string) bson.D {
+	var (
+		tl                            bson.A
+		listURL, listAllRemainingOnes = []string{}, []string{}
+		listIPv4                      = []struct {
+			start uint32
+			end   uint32
+		}{}
+	)
+
+	//так как поле "Value" может содержать любой из типов значений: "domain-name", "email-addr", "ipv4-addr", "ipv6-addr" или "url"
+	// необходимо отделить тип "url" и "ipv4-addr" от всех остальных типов
+	for _, v := range listValue {
+		if commonlibs.IsIPv4Address(v) {
+			if ipInt, err := commonlibs.Ip2long(v); err == nil {
+				listIPv4 = append(listIPv4, struct {
+					start uint32
+					end   uint32
+				}{ipInt, ipInt})
+			}
+		} else if commonlibs.IsComputerNetAddrIPv4Range(v) {
+			if hostMin, hostMax, err := ipv4conv.CIDR2Range(v); err == nil {
+				min, _ := commonlibs.Ip2long(hostMin)
+				max, _ := commonlibs.Ip2long(hostMax)
+
+				listIPv4 = append(listIPv4, struct {
+					start uint32
+					end   uint32
+				}{min, max})
+			}
+		} else if govalidator.IsURL(v) {
+			listURL = append(listURL, v)
+		} else {
+			ipv6 := net.ParseIP(v)
+			if ipv6 == nil {
+				listAllRemainingOnes = append(listAllRemainingOnes, v)
+
+				continue
+			}
+
+			listAllRemainingOnes = append(listAllRemainingOnes, ipv6.To16().String())
+		}
+	}
+
+	fmt.Printf("func 'HandlerValueField', LIST URL: '%v'\n", listURL)
+	fmt.Printf("func 'HandlerValueField', LIST IPv4 or IPv4Net: '%v'\n", listIPv4)
+	fmt.Printf("func 'HandlerValueField', LIST ALL REMAINING: '%v'\n", listAllRemainingOnes)
+
+	sizeListURL := len(listURL)
+	sizeListIPv4 := len(listIPv4)
+	sizeListAll := len(listAllRemainingOnes)
+
+	//обработка только URL
+	if sizeListURL > 0 {
+		for _, v := range listURL {
+			tl = append(tl, bson.A{bson.D{{Key: "url", Value: v}}, bson.D{{Key: "value", Value: v}}}...)
+		}
+	}
+
+	//обработка только IPv4 или диапазонов IPv4
+	if sizeListIPv4 > 0 {
+		for _, v := range listIPv4 {
+			tl = append(tl, bson.D{{Key: "$and", Value: bson.A{
+				bson.D{{Key: "host_min", Value: bson.D{
+					{Key: "$gte", Value: v.start}}}},
+				bson.D{{Key: "host_max", Value: bson.D{
+					{Key: "$lte", Value: v.end}}}},
+			}}})
+		}
+	}
+
+	//обработка остальных значений
+	if sizeListAll > 0 {
+		for _, v := range listAllRemainingOnes {
+			tl = append(tl, bson.D{{Key: "value", Value: v}})
+		}
+	}
+
+	if len(tl) == 0 {
+		return bson.D{}
+	}
+
+	return bson.D{{Key: "$or", Value: tl}}
 }

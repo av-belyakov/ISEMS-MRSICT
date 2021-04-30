@@ -111,10 +111,10 @@ About Computer Threats (ISEMS-MRSICT).
                     roles: [STRING] // список ролей
                     country: STRING // наименование страны
                     city: STRING // наименование города
-                    url: STRING // URL
                     number_autonomous_system: INT // номер для идентификации Автономной системы
                     value: [STRING] // может содержать какое либо из следующих типов значений: "domain-name", "email-addr", "ipv4-addr", 
-                                       "ipv6-addr" или "url"
+                                       "ipv6-addr" или "url". Или все эти значения в перемешку. Между значениями в поле 'Value' используется
+                                       логика "ИЛИ".
                 }
             ]
         }

@@ -154,12 +154,6 @@ func CheckSearchSTIXObject(req *datamodels.ModAPIRequestProcessingResJSONSearchR
 		}
 
 		sp.SpecificSearchFields[k].City = commonlibs.StringSanitize(v.City)
-
-		if v.URL != "" {
-			if !govalidator.IsURL(v.URL) {
-				return *req, fmt.Errorf("invalid search value accepted in 'URL' field")
-			}
-		}
 	}
 
 	return *req, nil

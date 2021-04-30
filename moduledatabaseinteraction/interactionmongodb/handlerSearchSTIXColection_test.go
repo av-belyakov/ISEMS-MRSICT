@@ -2,6 +2,7 @@ package interactionmongodb_test
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	. "github.com/onsi/ginkgo"
@@ -195,6 +196,55 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 			Expect(err).ShouldNot(HaveOccurred())
 			Expect(sizeElem).Should(Equal(int64(1)))
+		})
+	})
+
+	Context("Тест 3. Тестируем обработчики формирующие поисковые запросы, в формате BSON, направленные к БД MongoDB", func() {
+		It("Должен быть успешно сформирован BSON запрос для обработки поля 'value'. При передачи запроса на обработку в БД ошибок быть не должно", func() {
+			/*vr := interactionmongodb.HandlerValueField([]string{
+				"67.45.2.1/32",
+				"89.0.213.4",
+				"89.0.67",
+				"2001:0db8:85a3:0000:0000:8a2e:0370:7334",
+				"vdb76@yandex.ru",
+				"basd-89@bk.com",
+				"https://talks.golang.org/2012/10things.slide#2",
+				"john@example.com",
+			})*/
+
+			vr := interactionmongodb.HandlerValueField([]string{
+				"https://talks.golang.org/2012/10things.slide#2",
+				"vdb76@yandex.ru",
+				"john@example.com",                        // есть в коллекции БД
+				"2001:0db8:85a3:0000:0000:8a2e:0370:7334", // есть в коллекции БД
+				"198.51.100.3",                            // есть в коллекции БД
+				"basd-89@bk.com",
+			})
+
+			/*
+											!!!!!!!!!!
+				Надо еще потестировать формирование запроса, но вроде запрос работает корректно
+			*/
+
+			fmt.Printf("\tBSON document: '%v'\n", vr)
+
+			cur, err := qp.FindAllWithLimit(&vr, &interactionmongodb.FindAllWithLimitOptions{
+				Offset:        1,
+				LimitMaxSize:  100,
+				SortAscending: false,
+			})
+
+			Expect(err).ShouldNot(HaveOccurred())
+
+			elemSTIXObj := interactionmongodb.GetListElementSTIXObject(cur)
+
+			fmt.Printf("Found '%d' elements\n", len(elemSTIXObj))
+
+			for _, v := range elemSTIXObj {
+				fmt.Printf("Data type STIX: '%s', value: '%v'\n", v.DataType, v)
+			}
+
+			Expect(len(elemSTIXObj)).Should(Equal(3))
 		})
 	})
 })

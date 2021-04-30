@@ -126,7 +126,8 @@ type SearchThroughCollectionSTIXObjectsType struct {
 // City - наименование города
 // URL - унифицированный указатель ресурса
 // NumberAutonomousSystem - номер для идентификации автономной системы
-// Value - список каких либо значений
+// Value - может содержать какое либо из следующих типов значений: "domain-name", "email-addr", "ipv4-addr", "ipv6-addr" или "url". Или все эти
+//  значения в перемешку. Между значениями в поле 'Value' используется лиогика "ИЛИ".
 type SpecificSearchFieldsSTIXObjectType struct {
 	Name      string   `json:"name"`
 	Aliases   []string `json:"aliases"`
@@ -141,7 +142,6 @@ type SpecificSearchFieldsSTIXObjectType struct {
 	Roles                  []string `json:"roles"`
 	Country                string   `json:"country"`
 	City                   string   `json:"city"`
-	URL                    string   `json:"url"`
 	NumberAutonomousSystem int      `json:"number_autonomous_system"`
 	Value                  []string `json:"value"`
 }

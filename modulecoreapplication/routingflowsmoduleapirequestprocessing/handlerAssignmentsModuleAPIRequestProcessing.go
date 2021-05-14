@@ -102,7 +102,7 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 					Section:     section,
 					TaskType:    taskType,
 					FinalResult: "задача отклонена",
-					Message:     "получения невалидный JSON документ",
+					Message:     "получен невалидный JSON документ",
 				}),
 				C: clim.ChannelsModuleAPIRequestProcessing.InputModule,
 			}); err != nil {
@@ -189,13 +189,135 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 
 		fmt.Printf("Search data in STIX object:'%v'\n", l)
 
-		//выполняем валидацию и санитаризацию поискового запроса
-		l, err = CheckSearchSTIXObject(&l)
+		switch l.CollectionName {
+		case "stix object":
+			//выполняем валидацию и санитаризацию поискового запроса для выполнения поиска по коллекции STIX объектов
+			l, err = CheckSearchSTIXObject(&l)
+			if err != nil {
+				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+					TypeMessage: "error",
+					Description: fmt.Sprint(err),
+					FuncName:    "CheckSearchSTIXObject",
+				}
+
+				if err = auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{
+					ClientID:         data.ClientID,
+					TaskID:           commonMsgReq.TaskID,
+					Section:          commonMsgReq.Section,
+					TypeNotification: "danger",
+					Notification: commonlibs.PatternUserMessage(&commonlibs.PatternUserMessageType{
+						Section:     section,
+						TaskType:    taskType,
+						FinalResult: "задача отклонена",
+						Message:     "получены невалидные параметры поискового запроса",
+					}),
+					C: clim.ChannelsModuleAPIRequestProcessing.InputModule,
+				}); err != nil {
+					chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+						TypeMessage: "error",
+						Description: fmt.Sprint(err),
+						FuncName:    "SendNotificationModuleAPI",
+					}
+				}
+
+				return
+			}
+
+		case "":
+			//выполняем валидацию и санитаризацию поискового запроса для выполнения поиска по коллекции
+
+		default:
+			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+				TypeMessage: "error",
+				Description: "the 'collection_name' parameter is not defined or has an invalid value",
+				FuncName:    "HandlerAssigmentsModuleAPIRequestProcessing",
+			}
+
+			if err = auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{
+				ClientID:         data.ClientID,
+				TaskID:           commonMsgReq.TaskID,
+				Section:          commonMsgReq.Section,
+				TypeNotification: "danger",
+				Notification: commonlibs.PatternUserMessage(&commonlibs.PatternUserMessageType{
+					Section:     section,
+					TaskType:    taskType,
+					FinalResult: "задача отклонена",
+					Message:     "получено невалидное название коллекции в которой должен был быть выполнен поиск",
+				}),
+				C: clim.ChannelsModuleAPIRequestProcessing.InputModule,
+			}); err != nil {
+				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+					TypeMessage: "error",
+					Description: fmt.Sprint(err),
+					FuncName:    "SendNotificationModuleAPI",
+				}
+			}
+
+			return
+		}
+
+		//добавляем информацию о задаче в хранилище задач
+		appTaskID, err := tst.AddNewTask(&memorytemporarystoragecommoninformation.TemporaryStorageTaskType{
+			TaskGenerator:        data.ModuleGeneratorMessage,
+			ClientID:             data.ClientID,
+			ClientName:           data.ClientName,
+			ClientTaskID:         commonMsgReq.TaskID,
+			AdditionalClientName: commonMsgReq.UserNameGeneratedTask,
+			Section:              commonMsgReq.Section,
+			Command:              "", //в случае с запросом к поисковой машине, команда не указывается
+			TaskParameters:       l,
+		})
 		if err != nil {
 			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 				TypeMessage: "error",
 				Description: fmt.Sprint(err),
-				FuncName:    "CheckSearchSTIXObject",
+				FuncName:    "AddNewTask",
+			}
+
+			if err = auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{
+				ClientID:         data.ClientID,
+				TaskID:           commonMsgReq.TaskID,
+				Section:          commonMsgReq.Section,
+				TypeNotification: "danger",
+				Notification: commonlibs.PatternUserMessage(&commonlibs.PatternUserMessageType{
+					Section:     section,
+					TaskType:    taskType,
+					FinalResult: "задача отклонена",
+					Message:     "невозможно сохранить параметры запроса во временном хранилище",
+				}),
+				C: clim.ChannelsModuleAPIRequestProcessing.InputModule,
+			}); err != nil {
+				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+					TypeMessage: "error",
+					Description: fmt.Sprint(err),
+					FuncName:    "SendNotificationModuleAPI",
+				}
+			}
+
+			return
+		}
+
+		clim.ChannelsModuleDataBaseInteraction.ChannelsMongoDB.InputModule <- datamodels.ModuleDataBaseInteractionChannel{
+			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+				ModuleGeneratorMessage: "module core application",
+				ModuleReceiverMessage:  "module database interaction",
+			},
+			Section:   "handling search requests",
+			AppTaskID: appTaskID,
+		}
+
+	case "handling reference book":
+
+		section := "обработка справочной информации"
+		taskType := "выполнение действий над данными"
+
+		/* *** обработчик JSON сообщений с параметрами связанными со справочниками *** */
+		l, err := UnmarshalJSONReferenceBookReq(*commonMsgReq)
+		if err != nil {
+			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+				TypeMessage: "error",
+				Description: fmt.Sprint(err),
+				FuncName:    "UnmarshalJSONReferenceBookReq",
 			}
 
 			if err = auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{
@@ -229,32 +351,10 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 			ClientTaskID:         commonMsgReq.TaskID,
 			AdditionalClientName: commonMsgReq.UserNameGeneratedTask,
 			Section:              commonMsgReq.Section,
-			Command:              "", //в случае с запросом к поисковой машине, команда не указывается
+			Command:              "", //в случае с объектами STIX команда не указывается (автоматически подразумевается добавление или обновление объектов STIX)
 			TaskParameters:       l,
 		})
-		if err != nil {
-			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
-				TypeMessage: "error",
-				Description: fmt.Sprint(err),
-				FuncName:    "AddNewTask",
-			}
 
-			return
-		}
-
-		clim.ChannelsModuleDataBaseInteraction.ChannelsMongoDB.InputModule <- datamodels.ModuleDataBaseInteractionChannel{
-			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
-				ModuleGeneratorMessage: "module core application",
-				ModuleReceiverMessage:  "module database interaction",
-			},
-			Section:   "handling search requests",
-			AppTaskID: appTaskID,
-		}
-
-	case "handling reference book":
-
-		/* *** обработчик JSON сообщений с параметрами связанными со справочниками *** */
-		l, err := UnmarshalJSONReferenceBookReq(*commonMsgReq)
 		if err != nil {
 			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 				TypeMessage: "error",
@@ -268,10 +368,10 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 				Section:          commonMsgReq.Section,
 				TypeNotification: "danger",
 				Notification: commonlibs.PatternUserMessage(&commonlibs.PatternUserMessageType{
-					Section:     "обработка справочной информации",
-					TaskType:    "выполнение действий над данными",
+					Section:     section,
+					TaskType:    taskType,
 					FinalResult: "задача отклонена",
-					Message:     "получены невалидные параметры поискового запроса",
+					Message:     "невозможно сохранить параметры запроса во временном хранилище",
 				}),
 				C: clim.ChannelsModuleAPIRequestProcessing.InputModule,
 			}); err != nil {
@@ -280,28 +380,6 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 					Description: fmt.Sprint(err),
 					FuncName:    "SendNotificationModuleAPI",
 				}
-			}
-
-			return
-		}
-
-		//добавляем информацию о задаче в хранилище задач
-		appTaskID, err := tst.AddNewTask(&memorytemporarystoragecommoninformation.TemporaryStorageTaskType{
-			TaskGenerator:        data.ModuleGeneratorMessage,
-			ClientID:             data.ClientID,
-			ClientName:           data.ClientName,
-			ClientTaskID:         commonMsgReq.TaskID,
-			AdditionalClientName: commonMsgReq.UserNameGeneratedTask,
-			Section:              commonMsgReq.Section,
-			Command:              "", //в случае с объектами STIX команда не указывается (автоматически подразумевается добавление или обновление объектов STIX)
-			TaskParameters:       l,
-		})
-
-		if err != nil {
-			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
-				TypeMessage: "error",
-				Description: fmt.Sprint(err),
-				FuncName:    "UnmarshalJSONReferenceBookReq",
 			}
 		}
 

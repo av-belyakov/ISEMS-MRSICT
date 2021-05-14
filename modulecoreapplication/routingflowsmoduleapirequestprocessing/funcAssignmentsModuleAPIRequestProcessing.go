@@ -70,6 +70,47 @@ func UnmarshalJSONReferenceBookReq(msgReq datamodels.ModAPIRequestProcessingReqJ
 
 //CheckSearchSTIXObject выполняет валидацию параметров запроса для поиска информации по STIX объектам
 func CheckSearchSTIXObject(req *datamodels.ModAPIRequestProcessingResJSONSearchReqType) (datamodels.ModAPIRequestProcessingResJSONSearchReqType, error) {
+	var sortableFieldIsOK bool
+	listSortableField := []string{
+		"document_type",
+		"data_created",
+		"data_modified",
+		"data_first_seen",
+		"data_last_seen",
+		"ipv4",
+		"ipv6",
+		"country",
+	}
+	sizeListRequiredFields := len(req.ListRequiredFields)
+
+	//проверяем значение поля по которому будет выполнена сортировка
+	if req.SortableField != "" {
+		for _, v := range listSortableField {
+			if v == req.SortableField {
+				sortableFieldIsOK = true
+
+				break
+			}
+		}
+
+		if !sortableFieldIsOK {
+			return *req, fmt.Errorf("invalid field value 'SortableField'")
+		}
+	}
+
+	//проверяем параметр "ListRequiredFields", в котором находится список полей которые должны содержаться в результирующем списке
+	// STIX объектов, если они есть в данных объектах. Если данный список полей пуст, то предполагается что, необходимо вывести
+	// максимальное количество полей для найденных STIX объектов
+	if sizeListRequiredFields > 0 {
+		tmpListRequiredFields := make([]string, 0, sizeListRequiredFields)
+
+		for _, v := range req.ListRequiredFields {
+			tmpListRequiredFields = append(tmpListRequiredFields, commonlibs.StringSanitize(v))
+		}
+
+		req.ListRequiredFields = tmpListRequiredFields
+	}
+
 	sp, ok := req.SearchParameters.(datamodels.SearchThroughCollectionSTIXObjectsType)
 	if !ok {
 		return *req, fmt.Errorf("type conversion error")

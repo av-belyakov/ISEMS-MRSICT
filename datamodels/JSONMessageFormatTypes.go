@@ -81,6 +81,8 @@ type CommonModAPIRequestProcessingResJSONSearchReqType struct {
 // SortableField - параметр в котором можно указать значение, по которому будет выполнятся сортировка полей. Параметр должен содержать
 //  одно из следующих значений: "document_type", "data_created", "data_modified", "data_first_seen", "data_last_seen", "ipv4", "ipv6",
 //  "country". Если данное поле пустое, то сортировка будет выполнятся по свойству ObjectId БД MongoDB
+// ListRequiredFields - перечень необходимых полей, которые должны содержаться в объектах, сформированных в результате поиска
+//  если список полей пуст, то считается что должен быть подготовлен ответ содержащий все возможные поля для найденных объектов STIX
 // SearchParameters - параметры поиска (для разных коллекций параметры поиска отличаются)
 type ModAPIRequestProcessingResJSONSearchReqType struct {
 	CollectionName     string `json:"collection_name"`
@@ -88,8 +90,9 @@ type ModAPIRequestProcessingResJSONSearchReqType struct {
 		MaxPartNum        int `json:"max_part_num"`
 		CurrentPartNumber int `json:"current_part_number"`
 	} `json:"paginate_parameters"`
-	SortableField    string      `json:"sortable field"`
-	SearchParameters interface{} `json:"search_parameters"`
+	SortableField      string      `json:"sortable_field"`
+	ListRequiredFields []string    `json:"list_of_required_fields"`
+	SearchParameters   interface{} `json:"search_parameters"`
 }
 
 //SearchThroughCollectionSTIXObjectsType содержит описание формата JSON запроса для поиска информации о STIX объектах

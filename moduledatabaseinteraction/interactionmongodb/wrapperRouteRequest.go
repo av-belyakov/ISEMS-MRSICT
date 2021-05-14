@@ -315,6 +315,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 		/*
 		   Надо проверить сортировку по полям которые, возможно, окажутся не во всех найденных документах.
 		   Как при этом поведет себя MongoDB, не будет ли ошибки?
+
 		*/
 
 		//сохраняем найденные значения во временном хранилище
@@ -322,6 +323,21 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 		//отправляем в канал идентификатор задачи и специальные параметры которые информируют что задача была выполненна
 
 	case "":
+
+	default:
+		chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
+			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+				ModuleGeneratorMessage: "module database interaction",
+				ModuleReceiverMessage:  "module core application",
+				ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
+					FuncName:                                fn,
+					ModuleAPIRequestProcessingSettingSendTo: true,
+					Error:                                   fmt.Errorf("the name of the database collection is not defined"),
+				},
+			},
+			Section:   "handling search requests",
+			AppTaskID: ws.DataRequest.AppTaskID,
+		}
 
 	}
 }

@@ -226,11 +226,12 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 				Надо еще потестировать формирование запроса, но вроде запрос работает корректно
 			*/
 
-			fmt.Printf("\tBSON document: '%v'\n", vr)
+			//			fmt.Printf("\tBSON document: '%v'\n", vr)
 
 			cur, err := qp.FindAllWithLimit(&vr, &interactionmongodb.FindAllWithLimitOptions{
 				Offset:        1,
 				LimitMaxSize:  100,
+				SortField:     "",
 				SortAscending: false,
 			})
 
@@ -238,13 +239,46 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 			elemSTIXObj := interactionmongodb.GetListElementSTIXObject(cur)
 
-			fmt.Printf("Found '%d' elements\n", len(elemSTIXObj))
+			//			fmt.Printf("Found '%d' elements\n", len(elemSTIXObj))
 
-			for _, v := range elemSTIXObj {
-				fmt.Printf("Data type STIX: '%s', value: '%v'\n", v.DataType, v)
-			}
+			//			for _, v := range elemSTIXObj {
+			//				fmt.Printf("Data type STIX: '%s', value: '%v'\n", v.DataType, v)
+			//			}
 
 			Expect(len(elemSTIXObj)).Should(Equal(3))
+		})
+	})
+
+	Context("Тест 4. Формируем поисковые запросы с сортировкой и с выборкой по определенным полям", func() {
+		It("В результате поиска по типу документов должно быть найдено 8 документов и отсортировано по полю 'commonpropertiesdomainobjectstix.created'", func() {
+			cur, err := qp.FindAllWithLimit(
+				interactionmongodb.CreateSearchQueriesSTIXObject(&datamodels.SearchThroughCollectionSTIXObjectsType{
+					DocumentsType: []string{"grouping", "location", "report", "malware", "attack-pattern"},
+				}), &interactionmongodb.FindAllWithLimitOptions{
+					Offset:        1,
+					LimitMaxSize:  100,
+					SortField:     "commonpropertiesdomainobjectstix.created",
+					SortAscending: false,
+				})
+
+			Expect(err).ShouldNot(HaveOccurred())
+
+			elemSTIXObj := interactionmongodb.GetListElementSTIXObject(cur)
+
+			fmt.Printf("Found '%d' elements and sorted\n", len(elemSTIXObj))
+
+			for _, v := range elemSTIXObj {
+				fmt.Printf("Data type STIX: '%s', time created: '%v'\n", v.DataType, v.Data)
+			}
+
+			/*
+			   Сортировка работает, однако следует помнить что, сортировка может выполнятся только по одной из групп STIX DO,
+			   STIX CO или STIX RO или по всем сразу. Данный факт зафисит от типа сортируемого поля, для разных STIX объектов
+			   может быть использованно разное поле. Например, для STIX DO 'malware' поле 'commonpropertiesdomainobjectstix',
+			   а для STIX CO 'file' поле 'optionalcommonpropertiescyberobservableobjectstix'
+			*/
+
+			Expect(len(elemSTIXObj)).Should(Equal(8))
 		})
 	})
 })

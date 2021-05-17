@@ -18,8 +18,8 @@ import (
 type TemporaryStorageType struct {
 	taskStorage                    map[string]TemporaryStorageTaskInDetailType
 	chanReqTaskStorage             chan channelRequestTaskStorage
-	foundInformationStorage        map[string]interface{}                     //(ЭТО всего лишь предположительный набросок)
-	chanReqFoundInformationStorage chan channelRequestFoundInformationStorage //(ЭТО всего лишь предположительный набросок)
+	foundInformationStorage        map[string]TemporaryStorageFoundInformation
+	chanReqFoundInformationStorage chan channelRequestFoundInformationStorage
 	storageApplicationParameters   storageApplicationParametersType
 	chanReqParameterStorage        chan channelRequestParameterStorage //(ЭТО всего лишь предположительный набросок)
 }
@@ -60,18 +60,19 @@ type TemporaryStorageTaskInDetailType struct {
 	RemovalRequired      bool
 }
 
-//commanChannelTaskStorage общее описание типа для каналов взаимодействия с хранилищем задач
+//commonChannelTaskStorage общее описание типа для каналов взаимодействия с хранилищем задач
 // appTaskID - внутренний идентификатор задачи
 // detailedDescriptionTask - подробное описание задачи
-type commanChannelTaskStorage struct {
+type commonChannelTaskStorage struct {
 	appTaskID string
 }
 
 //channelRequestTaskStorage канал, через который выполняются запросы к внутреннему обработчику хранилища задач приложения
 // actionType - тип действия
+// detailedDescriptionTask - детальное описание задач
 // chanRes - канал, через который будет получен ответ от хранилища
 type channelRequestTaskStorage struct {
-	commanChannelTaskStorage
+	commonChannelTaskStorage
 	actionType              string
 	detailedDescriptionTask *TemporaryStorageTaskType
 	chanRes                 chan channelResponseTaskStorage
@@ -79,15 +80,52 @@ type channelRequestTaskStorage struct {
 
 //channelResponseTaskStorage канал, через который поступает информация от внутреннего обработчика хранилища задач
 // listAppTasksID - список внутренних идентификаторов задач
+// detailedDescriptionTask - детальное описание найденных задач
 // errMsg - сообщение об ошибке
 type channelResponseTaskStorage struct {
-	commanChannelTaskStorage
+	commonChannelTaskStorage
 	listAppTasksID          []string
 	detailedDescriptionTask *TemporaryStorageTaskInDetailType
 	errMsg                  error
 }
 
-//канал через который выполняются запросы к внутреннему обработчику хранилища параметров приложения
+//TemporaryStorageFoundInformation подробное описание информации найденной в результате выполнения задачи поиска
+// Collection - коллекция в которой выполнялся поиск информации ('stix_object_collection' и т.д.)
+// ResultType - тип результата ('only_count', 'full_found_info')
+// Information interface{}
+type TemporaryStorageFoundInformation struct {
+	Collection  string
+	ResultType  string
+	Information interface{}
+}
+
+//channelRequestFoundInformationStorage канал через который передаются запросы к хранилищу найденной информации
+// appTaskID - идентификатор задачи
+// actionType - тип действия
+// description - описание найденной информации
+// chanRes - канал для передачи ответа
+type channelRequestFoundInformationStorage struct {
+	commonChannelTaskStorage
+	actionType  string
+	description *TemporaryStorageFoundInformation
+	chanRes     chan channelResponseFoundInformationStorage
+}
+
+//channelResponseFoundInformationStorage канал через который передаются ответы от хранилища найденной информации
+// appTaskID - идентификатор задачи
+// description - описание найденной информации
+// errMsg - сообщение об ошибке
+type channelResponseFoundInformationStorage struct {
+	commonChannelTaskStorage
+	description *TemporaryStorageFoundInformation
+	errMsg      error
+}
+
+//storageApplicationParametersType хранилище параметров приложения (ПОКА ЗАГЛУШКА)
+type storageApplicationParametersType struct{}
+
+//channelRequestParameterStorage канал через который выполняются запросы к внутреннему обработчику хранилища параметров
+//  приложения (ПОКА ЗАГЛУШКА)
 // actionType - тип действия
 // parameterID - внутренний идентификатор параметра
 // chanRes - канал через который будет получен ответ от хранилища
@@ -97,16 +135,11 @@ type channelRequestParameterStorage struct {
 	chanRes     chan channelResponseParameterStorage
 }
 
-//storageApplicationParametersType хранилище параметров приложения
-type storageApplicationParametersType struct{}
-
+//channelResponseParameterStorage канал через который передаются ответы с параметрами приложения (ПОКА ЗАГЛУШКА)
 type channelResponseParameterStorage struct {
 	parameterType string
 	actionType    string
 }
-
-type channelRequestFoundInformationStorage struct{}
-type channelResponseFoundInformationStorage struct{}
 
 var once sync.Once
 var stmc TemporaryStorageType
@@ -123,7 +156,7 @@ func NewTemporaryStorage() *TemporaryStorageType {
 		stmc = TemporaryStorageType{
 			taskStorage:                    map[string]TemporaryStorageTaskInDetailType{},
 			chanReqTaskStorage:             chanReqTask,
-			foundInformationStorage:        map[string]interface{}{},
+			foundInformationStorage:        map[string]TemporaryStorageFoundInformation{},
 			chanReqFoundInformationStorage: chanReqFoundInfo,
 			storageApplicationParameters:   storageApplicationParametersType{},
 			chanReqParameterStorage:        chanReqParameter,
@@ -138,7 +171,7 @@ func NewTemporaryStorage() *TemporaryStorageType {
 						uuid := uuid.NewString()
 						err := stmc.addNewTask(uuid, msg.detailedDescriptionTask)
 						msg.chanRes <- channelResponseTaskStorage{
-							commanChannelTaskStorage: commanChannelTaskStorage{
+							commonChannelTaskStorage: commonChannelTaskStorage{
 								appTaskID: uuid,
 							},
 							errMsg: err,
@@ -172,7 +205,26 @@ func NewTemporaryStorage() *TemporaryStorageType {
 					}
 
 				case msg := <-chanReqFoundInfo:
-					fmt.Println(msg)
+					switch msg.actionType {
+					case "add new information":
+						msg.chanRes <- channelResponseFoundInformationStorage{
+							errMsg: stmc.addNewFoundInformation(msg.appTaskID, msg.description),
+						}
+
+					case "get information by id":
+						info, err := stmc.getFoundInformationByID(msg.appTaskID)
+
+						msg.chanRes <- channelResponseFoundInformationStorage{
+							description: info,
+							errMsg:      err,
+						}
+
+					case "delete information by id":
+						stmc.deletingFoundInformationByID(msg.appTaskID)
+
+						msg.chanRes <- channelResponseFoundInformationStorage{}
+
+					}
 
 				case msg := <-chanReqParameter:
 					fmt.Println(msg)

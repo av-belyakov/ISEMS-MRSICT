@@ -33,7 +33,7 @@ func (tst *TemporaryStorageType) addNewTask(appTaskID string, taskInfo *Temporar
 	return nil
 }
 
-//getOneTask возвращает информацию об одной задаче найденной по её ID
+//getTaskByID возвращает информацию об одной задаче найденной по её ID
 func (tst *TemporaryStorageType) getTaskByID(appTaskID string) (*TemporaryStorageTaskInDetailType, error) {
 	if ok := tst.taskIsExist(appTaskID); !ok {
 		return nil, fmt.Errorf("no tasks with an ID '%s' were found in the repository 'taskStorage'", appTaskID)
@@ -96,10 +96,12 @@ func (tst *TemporaryStorageType) changeTaskStatus(appTaskID, taskStatus string) 
 	return nil
 }
 
+//deletingTaskByID удаляет задачу по ее ID
 func (tst *TemporaryStorageType) deletingTaskByID(appTaskID string) {
 	delete(tst.taskStorage, appTaskID)
 }
 
+//taskIsExist проверяет наличие задачи
 func (tst *TemporaryStorageType) taskIsExist(appTaskID string) bool {
 	_, ok := (*tst).taskStorage[appTaskID]
 
@@ -107,5 +109,31 @@ func (tst *TemporaryStorageType) taskIsExist(appTaskID string) bool {
 }
 
 /*** ФУНКЦИИ ОТНОСЯЩИЕСЯ К ХРАНИЛИЩУ НАЙДЕННОЙ ИНФОРМАЦИИ ***/
+
+//addNewFoundInformation добавляет новую найденную информацию
+func (tst *TemporaryStorageType) addNewFoundInformation(appTaskID string, info *TemporaryStorageFoundInformation) error {
+	if _, ok := tst.foundInformationStorage[appTaskID]; ok {
+		return fmt.Errorf("the found information with the ID '%s' already exists in the repository 'foundInformationStorage'", appTaskID)
+	}
+
+	tst.foundInformationStorage[appTaskID] = *info
+
+	return nil
+}
+
+//getFoundInformationByID возвращает информацию об одной задаче найденной по её ID
+func (tst *TemporaryStorageType) getFoundInformationByID(appTaskID string) (*TemporaryStorageFoundInformation, error) {
+	info, ok := tst.foundInformationStorage[appTaskID]
+	if !ok {
+		return nil, fmt.Errorf("no found information with an ID '%s' were found in the repository 'foundInformationStorage'", appTaskID)
+	}
+
+	return &info, nil
+}
+
+//deletingFoundInformationByID удаляет найденную информацию по ее ID
+func (tst *TemporaryStorageType) deletingFoundInformationByID(appTaskID string) {
+	delete(tst.foundInformationStorage, appTaskID)
+}
 
 /*** ФУНКЦИИ ОТНОСЯЩИЕСЯ К ХРАНИЛИЩУ ПАРАМЕТРОВ ПРИЛОЖЕНИЯ ***/

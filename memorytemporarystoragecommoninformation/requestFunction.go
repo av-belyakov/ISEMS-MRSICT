@@ -32,7 +32,7 @@ func (tst *TemporaryStorageType) GetTaskByID(appTaskID string) (string, *Tempora
 
 	tst.chanReqTaskStorage <- channelRequestTaskStorage{
 		actionType:               "get task by id",
-		commanChannelTaskStorage: commanChannelTaskStorage{appTaskID: appTaskID},
+		commonChannelTaskStorage: commonChannelTaskStorage{appTaskID: appTaskID},
 		chanRes:                  chanRes,
 	}
 	result := <-chanRes
@@ -65,7 +65,7 @@ func (tst *TemporaryStorageType) ChangeRemovalRequiredParameter(appTaskID string
 
 	tst.chanReqTaskStorage <- channelRequestTaskStorage{
 		actionType: "change removal required parameter",
-		commanChannelTaskStorage: commanChannelTaskStorage{
+		commonChannelTaskStorage: commonChannelTaskStorage{
 			appTaskID: appTaskID,
 		},
 		chanRes: chanRes,
@@ -83,7 +83,7 @@ func (tst *TemporaryStorageType) ChangeDateTaskModification(appTaskID string) er
 
 	tst.chanReqTaskStorage <- channelRequestTaskStorage{
 		actionType: "change date task modification",
-		commanChannelTaskStorage: commanChannelTaskStorage{
+		commonChannelTaskStorage: commonChannelTaskStorage{
 			appTaskID: appTaskID,
 		},
 		chanRes: chanRes,
@@ -115,7 +115,7 @@ func (tst *TemporaryStorageType) ChangeTaskStatus(appTaskID, taskStatus string) 
 
 	tst.chanReqTaskStorage <- channelRequestTaskStorage{
 		actionType: "change task status",
-		commanChannelTaskStorage: commanChannelTaskStorage{
+		commonChannelTaskStorage: commonChannelTaskStorage{
 			appTaskID: appTaskID,
 		},
 		detailedDescriptionTask: &TemporaryStorageTaskType{TaskStatus: taskStatus},
@@ -134,12 +134,63 @@ func (tst *TemporaryStorageType) DeletingTaskByID(appTaskID string) {
 
 	tst.chanReqTaskStorage <- channelRequestTaskStorage{
 		actionType:               "deleting task by id",
-		commanChannelTaskStorage: commanChannelTaskStorage{appTaskID: appTaskID},
+		commonChannelTaskStorage: commonChannelTaskStorage{appTaskID: appTaskID},
 		chanRes:                  chanRes,
 	}
 	<-chanRes
 }
 
-/*** ФУНКЦИИ ОТНОСЯЩИЕСЯ К ХРАНИЛИЩУ НАЙДЕННОЙ ИНФОРМАЦИИ ***/
+/*** МЕТОДЫ ОТНОСЯЩИЕСЯ К ХРАНИЛИЩУ НАЙДЕННОЙ ИНФОРМАЦИИ ***/
 
-/*** ФУНКЦИИ ОТНОСЯЩИЕСЯ К ХРАНИЛИЩУ ПАРАМЕТРОВ ПРИЛОЖЕНИЯ ***/
+//AddNewFoundInformation метод добавляющий новую информацию, полученную в ходе выполнения поиска, в хранилище найденной информации
+func (tst *TemporaryStorageType) AddNewFoundInformation(appTaskID string, info *TemporaryStorageFoundInformation) error {
+	chanRes := make(chan channelResponseFoundInformationStorage)
+	defer func() {
+		close(chanRes)
+	}()
+
+	tst.chanReqFoundInformationStorage <- channelRequestFoundInformationStorage{
+		commonChannelTaskStorage: commonChannelTaskStorage{appTaskID: appTaskID},
+		actionType:               "add new information",
+		description:              info,
+		chanRes:                  chanRes,
+	}
+
+	return (<-chanRes).errMsg
+}
+
+//GetFoundInformationByID метод возвращающий всю информацию найденную, в результате поиска, информацию по ее ID
+func (tst *TemporaryStorageType) GetFoundInformationByID(appTaskID string) (*TemporaryStorageFoundInformation, error) {
+	chanRes := make(chan channelResponseFoundInformationStorage)
+	defer func() {
+		close(chanRes)
+	}()
+
+	tst.chanReqFoundInformationStorage <- channelRequestFoundInformationStorage{
+		commonChannelTaskStorage: commonChannelTaskStorage{appTaskID: appTaskID},
+		actionType:               "get information by id",
+		chanRes:                  chanRes,
+	}
+
+	result := <-chanRes
+
+	return result.description, result.errMsg
+}
+
+//DeletingFoundInformationByID удаление задачи по ее ID
+func (tst *TemporaryStorageType) DeletingFoundInformationByID(appTaskID string) {
+	chanRes := make(chan channelResponseFoundInformationStorage)
+	defer func() {
+		close(chanRes)
+	}()
+
+	tst.chanReqFoundInformationStorage <- channelRequestFoundInformationStorage{
+		commonChannelTaskStorage: commonChannelTaskStorage{appTaskID: appTaskID},
+		actionType:               "delete information by id",
+		chanRes:                  chanRes,
+	}
+
+	<-chanRes
+}
+
+/*** МЕТОДЫ ОТНОСЯЩИЕСЯ К ХРАНИЛИЩУ ПАРАМЕТРОВ ПРИЛОЖЕНИЯ ***/

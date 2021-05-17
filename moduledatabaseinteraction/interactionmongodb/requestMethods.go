@@ -146,10 +146,6 @@ func (qp QueryParameters) FindAllWithLimit(elem interface{}, opt *FindAllWithLim
 		sortOrder int    = sortDescending
 	)
 
-	if opt.SortField != "" {
-		sortField = opt.SortField
-	}
-
 	collection := qp.ConnectDB.Database(qp.NameDB).Collection(qp.CollectionName)
 
 	if opt.SortField != "" {

@@ -57,7 +57,7 @@ var _ = Describe("MainTemporaryStorageCommonInformation", func() {
 				Expect(errorAddTaskOne).ShouldNot(HaveOccurred())
 
 				close(done)
-			})
+			}, 1)
 			It("В taskStorage должна быть найдена задача с заданным UUID", func(done Done) {
 				_, taskInfo, err := tempStorage.GetTaskByID(appTaskIDOne)
 
@@ -65,14 +65,14 @@ var _ = Describe("MainTemporaryStorageCommonInformation", func() {
 				Expect(taskInfo.ClientID).To(Equal("gfydgf737gf7gf73g7gf7g37f38fg838345"))
 
 				close(done)
-			})
+			}, 1)
 			It("Хранилище taskStorage должно содержать 2 задачи полученные от клиента с ID '19293hdh8883g827g7dg7373747'", func(done Done) {
 				listTaskID := tempStorage.GetTasksByClientID("19293hdh8883g827g7dg7373747")
 
 				Expect(len(listTaskID)).To(Equal(2))
 
 				close(done)
-			})
+			}, 1)
 		})
 
 		Context("Тест 2. Проверяем возможность управления задачами", func() {
@@ -87,7 +87,7 @@ var _ = Describe("MainTemporaryStorageCommonInformation", func() {
 				Expect(taskInfo.TaskStatus).To(Equal("in progress"))
 
 				close(done)
-			})
+			}, 1)
 			It("Должна быть успешная модификация параметра RemovalRequired задачи, при модификации параметра ошибки быть не должно", func(done Done) {
 				err := tempStorage.ChangeRemovalRequiredParameter(appTaskIDOne)
 
@@ -99,7 +99,7 @@ var _ = Describe("MainTemporaryStorageCommonInformation", func() {
 				Expect(taskInfo.RemovalRequired).Should(BeTrue())
 
 				close(done)
-			})
+			}, 1)
 
 			Context("Тест 2.1. Проверяем время модификации задачи", func() {
 				It("Время модификации задачи полученной ранее и текущей должно отличаться", func() {
@@ -126,5 +126,50 @@ var _ = Describe("MainTemporaryStorageCommonInformation", func() {
 				Expect(err).Should(HaveOccurred())
 			})
 		})
+
+		foundInfoID := "5r3g7f7fg7gf7efe"
+
+		Context("Тест 4.1. Добавление в хранилище, новой, найденной информации", func() {
+			It("При добавлении в хранилище новой, найденной информации ошибки быть не должно", func(done Done) {
+				err := tempStorage.AddNewFoundInformation(foundInfoID, &TemporaryStorageFoundInformation{
+					Collection:  "stix_object_collection",
+					ResultType:  "only_count",
+					Information: 12,
+				})
+
+				Expect(err).ShouldNot(HaveOccurred())
+
+				close(done)
+			}, 1)
+		})
+
+		Context("Тест 4.2. Получение новой, найденной информации по ее ID", func() {
+			It("Должна быть успешно полученна новая информация по ID", func(done Done) {
+				info, err := tempStorage.GetFoundInformationByID(foundInfoID)
+
+				fmt.Printf("result func 'GetFoundInformationByID', info: '%v'\n", info)
+
+				Expect(err).ShouldNot(HaveOccurred())
+
+				close(done)
+			}, 1)
+		})
+
+		Context("Тест 4.3. Удаление из хранилищя, новой, найденной информации, по ее ID", func() {
+			It("Должна быть успешно удалена информация по ее ID", func(done Done) {
+				tempStorage.DeletingFoundInformationByID(foundInfoID)
+				_, err := tempStorage.GetFoundInformationByID(foundInfoID)
+
+				Expect(err).Should(HaveOccurred())
+
+				close(done)
+			}, 0.5)
+		})
+
+		/*
+			Тесты по управлению хранилищем foundInformationStorage прошли успешно,
+			однако надо почитать про Ginkgo 2.0, миграцию на эту новую версию и асинхронное тестирование
+			в новой версии 2.0
+		*/
 	})
 })

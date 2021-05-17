@@ -81,7 +81,6 @@ func CheckSearchSTIXObject(req *datamodels.ModAPIRequestProcessingResJSONSearchR
 		"ipv6",
 		"country",
 	}
-	sizeListRequiredFields := len(req.ListRequiredFields)
 
 	//проверяем значение поля по которому будет выполнена сортировка
 	if req.SortableField != "" {
@@ -96,19 +95,6 @@ func CheckSearchSTIXObject(req *datamodels.ModAPIRequestProcessingResJSONSearchR
 		if !sortableFieldIsOK {
 			return *req, fmt.Errorf("invalid field value 'SortableField'")
 		}
-	}
-
-	//проверяем параметр "ListRequiredFields", в котором находится список полей которые должны содержаться в результирующем списке
-	// STIX объектов, если они есть в данных объектах. Если данный список полей пуст, то предполагается что, необходимо вывести
-	// максимальное количество полей для найденных STIX объектов
-	if sizeListRequiredFields > 0 {
-		tmpListRequiredFields := make([]string, 0, sizeListRequiredFields)
-
-		for _, v := range req.ListRequiredFields {
-			tmpListRequiredFields = append(tmpListRequiredFields, commonlibs.StringSanitize(v))
-		}
-
-		req.ListRequiredFields = tmpListRequiredFields
 	}
 
 	sp, ok := req.SearchParameters.(datamodels.SearchThroughCollectionSTIXObjectsType)

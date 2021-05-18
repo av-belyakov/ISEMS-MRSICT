@@ -146,17 +146,14 @@ type SpecificSearchFieldsSTIXObjectType struct {
 	Value                  []string `json:"value"`
 }
 
-/*
-	Example!!! для передачи информации частями
-//TransmittingRequestedInformationModAPIRequestProcessingResJSON содержит информацию передаваемую в ответ на запрашиваемые данные
+//ResJSONParts содержит информацию передаваемую в ответ на запрашиваемые данные
 // TotalNumberParts - общее количество частей
 // GivenSizePart - заданный размер части
 // NumberTransmittedPart - номер передаваемой части
 // TransmittedData - передаваемые данные
-type TransmittingRequestedInformationModAPIRequestProcessingResJSON struct {
+type ResJSONParts struct {
 	TotalNumberParts      int         `json:"total_number_parts"`
 	GivenSizePart         int         `json:"given_size_part"`
 	NumberTransmittedPart int         `json:"number_transmitted_part"`
 	TransmittedData       interface{} `json:"transmitted_data"` // пока 'interface{}' так как не знаю тип передаваемых данных
 }
-*/

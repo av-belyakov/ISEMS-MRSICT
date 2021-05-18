@@ -125,13 +125,18 @@ About Computer Threats (ISEMS-MRSICT).
 }
 
     4. Структура и формат JSON документа, отправляемого в графический пользовательский интерфейс ISEMS-UI и содержащего ответ на поисковый запрос или
-вовсе БЕЗ параметра 'paginate_parameters' или с параметром 'paginate_parameters', но где хотя бы один из параметров 'max_part_size' или 'current_part_number'
+вовсе БЕЗ параметра 'paginate_parameters' или с параметром 'paginate_parameters', но где, хотя бы один из параметров 'max_part_size' или 'current_part_number'
 содержит '0'. Пример ответа:
 {
     task_id: STRING // уникальный ID задачи (обязательное значение)
     section: "handling search requests" // секция обработки данных (обязательное значение, для данного типа действия ТОЛЬКО "handling search requests")
-    //    user_name_generated_task: STRING // имя пользователя сгенерировавшего задачу (необязательный параметр)
-    request_details: {
+	is_successful: BOOL // был ли запрос успешно обработан (в данном случае TRUE)
+	description: STRING // дополнительное описание (В ДАННОМ СЛУЧАЕ НЕ ЗАПОЛНЯЕТСЯ)
+	information_message: { // информационное сообщение (НЕ ОБЯЗАТЕЛЬНО К ЗАПОЛНЕНИЮ)
+        msg_type: STRING // тип информационного сообщения
+        msg: STRING // информационное сообщение
+    }
+	additional_parameters: {
         number_documents_found: INT // общее количество найденных документов
     }
 }
@@ -141,6 +146,11 @@ About Computer Threats (ISEMS-MRSICT).
 {
     task_id: STRING // уникальный ID задачи (обязательное значение)
     section: "handling search requests" // секция обработки данных (обязательное значение, для данного типа действия ТОЛЬКО "handling search requests")
-    //    user_name_generated_task: STRING // имя пользователя сгенерировавшего задачу (необязательный параметр)
-    request_details: [ <any STIX objects> ] // массив объектов структура и формат которых соответствует DO STIX, CO STIX или RO STIX
+	is_successful: BOOL // был ли запрос успешно обработан (в данном случае TRUE)
+	description: STRING // дополнительное описание (В ДАННОМ СЛУЧАЕ НЕ ЗАПОЛНЯЕТСЯ)
+	information_message: { // информационное сообщение (НЕ ОБЯЗАТЕЛЬНО К ЗАПОЛНЕНИЮ)
+        msg_type: STRING // тип информационного сообщения
+        msg: STRING // информационное сообщение
+    }
+	additional_parameters: [ <any STIX objects> ] // массив объектов структура и формат которых соответствует DO STIX, CO STIX или RO STIX
 }

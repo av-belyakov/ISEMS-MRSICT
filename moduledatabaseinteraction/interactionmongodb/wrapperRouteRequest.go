@@ -226,6 +226,28 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 		return
 	}
 
+	//изменяем время модификации информации о задаче
+	_ = tst.ChangeDateTaskModification(ws.DataRequest.AppTaskID)
+
+	//изменяем статус выполняемой задачи на 'in progress'
+	if err := tst.ChangeTaskStatus(ws.DataRequest.AppTaskID, "in progress"); err != nil {
+		chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
+			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+				ModuleGeneratorMessage: "module database interaction",
+				ModuleReceiverMessage:  "module core application",
+				ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
+					FuncName:                                fn,
+					ModuleAPIRequestProcessingSettingSendTo: true,
+					Error:                                   err,
+				},
+			},
+			Section:   "handling search requests",
+			AppTaskID: ws.DataRequest.AppTaskID,
+		}
+
+		return
+	}
+
 	switch psr.CollectionName {
 	case "stix object":
 		searchParameters, ok := psr.SearchParameters.(datamodels.SearchThroughCollectionSTIXObjectsType)
@@ -271,26 +293,93 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 			fmt.Printf("func '%s', search for collection name 'stix object', RESULT COUNT ELEMENTS: '%d'\n", fn, resSize)
 
 			//сохраняем общее количество найденных значений во временном хранилище
+			err = tst.AddNewFoundInformation(
+				ws.DataRequest.AppTaskID,
+				&memorytemporarystoragecommoninformation.TemporaryStorageFoundInformation{
+					Collection:  "stix_object_collection",
+					ResultType:  "only_count",
+					Information: resSize,
+				})
+			if err != nil {
+				chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
+					CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+						ModuleGeneratorMessage: "module database interaction",
+						ModuleReceiverMessage:  "module core application",
+						ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
+							FuncName:                                fn,
+							ModuleAPIRequestProcessingSettingSendTo: true,
+							Error:                                   err,
+						},
+					},
+					Section:   "handling search requests",
+					AppTaskID: ws.DataRequest.AppTaskID,
+				}
 
-			//отправляем в канал идентификатор задачи и специальные параметры которые информируют что задача была выполненна
+				return
+			}
+		} else {
+			if field, ok := sf[psr.SortableField]; ok {
+				sortableField = field
+			}
 
-			return
+			fmt.Printf("func '%s', search for collection name 'stix object', SORTABLE FIELD: '%s'\n", fn, sortableField)
+
+			//получить все найденные документы, с учетом лимита
+			cur, err := qp.FindAllWithLimit(CreateSearchQueriesSTIXObject(&searchParameters), &FindAllWithLimitOptions{
+				Offset:        int64(psr.PaginateParameters.CurrentPartNumber),
+				LimitMaxSize:  int64(psr.PaginateParameters.MaxPartNum),
+				SortField:     sortableField,
+				SortAscending: false,
+			})
+			if err != nil {
+				chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
+					CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+						ModuleGeneratorMessage: "module database interaction",
+						ModuleReceiverMessage:  "module core application",
+						ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
+							FuncName:                                fn,
+							ModuleAPIRequestProcessingSettingSendTo: true,
+							Error:                                   err,
+						},
+					},
+					Section:   "handling search requests",
+					AppTaskID: ws.DataRequest.AppTaskID,
+				}
+
+				return
+			}
+
+			//сохраняем найденные значения во временном хранилище
+			err = tst.AddNewFoundInformation(
+				ws.DataRequest.AppTaskID,
+				&memorytemporarystoragecommoninformation.TemporaryStorageFoundInformation{
+					Collection:  "stix_object_collection",
+					ResultType:  "full_found_info",
+					Information: GetListElementSTIXObject(cur),
+				})
+			if err != nil {
+				chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
+					CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+						ModuleGeneratorMessage: "module database interaction",
+						ModuleReceiverMessage:  "module core application",
+						ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
+							FuncName:                                fn,
+							ModuleAPIRequestProcessingSettingSendTo: true,
+							Error:                                   err,
+						},
+					},
+					Section:   "handling search requests",
+					AppTaskID: ws.DataRequest.AppTaskID,
+				}
+
+				return
+			}
 		}
 
-		if field, ok := sf[psr.SortableField]; ok {
-			sortableField = field
-		}
+		_ = tst.ChangeDateTaskModification(ws.DataRequest.AppTaskID)
 
-		fmt.Printf("func '%s', search for collection name 'stix object', SORTABLE FIELD: '%s'\n", fn, sortableField)
-
-		//получить все найденные документы, с учетом лимита
-		cur, err := qp.FindAllWithLimit(CreateSearchQueriesSTIXObject(&searchParameters), &FindAllWithLimitOptions{
-			Offset:        int64(psr.PaginateParameters.CurrentPartNumber),
-			LimitMaxSize:  int64(psr.PaginateParameters.MaxPartNum),
-			SortField:     sortableField,
-			SortAscending: false,
-		})
-		if err != nil {
+		//изменяем состояние задачи на 'completed'
+		if err := tst.ChangeTaskStatus(ws.DataRequest.AppTaskID, "completed"); err != nil {
 			chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
 				CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
 					ModuleGeneratorMessage: "module database interaction",
@@ -308,19 +397,15 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 			return
 		}
 
-		result := GetListElementSTIXObject(cur)
-
-		fmt.Printf("func '%s', search for collection name 'stix object', RESULT: '%v'\n", fn, result)
-
-		/*
-		   Надо проверить сортировку по полям которые, возможно, окажутся не во всех найденных документах.
-		   Как при этом поведет себя MongoDB, не будет ли ошибки?
-
-		*/
-
-		//сохраняем найденные значения во временном хранилище
-
 		//отправляем в канал идентификатор задачи и специальные параметры которые информируют что задача была выполненна
+		chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
+			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+				ModuleGeneratorMessage: "module database interaction",
+				ModuleReceiverMessage:  "module core application",
+			},
+			Section:   "handling search requests",
+			AppTaskID: ws.DataRequest.AppTaskID,
+		}
 
 	case "":
 
@@ -338,7 +423,6 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 			Section:   "handling search requests",
 			AppTaskID: ws.DataRequest.AppTaskID,
 		}
-
 	}
 }
 

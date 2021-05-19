@@ -2,7 +2,7 @@
     "connectionsDataBase": {
         "mongoDBSettings": {
             "isUseSocket": false,
-            "host": "192.168.13.200",
+            "host": "127.0.0.1",
             "port": 27017,
             "user": "module-isems-mrsict",
             "password": "vkL6Zn$jPmt1e1",
@@ -13,7 +13,7 @@
     },
     "connectionsDataBase_comments": "настройки доступа к системам управления базами данных",
     "moduleAPIRequestProcessingSettings": {
-        "host": "192.168.13.3",
+        "host": "127.0.0.1",
         "port": 13000,
         "users": [{
                 "clientName": "first_isems-ui",

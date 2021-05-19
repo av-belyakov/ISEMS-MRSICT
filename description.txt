@@ -154,3 +154,21 @@ About Computer Threats (ISEMS-MRSICT).
     }
 	additional_parameters: [ <any STIX objects> ] // массив объектов структура и формат которых соответствует DO STIX, CO STIX или RO STIX
 }
+
+    /* СОЗДАНИЕ СЕРТИФИКАТОВ И ПРИВАТНЫХ КЛЮЧЕЙ */
+    Руководство https://hackware.ru/?p=12982 в помощь.
+    
+    1. Создаём корневой приватный ключ
+        openssl genpkey -algorithm RSA -out rootCA.key
+
+    2. Создаём самоподписный корневой сертификат
+        openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 1024 -out rootCA.pem
+
+    3. Создаём приватный ключ сертификата
+        openssl genpkey -algorithm RSA -out isems_mrsict_private_key.pem
+
+    4. Создаём файл с запросом на подпись сертификата (csr). Нужен ТОЛЬКО для создания сертификата сервера, потом его можно удалить
+        openssl req -new -key isems_mrsict_private_key.pem -out mydomain.com.csr
+
+    5. Создаём сертификат для сервера
+        openssl x509 -req -in mydomain.com.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out isems_mrsict_cert.pem -days 1096 -sha256

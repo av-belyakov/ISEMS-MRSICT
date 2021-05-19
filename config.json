@@ -36,7 +36,7 @@
         "pathPrivateKeyFile_of_moduleAPIRequestProcessingSettings": "keys/isems_mrsict_private_key.pem",
         "pathPrivateKeyFile_of_moduleAPIRequestProcessingSettings_comments": "месторасположение файла приватного ключа для сервера модуля 'moduleApiRequestProcessingSettings'"
     },
-    "CryptographySettings_comments": "настройки связанные с криптографией и защите каналов связи",
+    "CryptographySettings_comments": "настройки связанные с криптографией и защитой каналов связи",
     "pathStorageDownloadedFiles": "/home/ISEMS-MRSICT/storage_files",
     "pathStorageDownloadedFiles_comments": "место для хранения загруженных файлов",
     "locationLogDirectory": "/var/log/",

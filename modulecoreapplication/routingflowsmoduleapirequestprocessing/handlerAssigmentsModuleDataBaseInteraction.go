@@ -153,50 +153,101 @@ func handlerDataBaseResponse(
 	ti *memorytemporarystoragecommoninformation.TemporaryStorageTaskInDetailType) error {
 
 	//размер части сообщения
-	const maxChunk = 100
+	const _maxChunkSize int = 100
 
 	switch data.Section {
 	case "handling search requests":
-		if ti.TaskStatus != "completed" {
-			return nil
+		if err := handlingSearchRequestsSTIXObject(chanResModAPI, _maxChunkSize, data, tst, ti); err != nil {
+			return err
 		}
 
-		tp, ok := ti.TaskParameters.(datamodels.ModAPIRequestProcessingResJSONSearchReqType)
-		if !ok {
-			return fmt.Errorf("type conversion error, line 162")
+	case "":
+		//пока заглушка, будет использоватся для обработки ответов от БД не связанных с секцией 'handling search requests'
+	}
+
+	return nil
+}
+
+func handlingSearchRequestsSTIXObject(
+	chanResModAPI chan<- datamodels.ModuleReguestProcessingChannel,
+	maxChunkSize int,
+	data *datamodels.ModuleDataBaseInteractionChannel,
+	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
+	ti *memorytemporarystoragecommoninformation.TemporaryStorageTaskInDetailType) error {
+	if ti.TaskStatus != "completed" {
+		return nil
+	}
+
+	tp, ok := ti.TaskParameters.(datamodels.ModAPIRequestProcessingResJSONSearchReqType)
+	if !ok {
+		return fmt.Errorf("type conversion error, line 166")
+	}
+
+	//обрабатываем результаты опираясь на типы коллекций
+	if tp.CollectionName == "stix object" {
+		//делаем запрос к временному хранилищу информации
+		result, err := tst.GetFoundInformationByID(data.AppTaskID)
+		if err != nil {
+			return err
 		}
 
-		//обрабатываем результаты опираясь на типы коллекций
-		if tp.CollectionName == "stix object" {
-			//делаем запрос к временному хранилищу информации
-			result, err := tst.GetFoundInformationByID(data.AppTaskID)
+		msgRes := datamodels.ModAPIRequestProcessingResJSON{
+			ModAPIRequestProcessingCommonJSON: datamodels.ModAPIRequestProcessingCommonJSON{
+				TaskID:  data.AppTaskID,
+				Section: data.Section,
+			},
+			IsSuccessful: true,
+		}
+
+		//для КРАТКОЙ информации, только колличество, по найденным STIX объектам
+		if result.Collection == "stix_object_collection" && result.ResultType == "only_count" {
+			numFound, ok := result.Information.(int64)
+			if !ok {
+				return fmt.Errorf("type conversion error, line 191")
+			}
+
+			msgRes.AdditionalParameters = struct {
+				NumberDocumentsFound int64 `json:"number_documents_found"`
+			}{
+				NumberDocumentsFound: numFound,
+			}
+
+			msg, err := json.Marshal(msgRes)
 			if err != nil {
 				return err
 			}
 
-			fmt.Printf("func 'handlerDataBaseResponse', Found Information: '%v'\n", result)
-
-			//ModAPIRequestProcessingResJSONSearchReqType
-
-			msgRes := datamodels.ModAPIRequestProcessingResJSON{
-				ModAPIRequestProcessingCommonJSON: datamodels.ModAPIRequestProcessingCommonJSON{
-					TaskID:  data.AppTaskID,
-					Section: data.Section,
+			chanResModAPI <- datamodels.ModuleReguestProcessingChannel{
+				CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+					ModuleGeneratorMessage: "module core application",
+					ModuleReceiverMessage:  "module api request processing",
 				},
-				IsSuccessful: true,
+				ClientID: ti.ClientID,
+				DataType: 1,
+				Data:     &msg,
+			}
+		}
+
+		//для ПОЛНОЙ информации по найденным STIX объектам
+		if result.Collection == "stix_object_collection" && result.ResultType == "full_found_info" {
+			listElemSTIXObj, ok := result.Information.([]*datamodels.ElementSTIXObject)
+			if !ok {
+				return fmt.Errorf("type conversion error, line 220")
 			}
 
-			//для КРАТКОЙ информации, только колличество, по найденным STIX объектам
-			if result.Collection == "stix_object_collection" && result.ResultType == "only_count" {
-				numFound, ok := result.Information.(int64)
-				if !ok {
-					return fmt.Errorf("type conversion error, line 190")
-				}
+			sestixo := len(listElemSTIXObj)
+			listMsgRes := make([]interface{}, 0, sestixo)
+			for _, v := range listElemSTIXObj {
+				listMsgRes = append(listMsgRes, v.Data)
+			}
 
-				msgRes.AdditionalParameters = struct {
-					NumberDocumentsFound int64 `json:"number_documents_found"`
-				}{
-					NumberDocumentsFound: numFound,
+			//обрабатываем полученный список STIX объектов, в том числе если он превышает размер в 100 объектов
+			if sestixo < maxChunkSize {
+				msgRes.AdditionalParameters = datamodels.ResJSONParts{
+					TotalNumberParts:      1,
+					GivenSizePart:         maxChunkSize,
+					NumberTransmittedPart: 1,
+					TransmittedData:       listMsgRes,
 				}
 
 				msg, err := json.Marshal(msgRes)
@@ -213,30 +264,30 @@ func handlerDataBaseResponse(
 					DataType: 1,
 					Data:     &msg,
 				}
-			}
+			} else {
+				num := commonlibs.GetCountChunk(int64(sestixo), maxChunkSize)
 
-			//для ПОЛНОЙ информации по найденным STIX объектам
-			if result.Collection == "stix_object_collection" && result.ResultType == "full_found_info" {
-				listElemSTIXObj, ok := result.Information.([]*datamodels.ElementSTIXObject)
-				if !ok {
-					return fmt.Errorf("type conversion error, line 219")
-				}
-
-				sestixo := len(listElemSTIXObj)
-				listMsgRes := make([]interface{}, 0, sestixo)
-				for _, v := range listElemSTIXObj {
-					listMsgRes = append(listMsgRes, v)
-				}
-
-				//обрабатываем полученный список STIX объектов, в том числе если он превышает размер в 100 объектов
-				if sestixo < 100 {
-					msgRes.AdditionalParameters = datamodels.ResJSONParts{
-						TotalNumberParts:      1,
-						GivenSizePart:         100,
-						NumberTransmittedPart: 1,
-						TransmittedData:       listMsgRes,
+				min := 0
+				max := maxChunkSize
+				for i := 0; i < num; i++ {
+					data := datamodels.ResJSONParts{
+						TotalNumberParts:      num,
+						GivenSizePart:         maxChunkSize,
+						NumberTransmittedPart: i + 1,
 					}
 
+					if i == 0 {
+						data.TransmittedData = listMsgRes[:max]
+					} else if i == num-1 {
+						data.TransmittedData = listMsgRes[min:]
+					} else {
+						data.TransmittedData = listMsgRes[min:max]
+					}
+
+					min = min + maxChunkSize
+					max = max + maxChunkSize
+
+					msgRes.AdditionalParameters = data
 					msg, err := json.Marshal(msgRes)
 					if err != nil {
 						return err
@@ -251,37 +302,13 @@ func handlerDataBaseResponse(
 						DataType: 1,
 						Data:     &msg,
 					}
-				} else {
-					/*
-
-						!!!
-							Надо сделать отправку списка STIX объектов размер которого первышает 100,
-							отправлять нужно по частям
-							Протестироквать как отправку по частем, так и отправку всей полученной  информации в целом
-							и передачу ее клиенту API
-						!!!
-
-						var numIndexFiles int
-						var tmpList map[string]int
-
-						for k, v := range tfmfi.IndexData {
-							nf := len(v)
-							numIndexFiles += nf
-
-							tmpList[k] = nf
-						}
-
-									numChunk := common.GetCountPartsMessage(tmpList, maxChunk)
-					*/
 				}
 			}
-
-			//удаляем задачу и результаты поиска информации, если они есть
-			tst.DeletingTaskByID(data.AppTaskID)
-			tst.DeletingFoundInformationByID(data.AppTaskID)
 		}
 
-	case "":
+		//удаляем задачу и результаты поиска информации, если они есть
+		tst.DeletingTaskByID(data.AppTaskID)
+		tst.DeletingFoundInformationByID(data.AppTaskID)
 	}
 
 	return nil

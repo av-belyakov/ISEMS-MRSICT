@@ -281,4 +281,5 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 			Expect(len(elemSTIXObj)).Should(Equal(8))
 		})
 	})
+
 })

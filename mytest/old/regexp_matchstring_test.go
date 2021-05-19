@@ -122,6 +122,68 @@ var _ = Describe("RegexpMatchstring", func() {
 		})
 	})
 
+	Context("Тест 8. Делим список елементов на части, где размер части не превышает заданное значение", func() {
+		const chunkSize int = 10
+
+		It("Список состоящий из 73 элементов должен быть разделен на 8 частей (по 10 элементов в части)", func() {
+			leo := make([]int, 0, 73)
+			for i := 1; i <= 73; i++ {
+				leo = append(leo, i)
+			}
+
+			num := commonlibs.GetCountChunk(int64(len(leo)), chunkSize)
+
+			nleo := make([][]int, 0, num)
+			min := 0
+			max := chunkSize
+			for i := 0; i < num; i++ {
+				if i == 0 {
+					nleo = append(nleo, leo[:max])
+				} else if i == num-1 {
+					nleo = append(nleo, leo[min:])
+				} else {
+					nleo = append(nleo, leo[min:max])
+				}
+
+				min = min + chunkSize
+				max = max + chunkSize
+			}
+
+			fmt.Printf("==== Before list element: '%v'\n, ==== In total chunks: '%d'\n, ==== list elemet: '%v'\n", leo, num, nleo)
+
+			Expect(len(nleo)).Should(Equal(8))
+		})
+
+		It("Список состоящий из 17 элементов должен быть разделен на 2 частей (по 10 элементов в части)", func() {
+			leo := make([]int, 0, 17)
+			for i := 1; i <= 17; i++ {
+				leo = append(leo, i)
+			}
+
+			num := commonlibs.GetCountChunk(int64(len(leo)), chunkSize)
+
+			nleo := make([][]int, 0, num)
+			min := 0
+			max := chunkSize
+			for i := 0; i < num; i++ {
+				if i == 0 {
+					nleo = append(nleo, leo[:max])
+				} else if i == num-1 {
+					nleo = append(nleo, leo[min:])
+				} else {
+					nleo = append(nleo, leo[min:max])
+				}
+
+				min = min + chunkSize
+				max = max + chunkSize
+			}
+
+			fmt.Printf("==== 1 Before list element: '%v'\n, ==== 1 In total chunks: '%d'\n, ==== 1 list elemet: '%v'\n", leo, num, nleo)
+
+			Expect(len(nleo)).Should(Equal(2))
+		})
+	})
+
 	/*Context("Тест .", func(){
 		It("", func(){
 

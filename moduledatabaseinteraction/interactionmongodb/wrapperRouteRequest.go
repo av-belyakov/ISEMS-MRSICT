@@ -23,9 +23,6 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 		}
 	)
 
-	fmt.Println("func 'wrapperFuncTypeHandlingSTIXObject', START...")
-	fmt.Printf("func 'wrapperFuncTypeHandlingSTIXObject', received message: '%v'\n", ws)
-
 	//получаем всю информацию о выполняемой задаче из временного хранилища задач
 	_, taskInfo, err := tst.GetTaskByID(ws.DataRequest.AppTaskID)
 	if err != nil {
@@ -45,8 +42,6 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 
 		return
 	}
-
-	fmt.Printf("func 'wrapperFuncTypeHandlingSTIXObject', task info: '%v'\n", taskInfo)
 
 	ti, ok := taskInfo.TaskParameters.([]*datamodels.ElementSTIXObject)
 	if !ok {
@@ -69,8 +64,6 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 
 	//получаем список ID STIX объектов предназначенных для добавление в БД
 	listID := commonhandlers.GetListIDFromListSTIXObjects(ti)
-
-	fmt.Printf("func 'wrapperFuncTypeHandlingSTIXObject', list ID: '%v'\n", listID)
 
 	//выполняем запрос к БД, для получения полной информации об STIX объектах по их ID
 	listElemetSTIXObject, err := FindSTIXObjectByID(qp, listID)
@@ -162,8 +155,6 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 	chanOutput chan<- datamodels.ModuleDataBaseInteractionChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) {
 
-	fmt.Println("func 'wrapperFuncTypeHandlingSearchRequests', START...")
-
 	var (
 		err           error
 		fn            = "wrapperFuncTypeHandlingSearchRequests"
@@ -204,8 +195,6 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 
 		return
 	}
-
-	fmt.Printf("func 'wrapperFuncTypeHandlingSearchRequests', task info: '%v'\n", taskInfo)
 
 	psr, ok := taskInfo.TaskParameters.(datamodels.ModAPIRequestProcessingResJSONSearchReqType)
 	if !ok {
@@ -290,8 +279,6 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 				return
 			}
 
-			fmt.Printf("func '%s', search for collection name 'stix object', RESULT COUNT ELEMENTS: '%d'\n", fn, resSize)
-
 			//сохраняем общее количество найденных значений во временном хранилище
 			err = tst.AddNewFoundInformation(
 				ws.DataRequest.AppTaskID,
@@ -321,8 +308,6 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 			if field, ok := sf[psr.SortableField]; ok {
 				sortableField = field
 			}
-
-			fmt.Printf("func '%s', search for collection name 'stix object', SORTABLE FIELD: '%s'\n", fn, sortableField)
 
 			//получить все найденные документы, с учетом лимита
 			cur, err := qp.FindAllWithLimit(CreateSearchQueriesSTIXObject(&searchParameters), &FindAllWithLimitOptions{

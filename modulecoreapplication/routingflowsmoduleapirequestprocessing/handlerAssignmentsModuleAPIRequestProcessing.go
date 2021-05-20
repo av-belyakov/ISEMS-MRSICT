@@ -137,9 +137,6 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 			return
 		}
 
-		fmt.Printf("List STIX object:'%v'\n", l)
-		fmt.Printf("Application task ID: '%s'\n", appTaskID)
-
 		clim.ChannelsModuleDataBaseInteraction.ChannelsMongoDB.InputModule <- datamodels.ModuleDataBaseInteractionChannel{
 			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
 				ModuleGeneratorMessage: "module core application",
@@ -186,8 +183,6 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 
 			return
 		}
-
-		fmt.Printf("Search data in STIX object:'%v'\n", l)
 
 		switch l.CollectionName {
 		case "stix object":
@@ -344,7 +339,7 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 		}
 
 		//добавляем информацию о задаче в хранилище задач
-		appTaskID, err := tst.AddNewTask(&memorytemporarystoragecommoninformation.TemporaryStorageTaskType{
+		_, err = tst.AddNewTask(&memorytemporarystoragecommoninformation.TemporaryStorageTaskType{
 			TaskGenerator:        data.ModuleGeneratorMessage,
 			ClientID:             data.ClientID,
 			ClientName:           data.ClientName,
@@ -383,8 +378,6 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 			}
 		}
 
-		fmt.Println(l)
-		fmt.Printf("Application task ID: '%s'\n", appTaskID)
 	case "":
 
 		/* *** обработчик JSON сообщений с иными запросами  *** */

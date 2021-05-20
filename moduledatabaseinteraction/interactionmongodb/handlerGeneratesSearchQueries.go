@@ -1,7 +1,6 @@
 package interactionmongodb
 
 import (
-	"fmt"
 	"net"
 
 	"ISEMS-MRSICT/commonlibs"
@@ -217,10 +216,6 @@ func HandlerValueField(listValue []string) bson.D {
 			listAllRemainingOnes = append(listAllRemainingOnes, ipv6.To16().String())
 		}
 	}
-
-	fmt.Printf("func 'HandlerValueField', LIST URL: '%v'\n", listURL)
-	fmt.Printf("func 'HandlerValueField', LIST IPv4 or IPv4Net: '%v'\n", listIPv4)
-	fmt.Printf("func 'HandlerValueField', LIST ALL REMAINING: '%v'\n", listAllRemainingOnes)
 
 	sizeListURL := len(listURL)
 	sizeListIPv4 := len(listIPv4)

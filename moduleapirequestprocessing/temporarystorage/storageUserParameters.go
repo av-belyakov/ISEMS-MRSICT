@@ -107,9 +107,6 @@ func NewRepositoryStorageUserParameters() *RepositoryStorageUserParametersType {
 
 //AddNewClient добавляет нового клиента
 func (rsupt *RepositoryStorageUserParametersType) AddNewClient(clientIP, clientPort, clientName, clientToken string) string {
-
-	fmt.Println("func 'AddNewClient', START...")
-
 	hsum := commonlibs.GetUniqIDFormatMD5(clientIP + "_" + clientPort + "_" + fmt.Sprint(time.Now().Unix()) + "_client API")
 
 	cr := make(chan typeChanResParameters)
@@ -131,9 +128,6 @@ func (rsupt *RepositoryStorageUserParametersType) AddNewClient(clientIP, clientP
 
 //SearchClientForIP поиск информации о клиенте по его ip адресу
 func (rsupt *RepositoryStorageUserParametersType) SearchClientForIP(clientIP, clientToken string) (string, *StorageUserParameters, bool) {
-
-	fmt.Println("func 'SearchClientForIP', START...")
-
 	cr := make(chan typeChanResParameters)
 	defer close(cr)
 
@@ -155,9 +149,6 @@ func (rsupt *RepositoryStorageUserParametersType) SearchClientForIP(clientIP, cl
 
 //GetClientParametersForID получить все настройки клиента
 func (rsupt *RepositoryStorageUserParametersType) GetClientParametersForID(clientID string) (*StorageUserParameters, error) {
-
-	fmt.Println("func 'SearchClientForIP', START...")
-
 	cr := make(chan typeChanResParameters)
 	defer close(cr)
 
@@ -174,9 +165,6 @@ func (rsupt *RepositoryStorageUserParametersType) GetClientParametersForID(clien
 
 //GetClientList получить весь список клиентов
 func (rsupt *RepositoryStorageUserParametersType) GetClientList() map[string]*StorageUserParameters {
-
-	fmt.Println("func 'GetClientList', START...")
-
 	cr := make(chan typeChanResParameters)
 	defer close(cr)
 
@@ -190,9 +178,6 @@ func (rsupt *RepositoryStorageUserParametersType) GetClientList() map[string]*St
 
 //SaveWssClientConnection сохранить линк соединения с клиентом
 func (rsupt *RepositoryStorageUserParametersType) SaveWssClientConnection(clientID string, conn *websocket.Conn) error {
-
-	fmt.Println("func 'SaveWssClientConnection', START...")
-
 	cr := make(chan typeChanResParameters)
 	defer close(cr)
 
@@ -210,9 +195,6 @@ func (rsupt *RepositoryStorageUserParametersType) SaveWssClientConnection(client
 
 //GetWssClientConnection получить линк wss соединения
 func (rsupt *RepositoryStorageUserParametersType) GetWssClientConnection(clientID string) (*websocket.Conn, error) {
-
-	fmt.Println("func 'SaveWssClientConnection', START...")
-
 	cr := make(chan typeChanResParameters)
 	defer close(cr)
 
@@ -229,9 +211,6 @@ func (rsupt *RepositoryStorageUserParametersType) GetWssClientConnection(clientI
 
 //DeleteClient удалить всю информацию о клиенте
 func (rsupt *RepositoryStorageUserParametersType) DeleteClient(clientID string) {
-
-	fmt.Println("func 'DelClientAPI', START...")
-
 	cr := make(chan typeChanResParameters)
 	defer close(cr)
 

@@ -98,9 +98,6 @@ func init() {
 }
 
 func main() {
-	fmt.Println("func 'main', START...")
-	fmt.Printf("func 'main', application config '%v'\n", appConfig)
-
 	defer func() {
 		if err := recover(); err != nil {
 			chanSaveLog <- modulelogginginformationerrors.LogMessageType{

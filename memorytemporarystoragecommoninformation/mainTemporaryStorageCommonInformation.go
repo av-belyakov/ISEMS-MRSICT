@@ -146,8 +146,6 @@ var stmc TemporaryStorageType
 
 //NewTemporaryStorage конструктор инициализирующий временное хранилище общей информации
 func NewTemporaryStorage() *TemporaryStorageType {
-	fmt.Println("fun 'NewStorageTemporaryMemoryCommon', START...")
-
 	once.Do(func() {
 		chanReqTask := make(chan channelRequestTaskStorage)
 		chanReqParameter := make(chan channelRequestParameterStorage)

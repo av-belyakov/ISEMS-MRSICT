@@ -54,9 +54,6 @@ func InteractionMongoDB(
 	mdbs *datamodels.MongoDBSettings,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) (ChannelsMongoDBInteraction, error) {
 
-	fmt.Println("func 'InteractionMongoDB', START...")
-	fmt.Printf("func 'InteractionMongoDB', settings db: '%v'\n", mdbs)
-
 	defer func() {
 		cdmdb.CtxCancel()
 	}()

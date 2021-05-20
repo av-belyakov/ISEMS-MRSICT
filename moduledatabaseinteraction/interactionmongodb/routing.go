@@ -1,8 +1,6 @@
 package interactionmongodb
 
 import (
-	"fmt"
-
 	"ISEMS-MRSICT/datamodels"
 	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
 )
@@ -22,16 +20,12 @@ func Routing(
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
 	chanInput <-chan datamodels.ModuleDataBaseInteractionChannel) {
 
-	fmt.Println("ModuleDataBaseInteraction - func 'Routing', START...")
-
 	ws := wrappersSetting{
 		NameDB:       nameDb,
 		ConnectionDB: cdmdb,
 	}
 
 	for data := range chanInput {
-		fmt.Printf("func 'Routing', received data from chan: '%v'\n", data)
-
 		ws.DataRequest = data
 
 		switch data.Section {

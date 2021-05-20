@@ -49,9 +49,6 @@ func MainHandlerAPIReguestProcessing(
 
 	funcName := "MainHandlerAPIReguestProcessing"
 
-	fmt.Println("func 'MainHandlerReguestProcessing', START...")
-	fmt.Printf("func 'MainHandlerReguestProcessing', module connection settings: '%v'\n", mcs)
-
 	ssapi := settingsServerAPI{
 		host:        mcs.Host,
 		port:        strconv.Itoa(mcs.Port),
@@ -212,9 +209,6 @@ func (settingsServerAPI *settingsServerAPI) serverWss(w http.ResponseWriter, req
 	//проверяем прошел ли клиент аутентификацию
 	clientID, _, ok := repositoryStorageUserParameters.SearchClientForIP(remoteIP, req.Header["Token"][0])
 	if !ok {
-
-		fmt.Println("Client is Unauthorized")
-
 		w.WriteHeader(401)
 		settingsServerAPI.chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 			Description: fmt.Sprintf("access for the user with ipaddress %v is prohibited", req.RemoteAddr),

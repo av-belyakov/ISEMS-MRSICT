@@ -24,9 +24,6 @@ func init() {
 //MainHandlerCoreApplication основной обработчик ядра приложения
 func MainHandlerCoreApplication(chanSaveLog chan<- modulelogginginformationerrors.LogMessageType, appConfig *datamodels.AppConfig) {
 	funcName := "MainHandlerCoreApplication"
-
-	fmt.Println("func 'MainHandlerCoreApplication', START...")
-
 	//инициализируем модули взаимодействия с БД
 	cdbi, err := moduledatabaseinteraction.MainHandlerDataBaseInteraction(chanSaveLog, &appConfig.ConnectionsDataBase, tst)
 	if err != nil {

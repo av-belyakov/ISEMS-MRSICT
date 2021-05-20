@@ -1,8 +1,6 @@
 package moduledatabaseinteraction
 
 import (
-	"fmt"
-
 	"ISEMS-MRSICT/datamodels"
 	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
 	"ISEMS-MRSICT/moduledatabaseinteraction/interactionmongodb"
@@ -25,8 +23,6 @@ func MainHandlerDataBaseInteraction(
 	chanSaveLog chan<- modulelogginginformationerrors.LogMessageType,
 	cdb *datamodels.ConnectionsDataBase,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) (ChannelsModuleDataBaseInteraction, error) {
-
-	fmt.Println("func 'MainHandlerDataBaseInteraction', START...")
 
 	//инициализируем модуль для взаимодействия с БД MongoDB
 	chanMongoDB, err := interactionmongodb.InteractionMongoDB(chanSaveLog, &cdb.MongoDBSettings, tst)

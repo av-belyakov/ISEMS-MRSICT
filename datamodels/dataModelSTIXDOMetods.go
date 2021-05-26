@@ -247,7 +247,7 @@ func (apstix AttackPatternDomainObjectsSTIX) GetType() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа AttackPatternDomainObjectsSTIX
-func (apstix AttackPatternDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*apNew *AttackPatternDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
+func (apstix AttackPatternDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -403,7 +403,7 @@ func (cstix CampaignDomainObjectsSTIX) GetType() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа CampaignDomainObjectsSTIX
-func (cstix CampaignDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*cNew *CampaignDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
+func (cstix CampaignDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -550,7 +550,7 @@ func (castix CourseOfActionDomainObjectsSTIX) GetType() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа CourseOfActionDomainObjectsSTIX
-func (cofastix CourseOfActionDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*cofaNew *CourseOfActionDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
+func (cofastix CourseOfActionDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -703,7 +703,7 @@ func (gstix GroupingDomainObjectsSTIX) GetType() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа GroupingDomainObjectsSTIX
-func (gstix GroupingDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*gNew *GroupingDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
+func (gstix GroupingDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -869,7 +869,7 @@ func (istix IdentityDomainObjectsSTIX) GetType() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа IdentityDomainObjectsSTIX
-func (istix IdentityDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*iNew *IdentityDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
+func (istix IdentityDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -1050,7 +1050,7 @@ func (istix IndicatorDomainObjectsSTIX) GetType() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа IndicatorDomainObjectsSTIX
-func (istix IndicatorDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*iNew *IndicatorDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
+func (istix IndicatorDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -1229,7 +1229,7 @@ func (istix InfrastructureDomainObjectsSTIX) GetType() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа InfrastructureDomainObjectsSTIX
-func (istix InfrastructureDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*iNew *InfrastructureDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
+func (istix InfrastructureDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -1421,7 +1421,7 @@ func (istix IntrusionSetDomainObjectsSTIX) GetType() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа IntrusionSetDomainObjectsSTIX
-func (istix IntrusionSetDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*iNew *IntrusionSetDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
+func (istix IntrusionSetDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -1600,7 +1600,7 @@ func (lstix LocationDomainObjectsSTIX) GetType() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа LocationDomainObjectsSTIX
-func (lstix LocationDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*lNew *LocationDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
+func (lstix LocationDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -1810,7 +1810,7 @@ func (mstix MalwareDomainObjectsSTIX) GetType() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа MalwareDomainObjectsSTIX
-func (mstix MalwareDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*mNew *MalwareDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
+func (mstix MalwareDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -2054,7 +2054,7 @@ func (mastix MalwareAnalysisDomainObjectsSTIX) GetType() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа MalwareAnalysisDomainObjectsSTIX
-func (mstix MalwareAnalysisDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*mNew *MalwareAnalysisDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
+func (mstix MalwareAnalysisDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -2240,7 +2240,7 @@ func (nstix NoteDomainObjectsSTIX) GetType() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа NoteDomainObjectsSTIX
-func (nstix NoteDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*nNew *NoteDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
+func (nstix NoteDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -2402,7 +2402,7 @@ func (odstix ObservedDataDomainObjectsSTIX) GetType() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа ObservedDataDomainObjectsSTIX
-func (ostix ObservedDataDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*oNew *ObservedDataDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
+func (ostix ObservedDataDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -2568,7 +2568,7 @@ func (ostix OpinionDomainObjectsSTIX) GetType() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа OpinionDomainObjectsSTIX
-func (ostix OpinionDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*oNew *OpinionDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
+func (ostix OpinionDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -2746,7 +2746,7 @@ func (rstix ReportDomainObjectsSTIX) GetType() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа ReportDomainObjectsSTIX
-func (rstix ReportDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*rNew *ReportDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
+func (rstix ReportDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -2960,7 +2960,7 @@ func (tastix ThreatActorDomainObjectsSTIX) GetType() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа ThreatActorDomainObjectsSTIX
-func (tastix ThreatActorDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*taNew *ThreatActorDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
+func (tastix ThreatActorDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -3167,7 +3167,7 @@ func (tstix ToolDomainObjectsSTIX) GetType() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа ToolDomainObjectsSTIX
-func (tstix ToolDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*tNew *ToolDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
+func (tstix ToolDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{
@@ -3329,7 +3329,7 @@ func (vstix VulnerabilityDomainObjectsSTIX) GetType() string {
 }
 
 //ComparisonTypeCommonFields выполняет сравнение двух объектов типа VulnerabilityDomainObjectsSTIX
-func (vstix VulnerabilityDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{} /*vNew *VulnerabilityDomainObjectsSTIX*/, src string) (bool, DifferentObjectType, error) {
+func (vstix VulnerabilityDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
 		cot          = DifferentObjectType{

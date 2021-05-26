@@ -65,7 +65,7 @@ type ElementSTIXObject struct {
 // SourceReceivingChanges - источник от которого были получены изменения
 // ModifiedTime - время выполнения модификации
 // CollectionName - наименование коллекции в которой выполнялись модификации
-// DocumentID - идентификатор документа в котором выполнялись модификации (для данного поля используется значение _id документа MongoDB)
+// DocumentID - идентификатор документа в котором выполнялись модификации
 // FieldList - перечень полей подвергшихся изменениям
 type DifferentObjectType struct {
 	SourceReceivingChanges string                    `bson:"source_receiving_changes"`
@@ -78,7 +78,7 @@ type DifferentObjectType struct {
 //OldFieldValueObjectType содержит старое значение полей, до их модификации
 // FeildType - тип поля
 // Path - полный путь к объекту подвергшемуся модификации
-// Value - предыдущее значение поля подвергшемуся модификации
+// Value - предыдущее значение поля, которое подверглось модификации
 type OldFieldValueObjectType struct {
 	FeildType string      `bson:"feild_type"`
 	Path      string      `bson:"path"`

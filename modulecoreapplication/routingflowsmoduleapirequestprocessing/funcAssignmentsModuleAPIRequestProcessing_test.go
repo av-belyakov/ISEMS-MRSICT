@@ -1,18 +1,9 @@
 package routingflowsmoduleapirequestprocessing_test
 
-import (
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
+//	. "github.com/onsi/ginkgo"
+//	. "github.com/onsi/gomega"
 
-	"ISEMS-MRSICT/datamodels"
-	"ISEMS-MRSICT/modulecoreapplication/routingflowsmoduleapirequestprocessing"
-
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
-)
-
-var _ = Describe("FuncAssignmentsModuleAPIRequestProcessing", func() {
+/*var _ = Describe("FuncAssignmentsModuleAPIRequestProcessing", func() {
 	var (
 		errReadFile, errUnmarchalReq, errUnmarchalToSTIX, errUnmarchalSearchReq error
 		errCheckSTIXObjects, errDecSearch, errReadFileJSONSearchSTIXExample     error
@@ -23,6 +14,62 @@ var _ = Describe("FuncAssignmentsModuleAPIRequestProcessing", func() {
 		searchReq                                                               datamodels.ModAPIRequestProcessingResJSONSearchReqType
 	)
 
+<<<<<<< HEAD
+=======
+	testSearchReq := json.RawMessage([]byte(`{
+		"collection_name": "stix object",
+		"search_parameters": {
+			"documents_id": ["attack-pattern--1853f6a4-458f-5b4e-9b0f-ded361ae1002", "tool--0853f6a4-638f-5b4e-9b0f-ded001ae3822"],
+			"documents_type": ["attack-pattern"],
+			"created": {
+				"start": "2015-12-21T19:59:11.000Z",
+				"end": "2015-12-21T21:59:45.000Z"
+			},
+			"specific_search_fields": [
+				{
+					"object_name": "attack-pattern",
+					"search_fields": {
+						"name": "attack pattern$$ example to yahoo.com",
+						"aliases": ["ap aliase 1", "ap aliase 2"]
+					}
+				},
+				{
+					"object_name": "campaign",
+					"search_fields": {
+						"name": "comp name example\n",
+						"first_seen": {
+							"start": "2016-05-12T08:17:27.000Z",
+							"end": "2016-05-12T12:31:17.000Z"
+						},
+						"last_seen": {
+							"start": "2016-10-12T10:17:47.000Z",
+							"end": "2016-05-12T10:29:02.000Z"
+						}
+					}
+				},
+				{
+					"object_name": "ipv4-addr",
+					"search_fields": {
+						"value": ["124.12.5.33/31", "67.45.2.1/32", "89.0.213.4"]
+					}
+				},
+				{
+					"object_name": "ipv6-addr",
+					"search_fields": {
+						"value": ["2001:0db8::/96", "2001:0ab8:85a3:0000:0000:9a1e:0370:7334"]
+					}
+				},
+				{
+					"object_name": "report",
+					"search_fields": {
+						"name": "example report name"
+					}
+				}
+			]
+		}
+	}`))
+
+>>>>>>> 64c9e62de8ed0716d762ef6d0e5bdf1bc7905ccd
 	var _ = BeforeSuite(func() {
 		docJSON, errReadFile = ioutil.ReadFile("../../mytest/test_resources/jsonSTIXExample.json")
 		errUnmarchalReq = json.Unmarshal(docJSON, &modAPIRequestProcessingReqJSON)
@@ -90,3 +137,4 @@ var _ = Describe("FuncAssignmentsModuleAPIRequestProcessing", func() {
 		})
 	})
 })
+*/

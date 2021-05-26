@@ -55,17 +55,17 @@ func UnmarshalJSONObjectReqSearchParameters(msgReq *json.RawMessage) (datamodels
 	return result, nil
 }
 
-//UnmarshalJSONReferenceBookReq декодирует JSON документ, помступающий от модуля 'moduleapirequestprocessing', который модержит список действий со справочной информацией
-// и перечень справочников
-func UnmarshalJSONReferenceBookReq(msgReq datamodels.ModAPIRequestProcessingReqJSON) ([]datamodels.ReferencesBookReqParameter, error) {
+//UnmarshalJSONReferenceBookReq декодирует JSON документ, поступающий от модуля 'moduleapirequestprocessing', который cодержит список действий со справочной информацией
+// и данные необходитимые для выполнения данных действий
+func UnmarshalJSONRBookReq(reqDetails *json.RawMessage) (*datamodels.RBookReqParameters, error) {
 	var (
-		listRefernceBooksOperation []datamodels.ReferencesBookReqParameter
-		err                        error
+		resultReqDetails datamodels.RBookReqParameters
+		err              error
 	)
-	if err = json.Unmarshal(*msgReq.RequestDetails, &listRefernceBooksOperation); err != nil {
+	if err = json.Unmarshal(*reqDetails, &resultReqDetails); err != nil {
 		return nil, err
 	}
-	return listRefernceBooksOperation, err
+	return &resultReqDetails, err
 }
 
 //CheckSearchSTIXObject выполняет валидацию параметров запроса для поиска информации по STIX объектам
@@ -217,6 +217,7 @@ func CheckSTIXObjects(l []*datamodels.ElementSTIXObject) error {
 			continue
 		}
 
+		fmt.Printf("Error checking type STIX object: '%s'\n", item.DataType)
 		return fmt.Errorf("one or more STIX objects are invalid")
 	}
 
@@ -358,4 +359,10 @@ func SanitizeSTIXObject(l []*datamodels.ElementSTIXObject) []*datamodels.Element
 	}
 
 	return listElements
+}
+
+//SanitizeReqRBObject выполняем санитаризацию запросов к объектам справочникам
+func SanitizeReqRBObject(rbrs *datamodels.RBookReqParameters) *datamodels.RBookReqParameters {
+	rbrs.Sanitize()
+	return rbrs
 }

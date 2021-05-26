@@ -25,12 +25,13 @@ type JsonRawTestData []json.RawMessage
 func HiLevelNilAndErrorParametersAssertion(vv json.RawMessage) {
 
 	//	for _, v := range vv {
-	var trbr datamodels.ReferencesBookReq
+	var trbr datamodels.RBookReq
 	err := json.Unmarshal(vv, &trbr)
 	Expect(err).ShouldNot(HaveOccurred())
 	Expect(trbr.RequestDetails).ShouldNot(BeNil())
 	Expect(len(trbr.RequestDetails)).ShouldNot(Equal(0))
 	for _, v := range trbr.RequestDetails {
+		v.Sanitize()
 		Expect(v.OP).ShouldNot(BeNil())
 		Expect(v.Name).ShouldNot(BeNil())
 	}
@@ -38,7 +39,7 @@ func HiLevelNilAndErrorParametersAssertion(vv json.RawMessage) {
 
 }
 
-var _ = Describe("RefernceBook", func() {
+var _ = Describe("RBook", func() {
 
 	var (
 		fd       []byte
@@ -58,7 +59,7 @@ var _ = Describe("RefernceBook", func() {
 		It("Открытие файл с тестовыми данными", func() {
 			Expect(err).NotTo(HaveOccurred())
 			l := len(fd)
-			Expect(fd).NotTo(HaveLen(0), fmt.Sprintf("Файл с тестовыми данными содержитне %b байт", l))
+			Expect(fd).NotTo(HaveLen(0), fmt.Sprintf("Файл с тестовыми данными содержит %b байт", l))
 		})
 		It("Первичне преобразование тестового набора", func() {
 			Expect(err1).NotTo(HaveOccurred())

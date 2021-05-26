@@ -18,12 +18,10 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 	data *datamodels.ModuleReguestProcessingChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
 	clim *moddatamodels.ChannelsListInteractingModules) {
-
 	commonMsgReq, err := unmarshalJSONCommonReq(data.Data)
 	if err != nil {
 		chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 			TypeMessage: "error",
-			Description: fmt.Sprint(err),
 			FuncName:    "unmarshalJSONCommonReq",
 		}
 
@@ -291,7 +289,6 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 
 			return
 		}
-
 		clim.ChannelsModuleDataBaseInteraction.ChannelsMongoDB.InputModule <- datamodels.ModuleDataBaseInteractionChannel{
 			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
 				ModuleGeneratorMessage: "module core application",
@@ -307,12 +304,14 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 		taskType := "выполнение действий над данными"
 
 		/* *** обработчик JSON сообщений с параметрами связанными со справочниками *** */
-		l, err := UnmarshalJSONReferenceBookReq(*commonMsgReq)
+		//l, err := UnmarshalJSONReferenceBookReq(*commonMsgReq)
+		/* *** обработчик JSON сообщений с параметрами связанными со справочниками **** */
+		l, err := UnmarshalJSONRBookReq(commonMsgReq.RequestDetails)
 		if err != nil {
 			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 				TypeMessage: "error",
 				Description: fmt.Sprint(err),
-				FuncName:    "UnmarshalJSONReferenceBookReq",
+				FuncName:    "UnmarshalJSONRBookReq",
 			}
 
 			if err = auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{
@@ -337,17 +336,24 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 
 			return
 		}
-
+		//выполняем валидацию полученных запросов к справочной информации
+		if _, err = l.IsValid(); err != nil {
+			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+				TypeMessage: "error",
+				Description: fmt.Sprint(err),
+				FuncName:    "IsValid",
+			}
+		}
 		//добавляем информацию о задаче в хранилище задач
-		_, err = tst.AddNewTask(&memorytemporarystoragecommoninformation.TemporaryStorageTaskType{
+		appTaskID, err := tst.AddNewTask(&memorytemporarystoragecommoninformation.TemporaryStorageTaskType{
 			TaskGenerator:        data.ModuleGeneratorMessage,
 			ClientID:             data.ClientID,
 			ClientName:           data.ClientName,
 			ClientTaskID:         commonMsgReq.TaskID,
 			AdditionalClientName: commonMsgReq.UserNameGeneratedTask,
 			Section:              commonMsgReq.Section,
-			Command:              "", //в случае с объектами STIX команда не указывается (автоматически подразумевается добавление или обновление объектов STIX)
-			TaskParameters:       l,
+			Command:              "", //в случае с объектами ReferenceBook команда не указывается (Для каждого отдельного элемента применяется своя командакоманда присутствует в каждом элементе среза)
+			TaskParameters:       SanitizeReqRBObject(l),
 		})
 
 		if err != nil {
@@ -378,6 +384,14 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 			}
 		}
 
+		clim.ChannelsModuleDataBaseInteraction.ChannelsMongoDB.InputModule <- datamodels.ModuleDataBaseInteractionChannel{
+			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+				ModuleGeneratorMessage: "module core application",
+				ModuleReceiverMessage:  "module database interaction",
+			},
+			Section:   "handling reference book",
+			AppTaskID: appTaskID,
+		}
 	case "":
 
 		/* *** обработчик JSON сообщений с иными запросами  *** */

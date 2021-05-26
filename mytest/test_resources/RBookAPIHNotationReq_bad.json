@@ -1,0 +1,14 @@
+{
+    "task_id": "ni883f838ggr8h9ehr3rgr38rg8f8g8wgd8g38",
+    "section": "handling reference book",
+    "response_details": [
+        {
+            "op": "some_value",
+            "is_successful":false,
+            "description":"Редактирование документа запрещено",
+            "name": "windows-integrity-level-enum"
+        }
+       
+
+    ]
+}

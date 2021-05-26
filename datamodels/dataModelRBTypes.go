@@ -16,45 +16,52 @@ package datamodels
 // Ниже описаны структуры данных описывающие словари STIX
 // названия которых применяются в какчестве значений полей STIX-объектов
 
-// VocabularyWorker
-// Интерфейс для работы со словарями терминов STIX
-/* type VocabulariesWorker interface{
-	getElement(elementName string ) (ElementDescription)
-	getFullElementDecription(elementName string ) (string)
-	getShortElementDecription(elementName string ) (string)
-	getShortDecription(elementName string ) (string)
-	getFullDecription(elementName string ) (string)
-}
-*/
-
 // VocabularyElement структура описывающая элемент словаря STIX
-type VocabularyElement struct {
-	Name             string `json:"name" bson:"name"`
-	ShortDescription string `json:"shortDescription" bson:"shortDescription"`
-	FullDescription  string `json:"fullDescription" bson:"fullDescription"`
+type VocElement struct {
+	Name             string `json:"name,omitempty" bson:"name,omitempty"`
+	ShortDescription string `json:"shortDescription,omitempty" bson:"shortDescription,omitempty"`
+	FullDescription  string `json:"fullDescription,omitempty" bson:"fullDescription,omitempty"`
 }
+
+type VocElements []VocElement
 
 // Vocabulary структура описывающая словарь терминов (либо пользовательский)
 type Vocabulary struct {
-	VocabularyElement
-	Elements []VocabularyElement `json:"elements" bson:"elements"`
+	VocElement
+	Elements VocElements `json:"elements,omitempty" bson:"elements,omitempty"`
 }
 
-//ReferencesBookReqParameters структура описывающая параметр для  ReferencesBookReq
-type ReferencesBookReqParameter struct {
+//RBookReqParameters структура описывающая параметры для  RBookReq
+type RBookReqParameter struct {
 	OP string `json:"op" bson:"op"`
 	Vocabulary
 }
+
+//RBookReqParameters - срез структур описывающих параметры для  RBookReq
+type RBookReqParameters []RBookReqParameter
 
 // Vocabularys структура в которой могут хранятся все "открытые" и  "закрытые" словари STIX
 // и пользовательские словари терминов
 type Vocabularys []Vocabulary
 
-//ReferencesBookReq - структура описывающая запрос от API к справочной информации
-type ReferencesBookReq struct {
+//RBookReq - структура описывающая запрос от API к справочной информации
+type RBookReq struct {
 	APIRequestProcessingReqJSON
-	RequestDetails []ReferencesBookReqParameter `json:"request_details" bson:"request_details"`
+	RequestDetails []RBookReqParameter `json:"request_details" bson:"request_details"`
 }
 
-type ReferencesBookRsp struct {
+type RBookRsp struct {
 }
+
+//Sanitizer - интерфейсный тип санитаризатор
+//(Осуществляет замену нежелательных символов в полях объектов)
+type Sanitizer interface {
+	Sanitize()
+}
+
+//Validator - интерфейсный тип Валидатор
+type Validator interface {
+	IsValid() (bool, error)
+}
+
+var Commands = []string{"add", "get", "remove", "replace"}

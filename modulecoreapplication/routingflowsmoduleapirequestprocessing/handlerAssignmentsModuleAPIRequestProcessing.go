@@ -18,12 +18,10 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 	data *datamodels.ModuleReguestProcessingChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
 	clim *moddatamodels.ChannelsListInteractingModules) {
-
 	commonMsgReq, err := unmarshalJSONCommonReq(data.Data)
 	if err != nil {
 		chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 			TypeMessage: "error",
-			Description: fmt.Sprint(err),
 			FuncName:    "unmarshalJSONCommonReq",
 		}
 
@@ -241,7 +239,6 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 
 			return
 		}
-
 		clim.ChannelsModuleDataBaseInteraction.ChannelsMongoDB.InputModule <- datamodels.ModuleDataBaseInteractionChannel{
 			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
 				ModuleGeneratorMessage: "module core application",
@@ -254,17 +251,21 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 	case "handling reference book":
 
 		/* *** обработчик JSON сообщений с параметрами связанными со справочниками *** */
-		l, err := UnmarshalJSONReferenceBookReq(*commonMsgReq)
+		l, err := UnmarshalJSONRBookReq(commonMsgReq.RequestDetails)
 		if err != nil {
 			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 				TypeMessage: "error",
 				Description: fmt.Sprint(err),
-				FuncName:    "UnmarshalJSONReferenceBookReq",
+				FuncName:    "UnmarshalJSONRBookReq",
 			}
-			if err := auxiliaryfunctions.SendCriticalErrorMessageJSON(&auxiliaryfunctions.ErrorMessageType{
-				ClientID: data.ClientID,
-				Error:    fmt.Errorf("Error: error when decoding a JSON document. Section: '%v'", commonMsgReq.Section),
-				C:        clim.ChannelsModuleAPIRequestProcessing.InputModule,
+			if err := auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{
+				ClientID:         data.ClientID,
+				TypeNotification: "danger",
+				Notification: commonlibs.PatternUserMessage(&commonlibs.PatternUserMessageType{
+					FinalResult: "задача отклонена",
+					Message:     "ошибка при декодировании JSON документа",
+				}),
+				C: clim.ChannelsModuleAPIRequestProcessing.InputModule,
 			}); err != nil {
 				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 					TypeMessage: "error",
@@ -277,6 +278,14 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 
 			return
 		}
+		//выполняем валидацию полученных запросов к справочной информации
+		if _, err = l.IsValid(); err != nil {
+			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+				TypeMessage: "error",
+				Description: fmt.Sprint(err),
+				FuncName:    "IsValid",
+			}
+		}
 		//добавляем информацию о задаче в хранилище задач
 		appTaskID, err := tst.AddNewTask(&memorytemporarystoragecommoninformation.TemporaryStorageTaskType{
 			TaskGenerator:        data.ModuleGeneratorMessage,
@@ -285,8 +294,8 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 			ClientTaskID:         commonMsgReq.TaskID,
 			AdditionalClientName: commonMsgReq.UserNameGeneratedTask,
 			Section:              commonMsgReq.Section,
-			Command:              "", //в случае с объектами STIX команда не указывается (автоматически подразумевается добавление или обновление объектов STIX)
-			TaskParameters:       l,
+			Command:              "", //в случае с объектами ReferenceBook команда не указывается (Для каждого отдельного элемента применяется своя командакоманда присутствует в каждом элементе среза)
+			TaskParameters:       SanitizeReqRBObject(l),
 		})
 		if err != nil {
 			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
@@ -295,8 +304,15 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 				FuncName:    "UnmarshalJSONReferenceBookReq",
 			}
 		}
-		fmt.Println(l)
-		fmt.Printf("Application task ID: '%s'\n", appTaskID)
+
+		clim.ChannelsModuleDataBaseInteraction.ChannelsMongoDB.InputModule <- datamodels.ModuleDataBaseInteractionChannel{
+			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+				ModuleGeneratorMessage: "module core application",
+				ModuleReceiverMessage:  "module database interaction",
+			},
+			Section:   "handling reference book",
+			AppTaskID: appTaskID,
+		}
 	case "":
 
 		/* *** обработчик JSON сообщений с иными запросами  *** */

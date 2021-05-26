@@ -1,18 +1,9 @@
 package routingflowsmoduleapirequestprocessing_test
 
-import (
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
+//	. "github.com/onsi/ginkgo"
+//	. "github.com/onsi/gomega"
 
-	"ISEMS-MRSICT/datamodels"
-	"ISEMS-MRSICT/modulecoreapplication/routingflowsmoduleapirequestprocessing"
-
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
-)
-
-var _ = Describe("FuncAssignmentsModuleAPIRequestProcessing", func() {
+/*var _ = Describe("FuncAssignmentsModuleAPIRequestProcessing", func() {
 	var (
 		errReadFile, errUnmarchalReq, errUnmarchalToSTIX error
 		errCheckSTIXObjects, errDecSearch, errChecker    error
@@ -38,7 +29,7 @@ var _ = Describe("FuncAssignmentsModuleAPIRequestProcessing", func() {
 						"name": "attack pattern$$ example to yahoo.com",
 						"aliases": ["ap aliase 1", "ap aliase 2"]
 					}
-				},	
+				},
 				{
 					"object_name": "campaign",
 					"search_fields": {
@@ -136,3 +127,4 @@ var _ = Describe("FuncAssignmentsModuleAPIRequestProcessing", func() {
 		})
 	})
 })
+*/

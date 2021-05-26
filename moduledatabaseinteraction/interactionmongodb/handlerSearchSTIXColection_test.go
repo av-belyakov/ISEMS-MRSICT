@@ -221,11 +221,6 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 				"basd-89@bk.com",
 			})
 
-			/*
-											!!!!!!!!!!
-				Надо еще потестировать формирование запроса, но вроде запрос работает корректно
-			*/
-
 			//			fmt.Printf("\tBSON document: '%v'\n", vr)
 
 			cur, err := qp.FindAllWithLimit(&vr, &interactionmongodb.FindAllWithLimitOptions{

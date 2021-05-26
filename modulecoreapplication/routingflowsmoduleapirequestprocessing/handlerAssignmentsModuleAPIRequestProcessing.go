@@ -250,7 +250,7 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 
 	case "handling reference book":
 
-		/* *** обработчик JSON сообщений с параметрами связанными со справочниками *** */
+		/* *** обработчик JSON сообщений с параметрами связанными со справочниками **** */
 		l, err := UnmarshalJSONRBookReq(commonMsgReq.RequestDetails)
 		if err != nil {
 			chanSaveLog <- modulelogginginformationerrors.LogMessageType{

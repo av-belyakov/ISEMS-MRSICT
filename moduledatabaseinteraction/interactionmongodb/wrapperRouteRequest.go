@@ -23,41 +23,32 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 		}
 	)
 
+	errorMessage := datamodels.ModuleDataBaseInteractionChannel{
+		CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+			ModuleGeneratorMessage: "module database interaction",
+			ModuleReceiverMessage:  "module core application",
+			ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
+				FuncName:                                fn,
+				ModuleAPIRequestProcessingSettingSendTo: true,
+			},
+		},
+		Section:   "handling stix object",
+		AppTaskID: ws.DataRequest.AppTaskID,
+	}
+
 	//получаем всю информацию о выполняемой задаче из временного хранилища задач
 	_, taskInfo, err := tst.GetTaskByID(ws.DataRequest.AppTaskID)
 	if err != nil {
-		chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
-			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
-				ModuleGeneratorMessage: "module database interaction",
-				ModuleReceiverMessage:  "module core application",
-				ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
-					FuncName:                                fn,
-					ModuleAPIRequestProcessingSettingSendTo: true,
-					Error:                                   fmt.Errorf("no information about the task by its id was found in the temporary storage"),
-				},
-			},
-			Section:   "handling stix object",
-			AppTaskID: ws.DataRequest.AppTaskID,
-		}
+		errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = fmt.Errorf("no information about the task by its id was found in the temporary storage")
+		chanOutput <- errorMessage
 
 		return
 	}
 
 	ti, ok := taskInfo.TaskParameters.([]*datamodels.ElementSTIXObject)
 	if !ok {
-		chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
-			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
-				ModuleGeneratorMessage: "module database interaction",
-				ModuleReceiverMessage:  "module core application",
-				ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
-					FuncName:                                fn,
-					ModuleAPIRequestProcessingSettingSendTo: true,
-					Error:                                   fmt.Errorf("type conversion error"),
-				},
-			},
-			Section:   "handling stix object",
-			AppTaskID: ws.DataRequest.AppTaskID,
-		}
+		errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = fmt.Errorf("type conversion error")
+		chanOutput <- errorMessage
 
 		return
 	}
@@ -68,19 +59,8 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 	//выполняем запрос к БД, для получения полной информации об STIX объектах по их ID
 	listElemetSTIXObject, err := FindSTIXObjectByID(qp, listID)
 	if err != nil {
-		chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
-			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
-				ModuleGeneratorMessage: "module database interaction",
-				ModuleReceiverMessage:  "module core application",
-				ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
-					FuncName:                                fn,
-					ModuleAPIRequestProcessingSettingSendTo: true,
-					Error:                                   err,
-				},
-			},
-			Section:   "handling stix object",
-			AppTaskID: ws.DataRequest.AppTaskID,
-		}
+		errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = err
+		chanOutput <- errorMessage
 
 		return
 	}
@@ -98,19 +78,8 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 
 		_, err := qp.InsertData([]interface{}{listDifferentObject})
 		if err != nil {
-			chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
-				CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
-					ModuleGeneratorMessage: "module database interaction",
-					ModuleReceiverMessage:  "module core application",
-					ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
-						FuncName:                                fn,
-						ModuleAPIRequestProcessingSettingSendTo: true,
-						Error:                                   err,
-					},
-				},
-				Section:   "handling stix object",
-				AppTaskID: ws.DataRequest.AppTaskID,
-			}
+			errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = err
+			chanOutput <- errorMessage
 
 			return
 		}
@@ -119,19 +88,8 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 	//добавляем или обновляем STIX объекты в БД
 	err = ReplacementElementsSTIXObject(qp, ti)
 	if err != nil {
-		chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
-			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
-				ModuleGeneratorMessage: "module database interaction",
-				ModuleReceiverMessage:  "module core application",
-				ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
-					FuncName:                                fn,
-					ModuleAPIRequestProcessingSettingSendTo: true,
-					Error:                                   err,
-				},
-			},
-			Section:   "handling stix object",
-			AppTaskID: ws.DataRequest.AppTaskID,
-		}
+		errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = err
+		chanOutput <- errorMessage
 
 		return
 	}
@@ -176,41 +134,32 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 		}
 	)
 
+	errorMessage := datamodels.ModuleDataBaseInteractionChannel{
+		CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+			ModuleGeneratorMessage: "module database interaction",
+			ModuleReceiverMessage:  "module core application",
+			ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
+				FuncName:                                fn,
+				ModuleAPIRequestProcessingSettingSendTo: true,
+			},
+		},
+		Section:   "handling search requests",
+		AppTaskID: ws.DataRequest.AppTaskID,
+	}
+
 	//получаем всю информацию о выполняемой задаче из временного хранилища задач
 	_, taskInfo, err := tst.GetTaskByID(ws.DataRequest.AppTaskID)
 	if err != nil {
-		chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
-			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
-				ModuleGeneratorMessage: "module database interaction",
-				ModuleReceiverMessage:  "module core application",
-				ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
-					FuncName:                                fn,
-					ModuleAPIRequestProcessingSettingSendTo: true,
-					Error:                                   fmt.Errorf("no information about the task by its id was found in the temporary storage"),
-				},
-			},
-			Section:   "handling search requests",
-			AppTaskID: ws.DataRequest.AppTaskID,
-		}
+		errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = err
+		chanOutput <- errorMessage
 
 		return
 	}
 
 	psr, ok := taskInfo.TaskParameters.(datamodels.ModAPIRequestProcessingResJSONSearchReqType)
 	if !ok {
-		chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
-			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
-				ModuleGeneratorMessage: "module database interaction",
-				ModuleReceiverMessage:  "module core application",
-				ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
-					FuncName:                                fn,
-					ModuleAPIRequestProcessingSettingSendTo: true,
-					Error:                                   fmt.Errorf("type conversion error"),
-				},
-			},
-			Section:   "handling search requests",
-			AppTaskID: ws.DataRequest.AppTaskID,
-		}
+		errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = fmt.Errorf("type conversion error")
+		chanOutput <- errorMessage
 
 		return
 	}
@@ -220,19 +169,8 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 
 	//изменяем статус выполняемой задачи на 'in progress'
 	if err := tst.ChangeTaskStatus(ws.DataRequest.AppTaskID, "in progress"); err != nil {
-		chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
-			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
-				ModuleGeneratorMessage: "module database interaction",
-				ModuleReceiverMessage:  "module core application",
-				ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
-					FuncName:                                fn,
-					ModuleAPIRequestProcessingSettingSendTo: true,
-					Error:                                   err,
-				},
-			},
-			Section:   "handling search requests",
-			AppTaskID: ws.DataRequest.AppTaskID,
-		}
+		errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = err
+		chanOutput <- errorMessage
 
 		return
 	}
@@ -241,19 +179,8 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 	case "stix object":
 		searchParameters, ok := psr.SearchParameters.(datamodels.SearchThroughCollectionSTIXObjectsType)
 		if !ok {
-			chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
-				CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
-					ModuleGeneratorMessage: "module database interaction",
-					ModuleReceiverMessage:  "module core application",
-					ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
-						FuncName:                                fn,
-						ModuleAPIRequestProcessingSettingSendTo: true,
-						Error:                                   fmt.Errorf("type conversion error"),
-					},
-				},
-				Section:   "handling search requests",
-				AppTaskID: ws.DataRequest.AppTaskID,
-			}
+			errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = fmt.Errorf("type conversion error")
+			chanOutput <- errorMessage
 
 			return
 		}
@@ -262,19 +189,8 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 		if (psr.PaginateParameters.CurrentPartNumber <= 0) || (psr.PaginateParameters.MaxPartNum <= 0) {
 			resSize, err := qp.CountDocuments(CreateSearchQueriesSTIXObject(&searchParameters))
 			if err != nil {
-				chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
-					CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
-						ModuleGeneratorMessage: "module database interaction",
-						ModuleReceiverMessage:  "module core application",
-						ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
-							FuncName:                                fn,
-							ModuleAPIRequestProcessingSettingSendTo: true,
-							Error:                                   err,
-						},
-					},
-					Section:   "handling search requests",
-					AppTaskID: ws.DataRequest.AppTaskID,
-				}
+				errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = err
+				chanOutput <- errorMessage
 
 				return
 			}
@@ -288,19 +204,8 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 					Information: resSize,
 				})
 			if err != nil {
-				chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
-					CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
-						ModuleGeneratorMessage: "module database interaction",
-						ModuleReceiverMessage:  "module core application",
-						ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
-							FuncName:                                fn,
-							ModuleAPIRequestProcessingSettingSendTo: true,
-							Error:                                   err,
-						},
-					},
-					Section:   "handling search requests",
-					AppTaskID: ws.DataRequest.AppTaskID,
-				}
+				errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = err
+				chanOutput <- errorMessage
 
 				return
 			}
@@ -317,19 +222,8 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 				SortAscending: false,
 			})
 			if err != nil {
-				chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
-					CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
-						ModuleGeneratorMessage: "module database interaction",
-						ModuleReceiverMessage:  "module core application",
-						ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
-							FuncName:                                fn,
-							ModuleAPIRequestProcessingSettingSendTo: true,
-							Error:                                   err,
-						},
-					},
-					Section:   "handling search requests",
-					AppTaskID: ws.DataRequest.AppTaskID,
-				}
+				errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = err
+				chanOutput <- errorMessage
 
 				return
 			}
@@ -343,19 +237,8 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 					Information: GetListElementSTIXObject(cur),
 				})
 			if err != nil {
-				chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
-					CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
-						ModuleGeneratorMessage: "module database interaction",
-						ModuleReceiverMessage:  "module core application",
-						ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
-							FuncName:                                fn,
-							ModuleAPIRequestProcessingSettingSendTo: true,
-							Error:                                   err,
-						},
-					},
-					Section:   "handling search requests",
-					AppTaskID: ws.DataRequest.AppTaskID,
-				}
+				errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = err
+				chanOutput <- errorMessage
 
 				return
 			}
@@ -365,19 +248,8 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 
 		//изменяем состояние задачи на 'completed'
 		if err := tst.ChangeTaskStatus(ws.DataRequest.AppTaskID, "completed"); err != nil {
-			chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
-				CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
-					ModuleGeneratorMessage: "module database interaction",
-					ModuleReceiverMessage:  "module core application",
-					ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
-						FuncName:                                fn,
-						ModuleAPIRequestProcessingSettingSendTo: true,
-						Error:                                   err,
-					},
-				},
-				Section:   "handling search requests",
-				AppTaskID: ws.DataRequest.AppTaskID,
-			}
+			errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = err
+			chanOutput <- errorMessage
 
 			return
 		}
@@ -395,19 +267,9 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 	case "":
 
 	default:
-		chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
-			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
-				ModuleGeneratorMessage: "module database interaction",
-				ModuleReceiverMessage:  "module core application",
-				ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
-					FuncName:                                fn,
-					ModuleAPIRequestProcessingSettingSendTo: true,
-					Error:                                   fmt.Errorf("the name of the database collection is not defined"),
-				},
-			},
-			Section:   "handling search requests",
-			AppTaskID: ws.DataRequest.AppTaskID,
-		}
+		errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = fmt.Errorf("the name of the database collection is not defined")
+		chanOutput <- errorMessage
+
 	}
 }
 

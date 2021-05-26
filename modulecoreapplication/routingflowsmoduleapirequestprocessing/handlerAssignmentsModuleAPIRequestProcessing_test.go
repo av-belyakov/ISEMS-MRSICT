@@ -25,10 +25,12 @@ var _ = Describe("Тестирование секции обработки refer
 	)
 	var_ = BeforeSuite(func() {
 		dir, _ := os.Getwd()
-		reqTestFilePath := filepath.Join(dir, "..", "mytest/test_resources/ReferersBookAPIHierarchicalNotationResponseExample.json")
-		if reqF, err := ioutil.ReadFile(reqTestFilePath); err != nil {
-			fmt.Errorf(fmt.Sprintf("Неудалось прочитать файл %s хранящий с тестовые запросы от API к справочникам", reqTestFilePath))
-		}
+	TestFilePath := filepath.Join(dir, "..", "..", "mytest/test_resources/RBookAPIHNotationResp_good.json")
+	TestData["TestGoodRBook"] = ReadTestJSONFile(TestFilePath)
+
+	assertionCheckChanel = func() {
+
+	}
 		json.Unmarshal(reqF)
 		respTestFilePath := filepath.Join(dir, "..", "mytest/test_resources/ReferersBookAPIHierarchicalNotationResponseExample.json")
 		if respF, err := ioutil.ReadFile(respTestFilePath); err != nil {

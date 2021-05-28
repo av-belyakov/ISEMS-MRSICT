@@ -415,6 +415,52 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 func (ws *wrappersSetting) wrapperFuncTypeHandlingReferenceBook(
 	chanOutput chan<- datamodels.ModuleDataBaseInteractionChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) {
+	var (
+		err error
+		fn  = " wrapperFuncTypeHandlingReferenceBook"
+		qp  = QueryParameters{
+			NameDB:         ws.NameDB,
+			CollectionName: "reference_book_collection",
+			ConnectDB:      ws.ConnectionDB.Connection,
+		}
+	)
+	//получаем всю информацию о выполняемой задаче из временного хранилища задач
+	_, taskInfo, err := tst.GetTaskByID(ws.DataRequest.AppTaskID)
+	if err != nil {
+		chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
+			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+				ModuleGeneratorMessage: "module database interaction",
+				ModuleReceiverMessage:  "module core application",
+				ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
+					FuncName:                                fn,
+					ModuleAPIRequestProcessingSettingSendTo: true,
+					Error:                                   fmt.Errorf("no information about the task by its id was found in the temporary storage"),
+				},
+			},
+			Section:   "reference book requests",
+			AppTaskID: ws.DataRequest.AppTaskID,
+		}
+
+		return
+	}
+	pbr, ok := taskInfo.TaskParameters.(datamodels.RBookReq)
+	if !ok {
+		chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
+			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+				ModuleGeneratorMessage: "module database interaction",
+				ModuleReceiverMessage:  "module core application",
+				ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
+					FuncName:                                fn,
+					ModuleAPIRequestProcessingSettingSendTo: true,
+					Error:                                   fmt.Errorf("type conversion error"),
+				},
+			},
+			Section:   "reference book requests",
+			AppTaskID: ws.DataRequest.AppTaskID,
+		}
+
+		return
+	}
 	/*switch wt.command {
 	case "find_all":
 

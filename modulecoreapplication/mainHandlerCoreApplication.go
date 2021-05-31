@@ -43,5 +43,15 @@ func MainHandlerCoreApplication(chanSaveLog chan<- modulelogginginformationerror
 		FuncName:    funcName,
 	}
 
+	//делаем запрос к БД для инициализации хранилища DO STIX типа 'Grouping'
+	clim.ChannelsModuleDataBaseInteraction.ChannelsMongoDB.InputModule <- datamodels.ModuleDataBaseInteractionChannel{
+		CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+			ModuleGeneratorMessage: "module core application",
+			ModuleReceiverMessage:  "module database interaction",
+		},
+		Section: "handling technical part",
+		Command: "create STIX DO type 'grouping'",
+	}
+
 	RoutingCoreApp(chanSaveLog, appConfig, tst, &clim)
 }

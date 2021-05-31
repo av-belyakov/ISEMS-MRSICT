@@ -38,6 +38,8 @@ func Routing(
 		case "handling reference book":
 			go ws.wrapperFuncTypeHandlingReferenceBook(chanOutput, tst)
 
+		case "handling technical part":
+			go ws.wrapperFuncTypeTechnicalPart(chanOutput, tst)
 		}
 	}
 }

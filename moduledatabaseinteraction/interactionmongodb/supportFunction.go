@@ -2,12 +2,15 @@ package interactionmongodb
 
 import (
 	"context"
+	"fmt"
 	"net"
+	"time"
 
 	"ISEMS-MRSICT/commonlibs"
 	"ISEMS-MRSICT/datamodels"
 
 	"github.com/asaskevich/govalidator"
+	"github.com/google/uuid"
 	ipv4conv "github.com/signalsciences/ipv4"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -692,4 +695,74 @@ func ReplacementElementsSTIXObject(qp QueryParameters, l []*datamodels.ElementST
 	}
 
 	return nil
+}
+
+//getIDGroupingObjectSTIX проверяет наличие Grouping STIX DO объектов с заданными именами и при необходимости создает их. Возвращает список
+// идентификаторов STIX DO объектов типа Grouping и название объекта.
+func getIDGroupingObjectSTIX(qp QueryParameters, listSearch map[string]string) (map[string]string, error) {
+	var listID map[string]string
+
+	//получить все найденные документы, с учетом лимита
+	cur, err := qp.Find(bson.D{
+		bson.E{Key: "commonpropertiesobjectstix.type", Value: "grouping"},
+		bson.E{Key: "name", Value: bson.E{Key: "$in", Value: listSearch}}})
+	if err != nil {
+		return listID, err
+	}
+
+	listTypeStatus := GetListGroupingObjectSTIX(cur)
+	listInsert := []datamodels.GroupingDomainObjectsSTIX{}
+
+	var isTrue bool
+	for ko, vo := range listSearch {
+		for _, vt := range listTypeStatus {
+			if ko == vt.Name {
+				isTrue = true
+				listID[ko] = vt.ID
+
+				continue
+			}
+		}
+
+		if !isTrue {
+			listInsert = append(listInsert, datamodels.GroupingDomainObjectsSTIX{
+				CommonPropertiesObjectSTIX: datamodels.CommonPropertiesObjectSTIX{
+					Type: "grouping",
+					ID:   fmt.Sprintf("grouping--%s", uuid.NewString()),
+				},
+				CommonPropertiesDomainObjectSTIX: datamodels.CommonPropertiesDomainObjectSTIX{
+					SpecVersion: "2.1",
+					Created:     time.Now(),
+				},
+				Name:        ko,
+				Description: vo,
+			})
+		}
+
+		isTrue = false
+	}
+
+	if len(listInsert) == 0 {
+		return listID, nil
+	}
+
+	_, err = qp.InsertData([]interface{}{listInsert}, []mongo.IndexModel{})
+
+	return listID, err
+}
+
+//GetListGroupingObjectSTIX возвращает из БД список STIX DO объектов типа Grouping
+func GetListGroupingObjectSTIX(cur *mongo.Cursor) []datamodels.GroupingDomainObjectsSTIX {
+	var list []datamodels.GroupingDomainObjectsSTIX
+
+	for cur.Next(context.Background()) {
+		var gdostix datamodels.GroupingDomainObjectsSTIX
+		if err := cur.Decode(&gdostix); err != nil {
+			continue
+		}
+
+		list = append(list, gdostix)
+	}
+
+	return list
 }

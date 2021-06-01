@@ -7,7 +7,6 @@ import (
 	"ISEMS-MRSICT/datamodels"
 	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
 
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -293,23 +292,21 @@ func (ws *wrappersSetting) wrapperFuncTypeTechnicalPart(
 	case "create STIX DO type 'grouping'":
 		/*
 			проверяем наличие объектов STIX DO типа 'grouping', содержащих списки 'подтвержденных' или 'отклоненных' объектов STIX DO типа 'report'
+			и при необходимости создаем новые STIX DO объекты типа 'grouping'
 		*/
 		go func() {
-			//получить все найденные документы, с учетом лимита
-			cur, err := qp.Find(bson.D{
-				bson.E{Key: "commonpropertiesobjectstix.type", Value: "grouping"},
-				bson.E{Key: "name", Value: bson.E{Key: "$in", Value: []string{
-					"successfully implemented computer threat",
-					"unsuccessfully computer threat",
-					"false positive",
-				},
-				}}})
+			listID, err := getIDGroupingObjectSTIX(qp, map[string]string{
+				"successfully implemented computer threat": "успешно реализованная компьютерная угроза",
+				"unsuccessfully computer threat":           "безуспешная компьютерная угроза",
+				"false positive":                           "ложное срабатывание",
+			})
 			if err != nil {
 				errorMessage.ErrorMessage.Error = err
-				chanOutput <- errorMessage
 
-				return
+				chanOutput <- errorMessage
 			}
+
+			fmt.Printf("func 'wrapperFuncTypeTechnicalPart', ----- LIST ID Grouping type status: '%v' ------\n", listID)
 
 			/*
 				сделать обработку запроса на получения документов с name:

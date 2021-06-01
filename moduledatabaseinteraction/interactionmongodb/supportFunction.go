@@ -726,19 +726,21 @@ func getIDGroupingObjectSTIX(qp QueryParameters, listSearch map[string]string) (
 			if ko == vt.Name {
 
 				fmt.Printf("func 'getIDGroupingObjectSTIX', OK")
+				listID[ko] = vt.ID
 
 				isTrue = true
-				listID[ko] = vt.ID
 
 				continue
 			}
 		}
 
 		if !isTrue {
+			id := uuid.NewString()
+
 			listInsert = append(listInsert, datamodels.GroupingDomainObjectsSTIX{
 				CommonPropertiesObjectSTIX: datamodels.CommonPropertiesObjectSTIX{
 					Type: "grouping",
-					ID:   fmt.Sprintf("grouping--%s", uuid.NewString()),
+					ID:   fmt.Sprintf("grouping--%s", id),
 				},
 				CommonPropertiesDomainObjectSTIX: datamodels.CommonPropertiesDomainObjectSTIX{
 					SpecVersion: "2.1",
@@ -747,6 +749,8 @@ func getIDGroupingObjectSTIX(qp QueryParameters, listSearch map[string]string) (
 				Name:        ko,
 				Description: vo,
 			})
+
+			listID[ko] = id
 		}
 
 		isTrue = false

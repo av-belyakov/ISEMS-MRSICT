@@ -301,6 +301,9 @@ func (ws *wrappersSetting) wrapperFuncTypeTechnicalPart(
 				"false positive":                           "ложное срабатывание",
 			})
 			if err != nil {
+
+				fmt.Printf("func 'wrapperFuncTypeTechnicalPart', ERROR: '%s'\n", fmt.Sprint(err))
+
 				errorMessage.ErrorMessage.Error = err
 
 				chanOutput <- errorMessage

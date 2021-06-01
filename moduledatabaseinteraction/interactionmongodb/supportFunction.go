@@ -702,6 +702,8 @@ func ReplacementElementsSTIXObject(qp QueryParameters, l []*datamodels.ElementST
 func getIDGroupingObjectSTIX(qp QueryParameters, listSearch map[string]string) (map[string]string, error) {
 	var listID map[string]string
 
+	fmt.Println("func 'getIDGroupingObjectSTIX', START...")
+
 	//получить все найденные документы, с учетом лимита
 	cur, err := qp.Find(bson.D{
 		bson.E{Key: "commonpropertiesobjectstix.type", Value: "grouping"},
@@ -713,10 +715,18 @@ func getIDGroupingObjectSTIX(qp QueryParameters, listSearch map[string]string) (
 	listTypeStatus := GetListGroupingObjectSTIX(cur)
 	listInsert := []datamodels.GroupingDomainObjectsSTIX{}
 
+	fmt.Printf("func 'getIDGroupingObjectSTIX', listTypeStatus: '%v'\n", listTypeStatus)
+
 	var isTrue bool
 	for ko, vo := range listSearch {
 		for _, vt := range listTypeStatus {
+
+			fmt.Printf("func 'getIDGroupingObjectSTIX', KO: '%s' == vt.Name: '%s'\n", ko, vt.Name)
+
 			if ko == vt.Name {
+
+				fmt.Printf("func 'getIDGroupingObjectSTIX', OK")
+
 				isTrue = true
 				listID[ko] = vt.ID
 

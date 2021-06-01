@@ -705,10 +705,16 @@ func getIDGroupingObjectSTIX(qp QueryParameters, listSearch map[string]string) (
 
 	fmt.Println("func 'getIDGroupingObjectSTIX', START...")
 
+	var ls []string
+
+	for k := range listSearch {
+		ls = append(ls, k)
+	}
+
 	//получить все найденные документы, с учетом лимита
 	cur, err := qp.Find(bson.D{
 		bson.E{Key: "commonpropertiesobjectstix.type", Value: "grouping"},
-		bson.E{Key: "name", Value: bson.E{Key: "$in", Value: listSearch}}})
+		bson.E{Key: "name", Value: bson.E{Key: "$in", Value: ls}}})
 	if err != nil {
 		return listID, err
 	}

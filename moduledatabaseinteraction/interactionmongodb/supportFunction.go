@@ -697,43 +697,32 @@ func ReplacementElementsSTIXObject(qp QueryParameters, l []*datamodels.ElementST
 	return nil
 }
 
-//getIDGroupingObjectSTIX проверяет наличие Grouping STIX DO объектов с заданными именами и при необходимости создает их. Возвращает список
+//GetIDGroupingObjectSTIX проверяет наличие Grouping STIX DO объектов с заданными именами и при необходимости создает их. Возвращает список
 // идентификаторов STIX DO объектов типа Grouping и название объекта.
-func getIDGroupingObjectSTIX(qp QueryParameters, listSearch map[string]string) (map[string]string, error) {
-	var listInsert []interface{}
+func GetIDGroupingObjectSTIX(qp QueryParameters, listSearch map[string]string) (map[string]string, error) {
+	var (
+		isTrue     bool
+		ls         []string
+		listInsert []interface{}
+	)
 	listID := map[string]string{}
-
-	fmt.Println("func 'getIDGroupingObjectSTIX', START...")
-
-	var ls []string
 
 	for k := range listSearch {
 		ls = append(ls, k)
 	}
 
 	//получить все найденные документы, с учетом лимита
-	cur, err := qp.Find( //bson.D{
-		//		bson.E{Key: "commonpropertiesobjectstix.type", Value: "grouping"},
-		bson.D{{Key: "name", Value: bson.E{Key: "$in", Value: ls}}})
+	cur, err := qp.Find(bson.D{{Key: "name", Value: bson.D{{Key: "$in", Value: ls}}}})
 	if err != nil {
 		return listID, err
 	}
 
 	listTypeStatus := GetListGroupingObjectSTIX(cur)
 
-	fmt.Printf("func 'getIDGroupingObjectSTIX', listTypeStatus: '%v'\n", listTypeStatus)
-
-	var isTrue bool
 	for ko, vo := range listSearch {
 		for _, vt := range listTypeStatus {
-
-			fmt.Printf("func 'getIDGroupingObjectSTIX', KO: '%s' == vt.Name: '%s'\n", ko, vt.Name)
-
 			if ko == vt.Name {
-
-				fmt.Printf("func 'getIDGroupingObjectSTIX', OK")
 				listID[ko] = vt.ID
-
 				isTrue = true
 
 				continue
@@ -742,7 +731,6 @@ func getIDGroupingObjectSTIX(qp QueryParameters, listSearch map[string]string) (
 
 		if !isTrue {
 			id := uuid.NewString()
-
 			listInsert = append(listInsert, datamodels.GroupingDomainObjectsSTIX{
 				CommonPropertiesObjectSTIX: datamodels.CommonPropertiesObjectSTIX{
 					Type: "grouping",
@@ -765,8 +753,6 @@ func getIDGroupingObjectSTIX(qp QueryParameters, listSearch map[string]string) (
 	if len(listInsert) == 0 {
 		return listID, nil
 	}
-
-	fmt.Printf("func 'getIDGroupingObjectSTIX', listInsert: '%v'\n", listInsert)
 
 	_, err = qp.InsertData(listInsert, []mongo.IndexModel{
 		{

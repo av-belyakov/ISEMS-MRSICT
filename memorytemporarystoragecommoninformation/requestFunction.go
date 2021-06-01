@@ -194,3 +194,103 @@ func (tst *TemporaryStorageType) DeletingFoundInformationByID(appTaskID string) 
 }
 
 /*** МЕТОДЫ ОТНОСЯЩИЕСЯ К ХРАНИЛИЩУ ПАРАМЕТРОВ ПРИЛОЖЕНИЯ ***/
+
+//SetListDecisionsMade добавление списка принимаемых решений по компьютерным угрозам
+func (tst *TemporaryStorageType) SetListDecisionsMade(l map[string]string) error {
+	chanRes := make(chan channelResponseStorageApplicationParameters)
+	defer func() {
+		close(chanRes)
+	}()
+
+	tst.chanReqParameterStorage <- channelRequestStorageApplicationParameters{
+		actionType:       "set list decisions made",
+		parameterStorage: l,
+		chanRes:          chanRes,
+	}
+
+	return (<-chanRes).errMsg
+}
+
+//GetListDecisionsMade возвращение списка принимаемых решений по компьютерным угрозам
+func (tst *TemporaryStorageType) GetListDecisionsMade() (map[string]string, error) {
+	chanRes := make(chan channelResponseStorageApplicationParameters)
+	defer func() {
+		close(chanRes)
+	}()
+
+	tst.chanReqParameterStorage <- channelRequestStorageApplicationParameters{
+		actionType: "get list decisions made",
+		chanRes:    chanRes,
+	}
+
+	result := <-chanRes
+	l, ok := result.dataParameterStorage.(map[string]string)
+	if !ok {
+		return l, fmt.Errorf("type conversion error")
+	}
+
+	return l, result.errMsg
+}
+
+//GetIDDecisionsMadeSuccessfully возвращение ID решения 'successfully implemented computer threat' по компьютерным угрозам
+func (tst *TemporaryStorageType) GetIDDecisionsMadeSuccessfully() (string, error) {
+	chanRes := make(chan channelResponseStorageApplicationParameters)
+	defer func() {
+		close(chanRes)
+	}()
+
+	tst.chanReqParameterStorage <- channelRequestStorageApplicationParameters{
+		actionType: "get id decisions made type: successfully implemented computer threat",
+		chanRes:    chanRes,
+	}
+
+	result := <-chanRes
+	l, ok := result.dataParameterStorage.(string)
+	if !ok {
+		return l, fmt.Errorf("type conversion error")
+	}
+
+	return l, result.errMsg
+}
+
+//GetIDDecisionsMadeUnsuccessfully возвращение ID решения 'unsuccessfully computer threat' по компьютерным угрозам
+func (tst *TemporaryStorageType) GetIDDecisionsMadeUnsuccessfully() (string, error) {
+	chanRes := make(chan channelResponseStorageApplicationParameters)
+	defer func() {
+		close(chanRes)
+	}()
+
+	tst.chanReqParameterStorage <- channelRequestStorageApplicationParameters{
+		actionType: "get id decisions made type: unsuccessfully computer threat",
+		chanRes:    chanRes,
+	}
+
+	result := <-chanRes
+	l, ok := result.dataParameterStorage.(string)
+	if !ok {
+		return l, fmt.Errorf("type conversion error")
+	}
+
+	return l, result.errMsg
+}
+
+//GetIDDecisionsMadeFalsePositive возвращение ID решения 'false positive' по компьютерным угрозам
+func (tst *TemporaryStorageType) GetIDDecisionsMadeFalsePositive() (string, error) {
+	chanRes := make(chan channelResponseStorageApplicationParameters)
+	defer func() {
+		close(chanRes)
+	}()
+
+	tst.chanReqParameterStorage <- channelRequestStorageApplicationParameters{
+		actionType: "get id decisions made type: false positive",
+		chanRes:    chanRes,
+	}
+
+	result := <-chanRes
+	l, ok := result.dataParameterStorage.(string)
+	if !ok {
+		return l, fmt.Errorf("type conversion error")
+	}
+
+	return l, result.errMsg
+}

@@ -9,6 +9,7 @@ import (
 	. "github.com/onsi/gomega"
 
 	"ISEMS-MRSICT/datamodels"
+	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
 	"ISEMS-MRSICT/moduledatabaseinteraction/interactionmongodb"
 )
 
@@ -16,6 +17,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 	var (
 		connectError error
 		cdmdb        interactionmongodb.ConnectionDescriptorMongoDB
+		tempStorage  *memorytemporarystoragecommoninformation.TemporaryStorageType
 		qp           interactionmongodb.QueryParameters = interactionmongodb.QueryParameters{
 			NameDB:         "isems-mrsict",
 			CollectionName: "stix_object_collection",
@@ -32,7 +34,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 		//подключаемся к базе данных MongoDB
 		connectError = cdmdb.CreateConnection(&datamodels.MongoDBSettings{
-			Host:     "127.0.0.1",
+			Host:     "192.168.13.200",
 			Port:     27017,
 			User:     "module-isems-mrsict",
 			Password: "vkL6Zn$jPmt1e1",
@@ -41,6 +43,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 		qp.ConnectDB = cdmdb.Connection
 
+		tempStorage = memorytemporarystoragecommoninformation.NewTemporaryStorage()
 	})
 
 	var _ = AfterSuite(func() {
@@ -75,7 +78,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 			}))
 
 			Expect(err).ShouldNot(HaveOccurred())
-			Expect(sizeElem).Should(Equal(int64(5)))
+			Expect(sizeElem).Should(Equal(int64(8)))
 		})
 
 		It("Поиск ТОЛЬКО по времени создания STIX объекта, должно быть найдено определенное количество объектов", func() {
@@ -260,11 +263,11 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 			elemSTIXObj := interactionmongodb.GetListElementSTIXObject(cur)
 
-			fmt.Printf("Found '%d' elements and sorted\n", len(elemSTIXObj))
+			/*fmt.Printf("Found '%d' elements and sorted\n", len(elemSTIXObj))
 
 			for _, v := range elemSTIXObj {
 				fmt.Printf("Data type STIX: '%s', time created: '%v'\n", v.DataType, v.Data)
-			}
+			}*/
 
 			/*
 			   Сортировка работает, однако следует помнить что, сортировка может выполнятся только по одной из групп STIX DO,
@@ -273,8 +276,63 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 			   а для STIX CO 'file' поле 'optionalcommonpropertiescyberobservableobjectstix'
 			*/
 
-			Expect(len(elemSTIXObj)).Should(Equal(8))
+			Expect(len(elemSTIXObj)).Should(Equal(11))
 		})
 	})
 
+	Context("Тест 5. Тестируем поиск STIX DO 'grouping' с определенными именами, перечень в списке", func() {
+		It("Должен быть получен список из трех ID", func() {
+			//done := make(chan interface{})
+
+			//go func() {
+			listID, err := interactionmongodb.GetIDGroupingObjectSTIX(qp, map[string]string{
+				"successfully implemented computer threat": "успешно реализованная компьютерная угроза",
+				"unsuccessfully computer threat":           "компьютерная угроза не являющаяся успешной",
+				"false positive":                           "ложное срабатывание",
+			})
+
+			fmt.Printf("Test 5. List ID grouping: '%v'\n", listID)
+
+			Expect(tempStorage.SetListDecisionsMade(listID)).ShouldNot(HaveOccurred())
+
+			ldm, errldm := tempStorage.GetListDecisionsMade()
+
+			fmt.Printf("-=(%v)=-", ldm)
+
+			Expect(errldm).ShouldNot(HaveOccurred())
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(len(listID)).Should(Equal(3))
+
+			//	close(done)
+			//}()
+
+			//Eventually(done, 0.5).Should(BeClosed())
+		})
+	})
+
+	Context("Тест 6. Тестируем получение ID решений к компьютерным угрозам", func() {
+		It("Должен быть получен ID типа 'successfully implemented computer threat'", func() {
+			id, err := tempStorage.GetIDDecisionsMadeSuccessfully()
+
+			fmt.Printf("\tTYPE: 'successfully implemented computer threat' = %s\n", id)
+
+			Expect(err).ShouldNot(HaveOccurred())
+		})
+
+		It("Должен быть получен ID типа 'unsuccessfully computer threat'", func() {
+			id, err := tempStorage.GetIDDecisionsMadeUnsuccessfully()
+
+			fmt.Printf("\tTYPE: 'unsuccessfully computer threat' = %s\n", id)
+
+			Expect(err).ShouldNot(HaveOccurred())
+		})
+
+		It("Должен быть получен ID типа 'false positive'", func() {
+			id, err := tempStorage.GetIDDecisionsMadeFalsePositive()
+
+			fmt.Printf("\tTYPE: 'false positive' = %s\n", id)
+
+			Expect(err).ShouldNot(HaveOccurred())
+		})
+	})
 })

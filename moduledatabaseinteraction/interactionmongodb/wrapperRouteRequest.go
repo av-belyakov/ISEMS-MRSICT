@@ -295,7 +295,7 @@ func (ws *wrappersSetting) wrapperFuncTypeTechnicalPart(
 			и при необходимости создаем новые STIX DO объекты типа 'grouping'
 		*/
 		go func() {
-			listID, err := getIDGroupingObjectSTIX(qp, map[string]string{
+			listID, err := GetIDGroupingObjectSTIX(qp, map[string]string{
 				"successfully implemented computer threat": "успешно реализованная компьютерная угроза",
 				"unsuccessfully computer threat":           "компьютерная угроза не являющаяся успешной",
 				"false positive":                           "ложное срабатывание",

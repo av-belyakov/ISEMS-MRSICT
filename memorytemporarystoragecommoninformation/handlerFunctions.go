@@ -137,3 +137,35 @@ func (tst *TemporaryStorageType) deletingFoundInformationByID(appTaskID string) 
 }
 
 /*** ФУНКЦИИ ОТНОСЯЩИЕСЯ К ХРАНИЛИЩУ ПАРАМЕТРОВ ПРИЛОЖЕНИЯ ***/
+
+//setListDecisionsMade добавление списка принимаемых решений по компьютерным угрозам
+func (tst *TemporaryStorageType) setListDecisionsMade(l interface{}) error {
+	list, ok := l.(map[string]string)
+	if !ok {
+		return fmt.Errorf("type conversion error")
+	}
+
+	tst.storageApplicationParameters.ListTypesDecisionsMadeComputerThreat = list
+
+	return nil
+}
+
+//getListDecisionsMade возвращение списка принимаемых решений по компьютерным угрозам
+func (tst *TemporaryStorageType) getListDecisionsMade() map[string]string {
+	return tst.storageApplicationParameters.ListTypesDecisionsMadeComputerThreat
+}
+
+//getIDDecisionsMadeSuccessfully возвращение ID решения 'successfully implemented computer threat' по компьютерным угрозам
+func (tst *TemporaryStorageType) getIDDecisionsMadeSuccessfully() string {
+	return tst.storageApplicationParameters.ListTypesDecisionsMadeComputerThreat["successfully implemented computer threat"]
+}
+
+//getIDDecisionsMadeUnsuccessfully возвращение ID решения 'unsuccessfully computer threat' по компьютерным угрозам
+func (tst *TemporaryStorageType) getIDDecisionsMadeUnsuccessfully() string {
+	return tst.storageApplicationParameters.ListTypesDecisionsMadeComputerThreat["unsuccessfully computer threat"]
+}
+
+//getIDDecisionsMadeFalsePositive возвращение ID решения 'false positive' по компьютерным угрозам
+func (tst *TemporaryStorageType) getIDDecisionsMadeFalsePositive() string {
+	return tst.storageApplicationParameters.ListTypesDecisionsMadeComputerThreat["false positive"]
+}

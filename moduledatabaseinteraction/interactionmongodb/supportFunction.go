@@ -756,7 +756,7 @@ func getIDGroupingObjectSTIX(qp QueryParameters, listSearch map[string]string) (
 		return listID, nil
 	}
 
-	_, err = qp.InsertData([]interface{}{listInsert}, []mongo.IndexModel{})
+	_, err = qp.InsertData([]interface{}{[]interface{}{listInsert}}, []mongo.IndexModel{})
 
 	return listID, err
 }

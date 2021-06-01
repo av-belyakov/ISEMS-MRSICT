@@ -760,7 +760,20 @@ func getIDGroupingObjectSTIX(qp QueryParameters, listSearch map[string]string) (
 
 	fmt.Printf("func 'getIDGroupingObjectSTIX', listInsert: '%v'\n", listInsert)
 
-	_, err = qp.InsertData(listInsert, []mongo.IndexModel{})
+	_, err = qp.InsertData(listInsert, []mongo.IndexModel{
+		{
+			Keys: bson.D{
+				{Key: "commonpropertiesobjectstix.type", Value: 1},
+				{Key: "commonpropertiesobjectstix.id", Value: 1},
+			},
+			Options: &options.IndexOptions{},
+		}, {
+			Keys: bson.D{
+				{Key: "source_ref", Value: 1},
+			},
+			Options: &options.IndexOptions{},
+		},
+	})
 
 	return listID, err
 }

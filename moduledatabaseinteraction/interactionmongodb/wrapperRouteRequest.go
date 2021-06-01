@@ -297,7 +297,7 @@ func (ws *wrappersSetting) wrapperFuncTypeTechnicalPart(
 		go func() {
 			listID, err := getIDGroupingObjectSTIX(qp, map[string]string{
 				"successfully implemented computer threat": "успешно реализованная компьютерная угроза",
-				"unsuccessfully computer threat":           "безуспешная компьютерная угроза",
+				"unsuccessfully computer threat":           "компьютерная угроза не являющаяся успешной",
 				"false positive":                           "ложное срабатывание",
 			})
 			if err != nil {

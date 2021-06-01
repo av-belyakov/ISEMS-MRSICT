@@ -700,7 +700,10 @@ func ReplacementElementsSTIXObject(qp QueryParameters, l []*datamodels.ElementST
 //getIDGroupingObjectSTIX проверяет наличие Grouping STIX DO объектов с заданными именами и при необходимости создает их. Возвращает список
 // идентификаторов STIX DO объектов типа Grouping и название объекта.
 func getIDGroupingObjectSTIX(qp QueryParameters, listSearch map[string]string) (map[string]string, error) {
-	var listID map[string]string
+	var (
+		listID     map[string]string
+		listInsert []interface{}
+	)
 
 	fmt.Println("func 'getIDGroupingObjectSTIX', START...")
 
@@ -713,7 +716,6 @@ func getIDGroupingObjectSTIX(qp QueryParameters, listSearch map[string]string) (
 	}
 
 	listTypeStatus := GetListGroupingObjectSTIX(cur)
-	listInsert := []datamodels.GroupingDomainObjectsSTIX{}
 
 	fmt.Printf("func 'getIDGroupingObjectSTIX', listTypeStatus: '%v'\n", listTypeStatus)
 
@@ -756,7 +758,9 @@ func getIDGroupingObjectSTIX(qp QueryParameters, listSearch map[string]string) (
 		return listID, nil
 	}
 
-	_, err = qp.InsertData([]interface{}{[]interface{}{listInsert}}, []mongo.IndexModel{})
+	fmt.Printf("func 'getIDGroupingObjectSTIX', listInsert: '%v'\n", listInsert)
+
+	_, err = qp.InsertData(listInsert, []mongo.IndexModel{})
 
 	return listID, err
 }

@@ -1,0 +1,5 @@
+{
+    "successfully implemented computer threat": "успешно реализованная компьютерная угроза",
+	"unsuccessfully computer threat":           "компьютерная угроза не являющаяся успешной",
+	"false positive":                           "ложное срабатывание"
+}

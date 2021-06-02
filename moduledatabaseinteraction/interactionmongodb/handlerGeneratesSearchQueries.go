@@ -92,14 +92,15 @@ func CreateSearchQueriesSTIXObject(sp *datamodels.SearchThroughCollectionSTIXObj
 //HandlerSpecificSearchFields обработчик поля "specific_search_fields"
 func HandlerSpecificSearchFields(ssf *datamodels.SpecificSearchFieldsSTIXObjectType) bson.E {
 	var (
-		name    bson.D
-		aliases bson.D
-		seens   bson.D
-		roles   bson.D
-		country bson.D
-		city    bson.D
-		number  bson.D
-		value   bson.D
+		name      bson.D
+		aliases   bson.D
+		seens     bson.D
+		published bson.D
+		roles     bson.D
+		country   bson.D
+		city      bson.D
+		number    bson.D
+		value     bson.D
 	)
 
 	timeFirstSeenIsExist := ssf.FirstSeen.Start.Unix() > 0 && ssf.FirstSeen.End.Unix() > 0
@@ -126,6 +127,14 @@ func HandlerSpecificSearchFields(ssf *datamodels.SpecificSearchFieldsSTIXObjectT
 			{Key: "$gte", Value: ssf.LastSeen.Start},
 			{Key: "$lte", Value: ssf.LastSeen.End},
 		}}}
+	}
+
+	/*
+		параметр Published есть только в объекте STIX DO Report и отвечает за 'закрытие' объекта Report, с помощью данного параметра будет
+		осуществлятся поиск по 'открытым' и 'закрытым' отчетам (данный параметр в тестах не проверялся)
+	*/
+	if ssf.Published.Unix() > 0 {
+		published = bson.D{{Key: "published", Value: bson.D{{Key: "$gte", Value: ssf.Published}}}}
 	}
 
 	if ssf.Name != "" {
@@ -162,6 +171,7 @@ func HandlerSpecificSearchFields(ssf *datamodels.SpecificSearchFieldsSTIXObjectT
 			name,
 			aliases,
 			seens,
+			published,
 			roles,
 			country,
 			city,

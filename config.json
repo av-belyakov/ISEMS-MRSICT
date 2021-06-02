@@ -2,7 +2,7 @@
     "connectionsDataBase": {
         "mongoDBSettings": {
             "isUseSocket": false,
-            "host": "127.0.0.1",
+            "host": "192.168.13.200",
             "port": 27017,
             "user": "module-isems-mrsict",
             "password": "vkL6Zn$jPmt1e1",
@@ -28,7 +28,7 @@
     "moduleAPIRequestProcessingSettings_comments": "настройки сетевых соеденений обеспечивающие доступ к подсистеме isems-mrsict из внешнего программного обеспечения",
     "moduleAPIInteractionExternalSoftware": {},
     "moduleAPIInteractionExternalSoftware_comments": "настройки доступа к внешнему программному обеспечению являющемуся источником информации о компьютерных угрозах",
-    "CryptographySettings": {
+    "cryptographySettings": {
         "pathRootCA_of_moduleAPIRequestProcessingSettings": "keys/rootCA.pem",
         "pathRootCA_of_moduleAPIRequestProcessingSettings_comments": "месторасположение корневого сертификата для сервера модуля 'moduleApiRequestProcessingSettings'",
         "pathCertFile_of_moduleAPIRequestProcessingSettings": "keys/isems_mrsict_cert.pem",
@@ -36,7 +36,12 @@
         "pathPrivateKeyFile_of_moduleAPIRequestProcessingSettings": "keys/isems_mrsict_private_key.pem",
         "pathPrivateKeyFile_of_moduleAPIRequestProcessingSettings_comments": "месторасположение файла приватного ключа для сервера модуля 'moduleApiRequestProcessingSettings'"
     },
-    "CryptographySettings_comments": "настройки связанные с криптографией и защитой каналов связи",
+    "cryptographySettings_comments": "настройки связанные с криптографией и защитой каналов связи",
+    "defaultSettingsFiles": {
+        "settingsStatusesDecisionsMadeComputerThreats": "defaultsettingsfiles/settingsStatusesDecisionsMadeComputerThreats.json",
+        "settingsComputerThreatTypes": "defaultsettingsfiles/settingsComputerThreatTypes.json"
+    },
+    "defaultSettingsFiles_comments": "файлы с дефолтными настройками приложения",
     "pathStorageDownloadedFiles": "/home/ISEMS-MRSICT/storage_files",
     "pathStorageDownloadedFiles_comments": "место для хранения загруженных файлов",
     "locationLogDirectory": "/var/log/",

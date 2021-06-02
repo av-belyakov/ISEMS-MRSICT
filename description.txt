@@ -110,7 +110,9 @@ About Computer Threats (ISEMS-MRSICT).
                     last_seen: {
                         start: STRING типа time // в формате "2016-05-12T08:17:27.000Z"
                         end: STRING типа time // в формате "2016-05-12T08:17:27.000Z"
-                    }
+                    },
+                    /* равно или больше чем заданное пользователем время, когда отчет был опубликован */
+                    published: STRING типа time // в формате "2016-05-12T08:17:27.000Z"
                     roles: [STRING] // список ролей
                     country: STRING // наименование страны
                     city: STRING // наименование города

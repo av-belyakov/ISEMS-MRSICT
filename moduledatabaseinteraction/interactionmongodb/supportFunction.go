@@ -699,13 +699,13 @@ func ReplacementElementsSTIXObject(qp QueryParameters, l []*datamodels.ElementST
 
 //GetIDGroupingObjectSTIX проверяет наличие Grouping STIX DO объектов с заданными именами и при необходимости создает их. Возвращает список
 // идентификаторов STIX DO объектов типа Grouping и название объекта.
-func GetIDGroupingObjectSTIX(qp QueryParameters, listSearch map[string]string) (map[string]string, error) {
+func GetIDGroupingObjectSTIX(qp QueryParameters, listSearch map[string]datamodels.StorageApplicationCommonListType) (map[string]datamodels.StorageApplicationCommonListType, error) {
 	var (
 		isTrue     bool
 		ls         []string
 		listInsert []interface{}
 	)
-	listID := map[string]string{}
+	listID := map[string]datamodels.StorageApplicationCommonListType{}
 
 	for k := range listSearch {
 		ls = append(ls, k)
@@ -722,7 +722,11 @@ func GetIDGroupingObjectSTIX(qp QueryParameters, listSearch map[string]string) (
 	for ko, vo := range listSearch {
 		for _, vt := range listTypeStatus {
 			if ko == vt.Name {
-				listID[ko] = vt.ID
+				listID[ko] = datamodels.StorageApplicationCommonListType{
+					ID:          vt.ID,
+					Description: vo.Description,
+				}
+
 				isTrue = true
 
 				continue
@@ -741,10 +745,13 @@ func GetIDGroupingObjectSTIX(qp QueryParameters, listSearch map[string]string) (
 					Created:     time.Now(),
 				},
 				Name:        ko,
-				Description: vo,
+				Description: vo.Description,
 			})
 
-			listID[ko] = id
+			listID[ko] = datamodels.StorageApplicationCommonListType{
+				ID:          id,
+				Description: vo.Description,
+			}
 		}
 
 		isTrue = false

@@ -2,7 +2,9 @@ package interactionmongodb_test
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"time"
 
 	. "github.com/onsi/ginkgo"
@@ -282,31 +284,41 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 	Context("Тест 5. Тестируем поиск STIX DO 'grouping' с определенными именами, перечень в списке", func() {
 		It("Должен быть получен список из трех ID", func() {
-			//done := make(chan interface{})
+			done := make(chan interface{})
 
-			//go func() {
-			listID, err := interactionmongodb.GetIDGroupingObjectSTIX(qp, map[string]string{
-				"successfully implemented computer threat": "успешно реализованная компьютерная угроза",
-				"unsuccessfully computer threat":           "компьютерная угроза не являющаяся успешной",
-				"false positive":                           "ложное срабатывание",
-			})
+			go func() {
+				tmp := map[string]string{}
+				configFileSettings := map[string]datamodels.StorageApplicationCommonListType{}
 
-			fmt.Printf("Test 5. List ID grouping: '%v'\n", listID)
+				//проверяем наличие файлов с дефолтными настройками приложения
+				row, err := ioutil.ReadFile("../../defaultsettingsfiles/settingsStatusesDecisionsMadeComputerThreats.json")
+				Expect(err).ShouldNot(HaveOccurred())
 
-			Expect(tempStorage.SetListDecisionsMade(listID)).ShouldNot(HaveOccurred())
+				err = json.Unmarshal(row, &tmp)
+				Expect(err).ShouldNot(HaveOccurred())
 
-			ldm, errldm := tempStorage.GetListDecisionsMade()
+				for k, v := range tmp {
+					configFileSettings[k] = datamodels.StorageApplicationCommonListType{Description: v}
+				}
 
-			fmt.Printf("-=(%v)=-", ldm)
+				listID, err := interactionmongodb.GetIDGroupingObjectSTIX(qp, configFileSettings)
 
-			Expect(errldm).ShouldNot(HaveOccurred())
-			Expect(err).ShouldNot(HaveOccurred())
-			Expect(len(listID)).Should(Equal(3))
+				fmt.Printf("Test 5. List ID grouping: '%v'\n", listID)
 
-			//	close(done)
-			//}()
+				Expect(tempStorage.SetListDecisionsMade(listID)).ShouldNot(HaveOccurred())
 
-			//Eventually(done, 0.5).Should(BeClosed())
+				ldm, errldm := tempStorage.GetListDecisionsMade()
+
+				fmt.Printf("-= ListDecisionsMade: (%v)=-", ldm)
+
+				Expect(errldm).ShouldNot(HaveOccurred())
+				Expect(err).ShouldNot(HaveOccurred())
+				Expect(len(listID)).Should(Equal(3))
+
+				close(done)
+			}()
+
+			Eventually(done, 0.5).Should(BeClosed())
 		})
 	})
 
@@ -333,6 +345,39 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 			fmt.Printf("\tTYPE: 'false positive' = %s\n", id)
 
 			Expect(err).ShouldNot(HaveOccurred())
+		})
+	})
+
+	Context("Тест 7. Тестируем поиск STIX DO 'grouping' с определенными именами, перечень в списке", func() {
+		It("Должен быть получен список из 35 ID", func() {
+			tmp := map[string]string{}
+			configFileSettings := map[string]datamodels.StorageApplicationCommonListType{}
+
+			//проверяем наличие файлов с дефолтными настройками приложения
+			row, err := ioutil.ReadFile("../../defaultsettingsfiles/settingsComputerThreatTypes.json")
+			Expect(err).ShouldNot(HaveOccurred())
+
+			err = json.Unmarshal(row, &tmp)
+			Expect(err).ShouldNot(HaveOccurred())
+
+			for k, v := range tmp {
+				configFileSettings[k] = datamodels.StorageApplicationCommonListType{Description: v}
+			}
+
+			listID, err := interactionmongodb.GetIDGroupingObjectSTIX(qp, configFileSettings)
+			Expect(err).ShouldNot(HaveOccurred())
+
+			fmt.Printf("Test 5. List ID grouping: '%v'\n", listID)
+
+			Expect(tempStorage.SetListComputerThreat(listID)).ShouldNot(HaveOccurred())
+
+			ldm, errldm := tempStorage.GetListComputerThreat()
+
+			fmt.Printf("-= ComputerThreat: (%v)=-", ldm)
+
+			Expect(errldm).ShouldNot(HaveOccurred())
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(len(listID)).Should(Equal(3))
 		})
 	})
 })

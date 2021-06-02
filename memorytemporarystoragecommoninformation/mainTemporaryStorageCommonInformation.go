@@ -1,9 +1,10 @@
 package memorytemporarystoragecommoninformation
 
 import (
-	"fmt"
 	"sync"
 	"time"
+
+	"ISEMS-MRSICT/datamodels"
 
 	"github.com/google/uuid"
 )
@@ -103,8 +104,8 @@ type TemporaryStorageFoundInformation struct {
 // ListTypesDecisionsMadeComputerThreat - типы принимаемых решений по компьютерным угрозам
 // ListTypeComputerThreat - список типов компьютерных угроз
 type StorageApplicationParametersType struct {
-	ListTypesDecisionsMadeComputerThreat map[string]string
-	ListTypeComputerThreat               map[string]string
+	ListTypesDecisionsMadeComputerThreat map[string]datamodels.StorageApplicationCommonListType
+	ListTypesComputerThreat              map[string]datamodels.StorageApplicationCommonListType
 }
 
 //channelRequestFoundInformationStorage канал через который передаются запросы к хранилищу найденной информации
@@ -231,8 +232,6 @@ func NewTemporaryStorage() *TemporaryStorageType {
 					}
 
 				case msg := <-chanReqParameter:
-					fmt.Printf("NewTemporaryStorage: '%v'\n", msg)
-
 					switch msg.actionType {
 					case "set list decisions made":
 						msg.chanRes <- channelResponseStorageApplicationParameters{
@@ -260,10 +259,14 @@ func NewTemporaryStorage() *TemporaryStorageType {
 						}
 
 					case "set type computer threat":
+						msg.chanRes <- channelResponseStorageApplicationParameters{
+							errMsg: stmc.setListComputerThreat(msg.parameterStorage),
+						}
 
 					case "get type computer threat":
-
-						//case "get id type computer threat: ":
+						msg.chanRes <- channelResponseStorageApplicationParameters{
+							dataParameterStorage: stmc.getListComputerThreat(),
+						}
 
 					}
 				}

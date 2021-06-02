@@ -295,31 +295,24 @@ func (ws *wrappersSetting) wrapperFuncTypeTechnicalPart(
 			и при необходимости создаем новые STIX DO объекты типа 'grouping'
 		*/
 		go func() {
-			listID, err := GetIDGroupingObjectSTIX(qp, map[string]string{
-				"successfully implemented computer threat": "успешно реализованная компьютерная угроза",
-				"unsuccessfully computer threat":           "компьютерная угроза не являющаяся успешной",
-				"false positive":                           "ложное срабатывание",
-			})
+			ldm, err := tst.GetListDecisionsMade()
 			if err != nil {
-
-				fmt.Printf("func 'wrapperFuncTypeTechnicalPart', ERROR: '%s'\n", fmt.Sprint(err))
-
 				errorMessage.ErrorMessage.Error = err
-
 				chanOutput <- errorMessage
+
+				return
 			}
 
-			fmt.Printf("func 'wrapperFuncTypeTechnicalPart', ----- LIST ID Grouping type status: '%v' ------\n", listID)
+			listID, err := GetIDGroupingObjectSTIX(qp, ldm)
+			if err != nil {
+				errorMessage.ErrorMessage.Error = err
+				chanOutput <- errorMessage
 
-			/*
-				сделать обработку запроса на получения документов с name:
-					"successfully implemented computer threat",
-					"unsuccessfully computer threat",
-					"false positive".
-				Проверить наличие этих документов, если нет какого то из них или всехб то создать новые и записать
-				их ID во временоое хранилище. Если подобные документы есть, тогда получить их ID и записать во временное
-				хранилище
-			*/
+				return
+			}
+
+			//добавляем список ID во временное хранилище
+			tst.SetListDecisionsMade(listID)
 		}()
 
 		/*
@@ -327,9 +320,24 @@ func (ws *wrappersSetting) wrapperFuncTypeTechnicalPart(
 			виду компьютерного воздействия
 		*/
 		go func() {
-			/*
-			   сделать аналогично написанному выше, только для grouping STIX DO относящихся к типам КА
-			*/
+			lct, err := tst.GetListComputerThreat()
+			if err != nil {
+				errorMessage.ErrorMessage.Error = err
+				chanOutput <- errorMessage
+
+				return
+			}
+
+			listID, err := GetIDGroupingObjectSTIX(qp, lct)
+			if err != nil {
+				errorMessage.ErrorMessage.Error = err
+				chanOutput <- errorMessage
+
+				return
+			}
+
+			//добавляем список ID во временное хранилище
+			tst.SetListComputerThreat(listID)
 		}()
 	}
 }

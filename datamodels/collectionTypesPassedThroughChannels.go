@@ -59,3 +59,13 @@ type ModuleReguestProcessingChannel struct {
 	DataType   int
 	Data       *[]byte
 }
+
+/***  Описание 'общих' типов данных  ***/
+
+//StorageApplicationCommonListType описание общего списка связанного с временной информацией по компьютерным угрозам
+// ID - уникальный идентификатор STIX DO объекта связанного с информацией о компьютерной угрозе
+// Description - дополнительное описание
+type StorageApplicationCommonListType struct {
+	ID          string
+	Description string
+}

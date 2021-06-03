@@ -17,6 +17,7 @@ func CreateSearchQueriesSTIXObject(sp *datamodels.SearchThroughCollectionSTIXObj
 		documentsType           bson.E
 		dataTimeActionForObject bson.E
 		createdByRef            bson.E
+		ssf                     bson.A
 	)
 
 	if len(sp.DocumentsID) > 0 {
@@ -67,18 +68,8 @@ func CreateSearchQueriesSTIXObject(sp *datamodels.SearchThroughCollectionSTIXObj
 		}
 	}
 
-	//между всеми объектами sp.SpecificSearchFields применяется логика "ИЛИ"
-	if sizessf == 1 {
-		return bson.D{
-			documentsType,
-			dataTimeActionForObject,
-			createdByRef,
-			HandlerSpecificSearchFields(&sp.SpecificSearchFields[0]),
-		}
-	}
-	var ssf bson.A
 	for _, v := range sp.SpecificSearchFields {
-		ssf = append(ssf, bson.D{HandlerSpecificSearchFields(&v)})
+		ssf = append(ssf, HandlerSpecificSearchFields(sp.DocumentsType, &v))
 	}
 
 	return bson.D{
@@ -90,24 +81,24 @@ func CreateSearchQueriesSTIXObject(sp *datamodels.SearchThroughCollectionSTIXObj
 }
 
 //HandlerSpecificSearchFields обработчик поля "specific_search_fields"
-func HandlerSpecificSearchFields(ssf *datamodels.SpecificSearchFieldsSTIXObjectType) bson.E {
+func HandlerSpecificSearchFields(ldt []string, ssf *datamodels.SpecificSearchFieldsSTIXObjectType) bson.D {
 	var (
-		name      bson.D
-		aliases   bson.D
-		seens     bson.D
-		published bson.D
-		roles     bson.D
-		country   bson.D
-		city      bson.D
-		number    bson.D
-		value     bson.D
+		name      bson.E
+		aliases   bson.E
+		seens     bson.E
+		published bson.E
+		roles     bson.E
+		country   bson.E
+		city      bson.E
+		number    bson.E
+		value     bson.E
 	)
 
 	timeFirstSeenIsExist := ssf.FirstSeen.Start.Unix() > 0 && ssf.FirstSeen.End.Unix() > 0
 	timeLastSeenIsExist := ssf.LastSeen.Start.Unix() > 0 && ssf.LastSeen.End.Unix() > 0
 
 	if timeFirstSeenIsExist && timeLastSeenIsExist {
-		seens = bson.D{{Key: "$or", Value: bson.A{
+		seens = bson.E{Key: "$or", Value: bson.A{
 			bson.D{{Key: "first_seen", Value: bson.D{
 				{Key: "$gte", Value: ssf.FirstSeen.Start},
 				{Key: "$lte", Value: ssf.FirstSeen.End},
@@ -116,74 +107,77 @@ func HandlerSpecificSearchFields(ssf *datamodels.SpecificSearchFieldsSTIXObjectT
 				{Key: "$gte", Value: ssf.LastSeen.Start},
 				{Key: "$lte", Value: ssf.LastSeen.End},
 			}}},
-		}}}
+		}}
 	} else if timeFirstSeenIsExist && !timeLastSeenIsExist {
-		seens = bson.D{{Key: "first_seen", Value: bson.D{
+		seens = bson.E{Key: "first_seen", Value: bson.D{
 			{Key: "$gte", Value: ssf.FirstSeen.Start},
 			{Key: "$lte", Value: ssf.FirstSeen.End},
-		}}}
+		}}
 	} else if !timeFirstSeenIsExist && timeLastSeenIsExist {
-		seens = bson.D{{Key: "last_seen", Value: bson.D{
+		seens = bson.E{Key: "last_seen", Value: bson.D{
 			{Key: "$gte", Value: ssf.LastSeen.Start},
 			{Key: "$lte", Value: ssf.LastSeen.End},
-		}}}
+		}}
 	}
 
 	/*
 		параметр Published есть только в объекте STIX DO Report и отвечает за 'закрытие' объекта Report, с помощью данного параметра будет
-		осуществлятся поиск по 'открытым' и 'закрытым' отчетам (данный параметр в тестах не проверялся)
+		осуществлятся поиск по 'открытым' и 'закрытым' отчетам.
+		Поиск по полю 'published' будет выполнятся только если поле 'documents_type' содержит один элемент, а тип STIX DO будет равен "report".
+		В остальных случаях поиск по полю 'published' будет игнорироватся
 	*/
-	if ssf.Published.Unix() > 0 {
-		published = bson.D{{Key: "published", Value: bson.D{{Key: "$gte", Value: ssf.Published}}}}
+	if len(ldt) == 1 && ldt[0] == "report" {
+		if ssf.Published.Unix() > 0 {
+			published = bson.E{Key: "published", Value: bson.D{{Key: "$gt", Value: ssf.Published}}}
+		} else {
+			published = bson.E{Key: "published", Value: bson.D{{Key: "$eq", Value: ssf.Published}}}
+		}
 	}
 
 	if ssf.Name != "" {
-		name = bson.D{{Key: "name", Value: ssf.Name}}
+		name = bson.E{Key: "name", Value: ssf.Name}
 	}
 
 	if len(ssf.Aliases) > 0 {
-		aliases = bson.D{{Key: "aliases", Value: bson.D{{Key: "$in", Value: ssf.Aliases}}}}
+		aliases = bson.E{Key: "aliases", Value: bson.D{{Key: "$in", Value: ssf.Aliases}}}
 	}
 
 	if len(ssf.Roles) > 0 {
-		roles = bson.D{{Key: "roles", Value: bson.D{{Key: "$in", Value: ssf.Roles}}}}
+		roles = bson.E{Key: "roles", Value: bson.D{{Key: "$in", Value: ssf.Roles}}}
 	}
 
 	if ssf.Country != "" {
-		country = bson.D{{Key: "country", Value: ssf.Country}}
+		country = bson.E{Key: "country", Value: ssf.Country}
 	}
 
 	if ssf.City != "" {
-		city = bson.D{{Key: "city", Value: ssf.City}}
+		city = bson.E{Key: "city", Value: ssf.City}
 	}
 
 	if ssf.NumberAutonomousSystem > 0 {
-		number = bson.D{{Key: "$eq", Value: bson.D{{Key: "number", Value: ssf.NumberAutonomousSystem}}}}
+		number = bson.E{Key: "$eq", Value: bson.D{{Key: "number", Value: ssf.NumberAutonomousSystem}}}
 	}
 
 	if len(ssf.Value) > 0 {
 		value = HandlerValueField(ssf.Value)
 	}
 
-	return bson.E{
-		Key: "$and",
-		Value: bson.A{
-			name,
-			aliases,
-			seens,
-			published,
-			roles,
-			country,
-			city,
-			number,
-			value,
-		},
+	return bson.D{
+		name,
+		aliases,
+		seens,
+		published,
+		roles,
+		country,
+		city,
+		number,
+		value,
 	}
 }
 
 //HandlerValueField обработка поля "value" которое может содержать любые из следующих типов значений: "domain-name", "email-addr", "ipv4-addr",
 // "ipv6-addr" или "url"
-func HandlerValueField(listValue []string) bson.D {
+func HandlerValueField(listValue []string) bson.E {
 	var (
 		tl                            bson.A
 		listURL, listAllRemainingOnes = []string{}, []string{}
@@ -258,8 +252,8 @@ func HandlerValueField(listValue []string) bson.D {
 	}
 
 	if len(tl) == 0 {
-		return bson.D{}
+		return bson.E{}
 	}
 
-	return bson.D{{Key: "$or", Value: tl}}
+	return bson.E{Key: "$or", Value: tl}
 }

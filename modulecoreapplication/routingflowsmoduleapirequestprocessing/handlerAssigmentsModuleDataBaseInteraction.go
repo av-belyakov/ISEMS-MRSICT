@@ -165,6 +165,10 @@ func handlerDataBaseResponse(
 		//пока заглушка, будет использоватся для обработки ответов от БД не связанных с секцией 'handling search requests'
 	}
 
+	//удаляем задачу и результаты поиска информации, если они есть
+	tst.DeletingTaskByID(data.AppTaskID)
+	tst.DeletingFoundInformationByID(data.AppTaskID)
+
 	return nil
 }
 
@@ -305,10 +309,6 @@ func handlingSearchRequestsSTIXObject(
 				}
 			}
 		}
-
-		//удаляем задачу и результаты поиска информации, если они есть
-		tst.DeletingTaskByID(data.AppTaskID)
-		tst.DeletingFoundInformationByID(data.AppTaskID)
 	}
 
 	return nil

@@ -711,7 +711,7 @@ func GetIDGroupingObjectSTIX(qp QueryParameters, listSearch map[string]datamodel
 		ls = append(ls, k)
 	}
 
-	//получить все найденные документы, с учетом лимита
+	//получить все найденные документы
 	cur, err := qp.Find(bson.D{{Key: "name", Value: bson.D{{Key: "$in", Value: ls}}}})
 	if err != nil {
 		return listID, err

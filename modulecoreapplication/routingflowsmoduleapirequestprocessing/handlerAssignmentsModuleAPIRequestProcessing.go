@@ -289,6 +289,7 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 
 			return
 		}
+
 		clim.ChannelsModuleDataBaseInteraction.ChannelsMongoDB.InputModule <- datamodels.ModuleDataBaseInteractionChannel{
 			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
 				ModuleGeneratorMessage: "module core application",

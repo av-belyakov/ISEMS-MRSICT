@@ -130,7 +130,7 @@ func HandlerSpecificSearchFields(ldt []string, ssf *datamodels.SpecificSearchFie
 		if ssf.Published.Unix() > 0 {
 			published = bson.E{Key: "published", Value: bson.D{{Key: "$gt", Value: ssf.Published}}}
 		} else {
-			published = bson.E{Key: "published", Value: bson.D{{Key: "$eq", Value: ssf.Published}}}
+			published = bson.E{Key: "published", Value: bson.D{{Key: "$lte", Value: ssf.Published}}}
 		}
 	}
 

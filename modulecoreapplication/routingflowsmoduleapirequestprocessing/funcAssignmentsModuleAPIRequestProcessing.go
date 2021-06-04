@@ -145,7 +145,6 @@ func CheckSearchSTIXObject(req *datamodels.ModAPIRequestProcessingResJSONSearchR
 
 	for k, v := range sp.SpecificSearchFields {
 		if len(v.Value) > 0 {
-			//if err := checkSearchFieldsValue(req.CollectionName, v.Value); err != nil {
 			if err := checkSearchFieldsValue(v.Value); err != nil {
 				return *req, err
 			}

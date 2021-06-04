@@ -479,6 +479,9 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 
 			elemSTIXObj := interactionmongodb.GetListElementSTIXObject(cur)
+
+			fmt.Printf("Должен быть получен список из 1 элемента типа 'report', поле 'published' которого содержит пустое значение: '%v'\n", *elemSTIXObj[0])
+
 			Expect(len(elemSTIXObj)).Should(Equal(1))
 		})
 
@@ -499,6 +502,9 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 
 			elemSTIXObj := interactionmongodb.GetListElementSTIXObject(cur)
+
+			fmt.Printf("Должен быть получен список из 1 элемента типа 'report', с заполненным полем 'published': '%v'\n", *elemSTIXObj[0])
+
 			Expect(len(elemSTIXObj)).Should(Equal(1))
 		})
 
@@ -519,7 +525,43 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 
 			elemSTIXObj := interactionmongodb.GetListElementSTIXObject(cur)
+			listType := map[string]int{}
+			for _, v := range elemSTIXObj {
+				objType := v.Data.GetType()
+
+				if num, ok := listType[objType]; ok {
+					listType[objType] = num + 1
+				} else {
+					listType[objType] = 1
+				}
+			}
+
+			fmt.Println("____ COUNT ELEMENT TYPES____")
+			for k, v := range listType {
+				fmt.Printf("Element type: '%s' = %d\n", k, v)
+			}
+
 			Expect(len(elemSTIXObj)).Should(Equal(44))
+		})
+
+		It("Должен быть получен STIX объект типа 'grouping' с заданным именем в поле Name", func() {
+			cur, err := qp.FindAllWithLimit(
+				interactionmongodb.CreateSearchQueriesSTIXObject(&datamodels.SearchThroughCollectionSTIXObjectsType{
+					DocumentsType:        []string{"grouping"},
+					SpecificSearchFields: []datamodels.SpecificSearchFieldsSTIXObjectType{{Name: "unsuccessfully computer threat"}},
+				}), &interactionmongodb.FindAllWithLimitOptions{
+					Offset:        1,
+					LimitMaxSize:  100,
+					SortField:     "",
+					SortAscending: false,
+				})
+			Expect(err).ShouldNot(HaveOccurred())
+
+			elemSTIXObj := interactionmongodb.GetListElementSTIXObject(cur)
+
+			fmt.Printf("STIX DO type 'grouping': '%v'\n", *elemSTIXObj[0])
+
+			Expect(len(elemSTIXObj)).Should(Equal(1))
 		})
 	})
 })

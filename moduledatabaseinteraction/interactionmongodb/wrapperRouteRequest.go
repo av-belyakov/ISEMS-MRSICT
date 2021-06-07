@@ -258,7 +258,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 			AppTaskID: ws.DataRequest.AppTaskID,
 		}
 
-	case "":
+	case "stix object list type grouping":
 
 	default:
 		errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = fmt.Errorf("the name of the database collection is not defined")

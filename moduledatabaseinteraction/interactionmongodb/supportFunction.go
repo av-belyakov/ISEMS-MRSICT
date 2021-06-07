@@ -4,7 +4,9 @@ import (
 	"context"
 	"fmt"
 	"net"
+	"regexp"
 	"time"
+
 
 	"ISEMS-MRSICT/commonlibs"
 	"ISEMS-MRSICT/datamodels"
@@ -694,6 +696,39 @@ func ReplacementElementsSTIXObject(qp QueryParameters, l []*datamodels.ElementST
 		return err
 	}
 
+	return nil
+}
+
+//FindRBObjectByName выполняет поиск в БД, Reference Book объектов по их ID и возвращает список объектов типа datamodels.Vocabulary - справочник
+func FindRBObjectsByNames(qp QueryParameters, listNames []string) (datamodels.Vocabularys, error) {
+	//var objID primitive.A
+	//for _, v := range listNames {
+	//	obj
+	//}
+	return nil, nil
+}
+
+//FilterEditabelRB - функция проверки и фильтрации объектов RB на то что они являются редактируемыми
+func FilterEditabelRB(listRB datamodels.Vocabularys) (datamodels.Vocabularys, datamodels.Vocabularys) {
+	var (
+		listNotEditable datamodels.Vocabularys
+		listEditable    datamodels.Vocabularys
+	)
+
+	for _, v := range listRB {
+		if regexp.MustCompile("-enum$").MatchString(v.Name) {
+			listNotEditable = append(listNotEditable, v)
+		}
+		if regexp.MustCompile("-ov$").MatchString(v.Name) {
+			listEditable = append(listEditable, v)
+		}
+	}
+	listRB = listEditable
+	return listEditable, listNotEditable
+}
+
+// ComparasionListRBbject - функция поэлементного сравнения вдух списков RB-объектов
+func ComparasionListRBbject(compList1 datamodels.Vocabularys, compList2 datamodels.Vocabularys) []datamodels.DifferentObjectType {
 	return nil
 }
 

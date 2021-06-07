@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"ISEMS-MRSICT/commonhandlers"
+	"ISEMS-MRSICT/commonlibs"
 	"ISEMS-MRSICT/datamodels"
 	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
 
@@ -27,7 +28,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 
 	var (
 		err error
-		fn  = "wrapperFuncTypeHandlingSTIXObject"
+		fn  = commonlibs.GetFuncName() //"wrapperFuncTypeHandlingSTIXObject"
 		qp  = QueryParameters{
 			NameDB:         ws.NameDB,
 			CollectionName: "stix_object_collection",
@@ -118,8 +119,8 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 
 	var (
 		err           error
+		fn            = commonlibs.GetFuncName() //"wrapperFuncTypeHandlingSearchRequests"
 		sortableField string
-		fn            = "wrapperFuncTypeHandlingSearchRequests"
 		qp            = QueryParameters{
 			NameDB:         ws.NameDB,
 			CollectionName: "stix_object_collection",
@@ -284,6 +285,23 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 	}
 }
 
+//switchMSGType - функция заполняющая одно из информационных полей cообщения
+// распознавая тип объекта передаваемого в нее
+func switchMSGType(msg *datamodels.ModuleDataBaseInteractionChannel, m interface{}) bool {
+	msg.ErrorMessage = datamodels.ErrorDataTypePassedThroughChannels{}
+	msg.InformationMessage = datamodels.InformationDataTypePassedThroughChannels{}
+	switch m.(type) {
+	case datamodels.ErrorDataTypePassedThroughChannels:
+		msg.ErrorMessage = m.(datamodels.ErrorDataTypePassedThroughChannels)
+		return true
+	case datamodels.InformationDataTypePassedThroughChannels:
+		msg.InformationMessage = m.(datamodels.InformationDataTypePassedThroughChannels)
+		return true
+	default:
+		return false
+	}
+}
+
 //wrapperFuncTypeTechnicalPart набор обработчиков для осуществления задач, связанных с технической частью приложения: формирование документов БД
 // связанных с хранением технической информации или документов, учавствующих в посторении иерархии объектов типа STIX. Запись идентификаторов таких
 // объектов во временное хранилище и т.д.
@@ -363,12 +381,126 @@ func (ws *wrappersSetting) wrapperFuncTypeTechnicalPart(
 func (ws *wrappersSetting) wrapperFuncTypeHandlingReferenceBook(
 	chanOutput chan<- datamodels.ModuleDataBaseInteractionChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) {
-	/*switch wt.command {
-	case "find_all":
+	var (
+		err error
+		fn  = commonlibs.GetFuncName()
+		qp  = QueryParameters{
+			NameDB:         ws.NameDB,
+			CollectionName: "reference_book_collection",
+			ConnectDB:      ws.ConnectionDB.Connection,
+		}
+		sortVocs map[string]datamodels.Vocabularys = make(map[string]datamodels.Vocabularys,
+			len(datamodels.CommandSet))
+	)
+	message := datamodels.ModuleDataBaseInteractionChannel{
+		CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+			ModuleGeneratorMessage: "module database interaction",
+			ModuleReceiverMessage:  "module core application",
+		},
+		Section:   "handling reference book request",
+		AppTaskID: ws.DataRequest.AppTaskID,
+	}
 
-	case "find_all_for_client_API":
+	errorMessage := datamodels.ErrorDataTypePassedThroughChannels{
+		FuncName:                                fn,
+		ModuleAPIRequestProcessingSettingSendTo: true,
+	}
 
-	case "":
+	infoMessage := datamodels.InformationDataTypePassedThroughChannels{
+		Type: "",
+	}
+	//получаем всю информацию о выполняемой задаче из временного хранилища задач
+	_, taskInfo, err := tst.GetTaskByID(ws.DataRequest.AppTaskID)
+	if err != nil {
+		errorMessage.Error = err
+		switchMSGType(&message, errorMessage)
+		chanOutput <- message
+		return
+	}
 
-	}*/
+	rbrps, ok := taskInfo.TaskParameters.(datamodels.RBookReqParameters)
+	if !ok {
+		errorMessage.Error = fmt.Errorf("type conversion error")
+		switchMSGType(&message, errorMessage)
+		chanOutput <- message
+		return
+	}
+	//Сортируем в разные срезы по действиям над объектами
+	for _, rbp := range rbrps {
+		sortVocs[rbp.OP] = append(sortVocs[rbp.OP], rbp.Vocabulary)
+	}
+
+	// Пока что реализуем только добавление
+
+	if listAddVocs, ok := sortVocs["add"]; ok {
+		//Отфильтровываем только те объекты RB которые являются редактируемыми
+		listAddVocs, listNotEditable := FilterEditabelRB(listAddVocs)
+		//О наличии в срезе не редактируемых объектов сообщаем куда следует
+		if len(listNotEditable) != 0 {
+			strNames := listNotEditable.GetListIDtoStr()
+			infoMessage.Message = fmt.Sprintf("Создание и редактирование следующих объектов: %s запрещено", strNames)
+			switchMSGType(&message, infoMessage)
+			chanOutput <- message
+		}
+		if len(listAddVocs) == 0 {
+			infoMessage.Message = ""
+			switchMSGType(&message, infoMessage)
+			chanOutput <- message
+		}
+		//получаем список имен RB
+		listID := listAddVocs.GetListID()
+
+		//выполняем запрос к БД, для получения полной информации об уже существующих в коллекции объектах справочниках по их ID
+		listFoundRB, err := FindRBObjectsByNames(qp, listID)
+		if err != nil {
+			errorMessage.Error = err
+			switchMSGType(&message, errorMessage)
+			chanOutput <- message
+
+			return
+		}
+
+		//сравниваем объекты RB хранящиеся в БД и добавляемые и фиксируем их различия
+		listDifferentObject := ComparasionListRBbject(listAddVocs, listFoundRB)
+
+		//логируем отличия RB-объектов в отдельную коллекцию 'accounting_differences_objects_collection'
+		if len(listDifferentObject) > 0 {
+			qp.CollectionName = "accounting_differences_objects_collection"
+
+			_, err := qp.InsertData([]interface{}{listDifferentObject})
+			if err != nil {
+				errorMessage.Error = err
+				switchMSGType(&message, errorMessage)
+				chanOutput <- message
+
+				return
+			}
+		}
+
+		//добавляем или обновляем STIX объекты в БД
+		//	err = ReplacementElementsSTIXObject(qp, ti)
+		/*	if err != nil {
+			errorMessage.Error = err
+			switchMSGType(&message, errorMessage)
+			chanOutput <- message
+
+			return
+
+		}*/
+
+		chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
+			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+				ModuleGeneratorMessage: "module database interaction",
+				ModuleReceiverMessage:  "module core application",
+				InformationMessage: datamodels.InformationDataTypePassedThroughChannels{
+					Type:    "success",
+					Message: "информация о структурированных данных успешно добавлена",
+				},
+			},
+			Section:   "handling stix object",
+			AppTaskID: ws.DataRequest.AppTaskID,
+		}
+
+	}
+
 }

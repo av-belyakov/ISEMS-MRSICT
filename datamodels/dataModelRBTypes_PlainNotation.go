@@ -45,13 +45,6 @@ type NestedWorker interface {
 	GetValue() interface{}
 }
 
-//APIRequestProcessingReqJSON содержит описание формата JSON запроса получаемого через модуль ModuleAPIRequestProcessing
-// моя версия
-type APIRequestProcessingReqJSON struct {
-	ModAPIRequestProcessingCommonJSON
-	TaskWasGeneratedAutomatically bool   `json:"task_was_generated_automatically"`
-	UserNameGeneratedTask         string `json:"user_name_generated_task"`
-}
 
 type ReferencesBookReq1 struct {
 	APIRequestProcessingReqJSON

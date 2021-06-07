@@ -259,6 +259,23 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 		}
 
 	case "stix object list type grouping":
+		if fn, err := searchSTIXObjectListTypeGrouping(ws.DataRequest.AppTaskID, qp, psr, tst); err != nil {
+			errorMessage.ErrorMessage.FuncName = fn
+			errorMessage.ErrorMessage.Error = err
+			chanOutput <- errorMessage
+
+			return
+		}
+
+		//отправляем в канал идентификатор задачи и специальные параметры которые информируют что задача была выполненна
+		chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
+			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+				ModuleGeneratorMessage: "module database interaction",
+				ModuleReceiverMessage:  "module core application",
+			},
+			Section:   "handling search requests",
+			AppTaskID: ws.DataRequest.AppTaskID,
+		}
 
 	default:
 		errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = fmt.Errorf("the name of the database collection is not defined")

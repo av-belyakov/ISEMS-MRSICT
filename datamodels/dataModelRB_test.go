@@ -25,7 +25,7 @@ type JsonRawTestData []json.RawMessage
 func HiLevelNilAndErrorParametersAssertion(vv json.RawMessage) {
 
 	//	for _, v := range vv {
-	var trbr datamodels.RBookReq
+	var trbr datamodels.RBookReqParameters
 	err := json.Unmarshal(vv, &trbr)
 	Expect(err).ShouldNot(HaveOccurred())
 	Expect(trbr.RequestDetails).ShouldNot(BeNil())

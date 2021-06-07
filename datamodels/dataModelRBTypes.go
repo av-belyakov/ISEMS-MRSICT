@@ -31,6 +31,22 @@ type Vocabulary struct {
 	Elements VocElements `json:"elements,omitempty" bson:"elements,omitempty"`
 }
 
+// Vocabularys структура в которой могут хранятся все "открытые" и  "закрытые" словари STIX
+// и пользовательские словари терминов
+type Vocabularys []Vocabulary
+
+//APIRequestProcessingReqJSON содержит описание формата JSON запроса получаемого через модуль ModuleAPIRequestProcessing
+// моя версия
+type APIRequestProcessingReqJSON struct {
+	ModAPIRequestProcessingCommonJSON
+	TaskWasGeneratedAutomatically bool   `json:"task_was_generated_automatically"`
+	UserNameGeneratedTask         string `json:"user_name_generated_task"`
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+//Ниже приводятся структы описывающие поля запроса от  API к справочной информации
+////////////////////////////////////////////////////////////////////////////////////
+
 //RBookReqParameters структура описывающая параметры для  RBookReq
 type RBookReqParameter struct {
 	OP string `json:"op" bson:"op"`
@@ -40,18 +56,38 @@ type RBookReqParameter struct {
 //RBookReqParameters - срез структур описывающих параметры для  RBookReq
 type RBookReqParameters []RBookReqParameter
 
-// Vocabularys структура в которой могут хранятся все "открытые" и  "закрытые" словари STIX
-// и пользовательские словари терминов
-type Vocabularys []Vocabulary
-
 //RBookReq - структура описывающая запрос от API к справочной информации
-type RBookReq struct {
-	APIRequestProcessingReqJSON
-	RequestDetails []RBookReqParameter `json:"request_details" bson:"request_details"`
+//   Планировалась для Plain Notation
+//type RBookReq struct {
+//	APIRequestProcessingReqJSON
+//	RequestDetails []RBookReqParameter `json:"request_details" bson:"request_details"`
+//}
+
+//////////////////////////////////////////////////////////////////////////////////////
+//Ниже приводятся структы описывающие поля ответа обработки запросов к Referencr Book
+//////////////////////////////////////////////////////////////////////////////////////
+
+//RBookRespParameter - структура описывающая ответ содержащий результаты обработки запроса к справочной информации
+type RBookRespParameter struct {
+	OP           string `json:"op" bson:"op"`
+	IsSuccessful bool   `json:"is_succsessful" bson:"is_succsessful"`
+	Description  string `json:"description" bson:"description"`
+	Vocabulary
 }
 
-type RBookRsp struct {
-}
+//RBookRespParameters - срез структур описывающих параметры для  RBookResp
+type RBookRespParameters []RBookRespParameter
+
+//RBookResp - структура описывающая запрос от API к справочной информации
+
+//type RBookResp struct {
+//	APIRequestProcessingReqJSON
+//	RequestDetails []RBookReqParameter `json:"request_details" bson:"request_details"`
+//}
+
+//////////////////////////////////////////////////////////////////////////////////////
+//Ниже приводятся интерфейсы
+//////////////////////////////////////////////////////////////////////////////////////
 
 //Sanitizer - интерфейсный тип санитаризатор
 //(Осуществляет замену нежелательных символов в полях объектов)
@@ -64,4 +100,7 @@ type Validator interface {
 	IsValid() (bool, error)
 }
 
-var Commands = []string{"add", "get", "remove", "replace"}
+// Тип для хранения списка команд применяемых для работы со словарями
+type VocOperations []string
+
+var CommandSet VocOperations = VocOperations{"add", "get", "remove", "replace"}

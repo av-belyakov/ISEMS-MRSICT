@@ -30,6 +30,9 @@ func HandlerAssigmentsModuleDataBaseInteraction(
 	} else if data.Section == "handling search requests" {
 		section = "обработка поискового запроса"
 		taskType = "осуществление поиска информации"
+	} else if data.Section == "handling reference book" {
+		section = "обработка справочной информации"
+		taskType = "добавление или обновление справочной информации"
 	} else {
 		section = "не определена"
 		taskType = "не определен"

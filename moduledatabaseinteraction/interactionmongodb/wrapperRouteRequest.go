@@ -118,23 +118,12 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) {
 
 	var (
-		err           error
-		fn            = commonlibs.GetFuncName() //"wrapperFuncTypeHandlingSearchRequests"
-		sortableField string
-		qp            = QueryParameters{
+		err error
+		fn  = commonlibs.GetFuncName()
+		qp  = QueryParameters{
 			NameDB:         ws.NameDB,
 			CollectionName: "stix_object_collection",
 			ConnectDB:      ws.ConnectionDB.Connection,
-		}
-		sf = map[string]string{
-			"document_type":   "commonpropertiesobjectstix.type",
-			"data_created":    "commonpropertiesdomainobjectstix.created",
-			"data_modified":   "commonpropertiesdomainobjectstix.modified",
-			"data_first_seen": "first_seen",
-			"data_last_seen":  "last_seen",
-			"ipv4":            "value",
-			"ipv6":            "value",
-			"country":         "country",
 		}
 	)
 
@@ -172,91 +161,12 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 
 	switch psr.CollectionName {
 	case "stix object":
-		searchParameters, ok := psr.SearchParameters.(datamodels.SearchThroughCollectionSTIXObjectsType)
-		if !ok {
-			errorMessage.ErrorMessage.Error = fmt.Errorf("type conversion error")
-			chanOutput <- errorMessage
-
-			return
-		}
-
-		//получить только общее количество найденных документов
-		if (psr.PaginateParameters.CurrentPartNumber <= 0) || (psr.PaginateParameters.MaxPartNum <= 0) {
-			resSize, err := qp.CountDocuments(CreateSearchQueriesSTIXObject(&searchParameters))
-			if err != nil {
-				errorMessage.ErrorMessage.Error = err
-				chanOutput <- errorMessage
-
-				return
-			}
-
-			//сохраняем общее количество найденных значений во временном хранилище
-			err = tst.AddNewFoundInformation(
-				ws.DataRequest.AppTaskID,
-				&memorytemporarystoragecommoninformation.TemporaryStorageFoundInformation{
-					Collection:  "stix_object_collection",
-					ResultType:  "only_count",
-					Information: resSize,
-				})
-			if err != nil {
-				errorMessage.ErrorMessage.Error = err
-				chanOutput <- errorMessage
-
-				return
-			}
-		} else {
-			if field, ok := sf[psr.SortableField]; ok {
-				sortableField = field
-			}
-
-			//получить все найденные документы, с учетом лимита
-			cur, err := qp.FindAllWithLimit(CreateSearchQueriesSTIXObject(&searchParameters), &FindAllWithLimitOptions{
-				Offset:        int64(psr.PaginateParameters.CurrentPartNumber),
-				LimitMaxSize:  int64(psr.PaginateParameters.MaxPartNum),
-				SortField:     sortableField,
-				SortAscending: false,
-			})
-			if err != nil {
-				errorMessage.ErrorMessage.Error = err
-				chanOutput <- errorMessage
-
-				return
-			}
-
-			//сохраняем найденные значения во временном хранилище
-			err = tst.AddNewFoundInformation(
-				ws.DataRequest.AppTaskID,
-				&memorytemporarystoragecommoninformation.TemporaryStorageFoundInformation{
-					Collection:  "stix_object_collection",
-					ResultType:  "full_found_info",
-					Information: GetListElementSTIXObject(cur),
-				})
-			if err != nil {
-				errorMessage.ErrorMessage.Error = err
-				chanOutput <- errorMessage
-
-				return
-			}
-		}
-
-		_ = tst.ChangeDateTaskModification(ws.DataRequest.AppTaskID)
-
-		//изменяем состояние задачи на 'completed'
-		if err := tst.ChangeTaskStatus(ws.DataRequest.AppTaskID, "completed"); err != nil {
+		if fn, err := searchSTIXObject(ws.DataRequest.AppTaskID, qp, psr, tst); err != nil {
+			errorMessage.ErrorMessage.FuncName = fn
 			errorMessage.ErrorMessage.Error = err
 			chanOutput <- errorMessage
 
 			return
-		}
-
-		//отправляем в канал идентификатор задачи и специальные параметры которые информируют что задача была выполненна
-		chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
-			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
-				ModuleGeneratorMessage: "module database interaction",
-				ModuleReceiverMessage:  "module core application",
-			},
-			Section:   "handling search requests",
-			AppTaskID: ws.DataRequest.AppTaskID,
 		}
 
 	case "stix object list type grouping":
@@ -268,20 +178,31 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 			return
 		}
 
-		//отправляем в канал идентификатор задачи и специальные параметры которые информируют что задача была выполненна
-		chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
-			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
-				ModuleGeneratorMessage: "module database interaction",
-				ModuleReceiverMessage:  "module core application",
-			},
-			Section:   "handling search requests",
-			AppTaskID: ws.DataRequest.AppTaskID,
-		}
-
 	default:
 		errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = fmt.Errorf("the name of the database collection is not defined")
 		chanOutput <- errorMessage
 
+		return
+	}
+
+	_ = tst.ChangeDateTaskModification(ws.DataRequest.AppTaskID)
+
+	//изменяем состояние задачи на 'completed'
+	if err := tst.ChangeTaskStatus(ws.DataRequest.AppTaskID, "completed"); err != nil {
+		errorMessage.ErrorMessage.Error = err
+		chanOutput <- errorMessage
+
+		return
+	}
+
+	//отправляем в канал идентификатор задачи и специальные параметры которые информируют что задача была выполненна
+	chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
+		CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+			ModuleGeneratorMessage: "module database interaction",
+			ModuleReceiverMessage:  "module core application",
+		},
+		Section:   "handling search requests",
+		AppTaskID: ws.DataRequest.AppTaskID,
 	}
 }
 
@@ -467,14 +388,14 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingReferenceBook(
 		if len(listDifferentObject) > 0 {
 			qp.CollectionName = "accounting_differences_objects_collection"
 
-			_, err := qp.InsertData([]interface{}{listDifferentObject})
+			/*_, err := qp.InsertData([]interface{}{listDifferentObject})
 			if err != nil {
 				errorMessage.Error = err
 				switchMSGType(&message, errorMessage)
 				chanOutput <- message
 
 				return
-			}
+			}*/
 		}
 
 		//добавляем или обновляем STIX объекты в БД

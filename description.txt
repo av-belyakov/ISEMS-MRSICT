@@ -158,7 +158,12 @@ About Computer Threats (ISEMS-MRSICT).
         msg_type: STRING // тип информационного сообщения
         msg: STRING // информационное сообщение
     }
-	additional_parameters: [ <any STIX objects> ] // массив объектов структура и формат которых соответствует DO STIX, CO STIX или RO STIX
+    additional_parameters: {
+        total_number_parts: INT // общее количество частей
+	    given_size_part: INT // заданный размер части
+	    number_transmitted_part: INT // номер передаваемой части
+	    transmitted_data: [ <any STIX objects> ] // массив объектов структура и формат которых соответствует DO STIX, CO STIX или RO STIX
+    }
 }
 
     6.1. Структура и формат JSON документа, получаемого от графического пользовательского интерфейса ISEMS-UI и содержащего поисковый запрос для поиска

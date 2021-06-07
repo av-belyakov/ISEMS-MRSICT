@@ -144,6 +144,26 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 			AppTaskID: appTaskID,
 		}
 
+	case "managing collections":
+		/*
+					Например, этот раздел относится к управлению любой коллекцией, сделать различные типы действий: удаление элементов,
+					редактирование.
+
+					Или добавить в Section: "handling stix object" добавить дополнительные параметры, наприме,
+					{
+					    task_id: STRING // уникальный ID задачи (обязательное значение)
+			    		section: "handling stix object" // секция обработки данных (обязательное значение, для данного типа действия ТОЛЬКО "handling stix object")
+			    		user_name_generated_task: STRING // имя пользователя сгенерировавшего задачу (необязательный параметр)
+				    		request_details: {
+				        		action_type: "add or replacement" // тип действия, "add or replacement" или "delete"
+				        		list_parameters: [ <any STIX objects> ] // массив объектов структура и формат которых соответствует DO STIX, CO STIX или RO STIX
+				   			}
+						}
+					}
+
+			Может здесь попробовать сделать управление удаления некоторых STIX объектов, только объектов типа 'Grouping' и 'Relationship'
+		*/
+
 	case "handling search requests":
 
 		/* *** обработчик JSON сообщений с запросами к поисковой машине приложения *** */

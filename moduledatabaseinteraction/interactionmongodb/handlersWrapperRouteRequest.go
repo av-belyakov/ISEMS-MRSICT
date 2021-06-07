@@ -3,13 +3,94 @@ package interactionmongodb
 import (
 	"fmt"
 
+	"ISEMS-MRSICT/commonlibs"
 	"ISEMS-MRSICT/datamodels"
 	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-//searchSTIXObjectListTypeGrouping обработчик поисковых запросов связанных с поиском предустановленного набора STIX объектов типа 'Grouping',
+//searchSTIXObject обработчик поисковых запросов, связанных с поиском, по заданным параметрам, STIX объектов
+func searchSTIXObject(
+	appTaskID string,
+	qp QueryParameters,
+	taskInfo datamodels.ModAPIRequestProcessingResJSONSearchReqType,
+	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) (string, error) {
+
+	var (
+		err           error
+		fn            string = commonlibs.GetFuncName()
+		sortableField string
+		sf            = map[string]string{
+			"document_type":   "commonpropertiesobjectstix.type",
+			"data_created":    "commonpropertiesdomainobjectstix.created",
+			"data_modified":   "commonpropertiesdomainobjectstix.modified",
+			"data_first_seen": "first_seen",
+			"data_last_seen":  "last_seen",
+			"ipv4":            "value",
+			"ipv6":            "value",
+			"country":         "country",
+		}
+	)
+
+	searchParameters, ok := taskInfo.SearchParameters.(datamodels.SearchThroughCollectionSTIXObjectsType)
+	if !ok {
+		return fn, fmt.Errorf("type conversion error")
+	}
+
+	//получить только общее количество найденных документов
+	if (taskInfo.PaginateParameters.CurrentPartNumber <= 0) || (taskInfo.PaginateParameters.MaxPartNum <= 0) {
+		resSize, err := qp.CountDocuments(CreateSearchQueriesSTIXObject(&searchParameters))
+		if err != nil {
+			return fn, err
+		}
+
+		//сохраняем общее количество найденных значений во временном хранилище
+		err = tst.AddNewFoundInformation(
+			appTaskID,
+			&memorytemporarystoragecommoninformation.TemporaryStorageFoundInformation{
+				Collection:  "stix_object_collection",
+				ResultType:  "only_count",
+				Information: resSize,
+			})
+		if err != nil {
+			return fn, err
+		}
+
+		return fn, nil
+	}
+
+	if field, ok := sf[taskInfo.SortableField]; ok {
+		sortableField = field
+	}
+
+	//получить все найденные документы, с учетом лимита
+	cur, err := qp.FindAllWithLimit(CreateSearchQueriesSTIXObject(&searchParameters), &FindAllWithLimitOptions{
+		Offset:        int64(taskInfo.PaginateParameters.CurrentPartNumber),
+		LimitMaxSize:  int64(taskInfo.PaginateParameters.MaxPartNum),
+		SortField:     sortableField,
+		SortAscending: false,
+	})
+	if err != nil {
+		return fn, err
+	}
+
+	//сохраняем найденные значения во временном хранилище
+	err = tst.AddNewFoundInformation(
+		appTaskID,
+		&memorytemporarystoragecommoninformation.TemporaryStorageFoundInformation{
+			Collection:  "stix_object_collection",
+			ResultType:  "full_found_info",
+			Information: GetListElementSTIXObject(cur),
+		})
+	if err != nil {
+		return fn, err
+	}
+
+	return fn, nil
+}
+
+//searchSTIXObjectListTypeGrouping обработчик поисковых запросов, связанных с поиском предустановленного набора STIX объектов типа 'Grouping',
 // относящихся к спискам 'типы принимаемых решений по компьютерным угрозам' и 'типы компьютерных угроз'
 func searchSTIXObjectListTypeGrouping(
 	appTaskID string,
@@ -17,8 +98,10 @@ func searchSTIXObjectListTypeGrouping(
 	taskInfo datamodels.ModAPIRequestProcessingResJSONSearchReqType,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) (string, error) {
 
-	var err error
-	fn := "searchSTIXObjectListTypeGrouping"
+	var (
+		err error
+		fn  string = commonlibs.GetFuncName()
+	)
 
 	searchType, ok := taskInfo.SearchParameters.(struct {
 		TypeList string `json:"type_list"`

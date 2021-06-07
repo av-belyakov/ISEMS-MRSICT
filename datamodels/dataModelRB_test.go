@@ -7,7 +7,6 @@ import (
 	//"os"
 	//"path/filepath"
 
-	"ISEMS-MRSICT/datamodels"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -22,7 +21,7 @@ type JsonRawTestData []json.RawMessage
 
 //HiLevelNilAndErrorParametersAssertion -
 // Утверждения проверки nil-значений и ошибок в json.Unmarshal
-func HiLevelNilAndErrorParametersAssertion(vv json.RawMessage) {
+/*func HiLevelNilAndErrorParametersAssertion(vv json.RawMessage) {
 
 	//	for _, v := range vv {
 	var trbr datamodels.RBookReqParameters
@@ -37,7 +36,7 @@ func HiLevelNilAndErrorParametersAssertion(vv json.RawMessage) {
 	}
 	//	}
 
-}
+}*/
 
 var _ = Describe("RBook", func() {
 
@@ -79,7 +78,7 @@ var _ = Describe("RBook", func() {
 		Context("Тест№1 Корректность заполнения поля Parameters при Unmarshal-инге тестового набора", func() {
 
 			It("Проверка отсутствия nil значений в поле Parameters и возниконовения ошибок при работе json.Unmarshal", func() {
-				HiLevelNilAndErrorParametersAssertion(testData)
+				//HiLevelNilAndErrorParametersAssertion(testData)
 			})
 
 		})

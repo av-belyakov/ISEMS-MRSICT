@@ -55,13 +55,13 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 	Context("Тест 2. Выполнение добавления объектов RB в коллекцию ", func() {
 		It("Поиск только по списку Names, должно быть найдено определенное количество объектов", func() {
-			Names := []string{
+			/*Names := []string{
 				"windows-integrity-level-enum",
 				"account-type-ov",
 			}
 
 			Expect(err).ShouldNot(HaveOccurred())
-			Expect(sizeElem).Should(Equal(int64(len(ldid))))
+			Expect(sizeElem).Should(Equal(int64(len(ldid))))*/
 		})
 
 		It("Поиск ТОЛЬКО по списку Document Type, должно быть найдено определенное количество объектов", func() {

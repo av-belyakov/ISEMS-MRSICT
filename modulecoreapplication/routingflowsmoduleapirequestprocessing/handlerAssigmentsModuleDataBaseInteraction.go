@@ -187,7 +187,7 @@ func handlingSearchRequestsSTIXObject(
 
 	tp, ok := ti.TaskParameters.(datamodels.ModAPIRequestProcessingResJSONSearchReqType)
 	if !ok {
-		return fmt.Errorf("type conversion error, line 166")
+		return fmt.Errorf("type conversion error, line 190")
 	}
 
 	//обрабатываем результаты опираясь на типы коллекций
@@ -210,7 +210,7 @@ func handlingSearchRequestsSTIXObject(
 		if result.Collection == "stix_object_collection" && result.ResultType == "only_count" {
 			numFound, ok := result.Information.(int64)
 			if !ok {
-				return fmt.Errorf("type conversion error, line 191")
+				return fmt.Errorf("type conversion error, line 213")
 			}
 
 			msgRes.AdditionalParameters = struct {
@@ -239,7 +239,7 @@ func handlingSearchRequestsSTIXObject(
 		if result.Collection == "stix_object_collection" && result.ResultType == "full_found_info" {
 			listElemSTIXObj, ok := result.Information.([]*datamodels.ElementSTIXObject)
 			if !ok {
-				return fmt.Errorf("type conversion error, line 220")
+				return fmt.Errorf("type conversion error, line 242")
 			}
 
 			sestixo := len(listElemSTIXObj)
@@ -310,6 +310,39 @@ func handlingSearchRequestsSTIXObject(
 						Data:     &msg,
 					}
 				}
+			}
+
+			return nil
+		}
+
+		//для ПОЛНОЙ информации по найденным STIX объектам типа 'Grouping', относящихся к спискам 'типы принимаемых решений по компьютерным угрозам'
+		// и 'типы компьютерных угроз'
+		if result.Collection == "stix_object_collection" && result.ResultType == "found_info_list_computer_threat" {
+			listElemSTIXObj, ok := result.Information.([]*datamodels.GroupingDomainObjectsSTIX)
+			if !ok {
+				return fmt.Errorf("type conversion error, line 323")
+			}
+
+			msgRes.AdditionalParameters = datamodels.ResJSONParts{
+				TotalNumberParts:      1,
+				GivenSizePart:         maxChunkSize,
+				NumberTransmittedPart: 1,
+				TransmittedData:       listElemSTIXObj,
+			}
+
+			msg, err := json.Marshal(msgRes)
+			if err != nil {
+				return err
+			}
+
+			chanResModAPI <- datamodels.ModuleReguestProcessingChannel{
+				CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+					ModuleGeneratorMessage: "module core application",
+					ModuleReceiverMessage:  "module api request processing",
+				},
+				ClientID: ti.ClientID,
+				DataType: 1,
+				Data:     &msg,
 			}
 		}
 	}

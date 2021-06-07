@@ -7,6 +7,7 @@ package datamodels
 // ModuleApiRequestProcessingSettings - настройки сетевых соеденений обеспечивающие доступ к подсистеме isems-mrsict из внешнего программного обеспечения
 // ModuleAPIInteractionExternalSoftware - настройки доступа к внешнему программному обеспечению являющемуся источником информации о компьютерных угрозах
 // CryptographySettings - настройки связанные с криптографией и защите каналов связи
+// DefaultSettingsFiles - настройки пути к файлам с дефольтными настройками приложения
 // PathStorageDownloadedFiles - место для хранения загруженных файлов
 // LocationLogDirectory - путь по которому находится основная директория для хранения лог-файлов приложения
 // NameLogDirectory - название директории в которой хранятся лог-файлы приложения
@@ -18,6 +19,7 @@ type AppConfig struct {
 	ModuleAPIRequestProcessingSettings           ModuleAPIRequestProcessingSetting
 	ModuleAPIInteractionExternalSoftwareSettings ModuleAPIInteractionExternalSoftwareSettings
 	CryptographySettings                         CryptographySettings
+	DefaultSettingsFiles                         DefaultSettingsFilesSettings
 	PathStorageDownloadedFiles                   string
 	LocationLogDirectory                         string
 	NameLogDirectory                             string
@@ -76,4 +78,12 @@ type CryptographySettings struct {
 	PathRootCAModuleAPIRequestProcessingSettings         string `json:"pathRootCA_of_moduleAPIRequestProcessingSettings"`
 	PathCertFileModuleAPIRequestProcessingSettings       string `json:"pathCertFile_of_moduleAPIRequestProcessingSettings"`
 	PathPrivateKeyFileModuleAPIRequestProcessingSettings string `json:"pathPrivateKeyFile_of_moduleAPIRequestProcessingSettings"`
+}
+
+//DefaultSettingsFilesSettings содержит настройки пути к файлам с дефольтными настройками приложения
+// SettingsStatusesDecisionsMadeComputerThreats - путь к файлу со статусами принятых решений по компьютерным угрозам
+// SettingsComputerThreatTypes - путь к файлу с типами компьютерных воздействий
+type DefaultSettingsFilesSettings struct {
+	SettingsStatusesDecisionsMadeComputerThreats string
+	SettingsComputerThreatTypes                  string
 }

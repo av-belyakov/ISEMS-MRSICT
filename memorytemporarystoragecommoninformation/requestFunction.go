@@ -2,6 +2,8 @@ package memorytemporarystoragecommoninformation
 
 import (
 	"fmt"
+
+	"ISEMS-MRSICT/datamodels"
 )
 
 /*** МЕТОДЫ ОТНОСЯЩИЕСЯ К ХРАНИЛИЩУ ЗАДАЧ ***/
@@ -194,3 +196,140 @@ func (tst *TemporaryStorageType) DeletingFoundInformationByID(appTaskID string) 
 }
 
 /*** МЕТОДЫ ОТНОСЯЩИЕСЯ К ХРАНИЛИЩУ ПАРАМЕТРОВ ПРИЛОЖЕНИЯ ***/
+
+//SetListDecisionsMade добавление списка принимаемых решений по компьютерным угрозам
+func (tst *TemporaryStorageType) SetListDecisionsMade(l map[string]datamodels.StorageApplicationCommonListType) error {
+	chanRes := make(chan channelResponseStorageApplicationParameters)
+	defer func() {
+		close(chanRes)
+	}()
+
+	tst.chanReqParameterStorage <- channelRequestStorageApplicationParameters{
+		actionType:       "set list decisions made",
+		parameterStorage: l,
+		chanRes:          chanRes,
+	}
+
+	return (<-chanRes).errMsg
+}
+
+//GetListDecisionsMade возвращение списка принимаемых решений по компьютерным угрозам
+func (tst *TemporaryStorageType) GetListDecisionsMade() (map[string]datamodels.StorageApplicationCommonListType, error) {
+	chanRes := make(chan channelResponseStorageApplicationParameters)
+	defer func() {
+		close(chanRes)
+	}()
+
+	tst.chanReqParameterStorage <- channelRequestStorageApplicationParameters{
+		actionType: "get list decisions made",
+		chanRes:    chanRes,
+	}
+
+	result := <-chanRes
+	l, ok := result.dataParameterStorage.(map[string]datamodels.StorageApplicationCommonListType)
+	if !ok {
+		return l, fmt.Errorf("type conversion error")
+	}
+
+	return l, result.errMsg
+}
+
+//GetIDDecisionsMadeSuccessfully возвращение ID решения 'successfully implemented computer threat' по компьютерным угрозам
+func (tst *TemporaryStorageType) GetIDDecisionsMadeSuccessfully() (datamodels.StorageApplicationCommonListType, error) {
+	chanRes := make(chan channelResponseStorageApplicationParameters)
+	defer func() {
+		close(chanRes)
+	}()
+
+	tst.chanReqParameterStorage <- channelRequestStorageApplicationParameters{
+		actionType: "get id decisions made type: successfully implemented computer threat",
+		chanRes:    chanRes,
+	}
+
+	result := <-chanRes
+	l, ok := result.dataParameterStorage.(datamodels.StorageApplicationCommonListType)
+	if !ok {
+		return l, fmt.Errorf("type conversion error")
+	}
+
+	return l, result.errMsg
+}
+
+//GetIDDecisionsMadeUnsuccessfully возвращение ID решения 'unsuccessfully computer threat' по компьютерным угрозам
+func (tst *TemporaryStorageType) GetIDDecisionsMadeUnsuccessfully() (datamodels.StorageApplicationCommonListType, error) {
+	chanRes := make(chan channelResponseStorageApplicationParameters)
+	defer func() {
+		close(chanRes)
+	}()
+
+	tst.chanReqParameterStorage <- channelRequestStorageApplicationParameters{
+		actionType: "get id decisions made type: unsuccessfully computer threat",
+		chanRes:    chanRes,
+	}
+
+	result := <-chanRes
+	l, ok := result.dataParameterStorage.(datamodels.StorageApplicationCommonListType)
+	if !ok {
+		return l, fmt.Errorf("type conversion error")
+	}
+
+	return l, result.errMsg
+}
+
+//GetIDDecisionsMadeFalsePositive возвращение ID решения 'false positive' по компьютерным угрозам
+func (tst *TemporaryStorageType) GetIDDecisionsMadeFalsePositive() (datamodels.StorageApplicationCommonListType, error) {
+	chanRes := make(chan channelResponseStorageApplicationParameters)
+	defer func() {
+		close(chanRes)
+	}()
+
+	tst.chanReqParameterStorage <- channelRequestStorageApplicationParameters{
+		actionType: "get id decisions made type: false positive",
+		chanRes:    chanRes,
+	}
+
+	result := <-chanRes
+	l, ok := result.dataParameterStorage.(datamodels.StorageApplicationCommonListType)
+	if !ok {
+		return l, fmt.Errorf("type conversion error")
+	}
+
+	return l, result.errMsg
+}
+
+//SetListComputerThreat добавление списка типов компьютерных угроз
+func (tst *TemporaryStorageType) SetListComputerThreat(l map[string]datamodels.StorageApplicationCommonListType) error {
+	chanRes := make(chan channelResponseStorageApplicationParameters)
+	defer func() {
+		close(chanRes)
+	}()
+
+	tst.chanReqParameterStorage <- channelRequestStorageApplicationParameters{
+		actionType:       "set type computer threat",
+		parameterStorage: l,
+		chanRes:          chanRes,
+	}
+
+	return (<-chanRes).errMsg
+}
+
+//GetListComputerThreat возвращение списка типов компьютерных угроз
+func (tst *TemporaryStorageType) GetListComputerThreat() (map[string]datamodels.StorageApplicationCommonListType, error) {
+	chanRes := make(chan channelResponseStorageApplicationParameters)
+	defer func() {
+		close(chanRes)
+	}()
+
+	tst.chanReqParameterStorage <- channelRequestStorageApplicationParameters{
+		actionType: "get type computer threat",
+		chanRes:    chanRes,
+	}
+
+	result := <-chanRes
+	l, ok := result.dataParameterStorage.(map[string]datamodels.StorageApplicationCommonListType)
+	if !ok {
+		return l, fmt.Errorf("type conversion error")
+	}
+
+	return l, result.errMsg
+}

@@ -38,7 +38,7 @@ var _ = Describe("HandlerSTIXCollection", func() {
 
 		//подключаемся к базе данных MongoDB
 		connectError = cdmdb.CreateConnection(&datamodels.MongoDBSettings{
-			Host:     "127.0.0.1",
+			Host:     "192.168.13.200",
 			Port:     27017,
 			User:     "module-isems-mrsict",
 			Password: "vkL6Zn$jPmt1e1",
@@ -173,7 +173,7 @@ var _ = Describe("HandlerSTIXCollection", func() {
 	Context("Тест 4. Проверяем функцию 'UnmarshalJSONObjectSTIXReq'", func() {
 		It("должен быть получен список из 65 STIX объектов, ошибок быть не должно", func() {
 			Expect(errUnmarchalToSTIX).ShouldNot(HaveOccurred())
-			Expect(len(l)).Should(Equal(65))
+			Expect(len(l)).Should(Equal(66))
 		})
 	})
 
@@ -230,7 +230,7 @@ var _ = Describe("HandlerSTIXCollection", func() {
 	})
 
 	Context("Тест 8. Получаем информацию обо всех STIX объектах", func() {
-		It("должен быть получен список из 65 STIX объектов, ошибок быть не должно", func() {
+		It("должен быть получен список из 66 STIX объектов, ошибок быть не должно", func() {
 			var objID primitive.A
 
 			for _, v := range l {
@@ -250,7 +250,7 @@ var _ = Describe("HandlerSTIXCollection", func() {
 			}
 
 			Expect(err).ShouldNot(HaveOccurred())
-			Expect(len(lr)).Should(Equal(65))
+			Expect(len(lr)).Should(Equal(66))
 		})
 	})
 
@@ -1366,9 +1366,9 @@ var _ = Describe("HandlerSTIXCollection", func() {
 	})
 
 	Context("Тест 28. Получаем информацию о ПОСЛЕДНИЕ 10 STIX объектах при выполнении поиска БЕЗ поисковых параметров", func() {
-		It("Должен быть получен список из ПОСЛЕДНИХ 10 объектов, ошибки при этом быть не должно", func() {
+		It("Должен быть получен список из ПОСЛЕДНИХ 4 объектов, ошибки при этом быть не должно", func() {
 			cur, err := qp.FindAllWithLimit(bson.D{}, &interactionmongodb.FindAllWithLimitOptions{
-				Offset:        7,
+				Offset:        11,
 				LimitMaxSize:  10,
 				SortAscending: false,
 			})
@@ -1381,7 +1381,7 @@ var _ = Describe("HandlerSTIXCollection", func() {
 			}
 
 			Expect(err).ShouldNot(HaveOccurred())
-			Expect(len(elemSTIXObj)).Should(Equal(5))
+			Expect(len(elemSTIXObj)).Should(Equal(4))
 		})
 	})
 
@@ -1390,7 +1390,7 @@ var _ = Describe("HandlerSTIXCollection", func() {
 			sizeElem, err := qp.CountDocuments(bson.D{})
 
 			Expect(err).ShouldNot(HaveOccurred())
-			Expect(sizeElem).Should(Equal(int64(65)))
+			Expect(sizeElem).Should(Equal(int64(104)))
 		})
 	})
 

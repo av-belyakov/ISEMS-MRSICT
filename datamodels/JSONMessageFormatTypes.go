@@ -121,6 +121,7 @@ type SearchThroughCollectionSTIXObjectsType struct {
 // Aliases - альтернативные имена используемые для идентификации типа STIX объекта
 // FirstSeen - интервал времени когда сущность была обнаружена впервые
 // LastSeen - интервал времени когда сущность была обнаружена в последний раз
+// Published - равно или больше чем время когда данный отчет был официально опубликован
 // Roles - список ролей для идентификации действий
 // Country - наименование страны
 // City - наименование города
@@ -139,11 +140,12 @@ type SpecificSearchFieldsSTIXObjectType struct {
 		Start time.Time `json:"start"`
 		End   time.Time `json:"end"`
 	} `json:"last_seen"`
-	Roles                  []string `json:"roles"`
-	Country                string   `json:"country"`
-	City                   string   `json:"city"`
-	NumberAutonomousSystem int      `json:"number_autonomous_system"`
-	Value                  []string `json:"value"`
+	Published              time.Time `json:"published"`
+	Roles                  []string  `json:"roles"`
+	Country                string    `json:"country"`
+	City                   string    `json:"city"`
+	NumberAutonomousSystem int       `json:"number_autonomous_system"`
+	Value                  []string  `json:"value"`
 }
 
 //ResJSONParts содержит информацию передаваемую в ответ на запрашиваемые данные

@@ -145,7 +145,6 @@ func CheckSearchSTIXObject(req *datamodels.ModAPIRequestProcessingResJSONSearchR
 
 	for k, v := range sp.SpecificSearchFields {
 		if len(v.Value) > 0 {
-			//if err := checkSearchFieldsValue(req.CollectionName, v.Value); err != nil {
 			if err := checkSearchFieldsValue(v.Value); err != nil {
 				return *req, err
 			}
@@ -159,12 +158,19 @@ func CheckSearchSTIXObject(req *datamodels.ModAPIRequestProcessingResJSONSearchR
 			}
 		}
 
-		tcsn := v.FirstSeen.Start.Unix()
-		tcen := v.FirstSeen.End.Unix()
-
-		if tcsn > 0 && tcen > 0 {
-			if tcsn >= tcen {
+		tfsn := v.FirstSeen.Start.Unix()
+		tfen := v.FirstSeen.End.Unix()
+		if tfsn > 0 && tfen > 0 {
+			if tfsn >= tfen {
 				return *req, fmt.Errorf("invalid search value accepted in 'FirstSeen.Start' or 'FirstSeen.End' fields")
+			}
+		}
+
+		tlsn := v.LastSeen.Start.Unix()
+		tlen := v.FirstSeen.End.Unix()
+		if tlsn > 0 && tlen > 0 {
+			if tlsn >= tlen {
+				return *req, fmt.Errorf("invalid search value accepted in 'LastSeen.Start' or 'LastSeen.End' fields")
 			}
 		}
 

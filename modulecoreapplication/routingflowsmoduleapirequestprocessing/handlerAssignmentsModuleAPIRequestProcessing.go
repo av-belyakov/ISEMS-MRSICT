@@ -3,6 +3,7 @@ package routingflowsmoduleapirequestprocessing
 import (
 	"encoding/json"
 	"fmt"
+	"regexp"
 
 	"ISEMS-MRSICT/commonlibs"
 	"ISEMS-MRSICT/datamodels"
@@ -144,25 +145,262 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 			AppTaskID: appTaskID,
 		}
 
-	case "managing collections":
-		/*
-					Например, этот раздел относится к управлению любой коллекцией, сделать различные типы действий: удаление элементов,
-					редактирование.
+	case "managing collection stix objects":
 
-					Или добавить в Section: "handling stix object" добавить дополнительные параметры, наприме,
-					{
-					    task_id: STRING // уникальный ID задачи (обязательное значение)
-			    		section: "handling stix object" // секция обработки данных (обязательное значение, для данного типа действия ТОЛЬКО "handling stix object")
-			    		user_name_generated_task: STRING // имя пользователя сгенерировавшего задачу (необязательный параметр)
-				    		request_details: {
-				        		action_type: "add or replacement" // тип действия, "add or replacement" или "delete"
-				        		list_parameters: [ <any STIX objects> ] // массив объектов структура и формат которых соответствует DO STIX, CO STIX или RO STIX
-				   			}
+		/* *** обработчик JSON сообщений связанных с управлением STIX объектами *** */
+
+		var (
+			isElementExist bool
+			section        string = "обработка запросов, связанных с управлением STIX объектами"
+			taskType       string = "удаление выбранных STIX объектов"
+			fn             string = commonlibs.GetFuncName()
+		)
+		at := struct {
+			ActionType string `json:"action_type"`
+		}{}
+
+		if err := json.Unmarshal(*commonMsgReq.RequestDetails, &at); err != nil {
+			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+				TypeMessage: "error",
+				Description: fmt.Sprint(err),
+				FuncName:    fn,
+			}
+
+			if err = auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{
+				ClientID:         data.ClientID,
+				TaskID:           commonMsgReq.TaskID,
+				Section:          commonMsgReq.Section,
+				TypeNotification: "danger",
+				Notification: commonlibs.PatternUserMessage(&commonlibs.PatternUserMessageType{
+					Section:     section,
+					TaskType:    taskType,
+					FinalResult: "задача отклонена",
+					Message:     "ошибка при декодировании JSON документа",
+				}),
+				C: clim.ChannelsModuleAPIRequestProcessing.InputModule,
+			}); err != nil {
+				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+					TypeMessage: "error",
+					Description: fmt.Sprint(err),
+					FuncName:    "SendNotificationModuleAPI",
+				}
+			}
+
+			return
+		}
+
+		switch at.ActionType {
+		case "delete":
+			managementType := struct {
+				ActionType   string   `json:"action_type"`
+				ListElements []string `json:"list_elements"`
+			}{}
+
+			if err := json.Unmarshal(*commonMsgReq.RequestDetails, &managementType); err != nil {
+				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+					TypeMessage: "error",
+					Description: fmt.Sprint(err),
+					FuncName:    fn,
+				}
+
+				if err = auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{
+					ClientID:         data.ClientID,
+					TaskID:           commonMsgReq.TaskID,
+					Section:          commonMsgReq.Section,
+					TypeNotification: "danger",
+					Notification: commonlibs.PatternUserMessage(&commonlibs.PatternUserMessageType{
+						Section:     section,
+						TaskType:    taskType,
+						FinalResult: "задача отклонена",
+						Message:     "ошибка при декодировании JSON документа",
+					}),
+					C: clim.ChannelsModuleAPIRequestProcessing.InputModule,
+				}); err != nil {
+					chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+						TypeMessage: "error",
+						Description: fmt.Sprint(err),
+						FuncName:    "SendNotificationModuleAPI",
+					}
+				}
+
+				return
+			}
+
+			listDecisionsMade, errldm := tst.GetListDecisionsMade()
+			listComputerThreat, errct := tst.GetListComputerThreat()
+			if (errldm != nil) || (errct != nil) {
+				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+					TypeMessage: "error",
+					Description: "it is not possible to get a list of decisions made on computer threats or a list of types of computer threats",
+					FuncName:    fn,
+				}
+
+				if err = auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{
+					ClientID:         data.ClientID,
+					TaskID:           commonMsgReq.TaskID,
+					Section:          commonMsgReq.Section,
+					TypeNotification: "danger",
+					Notification: commonlibs.PatternUserMessage(&commonlibs.PatternUserMessageType{
+						Section:     section,
+						TaskType:    taskType,
+						FinalResult: "задача отклонена",
+						Message:     "невозможно получить список принимаемых решений по компьютерным угрозам или список типов компьютерных угроз",
+					}),
+					C: clim.ChannelsModuleAPIRequestProcessing.InputModule,
+				}); err != nil {
+					chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+						TypeMessage: "error",
+						Description: fmt.Sprint(err),
+						FuncName:    "SendNotificationModuleAPI",
+					}
+				}
+
+				return
+			}
+
+			//проверяем ID STIX объекта, разрешаем удаление только типов 'grouping' и 'relationship'
+			for _, v := range managementType.ListElements {
+				isGrouping := (regexp.MustCompile(`^(grouping--)[0-9a-f|-]+$`).MatchString(v))
+				isRelationship := (regexp.MustCompile(`^(relationship--)[0-9a-f|-]+$`).MatchString(v))
+
+				if !isGrouping && !isRelationship {
+					chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+						TypeMessage: "error",
+						Description: "it is not possible to delete objects that are not of the 'grouping' or 'relationship' types",
+						FuncName:    fn,
+					}
+
+					if err = auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{
+						ClientID:         data.ClientID,
+						TaskID:           commonMsgReq.TaskID,
+						Section:          commonMsgReq.Section,
+						TypeNotification: "danger",
+						Notification: commonlibs.PatternUserMessage(&commonlibs.PatternUserMessageType{
+							Section:     section,
+							TaskType:    taskType,
+							FinalResult: "задача отклонена",
+							Message:     "невозможно удалить объекты не являющиеся типами 'grouping' или 'relationship'",
+						}),
+						C: clim.ChannelsModuleAPIRequestProcessing.InputModule,
+					}); err != nil {
+						chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+							TypeMessage: "error",
+							Description: fmt.Sprint(err),
+							FuncName:    "SendNotificationModuleAPI",
 						}
 					}
 
-			Может здесь попробовать сделать управление удаления некоторых STIX объектов, только объектов типа 'Grouping' и 'Relationship'
-		*/
+					return
+				}
+
+				//проверяем относится ли удаляемый STIX объект типа 'grouping' к специальным объектам списка принимаемых решений по компьютерным угрозам
+				// или списка типов компьютерных угроз
+				if !isGrouping {
+					continue
+				}
+
+			DONELDM:
+				for k := range listDecisionsMade {
+					if k == v {
+						isElementExist = true
+
+						break DONELDM
+					}
+				}
+
+			DONELCT:
+				for k := range listComputerThreat {
+					if k == v {
+						isElementExist = true
+
+						break DONELCT
+					}
+				}
+
+				if isElementExist {
+					chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+						TypeMessage: "error",
+						Description: "you cannot delete the STIX element of an object because it is an element of a preset list",
+						FuncName:    fn,
+					}
+
+					if err = auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{
+						ClientID:         data.ClientID,
+						TaskID:           commonMsgReq.TaskID,
+						Section:          commonMsgReq.Section,
+						TypeNotification: "danger",
+						Notification: commonlibs.PatternUserMessage(&commonlibs.PatternUserMessageType{
+							Section:     section,
+							TaskType:    taskType,
+							FinalResult: "задача отклонена",
+							Message:     "нельзя удалить элемент STIX объекта так как он является элементом предустановленного списка ",
+						}),
+						C: clim.ChannelsModuleAPIRequestProcessing.InputModule,
+					}); err != nil {
+						chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+							TypeMessage: "error",
+							Description: fmt.Sprint(err),
+							FuncName:    "SendNotificationModuleAPI",
+						}
+					}
+
+					return
+				}
+			}
+
+			//добавляем информацию о задаче в хранилище задач
+			appTaskID, err := tst.AddNewTask(&memorytemporarystoragecommoninformation.TemporaryStorageTaskType{
+				TaskGenerator:        data.ModuleGeneratorMessage,
+				ClientID:             data.ClientID,
+				ClientName:           data.ClientName,
+				ClientTaskID:         commonMsgReq.TaskID,
+				AdditionalClientName: commonMsgReq.UserNameGeneratedTask,
+				Section:              commonMsgReq.Section,
+				Command:              managementType.ActionType,
+				TaskParameters:       managementType.ListElements,
+			})
+			if err != nil {
+				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+					TypeMessage: "error",
+					Description: fmt.Sprint(err),
+					FuncName:    "AddNewTask",
+				}
+
+				if err = auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{
+					ClientID:         data.ClientID,
+					TaskID:           commonMsgReq.TaskID,
+					Section:          commonMsgReq.Section,
+					TypeNotification: "danger",
+					Notification: commonlibs.PatternUserMessage(&commonlibs.PatternUserMessageType{
+						Section:     section,
+						TaskType:    taskType,
+						FinalResult: "задача отклонена",
+						Message:     "невозможно сохранить параметры запроса во временном хранилище",
+					}),
+					C: clim.ChannelsModuleAPIRequestProcessing.InputModule,
+				}); err != nil {
+					chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+						TypeMessage: "error",
+						Description: fmt.Sprint(err),
+						FuncName:    "SendNotificationModuleAPI",
+					}
+				}
+
+				return
+			}
+
+			clim.ChannelsModuleDataBaseInteraction.ChannelsMongoDB.InputModule <- datamodels.ModuleDataBaseInteractionChannel{
+				CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+					ModuleGeneratorMessage: "module core application",
+					ModuleReceiverMessage:  "module database interaction",
+				},
+				Section:   "handling managing collection stix objects",
+				AppTaskID: appTaskID,
+			}
+
+		case "":
+
+		}
 
 	case "handling search requests":
 

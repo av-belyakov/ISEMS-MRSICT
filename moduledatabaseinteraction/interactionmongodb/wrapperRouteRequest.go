@@ -8,6 +8,7 @@ import (
 	"ISEMS-MRSICT/datamodels"
 	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -21,7 +22,7 @@ var errorMessage = datamodels.ModuleDataBaseInteractionChannel{
 	},
 }
 
-//wrapperFuncTypeHandlingSTIXObject набор обработчиков для работы с запросами связанными со STIX объектами
+//wrapperFuncTypeHandlingSTIXObject набор обработчиков для работы с запросами, связанными со STIX объектами
 func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 	chanOutput chan<- datamodels.ModuleDataBaseInteractionChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) {
@@ -112,7 +113,153 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 	}
 }
 
-//wrapperFuncTypeHandlingSearchRequests набор обработчиков для работы с запросами направленными на обработку поисковой машине
+//wrapperFuncTypeHandlingManagingCollectionSTIXObjects набор обработчиков для работы с запросами, связанными с управлением STIX объектами
+func (ws *wrappersSetting) wrapperFuncTypeHandlingManagingCollectionSTIXObjects(
+	chanOutput chan<- datamodels.ModuleDataBaseInteractionChannel,
+	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) {
+
+	var (
+		err error
+		fn  = commonlibs.GetFuncName()
+		qp  = QueryParameters{
+			NameDB:         ws.NameDB,
+			CollectionName: "stix_object_collection",
+			ConnectDB:      ws.ConnectionDB.Connection,
+		}
+	)
+
+	errorMessage.ErrorMessage.FuncName = fn
+	errorMessage.Section = "handling managing collection stix objects"
+	errorMessage.AppTaskID = ws.DataRequest.AppTaskID
+
+	//получаем всю информацию о выполняемой задаче из временного хранилища задач
+	_, taskInfo, err := tst.GetTaskByID(ws.DataRequest.AppTaskID)
+	if err != nil {
+		errorMessage.ErrorMessage.Error = err
+		chanOutput <- errorMessage
+
+		return
+	}
+
+	//изменяем время модификации информации о задаче
+	_ = tst.ChangeDateTaskModification(ws.DataRequest.AppTaskID)
+
+	//изменяем статус выполняемой задачи на 'in progress'
+	if err := tst.ChangeTaskStatus(ws.DataRequest.AppTaskID, "in progress"); err != nil {
+		errorMessage.ErrorMessage.Error = err
+		chanOutput <- errorMessage
+
+		return
+	}
+
+	switch taskInfo.Command {
+	case "delete":
+		listID, ok := taskInfo.TaskParameters.([]string)
+		if !ok {
+			errorMessage.ErrorMessage.Error = fmt.Errorf("type conversion error")
+			chanOutput <- errorMessage
+
+			return
+		}
+
+		listElementSTIXObject, err := FindSTIXObjectByID(qp, listID)
+		if err != nil {
+			errorMessage.ErrorMessage.Error = err
+			chanOutput <- errorMessage
+
+			return
+		}
+
+		var (
+			sl map[string]struct {
+				targetRefsID   string
+				relationshipID string
+				listRefs       []datamodels.IdentifierTypeSTIX
+			}
+			listIDGrouping []string
+			lortmp         []string
+		)
+		for _, v := range listElementSTIXObject {
+			if v.DataType == "grouping" {
+				listIDGrouping = append(listIDGrouping, v.Data.GetID())
+
+				element, ok := v.Data.(datamodels.GroupingDomainObjectsSTIX)
+				if !ok {
+					errorMessage.ErrorMessage.Error = fmt.Errorf("type conversion error")
+					chanOutput <- errorMessage
+
+					return
+				}
+
+				if len(element.ObjectRefs) > 0 {
+					sl[v.Data.GetID()] = struct {
+						targetRefsID   string
+						relationshipID string
+						listRefs       []datamodels.IdentifierTypeSTIX
+					}{listRefs: element.ObjectRefs}
+				}
+			}
+		}
+
+		//ищем объекты типа 'relationship' являющиеся связующим звеном между объектами 'grouping' и другими объектами
+		cur, err := qp.Find((bson.D{
+			bson.E{Key: "commonpropertiesobjectstix.type", Value: "relationship"},
+			bson.E{Key: "source_ref", Value: bson.D{{Key: "$in", Value: listIDGrouping}}},
+		}))
+		if err != nil {
+			errorMessage.ErrorMessage.Error = err
+			chanOutput <- errorMessage
+
+			return
+		}
+
+		for _, v := range GetListElementSTIXObject(cur) {
+			if obj, ok := v.Data.(datamodels.RelationshipObjectSTIX); ok {
+				lortmp = append(lortmp, obj.ID)
+				sl[string(obj.SourceRef)] = struct {
+					targetRefsID   string
+					relationshipID string
+					listRefs       []datamodels.IdentifierTypeSTIX
+				}{
+					targetRefsID:   string(obj.TargetRef),
+					relationshipID: obj.ID,
+					listRefs:       sl[string(obj.SourceRef)].listRefs,
+				}
+			}
+		}
+
+		//получаем список ID STIX объектов на которые ссылаются найденные объекты 'relationship'
+		cur, err = qp.Find((bson.D{
+			bson.E{Key: "commonpropertiesobjectstix.type", Value: "report"},
+			bson.E{Key: "commonpropertiesobjectstix.id", Value: bson.D{{Key: "$in", Value: lortmp}}},
+		}))
+		if err != nil {
+			errorMessage.ErrorMessage.Error = err
+			chanOutput <- errorMessage
+
+			return
+		}
+
+		//ДОДЕЛАТЬ!!!!
+
+		/*
+			здесь надо удалять выбранные элементы
+			если удаляется тип 'grouping', то нужно положить все ссылки в другие STIX объекты, содержащиеся в свойстве ObjectRefs
+			в свойство ObjectRefs объекта которому принадлежит удаляемый тип 'grouping' (чаще всего это тип 'report'), связи проверяются
+			через объекты типа 'relationship'
+
+			1. получить удаляемый объект 'grouping'
+			2. проверить наличие в нем заполненного поля ObjectRefs
+			3. получить объекты типа 'report' на которые ссылается объект 'grouping' через свойство ObjectRefs
+			4. записать содержимое поля ObjectRefs объекта 'grouping' в поле ObjectRefs объекта типа 'report'
+			5. удалить объект 'grouping' и связанный с ним объект типа 'reports' (ЭТО ЗА ОДИН ЗАПРОС ДЕЛАЕТСЯ)
+			И все это сделать для списка объектов 'grouping'
+		*/
+
+	}
+}
+
+//wrapperFuncTypeHandlingSearchRequests набор обработчиков для работы с запросами, связанными с поиском информации
 func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 	chanOutput chan<- datamodels.ModuleDataBaseInteractionChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) {

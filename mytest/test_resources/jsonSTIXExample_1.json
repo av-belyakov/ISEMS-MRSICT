@@ -1,0 +1,79 @@
+{
+    "task_id": "ni883f838ggr8h9ehr3rgr38rg8f8g8wgd8g38",
+    "section": "handling stix object",
+    "task_was_generated_automatically": true,
+    "user_name_generated_task": "Иванов Петр Васильевич",
+    "request_details":	[
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--94e4d99f-67aa-4bcd-bbf3-b2c1c320aad7",
+            "created_by_ref": "identity--a463ffb3-1bd9-4d94-b02d-74e4f1658283",
+            "created": "2017-02-20T01:34:11.000Z",
+            "modified": "2017-10-21T19:59:11.000Z",
+            "name": "The test Report",
+            "description": "A simple report with test data",
+            "published": "2017-10-23T17:00:00.000Z",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "indicator--26ffb872-1dd9-446e-b6f5-d58527e5b567",
+                "campaign--83422c77-904c-4dc1-aff5-5c38f3a189ef",
+                "grouping--911f0f43-1e7c-4f97-7070-a787bdd3b100",
+                "grouping--911f0f23-2e7c-4f07-9436-d6e7bdd3b236"
+            ]
+        },
+        {
+            "type": "relationship",
+            "spec_version": "2.1",
+            "id": "relationship--57b56a43-b8b0-4cba-9deb-34e3e1faed9e",
+            "created": "2016-05-12T08:17:27.000Z",
+            "modified": "2016-05-12T08:17:27.000Z",
+            "relationship_type": "uses",
+            "source_ref": "grouping--911f0f43-1e7c-4f97-7070-a787bdd3b100",
+            "target_ref": "report--94e4d99f-67aa-4bcd-bbf3-b2c1c320aad7"
+        },
+        {
+            "type": "grouping",
+            "spec_version": "2.1",
+            "id": "grouping--911f0f43-1e7c-4f97-7070-a787bdd3b100",
+            "created_by_ref": "identity--a463ffb3-1bd9-4d94-b02d-74e4f1658283",
+            "created": "2015-12-21T19:59:11.000Z",
+            "modified": "2015-12-21T19:59:11.000Z",
+            "name": "The Team number one",
+            "description": "Black Vine Cyberespionage Group attributed intel",
+            "context": "suspicious-activity",
+            "object_refs": [
+                "indicator--30ffb871-1dd9-446e-b6f5-d58100e4b1c2",
+                "campaign--83422c77-904c-4dc1-aff5-0a38f3a2cc77",
+                "file--0203b5c8-f8b6-4ddb-9ad0-111c721f898a"
+                ]
+        },
+        {
+            "type": "relationship",
+            "spec_version": "2.1",
+            "id": "relationship--57b56a43-b8b0-10ed-9ded-10a3e1faff34",
+            "created": "2016-05-12T08:17:27.000Z",
+            "modified": "2016-05-12T08:17:27.000Z",
+            "relationship_type": "uses",
+            "source_ref": "grouping--911f0f23-2e7c-4f07-9436-d6e7bdd3b236",
+            "target_ref": "report--94e4d99f-67aa-4bcd-bbf3-b2c1c320aad7"
+        },
+        {
+            "type": "grouping",
+            "spec_version": "2.1",
+            "id": "grouping--911f0f23-2e7c-4f07-9436-d6e7bdd3b236",
+            "created_by_ref": "identity--a463ffb3-1bd9-4d94-b02d-74e4f1658283",
+            "created": "2015-12-21T19:59:11.000Z",
+            "modified": "2015-12-21T19:59:11.000Z",
+            "name": "The Black Vine Cyberespionage Group",
+            "description": "A simple collection of Black Vine Cyberespionage Group attributed intel",
+            "context": "suspicious-activity",
+            "object_refs": [
+                "attack-pattern--01ffb842-1dd9-556e-b5e5-d1345e5b1ef",
+                "malware--83422c11-911b-4dc2-aff5-7c38f3a77baf1",
+                "relationship--f82356ae-fe6c-437c-9c24-6b64314ae68a",
+                "file--0203b5c8-f8b6-4ddb-9ad0-527d727f968b"
+                ]
+        }
+    ]
+}

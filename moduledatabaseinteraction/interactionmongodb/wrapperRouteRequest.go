@@ -154,6 +154,18 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingManagingCollectionSTIXObjects(
 
 	switch taskInfo.Command {
 	case "delete":
+		var (
+			listIDGroupingDel     []string // список объектов типа 'grouping' предназначеных для удаления
+			listIDRelationshipDel []string // список объектов типа 'relationship' предназначеных для удаления
+			listIDReporModify     []string // список объектов типа 'report' предназначенных для модификации
+			listObjModiy          []*datamodels.ElementSTIXObject
+		)
+		sl := map[string]struct {
+			targetRefsID   string
+			relationshipID string
+			listRefs       []datamodels.IdentifierTypeSTIX
+		}{}
+
 		listID, ok := taskInfo.TaskParameters.([]string)
 		if !ok {
 			errorMessage.ErrorMessage.Error = fmt.Errorf("type conversion error")
@@ -162,6 +174,8 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingManagingCollectionSTIXObjects(
 			return
 		}
 
+		//получаем все объекты предназначенные для удаления (проверка типа объекта, удаление возможно только объектов типа 'grouping' или
+		//'relationship', осуществляется на этапе валидации входных параметров)
 		listElementSTIXObject, err := FindSTIXObjectByID(qp, listID)
 		if err != nil {
 			errorMessage.ErrorMessage.Error = err
@@ -170,18 +184,10 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingManagingCollectionSTIXObjects(
 			return
 		}
 
-		var (
-			sl map[string]struct {
-				targetRefsID   string
-				relationshipID string
-				listRefs       []datamodels.IdentifierTypeSTIX
-			}
-			listIDGrouping []string
-			lortmp         []string
-		)
+		//обрабатываем все объекты типа 'grouping' и 'relationship' из полученной задачи и отмеченные для удаления
 		for _, v := range listElementSTIXObject {
 			if v.DataType == "grouping" {
-				listIDGrouping = append(listIDGrouping, v.Data.GetID())
+				listIDGroupingDel = append(listIDGroupingDel, v.Data.GetID())
 
 				element, ok := v.Data.(datamodels.GroupingDomainObjectsSTIX)
 				if !ok {
@@ -191,20 +197,26 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingManagingCollectionSTIXObjects(
 					return
 				}
 
-				if len(element.ObjectRefs) > 0 {
-					sl[v.Data.GetID()] = struct {
-						targetRefsID   string
-						relationshipID string
-						listRefs       []datamodels.IdentifierTypeSTIX
-					}{listRefs: element.ObjectRefs}
+				if len(element.ObjectRefs) == 0 {
+					continue
 				}
+
+				sl[v.Data.GetID()] = struct {
+					targetRefsID   string
+					relationshipID string
+					listRefs       []datamodels.IdentifierTypeSTIX
+				}{listRefs: element.ObjectRefs}
+			}
+
+			if v.DataType == "relationship" {
+				listIDRelationshipDel = append(listIDRelationshipDel, v.Data.GetID())
 			}
 		}
 
-		//ищем объекты типа 'relationship' являющиеся связующим звеном между объектами 'grouping' и другими объектами
+		//ищем объекты типа 'relationship' являющиеся связующим звеном между объектами 'grouping' и другими объектами, чаще всего 'report'
 		cur, err := qp.Find((bson.D{
 			bson.E{Key: "commonpropertiesobjectstix.type", Value: "relationship"},
-			bson.E{Key: "source_ref", Value: bson.D{{Key: "$in", Value: listIDGrouping}}},
+			bson.E{Key: "source_ref", Value: bson.D{{Key: "$in", Value: listIDGroupingDel}}},
 		}))
 		if err != nil {
 			errorMessage.ErrorMessage.Error = err
@@ -213,25 +225,32 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingManagingCollectionSTIXObjects(
 			return
 		}
 
+		//обрабатываем полученый список объектов типа 'relationship'
 		for _, v := range GetListElementSTIXObject(cur) {
 			if obj, ok := v.Data.(datamodels.RelationshipObjectSTIX); ok {
-				lortmp = append(lortmp, obj.ID)
-				sl[string(obj.SourceRef)] = struct {
-					targetRefsID   string
-					relationshipID string
-					listRefs       []datamodels.IdentifierTypeSTIX
+				targetID := string(obj.TargetRef)
+
+				//сохраняем список объектов типа 'relationship' являющихся связующим звеном и которые в последствии необходимо удалить
+				listIDRelationshipDel = append(listIDRelationshipDel, obj.ID)
+				listIDReporModify = append(listIDReporModify, targetID)
+
+				sl[string(obj.SourceRef)] = struct { // ID объекта типа 'gouping'
+					targetRefsID   string                          // объект 'report' на который ссылается какой либо объект из поля SourceRefs
+					relationshipID string                          // ID объекта типа 'relationship' который соединяет объекты 'grouping' и 'report' и который так же нужно удалить
+					listRefs       []datamodels.IdentifierTypeSTIX // список ID объектов который 'grouping' объединяет в группу и который нужно перенести
+					// в объект 'report' к которому принадлежит 'grouping' отмеченный для удаления
 				}{
-					targetRefsID:   string(obj.TargetRef),
+					targetRefsID:   targetID,
 					relationshipID: obj.ID,
 					listRefs:       sl[string(obj.SourceRef)].listRefs,
 				}
 			}
 		}
 
-		//получаем список ID STIX объектов на которые ссылаются найденные объекты 'relationship'
+		//получаем список ID STIX объектов типа 'report', на которые ссылаются найденные объекты 'relationship'
 		cur, err = qp.Find((bson.D{
 			bson.E{Key: "commonpropertiesobjectstix.type", Value: "report"},
-			bson.E{Key: "commonpropertiesobjectstix.id", Value: bson.D{{Key: "$in", Value: lortmp}}},
+			bson.E{Key: "commonpropertiesobjectstix.id", Value: bson.D{{Key: "$in", Value: listIDReporModify}}},
 		}))
 		if err != nil {
 			errorMessage.ErrorMessage.Error = err
@@ -240,20 +259,64 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingManagingCollectionSTIXObjects(
 			return
 		}
 
-		//ДОДЕЛАТЬ!!!!
+		//обрабатываем полученый список объектов типа 'report' и модифицируем их изменяя свойство ObjectRefs
+		for _, v := range GetListElementSTIXObject(cur) {
+			obj, ok := v.Data.(datamodels.ReportDomainObjectsSTIX)
+			if !ok {
+				continue
+			}
+
+			//ищем ID удаляемого объекта 'grouping' и удаляем из свойства ObjectRefs и в это же свойство добаляем все ссылки которые раньше
+			// были в ObjectRefs удаляемого объекта 'grouping'
+			for groupingID, v := range sl {
+				if v.targetRefsID != obj.ID {
+					continue
+				}
+
+				//удаляем ID объекта 'grouping' из свойства ObjectRefs объекта 'report' и добавляем туда ссылки на ID объектов находящиеся
+				// в свойстве ObjectRefs удаляемого объекта 'grouping'
+				listTmp := []datamodels.IdentifierTypeSTIX{}
+				for _, v := range obj.ObjectRefs {
+					if string(v) == groupingID {
+						continue
+					}
+
+					listTmp = append(listTmp, v)
+				}
+
+				obj.ObjectRefs = append(listTmp, v.listRefs...)
+			}
+
+			listObjModiy = append(listObjModiy, &datamodels.ElementSTIXObject{
+				DataType: obj.Type,
+				Data:     obj,
+			})
+		}
+
+		//обновляем STIX объекты типа 'report'
+		err = ReplacementElementsSTIXObject(qp, listObjModiy)
+		if err != nil {
+			errorMessage.ErrorMessage.Error = err
+			chanOutput <- errorMessage
+
+			return
+		}
+
+		//удаляем выбранные в списках объекты типа 'relationship' и 'grouping'
+		if _, err := qp.DeleteManyData(append(listIDGroupingDel, listIDRelationshipDel...)); err != nil {
+			errorMessage.ErrorMessage.Error = err
+			chanOutput <- errorMessage
+
+			return
+		}
 
 		/*
-			здесь надо удалять выбранные элементы
-			если удаляется тип 'grouping', то нужно положить все ссылки в другие STIX объекты, содержащиеся в свойстве ObjectRefs
-			в свойство ObjectRefs объекта которому принадлежит удаляемый тип 'grouping' (чаще всего это тип 'report'), связи проверяются
-			через объекты типа 'relationship'
-
-			1. получить удаляемый объект 'grouping'
-			2. проверить наличие в нем заполненного поля ObjectRefs
-			3. получить объекты типа 'report' на которые ссылается объект 'grouping' через свойство ObjectRefs
-			4. записать содержимое поля ObjectRefs объекта 'grouping' в поле ObjectRefs объекта типа 'report'
-			5. удалить объект 'grouping' и связанный с ним объект типа 'reports' (ЭТО ЗА ОДИН ЗАПРОС ДЕЛАЕТСЯ)
-			И все это сделать для списка объектов 'grouping'
+			1. Удаление объектов типа 'grouping' и 'relationship' я написал, НЕОБХОДИМО ТЕСТИРОВАНИЕ, начал писать тест.
+			2. Нужно сделать автоматическое установление связей со STIX объектами типов 'grouping' и 'report' и другими объектами если на эти
+			другие объекты есть ссылки в поле ObjectRefs объектов типов 'grouping' и 'report'. Данные связи должны устанавливатся по средствам
+			объектов типа 'relationship'.
+			3. Нужно сделать автоматическое удаление объектов типа 'relationship' обеспечивающие обратную связь между объектами типов 'grouping'
+			и 'report' и другими объектами при удалении ссылок на объекты из поля ObjectRefs объектов типов 'grouping' и 'report'.
 		*/
 
 	}

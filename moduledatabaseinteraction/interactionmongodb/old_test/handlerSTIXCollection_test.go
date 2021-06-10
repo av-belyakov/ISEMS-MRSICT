@@ -171,7 +171,7 @@ var _ = Describe("HandlerSTIXCollection", func() {
 	})
 
 	Context("Тест 4. Проверяем функцию 'UnmarshalJSONObjectSTIXReq'", func() {
-		It("должен быть получен список из 65 STIX объектов, ошибок быть не должно", func() {
+		It("должен быть получен список из 66 STIX объектов, ошибок быть не должно", func() {
 			Expect(errUnmarchalToSTIX).ShouldNot(HaveOccurred())
 			Expect(len(l)).Should(Equal(66))
 		})

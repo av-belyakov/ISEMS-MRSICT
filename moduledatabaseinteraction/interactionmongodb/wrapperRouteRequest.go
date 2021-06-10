@@ -90,6 +90,20 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 		}
 	}
 
+	/*
+		СДЕЛАЛ 1. Удаление объектов типа 'grouping' и 'relationship' я написал, НЕОБХОДИМО ТЕСТИРОВАНИЕ, начал писать тест.
+		2. Нужно сделать автоматическое установление ОБРАТНЫХ связей между STIX объектами содержащими свойство ObjectRefs, такими как объекты типов:
+		- 'grouping'
+		- 'report'
+		- 'note'
+		- 'observed'
+		- 'opinion'
+		и с любыми другими объектами по средствам объектов типа 'relationship'.
+		3. Нужно сделать автоматическое удаление объектов типа 'relationship' обеспечивающие обратную связь между объектами типов 'grouping'
+		и 'report' и еще три выше перечисленных и другими объектами при удалении ссылок на объекты из поля ObjectRefs объектов типов
+		'grouping' и 'report' и т.д.
+	*/
+
 	//добавляем или обновляем STIX объекты в БД
 	err = ReplacementElementsSTIXObject(qp, ti)
 	if err != nil {
@@ -303,22 +317,14 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingManagingCollectionSTIXObjects(
 		}
 
 		//удаляем выбранные в списках объекты типа 'relationship' и 'grouping'
-		if _, err := qp.DeleteManyData(append(listIDGroupingDel, listIDRelationshipDel...)); err != nil {
+		if _, err := qp.DeleteManyData(bson.D{{
+			Key:   "commonpropertiesobjectstix.id",
+			Value: bson.D{{Key: "$in", Value: append(listIDGroupingDel, listIDRelationshipDel...)}}}}); err != nil {
 			errorMessage.ErrorMessage.Error = err
 			chanOutput <- errorMessage
 
 			return
 		}
-
-		/*
-			1. Удаление объектов типа 'grouping' и 'relationship' я написал, НЕОБХОДИМО ТЕСТИРОВАНИЕ, начал писать тест.
-			2. Нужно сделать автоматическое установление связей со STIX объектами типов 'grouping' и 'report' и другими объектами если на эти
-			другие объекты есть ссылки в поле ObjectRefs объектов типов 'grouping' и 'report'. Данные связи должны устанавливатся по средствам
-			объектов типа 'relationship'.
-			3. Нужно сделать автоматическое удаление объектов типа 'relationship' обеспечивающие обратную связь между объектами типов 'grouping'
-			и 'report' и другими объектами при удалении ссылок на объекты из поля ObjectRefs объектов типов 'grouping' и 'report'.
-		*/
-
 	}
 }
 

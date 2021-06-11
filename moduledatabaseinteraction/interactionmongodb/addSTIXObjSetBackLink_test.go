@@ -84,8 +84,6 @@ func addListTestSTIXObject(cdmdb interactionmongodb.ConnectionDescriptorMongoDB,
 
 	*/
 
-	var modAPIRequestProcessingReqJSON datamodels.ModAPIRequestProcessingReqJSON
-
 	/*
 						Описание тестового файла jsonSTIXExample_2.json
 				Файл содержит 5 объекта: 1-'report', 2-'grouping', 1-'note', 1-'observed-data' при этом свойства ObjectRefs этих объектов содержит:
@@ -109,6 +107,20 @@ func addListTestSTIXObject(cdmdb interactionmongodb.ConnectionDescriptorMongoDB,
 		            ]
 
 	*/
+
+	var (
+		listTypeSTIXObject = []string{
+			"grouping",
+			"note",
+			"observed",
+			"opinion",
+			"report",
+		}
+		listFalseSTIXObject            = []*datamodels.ElementSTIXObject{}
+		modAPIRequestProcessingReqJSON datamodels.ModAPIRequestProcessingReqJSON
+	)
+	listTrueSTIXObject := map[string]struct{ ObjectRefs []string }{}
+
 	docJSON, err := ioutil.ReadFile("../../mytest/test_resources/jsonSTIXExample_2.json")
 	if err != nil {
 		return err

@@ -3,7 +3,9 @@ package interactionmongodb_test
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"sort"
 	"time"
 
 	. "github.com/onsi/ginkgo"
@@ -119,7 +121,9 @@ func addListTestSTIXObject(cdmdb interactionmongodb.ConnectionDescriptorMongoDB,
 		listFalseSTIXObject            = []*datamodels.ElementSTIXObject{}
 		modAPIRequestProcessingReqJSON datamodels.ModAPIRequestProcessingReqJSON
 	)
-	listTrueSTIXObject := map[string]struct{ ObjectRefs []string }{}
+	listTrueSTIXObject := map[string]struct {
+		ObjectRefs []datamodels.IdentifierTypeSTIX
+	}{}
 
 	docJSON, err := ioutil.ReadFile("../../mytest/test_resources/jsonSTIXExample_2.json")
 	if err != nil {
@@ -134,6 +138,33 @@ func addListTestSTIXObject(cdmdb interactionmongodb.ConnectionDescriptorMongoDB,
 	if err != nil {
 		return err
 	}
+
+	for _, v := range l {
+		// если тип объекта относится к типам "grouping", "note", "observed", "opinion", "report"
+		if sort.SearchStrings(listTypeSTIXObject, v.DataType) >= 0 {
+			or, err := getObjectRefs(v)
+			if err != nil {
+				return err
+			}
+
+			listTrueSTIXObject[v.DataType] = struct {
+				ObjectRefs []datamodels.IdentifierTypeSTIX
+			}{ObjectRefs: or}
+		} else {
+			listFalseSTIXObject = append(listFalseSTIXObject, v)
+		}
+	}
+
+	/*
+	   Выполнить поиск по принятым в запросе объектам, есть ли в них объекты, ID которых совпадают с ID в свойстве ObjectRefs
+	   		какого либо из объектов типа:
+	   		- 'grouping'
+	   		- 'report'
+	   		- 'note'
+	   		- 'observed'
+	   		- 'opinion'
+	   		и создать список объектов типа 'relationship' обеспечивающих обратные связи с этими объектами
+	*/
 
 	if err := interactionmongodb.ReplacementElementsSTIXObject(qp, l); err != nil {
 		return err
@@ -173,6 +204,55 @@ func delListTestSTIXObject(cdmdb interactionmongodb.ConnectionDescriptorMongoDB,
 	}
 
 	return nil
+}
+
+func getObjectRefs(element *datamodels.ElementSTIXObject) ([]datamodels.IdentifierTypeSTIX, error) {
+	var or []datamodels.IdentifierTypeSTIX
+
+	switch element.DataType {
+	case "grouping":
+		obj, ok := element.Data.(datamodels.GroupingDomainObjectsSTIX)
+		if !ok {
+			return or, fmt.Errorf("conversion error")
+		}
+
+		or = obj.ObjectRefs
+
+	case "note":
+		obj, ok := element.Data.(datamodels.NoteDomainObjectsSTIX)
+		if !ok {
+			return or, fmt.Errorf("conversion error")
+		}
+
+		or = obj.ObjectRefs
+
+	case "observed":
+		obj, ok := element.Data.(datamodels.ObservedDataDomainObjectsSTIX)
+		if !ok {
+			return or, fmt.Errorf("conversion error")
+		}
+
+		or = obj.ObjectRefs
+
+	case "opinion":
+		obj, ok := element.Data.(datamodels.OpinionDomainObjectsSTIX)
+		if !ok {
+			return or, fmt.Errorf("conversion error")
+		}
+
+		or = obj.ObjectRefs
+
+	case "report":
+		obj, ok := element.Data.(datamodels.ReportDomainObjectsSTIX)
+		if !ok {
+			return or, fmt.Errorf("conversion error")
+		}
+
+		or = obj.ObjectRefs
+
+	}
+
+	return or, nil
 }
 
 var _ = Describe("AddSTIXObjSetBackLink", func() {

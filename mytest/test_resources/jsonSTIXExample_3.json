@@ -1,0 +1,24 @@
+{
+    "task_id": "ni883f838ggr8h9ehr3rgr38rg8f8g8wgd8g38",
+    "section": "handling stix object",
+    "task_was_generated_automatically": true,
+    "user_name_generated_task": "Иванов Петр Васильевич",
+    "request_details":	[
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--94e4d99f-67aa-4bcd-bbf3-b2c1c320aad7",
+            "created_by_ref": "identity--a463ffb3-1bd9-4d94-b02d-74e4f1658283",
+            "created": "2017-02-20T01:34:11.000Z",
+            "modified": "2017-10-21T19:59:11.000Z",
+            "name": "ТЕСТОВЫЙ ОТЧЕТ 1",
+            "description": "A simple report with test data",
+            "published": "2017-10-23T17:00:00.000Z",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "campaign--ce88a5a8-69ff-4349-86da-ac59b35c5672",
+                "grouping--11ff0f44-1e8b-5607-ab36-ce89b1d11ce6"
+            ]
+        }
+    ]
+}

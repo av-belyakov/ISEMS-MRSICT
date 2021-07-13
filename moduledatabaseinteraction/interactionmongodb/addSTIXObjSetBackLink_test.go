@@ -8,6 +8,7 @@ import (
 	"sort"
 	"time"
 
+	"github.com/google/uuid"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"go.mongodb.org/mongo-driver/bson"
@@ -19,77 +20,9 @@ import (
 
 func addListTestSTIXObject(cdmdb interactionmongodb.ConnectionDescriptorMongoDB, qp interactionmongodb.QueryParameters) error {
 	/*
-		Нужно сделать автоматическое установление ОБРАТНЫХ связей между STIX объектами содержащими свойство ObjectRefs, такими как объекты типов:
-		- 'grouping'
-		- 'report'
-		- 'note'
-		- 'observed'
-		- 'opinion'
-		и с любыми другими объектами по средствам объектов типа 'relationship'.
-		Нужно сделать автоматическое удаление объектов типа 'relationship' обеспечивающие обратную связь между объектами типов 'grouping'
-		и 'report' и еще три выше перечисленных и другими объектами при удалении ссылок на объекты из поля ObjectRefs объектов типов
-		'grouping' и 'report' и т.д.
-
-		1. Создать новый тестовый набор STIX объектов, в нем должны быть объекты типа:
-		- 'grouping'
-		- 'report'
-		- 'note'
-		- 'observed'
-		- 'opinion'
-		только они имеют свойство ObjectRefs в котором есть ссылки на другие объекты
-
-		2. Получить из этих объектов все ссылки содержащиеся в свойстве ObjectRefs в виде карты, где ключ будет являтся
-		ID объекта типа:
-		- 'grouping'
-		- 'report'
-		- 'note'
-		- 'observed'
-		- 'opinion'
-
-		3. Выполнить поиск по принятым в запросе объектам, есть ли в них объекты, ID которых совпадают с ID в свойстве ObjectRefs
-		какого либо из объектов типа:
-		- 'grouping'
-		- 'report'
-		- 'note'
-		- 'observed'
-		- 'opinion'
-		и создать список объектов типа 'relationship' обеспечивающих обратные связи с этими объектами
-
-		4. Выполнить поиск объектов типа 'relationship' в БД где свойство target_ref будет равно ID одного из объектов типа:
-		- 'grouping'
-		- 'report'
-		- 'note'
-		- 'observed'
-		- 'opinion'
-		а свойство source_ref будет равно одному из ID в свойстве ObjectRefs данного объекта. Создать список объектов типа
-		'relationship' обеспечивающих обратные связи с этими объектами. Это делается потому что принятый запрос может не содержать
-		объекты с котороыми устанавливается связи при добавлении или изменении объектов вышеперечисленных объектов
-
-		5. Так же может возникнуть ситуация когда из свойства ObjectRefs объектов типа:
-		- 'grouping'
-		- 'report'
-		- 'note'
-		- 'observed'
-		- 'opinion'
-		были удалены ID некоторых объектов. Тогда нужно найти все объекты типа 'relationship' где в свойстве target_ref будет равно ID одного из
-		объектов типа:
-		- 'grouping'
-		- 'report'
-		- 'note'
-		- 'observed'
-		- 'opinion'
-		то есть объекта из свойства ObjectRef которого были удалены ID какого то из объектов STIX. Далее надо сравнить список ID из свойства
-		ObjectRef и список ID ссылок в полученный при чтении свойства source_ref всех найденных объектов типа 'relationship'. Если в свойстве
-		source_ref ID объекта есть (для данного target_ref ID совпадающего с ID одного из пяти выше перечисленных объектов), а в объекте с полем
-		ObjectRef данного ID нет, то это и будет лишним объектом типа 'relationship'. Добавляем его ID в список 'relationship' объектов
-		подлежащих удалению
-
-	*/
-
-	/*
 						Описание тестового файла jsonSTIXExample_2.json
 				Файл содержит 5 объекта: 1-'report', 2-'grouping', 1-'note', 1-'observed-data' при этом свойства ObjectRefs этих объектов содержит:
-				1. type: "report"
+				1. type: "report" //"report--94e4d99f-67aa-4bcd-bbf3-b2c1c320aad7"
 				"object_refs": [
 		                "indicator--d38a99ae-c5ee-4542-bc12-dfe68b48cc08", //ссылается на объект в БД
 		                "campaign--ce88a5a8-69ff-4349-86da-ac59b35c5672", //ссылается на объект в БД
@@ -100,13 +33,16 @@ func addListTestSTIXObject(cdmdb interactionmongodb.ConnectionDescriptorMongoDB,
 				"object_refs": ["network-traffic--e7a939ca-78c6-5f27-8ae0-4ad112454626"] //ссылается на объект в БД
 				3. type: "grouping" //"grouping--11ff0f44-1e8b-5607-ab36-ce89b1d11ce6"
 				"object_refs": ["process--07bc30cad-ebc2-4579-881d-b9cdc7f2b33c"] //ссылается на объект в БД
-				4. type: "note"
+				4. type: "note" //"note--addb1322-e64c-41cf-1031-acd6cbe3c12b"
 				"object_refs": ["observed-data--c67d11ab-30ab-410a-abf9-10d888f412da"] //ссылается на объект тестовом файле
-				5. type: "observed-data"
+				5. type: "observed-data" //"observed-data--c67d11ab-30ab-410a-abf9-10d888f412da"
 				"object_refs": [
 		                "ipv4-addr--5853f6a4-638f-5b4e-9b0f-ded361ae3812", //ссылается на объект в БД
 		                "domain-name--ecb120bf-2694-4902-a737-62b74539a41b" //ссылается на объект в БД
 		            ]
+				6. type: "relationship" //"relationship--57b56a43-b8b0-4cba-9deb-34e3e1faed9e"
+				source_ref: "grouping--11ff0f44-1e8b-5607-ab36-ce89b1d11ce6",
+				target_ref: "report--94e4d99f-67aa-4bcd-bbf3-b2c1c320aad7",
 
 	*/
 
@@ -114,12 +50,16 @@ func addListTestSTIXObject(cdmdb interactionmongodb.ConnectionDescriptorMongoDB,
 		listTypeSTIXObject = []string{
 			"grouping",
 			"note",
-			"observed",
+			"observed-data",
 			"opinion",
 			"report",
 		}
-		listFalseSTIXObject            = []*datamodels.ElementSTIXObject{}
-		modAPIRequestProcessingReqJSON datamodels.ModAPIRequestProcessingReqJSON
+		modAPIRequestProcessingReqJSON   datamodels.ModAPIRequestProcessingReqJSON
+		modelRelationship                datamodels.RelationshipObjectSTIX
+		listRelationshipSTIXObject       = []datamodels.RelationshipObjectSTIX{}
+		createListRelationshipSTIXObject = []datamodels.RelationshipObjectSTIX{}
+		listFoundRelationshipSTIXObject  = []datamodels.RelationshipObjectSTIX{}
+		listIDTargetRef                  = []string{}
 	)
 	listTrueSTIXObject := map[string]struct {
 		ObjectRefs []datamodels.IdentifierTypeSTIX
@@ -139,41 +79,182 @@ func addListTestSTIXObject(cdmdb interactionmongodb.ConnectionDescriptorMongoDB,
 		return err
 	}
 
+	//поиск объектов типа "grouping", "note", "observed", "opinion", "report" среди объектов полученных от пользователя
+	// и сохраняем ссылки из свойства ObjectRef данных объектов в отдельный объект
 	for _, v := range l {
-		// если тип объекта относится к типам "grouping", "note", "observed", "opinion", "report"
-		if sort.SearchStrings(listTypeSTIXObject, v.DataType) >= 0 {
-			or, err := getObjectRefs(v)
-			if err != nil {
-				return err
+		if v.DataType == "relationship" {
+			if rso, ok := v.Data.(datamodels.RelationshipObjectSTIX); ok {
+				listRelationshipSTIXObject = append(listRelationshipSTIXObject, rso)
+			}
+		}
+
+		//если тип объекта относится к типам "grouping", "note", "observed", "opinion", "report"
+		if sort.SearchStrings(listTypeSTIXObject, v.DataType) < 0 {
+			continue
+		}
+
+		or, err := getObjectRefs(v)
+		if err != nil {
+			return err
+		}
+
+		listTrueSTIXObject[v.Data.GetID()] = struct {
+			ObjectRefs []datamodels.IdentifierTypeSTIX
+		}{ObjectRefs: or}
+
+		listIDTargetRef = append(listIDTargetRef, v.Data.GetID())
+	}
+
+	fmt.Printf("---+++=== listIDTargetRef: %v\n", listIDTargetRef)
+
+	//поиск в БД объектов типа 'relationship', где свойство target_ref будет равно ID одного из объектов типа: 'grouping', 'report',
+	// 'note', 'observed', 'opinion'
+	cur, err := qp.Find(bson.D{
+		bson.E{Key: "commonpropertiesobjectstix.type", Value: "relationship"},
+		bson.E{Key: "target_ref", Value: bson.D{{Key: "$in", Value: listIDTargetRef}}}})
+	if err != nil {
+		return err
+	}
+
+	for cur.Next(context.Background()) {
+		if err := cur.Decode(&modelRelationship); err != nil {
+			continue
+		}
+
+		listFoundRelationshipSTIXObject = append(listFoundRelationshipSTIXObject, modelRelationship)
+	}
+
+	fmt.Printf("---+++=== listFoundRelationshipSTIXObject from DB, COUNT: '%d', LIST: '%v'\n", len(listFoundRelationshipSTIXObject), listFoundRelationshipSTIXObject)
+
+	//поиск в найденных объектах типа 'relationship' совпадений, ID в свойстве 'target_ref' должно соответствовать ID одному из объектов типа:
+	// 'grouping', 'report', 'note', 'observed' или 'opinion', а ID в свойстве 'source_ref' должно соответствовать одному из ID в свойстве
+	// 'object_ref' объектов типа: 'grouping', 'report', 'note', 'observed' или 'opinion' если совпадения нет, то необходимо создать объект типа
+	// 'relateonship', обеспечивающий обратные связи
+	for id, or := range listTrueSTIXObject {
+		for _, idor := range or.ObjectRefs {
+			tmpRelationship := datamodels.RelationshipObjectSTIX{
+				CommonPropertiesObjectSTIX: datamodels.CommonPropertiesObjectSTIX{
+					Type: "relationship",
+					ID:   uuid.NewString(),
+				},
+				OptionalCommonPropertiesRelationshipObjectSTIX: datamodels.OptionalCommonPropertiesRelationshipObjectSTIX{
+					SpecVersion: "2.1",
+					Created:     time.Now(),
+					Modified:    time.Now(),
+				},
+				Description: "an automatically created object for establishing feedbacks",
+				SourceRef:   idor,
+				TargetRef:   datamodels.IdentifierTypeSTIX(id),
 			}
 
-			listTrueSTIXObject[v.DataType] = struct {
-				ObjectRefs []datamodels.IdentifierTypeSTIX
-			}{ObjectRefs: or}
-		} else {
-			listFalseSTIXObject = append(listFalseSTIXObject, v)
+			//поиск по списку объектов типа 'relationship' полученных от пользователя
+			if len(listRelationshipSTIXObject) != 0 {
+				for _, v := range listRelationshipSTIXObject {
+					if (v.SourceRef == idor) && (v.TargetRef == datamodels.IdentifierTypeSTIX(id)) {
+						tmpRelationship = datamodels.RelationshipObjectSTIX{}
+
+						break
+					}
+				}
+			}
+
+			//поиск по списку объектов типа 'relationship' полученных из БД
+			for _, vrs := range listFoundRelationshipSTIXObject {
+				if id != string(vrs.TargetRef) {
+					continue
+				}
+
+				for _, idor := range or.ObjectRefs {
+					if idor == vrs.SourceRef {
+						tmpRelationship = datamodels.RelationshipObjectSTIX{}
+
+						break
+					}
+				}
+			}
+
+			if tmpRelationship.ID != "" {
+				createListRelationshipSTIXObject = append(createListRelationshipSTIXObject, tmpRelationship)
+			}
 		}
 	}
 
-	/*
-	   Выполнить поиск по принятым в запросе объектам, есть ли в них объекты, ID которых совпадают с ID в свойстве ObjectRefs
-	   		какого либо из объектов типа:
-	   		- 'grouping'
-	   		- 'report'
-	   		- 'note'
-	   		- 'observed'
-	   		- 'opinion'
-	   		и создать список объектов типа 'relationship' обеспечивающих обратные связи с этими объектами
-	*/
+	fmt.Printf("---+++=== listRealtionshipSTIXObject 222 COUNT: '%d'\n", len(createListRelationshipSTIXObject))
+	fmt.Println("---+++=== listRealtionshipSTIXObject 222 LIST:")
 
+	for _, v := range createListRelationshipSTIXObject {
+		fmt.Printf("---+++=== listRealtionshipSTIXObject 222 SourceRef:'%s', TargetRef:'%s'\n", v.SourceRef, v.TargetRef)
+	}
+
+	//добавляем вновь созданные объекты типа 'relationship' в основной список объектов, который был получен от пользователя
+	// и котороый необходимо добавить в БД
+	for _, v := range createListRelationshipSTIXObject {
+		l = append(l, &datamodels.ElementSTIXObject{
+			DataType: v.Type,
+			Data:     v,
+		})
+	}
+
+	fmt.Println("---+++=== ___l___")
+	for _, v := range l {
+		fmt.Printf("---+++=== ___l___: Type: '%s', ID: '%s'\n", v.DataType, v.Data.GetID())
+	}
+
+	//запись в БД полученной от пользователя информации и дополнительно сформированных объектов типа 'relationship'
 	if err := interactionmongodb.ReplacementElementsSTIXObject(qp, l); err != nil {
 		return err
 	}
+
+	/*
+		создание объектов типа 'relationship', обеспечивающих обратные связи, выполняется успешно
+		все дополнительно записывается в БД. Теперь необходимо заниматся удалением объектов типа 'relationship', обеспечивающих обратные связи
+		которое должно выполнятся при исключении ID объекта из свойства 'object_ref'
+	*/
 
 	return nil
 }
 
 func delListTestSTIXObject(cdmdb interactionmongodb.ConnectionDescriptorMongoDB, qp interactionmongodb.QueryParameters, listID []string) error {
+	/*
+		Так же может возникнуть ситуация когда из свойства ObjectRefs объектов типа:
+			- 'grouping'
+			- 'report'
+			- 'note'
+			- 'observed-data'
+			- 'opinion'
+			были удалены ID некоторых объектов. Тогда нужно найти все объекты типа 'relationship' где в свойстве target_ref будет равно ID одного из
+			объектов типа:
+			- 'grouping'
+			- 'report'
+			- 'note'
+			- 'observed-data'
+			- 'opinion'
+			то есть объекта из свойства ObjectRef которого были удалены ID какого то из объектов STIX. Далее надо сравнить список ID из свойства
+			ObjectRef и список ID ссылок в полученный при чтении свойства source_ref всех найденных объектов типа 'relationship'. Если в свойстве
+			source_ref ID объекта есть (для данного target_ref ID совпадающего с ID одного из пяти выше перечисленных объектов), а в объекте с полем
+			ObjectRef данного ID нет, то это и будет лишним объектом типа 'relationship'. Добавляем его ID в список 'relationship' объектов
+			подлежащих удалению
+
+			1. Прочитать тестовый файл ../../mytest/test_resources/jsonSTIXExample_3.json (надо создать)
+
+			2. проверить наличие списока объектов типа: 'grouping', 'report', 'note', 'observed-data', 'opinion' в БД по их ID
+			полученных от пользователя, если объекты с такими ID уже есть в базе нужно сравнить содержимое поля 'object_ref'
+			объекта полученного из БД и полученного от пользователя. Если в поле 'object_ref' объекта полученного из БД есть ссылка,
+			а в том же объекте полученном от пользователя ее уже нет, то нужно выполнить поиск и удаление объекта типа 'relationship'
+			в поле 'target_ref' которого ID одного из объектов типа 'grouping', 'report', 'note', 'observed-data', 'opinion',
+			а в поле 'source_ref' которого ID объекта отсутствующего в объекте полученном от пользователя
+
+			Описание тестового файла jsonSTIXExample_3.json
+				Файл содержит 1 объект: 1-'report' при этом свойства ObjectRefs этих объектов содержит:
+				1. type: "report" //"report--94e4d99f-67aa-4bcd-bbf3-b2c1c320aad7"
+				"object_refs": [
+		                "indicator--d38a99ae-c5ee-4542-bc12-dfe68b48cc08", //ссылается на объект в БД (БЫЛО УДАЛЕНО ИЗ СПИСКА!!!)
+		                "campaign--ce88a5a8-69ff-4349-86da-ac59b35c5672", //ссылается на объект в БД
+		                "grouping--23af0f32-2e61-4f00-7020-b378bdd3b201", //ссылается на объект тестовом файле (БЫЛО УДАЛЕНО ИЗ СПИСКА!!!)
+		                "grouping--11ff0f44-1e8b-5607-ab36-ce89b1d11ce6" //ссылается на объект тестовом файле
+		            ]
+	*/
+
 	/*var modAPIRequestProcessingReqJSON datamodels.ModAPIRequestProcessingReqJSON
 
 	docJSON, err := ioutil.ReadFile("../../mytest/test_resources/jsonSTIXExample_1.json")
@@ -226,7 +307,7 @@ func getObjectRefs(element *datamodels.ElementSTIXObject) ([]datamodels.Identifi
 
 		or = obj.ObjectRefs
 
-	case "observed":
+	case "observed-data":
 		obj, ok := element.Data.(datamodels.ObservedDataDomainObjectsSTIX)
 		if !ok {
 			return or, fmt.Errorf("conversion error")

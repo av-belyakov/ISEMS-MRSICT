@@ -90,19 +90,24 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 		}
 	}
 
-	/*
-		СДЕЛАЛ 1. Удаление объектов типа 'grouping' и 'relationship' я написал, НЕОБХОДИМО ТЕСТИРОВАНИЕ, начал писать тест.
-		2. Нужно сделать автоматическое установление ОБРАТНЫХ связей между STIX объектами содержащими свойство ObjectRefs, такими как объекты типов:
-		- 'grouping'
-		- 'report'
-		- 'note'
-		- 'observed'
-		- 'opinion'
-		и с любыми другими объектами по средствам объектов типа 'relationship'.
-		3. Нужно сделать автоматическое удаление объектов типа 'relationship' обеспечивающие обратную связь между объектами типов 'grouping'
-		и 'report' и еще три выше перечисленных и другими объектами при удалении ссылок на объекты из поля ObjectRefs объектов типов
-		'grouping' и 'report' и т.д.
-	*/
+	//проверяем и по необходимости удаляем дополнительные STIX объекты типа 'relationship', обеспечивающие обратные связи. Действие выполняется ТОЛЬКО
+	// если в объекте, полученном от пользователя, в свойстве 'object_refs', идентификатор объекта отсутствует, а в свойстве 'object_refs' объекта
+	// полученного из БД, данный идентификатор присутствует
+	if err = DeleteOldRelationshipSTIXObject(qp, ti); err != nil {
+		errorMessage.ErrorMessage.Error = err
+		chanOutput <- errorMessage
+
+		return
+	}
+
+	//создаем дополнительные STIX объекты типа 'relationship', обеспечивающие обратные связи
+	ti, err = CreatingAdditionalRelationshipSTIXObject(qp, ti)
+	if err != nil {
+		errorMessage.ErrorMessage.Error = err
+		chanOutput <- errorMessage
+
+		return
+	}
 
 	//добавляем или обновляем STIX объекты в БД
 	err = ReplacementElementsSTIXObject(qp, ti)
@@ -173,12 +178,12 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingManagingCollectionSTIXObjects(
 			listIDRelationshipDel []string // список объектов типа 'relationship' предназначеных для удаления
 			listIDReporModify     []string // список объектов типа 'report' предназначенных для модификации
 			listObjModiy          []*datamodels.ElementSTIXObject
+			sl                    = map[string]struct {
+				targetRefsID   string
+				relationshipID string
+				listRefs       []datamodels.IdentifierTypeSTIX
+			}{}
 		)
-		sl := map[string]struct {
-			targetRefsID   string
-			relationshipID string
-			listRefs       []datamodels.IdentifierTypeSTIX
-		}{}
 
 		listID, ok := taskInfo.TaskParameters.([]string)
 		if !ok {
@@ -244,7 +249,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingManagingCollectionSTIXObjects(
 			if obj, ok := v.Data.(datamodels.RelationshipObjectSTIX); ok {
 				targetID := string(obj.TargetRef)
 
-				//сохраняем список объектов типа 'relationship' являющихся связующим звеном и которые в последствии необходимо удалить
+				//сохраняем список объектов типа 'relationship', являющиеся связующим звеном, которые в последствии необходимо удалить
 				listIDRelationshipDel = append(listIDRelationshipDel, obj.ID)
 				listIDReporModify = append(listIDReporModify, targetID)
 
@@ -487,10 +492,8 @@ func (ws *wrappersSetting) wrapperFuncTypeTechnicalPart(
 			tst.SetListDecisionsMade(listID)
 		}()
 
-		/*
-			проверяем наличие объектов STIX DO типа 'grouping', содержащих списки объектов STIX DO типа 'report', относящихся к какому то определенному
-			виду компьютерного воздействия
-		*/
+		//проверяем наличие объектов STIX DO типа 'grouping', содержащих списки объектов STIX DO типа 'report', относящихся к какому то определенному
+		// виду компьютерного воздействия
 		go func() {
 			lct, err := tst.GetListComputerThreat()
 			if err != nil {

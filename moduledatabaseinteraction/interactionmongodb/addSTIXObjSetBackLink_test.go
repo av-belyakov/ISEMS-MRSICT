@@ -5,13 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"sort"
 	"time"
 
-	"github.com/google/uuid"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"go.mongodb.org/mongo-driver/bson"
 
 	"ISEMS-MRSICT/datamodels"
 	"ISEMS-MRSICT/modulecoreapplication/routingflowsmoduleapirequestprocessing"
@@ -46,24 +43,7 @@ func addListTestSTIXObject(cdmdb interactionmongodb.ConnectionDescriptorMongoDB,
 
 	*/
 
-	var (
-		listTypeSTIXObject = []string{
-			"grouping",
-			"note",
-			"observed-data",
-			"opinion",
-			"report",
-		}
-		modAPIRequestProcessingReqJSON   datamodels.ModAPIRequestProcessingReqJSON
-		modelRelationship                datamodels.RelationshipObjectSTIX
-		listRelationshipSTIXObject       = []datamodels.RelationshipObjectSTIX{}
-		createListRelationshipSTIXObject = []datamodels.RelationshipObjectSTIX{}
-		listFoundRelationshipSTIXObject  = []datamodels.RelationshipObjectSTIX{}
-		listIDTargetRef                  = []string{}
-	)
-	listTrueSTIXObject := map[string]struct {
-		ObjectRefs []datamodels.IdentifierTypeSTIX
-	}{}
+	var modAPIRequestProcessingReqJSON datamodels.ModAPIRequestProcessingReqJSON
 
 	docJSON, err := ioutil.ReadFile("../../mytest/test_resources/jsonSTIXExample_2.json")
 	if err != nil {
@@ -79,129 +59,19 @@ func addListTestSTIXObject(cdmdb interactionmongodb.ConnectionDescriptorMongoDB,
 		return err
 	}
 
-	//поиск объектов типа "grouping", "note", "observed", "opinion", "report" среди объектов полученных от пользователя
-	// и сохраняем ссылки из свойства ObjectRef данных объектов в отдельный объект
-	for _, v := range l {
-		if v.DataType == "relationship" {
-			if rso, ok := v.Data.(datamodels.RelationshipObjectSTIX); ok {
-				listRelationshipSTIXObject = append(listRelationshipSTIXObject, rso)
-			}
-		}
-
-		//если тип объекта относится к типам "grouping", "note", "observed", "opinion", "report"
-		if sort.SearchStrings(listTypeSTIXObject, v.DataType) < 0 {
-			continue
-		}
-
-		or, err := getObjectRefs(v)
-		if err != nil {
-			return err
-		}
-
-		listTrueSTIXObject[v.Data.GetID()] = struct {
-			ObjectRefs []datamodels.IdentifierTypeSTIX
-		}{ObjectRefs: or}
-
-		listIDTargetRef = append(listIDTargetRef, v.Data.GetID())
-	}
-
-	fmt.Printf("---+++=== listIDTargetRef: %v\n", listIDTargetRef)
-
-	//поиск в БД объектов типа 'relationship', где свойство target_ref будет равно ID одного из объектов типа: 'grouping', 'report',
-	// 'note', 'observed', 'opinion'
-	cur, err := qp.Find(bson.D{
-		bson.E{Key: "commonpropertiesobjectstix.type", Value: "relationship"},
-		bson.E{Key: "target_ref", Value: bson.D{{Key: "$in", Value: listIDTargetRef}}}})
+	//newList, err := creatingAdditionalRelationshipSTIXObject(l)
+	newList, err := interactionmongodb.CreatingAdditionalRelationshipSTIXObject(qp, l)
 	if err != nil {
 		return err
 	}
 
-	for cur.Next(context.Background()) {
-		if err := cur.Decode(&modelRelationship); err != nil {
-			continue
-		}
-
-		listFoundRelationshipSTIXObject = append(listFoundRelationshipSTIXObject, modelRelationship)
-	}
-
-	fmt.Printf("---+++=== listFoundRelationshipSTIXObject from DB, COUNT: '%d', LIST: '%v'\n", len(listFoundRelationshipSTIXObject), listFoundRelationshipSTIXObject)
-
-	//поиск в найденных объектах типа 'relationship' совпадений, ID в свойстве 'target_ref' должно соответствовать ID одному из объектов типа:
-	// 'grouping', 'report', 'note', 'observed' или 'opinion', а ID в свойстве 'source_ref' должно соответствовать одному из ID в свойстве
-	// 'object_ref' объектов типа: 'grouping', 'report', 'note', 'observed' или 'opinion' если совпадения нет, то необходимо создать объект типа
-	// 'relateonship', обеспечивающий обратные связи
-	for id, or := range listTrueSTIXObject {
-		for _, idor := range or.ObjectRefs {
-			tmpRelationship := datamodels.RelationshipObjectSTIX{
-				CommonPropertiesObjectSTIX: datamodels.CommonPropertiesObjectSTIX{
-					Type: "relationship",
-					ID:   uuid.NewString(),
-				},
-				OptionalCommonPropertiesRelationshipObjectSTIX: datamodels.OptionalCommonPropertiesRelationshipObjectSTIX{
-					SpecVersion: "2.1",
-					Created:     time.Now(),
-					Modified:    time.Now(),
-				},
-				Description: "an automatically created object for establishing feedbacks",
-				SourceRef:   idor,
-				TargetRef:   datamodels.IdentifierTypeSTIX(id),
-			}
-
-			//поиск по списку объектов типа 'relationship' полученных от пользователя
-			if len(listRelationshipSTIXObject) != 0 {
-				for _, v := range listRelationshipSTIXObject {
-					if (v.SourceRef == idor) && (v.TargetRef == datamodels.IdentifierTypeSTIX(id)) {
-						tmpRelationship = datamodels.RelationshipObjectSTIX{}
-
-						break
-					}
-				}
-			}
-
-			//поиск по списку объектов типа 'relationship' полученных из БД
-			for _, vrs := range listFoundRelationshipSTIXObject {
-				if id != string(vrs.TargetRef) {
-					continue
-				}
-
-				for _, idor := range or.ObjectRefs {
-					if idor == vrs.SourceRef {
-						tmpRelationship = datamodels.RelationshipObjectSTIX{}
-
-						break
-					}
-				}
-			}
-
-			if tmpRelationship.ID != "" {
-				createListRelationshipSTIXObject = append(createListRelationshipSTIXObject, tmpRelationship)
-			}
-		}
-	}
-
-	fmt.Printf("---+++=== listRealtionshipSTIXObject 222 COUNT: '%d'\n", len(createListRelationshipSTIXObject))
-	fmt.Println("---+++=== listRealtionshipSTIXObject 222 LIST:")
-
-	for _, v := range createListRelationshipSTIXObject {
-		fmt.Printf("---+++=== listRealtionshipSTIXObject 222 SourceRef:'%s', TargetRef:'%s'\n", v.SourceRef, v.TargetRef)
-	}
-
-	//добавляем вновь созданные объекты типа 'relationship' в основной список объектов, который был получен от пользователя
-	// и котороый необходимо добавить в БД
-	for _, v := range createListRelationshipSTIXObject {
-		l = append(l, &datamodels.ElementSTIXObject{
-			DataType: v.Type,
-			Data:     v,
-		})
-	}
-
-	fmt.Println("---+++=== ___l___")
-	for _, v := range l {
-		fmt.Printf("---+++=== ___l___: Type: '%s', ID: '%s'\n", v.DataType, v.Data.GetID())
+	fmt.Println("---+++=== ___newList___")
+	for _, v := range newList {
+		fmt.Printf("---+++=== ___newList___: Type: '%s', ID: '%s'\n", v.DataType, v.Data.GetID())
 	}
 
 	//запись в БД полученной от пользователя информации и дополнительно сформированных объектов типа 'relationship'
-	if err := interactionmongodb.ReplacementElementsSTIXObject(qp, l); err != nil {
+	if err := interactionmongodb.ReplacementElementsSTIXObject(qp, newList); err != nil {
 		return err
 	}
 
@@ -214,7 +84,7 @@ func addListTestSTIXObject(cdmdb interactionmongodb.ConnectionDescriptorMongoDB,
 	return nil
 }
 
-func delListTestSTIXObject(cdmdb interactionmongodb.ConnectionDescriptorMongoDB, qp interactionmongodb.QueryParameters, listID []string) error {
+func delListTestSTIXObject(cdmdb interactionmongodb.ConnectionDescriptorMongoDB, qp interactionmongodb.QueryParameters) error {
 	/*
 		Так же может возникнуть ситуация когда из свойства ObjectRefs объектов типа:
 			- 'grouping'
@@ -255,9 +125,9 @@ func delListTestSTIXObject(cdmdb interactionmongodb.ConnectionDescriptorMongoDB,
 		            ]
 	*/
 
-	/*var modAPIRequestProcessingReqJSON datamodels.ModAPIRequestProcessingReqJSON
+	var modAPIRequestProcessingReqJSON datamodels.ModAPIRequestProcessingReqJSON
 
-	docJSON, err := ioutil.ReadFile("../../mytest/test_resources/jsonSTIXExample_1.json")
+	docJSON, err := ioutil.ReadFile("../../mytest/test_resources/jsonSTIXExample_3.json")
 	if err != nil {
 		return err
 	}
@@ -271,69 +141,8 @@ func delListTestSTIXObject(cdmdb interactionmongodb.ConnectionDescriptorMongoDB,
 		return err
 	}
 
-	listDelID := make([]string, 0, len(l))
-	for _, v := range l {
-		listDelID = append(listDelID, v.Data.GetID())
-	}
-
-	if _, err := qp.DeleteManyData(listDelID); err != nil {
-		return err
-	}*/
-
-	if _, err := qp.DeleteManyData(bson.D{{Key: "commonpropertiesobjectstix.id", Value: bson.D{{Key: "$in", Value: listID}}}}); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func getObjectRefs(element *datamodels.ElementSTIXObject) ([]datamodels.IdentifierTypeSTIX, error) {
-	var or []datamodels.IdentifierTypeSTIX
-
-	switch element.DataType {
-	case "grouping":
-		obj, ok := element.Data.(datamodels.GroupingDomainObjectsSTIX)
-		if !ok {
-			return or, fmt.Errorf("conversion error")
-		}
-
-		or = obj.ObjectRefs
-
-	case "note":
-		obj, ok := element.Data.(datamodels.NoteDomainObjectsSTIX)
-		if !ok {
-			return or, fmt.Errorf("conversion error")
-		}
-
-		or = obj.ObjectRefs
-
-	case "observed-data":
-		obj, ok := element.Data.(datamodels.ObservedDataDomainObjectsSTIX)
-		if !ok {
-			return or, fmt.Errorf("conversion error")
-		}
-
-		or = obj.ObjectRefs
-
-	case "opinion":
-		obj, ok := element.Data.(datamodels.OpinionDomainObjectsSTIX)
-		if !ok {
-			return or, fmt.Errorf("conversion error")
-		}
-
-		or = obj.ObjectRefs
-
-	case "report":
-		obj, ok := element.Data.(datamodels.ReportDomainObjectsSTIX)
-		if !ok {
-			return or, fmt.Errorf("conversion error")
-		}
-
-		or = obj.ObjectRefs
-
-	}
-
-	return or, nil
+	//return deleteOldRelationshipSTIXObject(l)
+	return interactionmongodb.DeleteOldRelationshipSTIXObject(qp, l)
 }
 
 var _ = Describe("AddSTIXObjSetBackLink", func() {
@@ -374,12 +183,6 @@ var _ = Describe("AddSTIXObjSetBackLink", func() {
 	})
 
 	var _ = AfterSuite(func() {
-		//удаляем только добавленный объект типа 'report', остальные добавленные объекты должны быть удалены ранее функцией deleteObjTypeGrouping
-		/*err := delListTestSTIXObject(cdmdb, qp, []string{"report--94e4d99f-67aa-4bcd-bbf3-b2c1c320aad7"})
-		if err != nil {
-			fmt.Println(err)
-		}*/
-
 		cdmdb.CtxCancel()
 	})
 
@@ -392,6 +195,13 @@ var _ = Describe("AddSTIXObjSetBackLink", func() {
 	Context("Тест 2. Добавление тестового набора STIX объектов и установление дополнительных связей", func() {
 		It("При добавления тестового набора ошибок быть не должно", func() {
 			Expect(errAddListObj).ShouldNot(HaveOccurred())
+		})
+	})
+
+	Context("Тест 3. Удаление объектов типа 'relationship' обеспечивающих обратные связи, при удалении ID объекта из свойства 'object_ref'", func() {
+		It("При удалении объектов типа 'relationship' ошибок быть не должно", func() {
+			err := delListTestSTIXObject(cdmdb, qp)
+			Expect(err).ShouldNot(HaveOccurred())
 		})
 	})
 })

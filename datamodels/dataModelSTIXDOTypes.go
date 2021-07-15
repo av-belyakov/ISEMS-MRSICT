@@ -297,7 +297,7 @@ type MalwareAnalysisDomainObjectsSTIX struct {
 // Abstract - краткое изложение содержания записки
 // Content - основное содержание (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // Authors - список авторов
-// ObjectRefs - список идентификаторов на другие наблюдаемые Domain Objects STIX (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+// ObjectRefs - список идентификаторов на других DO STIX объектов к которым применяется замечание (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 type NoteDomainObjectsSTIX struct {
 	CommonPropertiesObjectSTIX
 	CommonPropertiesDomainObjectSTIX
@@ -307,7 +307,7 @@ type NoteDomainObjectsSTIX struct {
 	ObjectRefs []IdentifierTypeSTIX `json:"object_refs" bson:"object_refs" required:"true"`
 }
 
-//ObservedDataDomainObjectsSTIX объект "Observed Data", по терминалогии STIX, содержит информацию сущностях связанных с кибер безопасностью, таких как файлы,
+//ObservedDataDomainObjectsSTIX объект "Observed Data", по терминалогии STIX, содержит информацию о сущностях связанных с кибер безопасностью, таких как файлы,
 //  системы или сети. Наблюдаемые данные это не результат анализа или заключение искусственного интеллекта, это просто сырая информация без какого-либо контекста.
 // FirstObserved - время, в формате "2016-05-12T08:17:27.000Z", начала временного окна, в течение которого были замечены данные (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // LastObserved - время, в формате "2016-05-12T08:17:27.000Z", окончание временного окна, в течение которого были замечены данные (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)

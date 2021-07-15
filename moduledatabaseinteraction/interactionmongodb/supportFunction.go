@@ -7,7 +7,6 @@ import (
 	"regexp"
 	"time"
 
-
 	"ISEMS-MRSICT/commonlibs"
 	"ISEMS-MRSICT/datamodels"
 
@@ -18,6 +17,16 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+)
+
+var (
+	listTypeSTIXObject = []string{
+		"grouping",
+		"note",
+		"observed-data",
+		"opinion",
+		"report",
+	}
 )
 
 //ComparasionListTypeSTIXObject содержит два списка STIX объектов, предназначенных для сравнения
@@ -828,4 +837,294 @@ func GetListGroupingObjectSTIX(cur *mongo.Cursor) []datamodels.GroupingDomainObj
 	}
 
 	return list
+}
+
+//getPropertyObjectRefs вспомогоательная функция для получения списка идентификаторов объектов STIX содержащихся с свойстве 'object_refs' некоторых
+// объектов STIX
+func getPropertyObjectRefs(element *datamodels.ElementSTIXObject) ([]datamodels.IdentifierTypeSTIX, error) {
+	var or []datamodels.IdentifierTypeSTIX
+
+	switch element.DataType {
+	case "grouping":
+		obj, ok := element.Data.(datamodels.GroupingDomainObjectsSTIX)
+		if !ok {
+			return or, fmt.Errorf("conversion error")
+		}
+
+		or = obj.ObjectRefs
+
+	case "note":
+		obj, ok := element.Data.(datamodels.NoteDomainObjectsSTIX)
+		if !ok {
+			return or, fmt.Errorf("conversion error")
+		}
+
+		or = obj.ObjectRefs
+
+	case "observed-data":
+		obj, ok := element.Data.(datamodels.ObservedDataDomainObjectsSTIX)
+		if !ok {
+			return or, fmt.Errorf("conversion error")
+		}
+
+		or = obj.ObjectRefs
+
+	case "opinion":
+		obj, ok := element.Data.(datamodels.OpinionDomainObjectsSTIX)
+		if !ok {
+			return or, fmt.Errorf("conversion error")
+		}
+
+		or = obj.ObjectRefs
+
+	case "report":
+		obj, ok := element.Data.(datamodels.ReportDomainObjectsSTIX)
+		if !ok {
+			return or, fmt.Errorf("conversion error")
+		}
+
+		or = obj.ObjectRefs
+
+	}
+
+	return or, nil
+}
+
+//CreatingAdditionalRelationshipSTIXObject создает дополнительные STIX объекты типа 'relationship', обеспечивающие обратные связи для STIX объектов
+// перечисленных в свойстве 'object_refs' и содержащемся в таких STIX объектах, как 'grouping', 'note', 'observed-data', 'opinion', 'report'
+func CreatingAdditionalRelationshipSTIXObject(qp QueryParameters, l []*datamodels.ElementSTIXObject) ([]*datamodels.ElementSTIXObject, error) {
+	var (
+		listIDTargetRef                  = []string{}
+		modelRelationship                datamodels.RelationshipObjectSTIX
+		listRelationshipSTIXObject       = []datamodels.RelationshipObjectSTIX{}
+		createListRelationshipSTIXObject = []datamodels.RelationshipObjectSTIX{}
+		listFoundRelationshipSTIXObject  = []datamodels.RelationshipObjectSTIX{}
+		listTrueSTIXObject               = map[string]struct {
+			ObjectRefs []datamodels.IdentifierTypeSTIX
+		}{}
+	)
+
+	//поиск объектов типа 'grouping', 'note', 'observed-data', 'opinion' или 'report' среди объектов полученных от пользователя
+	// и сохранение ссылки из свойства ObjectRef данных объектов, в отдельный объект
+	for _, v := range l {
+		if v.DataType == "relationship" {
+			if rso, ok := v.Data.(datamodels.RelationshipObjectSTIX); ok {
+				listRelationshipSTIXObject = append(listRelationshipSTIXObject, rso)
+			}
+
+			continue
+		}
+
+		for _, vType := range listTypeSTIXObject {
+			if vType == v.DataType {
+				or, err := getPropertyObjectRefs(v)
+				if err != nil {
+					return l, err
+				}
+
+				listTrueSTIXObject[v.Data.GetID()] = struct {
+					ObjectRefs []datamodels.IdentifierTypeSTIX
+				}{ObjectRefs: or}
+				listIDTargetRef = append(listIDTargetRef, v.Data.GetID())
+
+				break
+			}
+		}
+	}
+
+	//поиск в БД объектов типа 'relationship', где свойство target_ref будет равно ID одного из объектов типа: 'grouping', 'report',
+	// 'note', 'observed-data', 'opinion'
+	cur, err := qp.Find(bson.D{
+		bson.E{Key: "commonpropertiesobjectstix.type", Value: "relationship"},
+		bson.E{Key: "target_ref", Value: bson.D{{Key: "$in", Value: listIDTargetRef}}}})
+	if err != nil {
+		return l, err
+	}
+
+	for cur.Next(context.Background()) {
+		if err := cur.Decode(&modelRelationship); err != nil {
+			continue
+		}
+
+		listFoundRelationshipSTIXObject = append(listFoundRelationshipSTIXObject, modelRelationship)
+	}
+
+	//поиск в найденных объектах типа 'relationship' совпадений, ID в свойстве 'target_ref' должно соответствовать ID одному из объектов типа:
+	// 'grouping', 'report', 'note', 'observed' или 'opinion', а ID в свойстве 'source_ref' должно соответствовать одному из ID в свойстве
+	// 'object_ref' объектов типа: 'grouping', 'report', 'note', 'observed' или 'opinion' если совпадения нет, то необходимо создать объект типа
+	// 'relateonship', обеспечивающий обратные связи
+	for id, objRef := range listTrueSTIXObject {
+		for _, idor := range objRef.ObjectRefs {
+			tmpRelationship := datamodels.RelationshipObjectSTIX{
+				CommonPropertiesObjectSTIX: datamodels.CommonPropertiesObjectSTIX{
+					Type: "relationship",
+					ID:   fmt.Sprintf("relationship--%s", uuid.NewString()),
+				},
+				OptionalCommonPropertiesRelationshipObjectSTIX: datamodels.OptionalCommonPropertiesRelationshipObjectSTIX{
+					SpecVersion: "2.1",
+					Created:     time.Now(),
+					Modified:    time.Now(),
+				},
+				Description: "an automatically created object for establishing feedbacks",
+				SourceRef:   idor,
+				TargetRef:   datamodels.IdentifierTypeSTIX(id),
+			}
+
+			//поиск по списку объектов типа 'relationship' полученных от пользователя
+			if len(listRelationshipSTIXObject) != 0 {
+				for _, v := range listRelationshipSTIXObject {
+					if (v.SourceRef == idor) && (v.TargetRef == datamodels.IdentifierTypeSTIX(id)) {
+						tmpRelationship = datamodels.RelationshipObjectSTIX{}
+
+						break
+					}
+				}
+			}
+
+			//поиск по списку объектов типа 'relationship' полученных из БД
+			for _, vrs := range listFoundRelationshipSTIXObject {
+				if id != string(vrs.TargetRef) {
+					continue
+				}
+
+				if idor == vrs.SourceRef {
+					tmpRelationship = datamodels.RelationshipObjectSTIX{}
+
+					break
+				}
+			}
+
+			if tmpRelationship.ID != "" {
+				createListRelationshipSTIXObject = append(createListRelationshipSTIXObject, tmpRelationship)
+			}
+		}
+	}
+
+	//добавляем вновь созданные объекты типа 'relationship' в основной список объектов, который был получен от пользователя
+	// и котороый необходимо добавить в БД
+	for _, v := range createListRelationshipSTIXObject {
+		l = append(l, &datamodels.ElementSTIXObject{
+			DataType: v.Type,
+			Data:     v,
+		})
+	}
+
+	return l, nil
+}
+
+//DeleteOldRelationshipSTIXObject удаляет дополнительные STIX объекты типа 'relationship', обеспечивающие обратные связи для STIX объектов
+// идентификаторы которых содержатся в свойстве 'object_ref'
+func DeleteOldRelationshipSTIXObject(qp QueryParameters, l []*datamodels.ElementSTIXObject) error {
+	var (
+		listIDTargetRef      = []string{}
+		listSearchParameters bson.A
+		listTrueSTIXObject   = map[string]struct {
+			ObjectRefs []datamodels.IdentifierTypeSTIX
+		}{}
+		listIDDelRelationshipSTIXObject = []struct {
+			SourceRef, TargetRef string
+		}{}
+	)
+
+	//поиск объектов типа "grouping", "note", "observed-data", "opinion", "report" среди объектов полученных от пользователя
+	// и сохранение ссылки из свойства ObjectRef данных объектов, в отдельный объект
+	for _, v := range l {
+		for _, vType := range listTypeSTIXObject {
+			if vType == v.DataType {
+				or, err := getPropertyObjectRefs(v)
+				if err != nil {
+					return err
+				}
+
+				listTrueSTIXObject[v.Data.GetID()] = struct {
+					ObjectRefs []datamodels.IdentifierTypeSTIX
+				}{ObjectRefs: or}
+				listIDTargetRef = append(listIDTargetRef, v.Data.GetID())
+
+				break
+			}
+		}
+	}
+
+	//поиск в БД объектов типа: 'grouping', 'report', 'note', 'observed-data', 'opinion'
+	cur, err := qp.Find(bson.D{
+		bson.E{Key: "commonpropertiesobjectstix.id", Value: bson.D{{Key: "$in", Value: listIDTargetRef}}}})
+	if err != nil {
+		return err
+	}
+
+	for _, v := range GetListElementSTIXObject(cur) {
+		for id, lor := range listTrueSTIXObject {
+			if v.Data.GetID() != id {
+				continue
+			}
+
+			var listObjectRefs []datamodels.IdentifierTypeSTIX
+
+			switch v.DataType {
+			case "grouping":
+				data := v.GetGroupingDomainObjectsSTIX()
+				listObjectRefs = data.ObjectRefs
+
+			case "note":
+				data := v.GetNoteDomainObjectsSTIX()
+				listObjectRefs = data.ObjectRefs
+
+			case "observed-data":
+				data := v.GetObservedDataDomainObjectsSTIX()
+				listObjectRefs = data.ObjectRefs
+
+			case "opinion":
+				data := v.GetOpinionDomainObjectsSTIX()
+				listObjectRefs = data.ObjectRefs
+
+			case "report":
+				data := v.GetReportDomainObjectsSTIX()
+				listObjectRefs = data.ObjectRefs
+
+			}
+
+			if len(listObjectRefs) == 0 {
+				continue
+			}
+
+			for _, value := range listObjectRefs {
+				isExist := false
+				for _, idor := range lor.ObjectRefs {
+					if value == idor {
+						isExist = true
+
+						break
+					}
+				}
+
+				if isExist {
+					continue
+				}
+
+				listIDDelRelationshipSTIXObject = append(listIDDelRelationshipSTIXObject, struct {
+					SourceRef string
+					TargetRef string
+				}{
+					SourceRef: string(value),
+					TargetRef: id,
+				})
+			}
+		}
+	}
+
+	for _, elem := range listIDDelRelationshipSTIXObject {
+		listSearchParameters = append(listSearchParameters, bson.D{
+			bson.E{Key: "source_ref", Value: elem.SourceRef},
+			bson.E{Key: "target_ref", Value: elem.TargetRef},
+		})
+	}
+
+	if _, err := qp.DeleteManyData(bson.D{
+		bson.E{Key: "commonpropertiesobjectstix.type", Value: "relationship"},
+		bson.E{Key: "$or", Value: listSearchParameters}}); err != nil {
+		return err
+	}
+
+	return nil
 }

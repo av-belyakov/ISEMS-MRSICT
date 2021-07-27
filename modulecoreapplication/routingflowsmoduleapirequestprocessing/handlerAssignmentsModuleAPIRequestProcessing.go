@@ -115,6 +115,13 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 			return
 		}
 
+		//добавляем информацию о запросе клиента в лог-файл
+		chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+			TypeMessage: "info",
+			Description: fmt.Sprintf("Client ID: '%s' (%s), task ID: '%s', section: '%s'", data.ClientID, data.ClientName, commonMsgReq.TaskID, commonMsgReq.Section),
+			FuncName:    "SendNotificationModuleAPI",
+		}
+
 		//добавляем информацию о задаче в хранилище задач
 		appTaskID, err := tst.AddNewTask(&memorytemporarystoragecommoninformation.TemporaryStorageTaskType{
 			TaskGenerator:        data.ModuleGeneratorMessage,
@@ -224,6 +231,13 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 				}
 
 				return
+			}
+
+			//добавляем информацию о запросе клиента в лог-файл
+			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+				TypeMessage: "info",
+				Description: fmt.Sprintf("Client ID: '%s' (%s), task ID: '%s', section: '%s', command: '%s'", data.ClientID, data.ClientName, commonMsgReq.TaskID, commonMsgReq.Section, at.ActionType),
+				FuncName:    "SendNotificationModuleAPI",
 			}
 
 			listDecisionsMade, errldm := tst.GetListDecisionsMade()
@@ -507,6 +521,13 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 			return
 		}
 
+		//добавляем информацию о запросе клиента в лог-файл
+		chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+			TypeMessage: "info",
+			Description: fmt.Sprintf("Client ID: '%s' (%s), task ID: '%s', section: '%s'", data.ClientID, data.ClientName, commonMsgReq.TaskID, commonMsgReq.Section),
+			FuncName:    "SendNotificationModuleAPI",
+		}
+
 		//добавляем информацию о задаче в хранилище задач
 		appTaskID, err := tst.AddNewTask(&memorytemporarystoragecommoninformation.TemporaryStorageTaskType{
 			TaskGenerator:        data.ModuleGeneratorMessage,
@@ -595,6 +616,7 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 
 			return
 		}
+
 		//выполняем валидацию полученных запросов к справочной информации
 		if _, err = l.IsValid(); err != nil {
 			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
@@ -603,6 +625,14 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 				FuncName:    "IsValid",
 			}
 		}
+
+		//добавляем информацию о запросе клиента в лог-файл
+		chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+			TypeMessage: "info",
+			Description: fmt.Sprintf("Client ID: '%s' (%s), task ID: '%s', section: '%s'", data.ClientID, data.ClientName, commonMsgReq.TaskID, commonMsgReq.Section),
+			FuncName:    "SendNotificationModuleAPI",
+		}
+
 		//добавляем информацию о задаче в хранилище задач
 		appTaskID, err := tst.AddNewTask(&memorytemporarystoragecommoninformation.TemporaryStorageTaskType{
 			TaskGenerator:        data.ModuleGeneratorMessage,

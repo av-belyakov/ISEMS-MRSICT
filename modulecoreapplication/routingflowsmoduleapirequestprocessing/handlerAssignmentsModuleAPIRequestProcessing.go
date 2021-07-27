@@ -46,6 +46,8 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 		return
 	}
 
+	fmt.Printf("func 'HandlerAssigmentsModuleAPIRequestProcessing', Section: '%s', task ID: '%s'\n", commonMsgReq.Section, commonMsgReq.TaskID)
+
 	switch commonMsgReq.Section {
 	case "handling stix object":
 

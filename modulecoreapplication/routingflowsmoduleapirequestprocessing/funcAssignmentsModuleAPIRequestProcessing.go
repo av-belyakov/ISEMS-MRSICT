@@ -36,7 +36,7 @@ func UnmarshalJSONObjectReqSearchParameters(msgReq *json.RawMessage) (datamodels
 	var resultTmp datamodels.CommonModAPIRequestProcessingResJSONSearchReqType
 
 	if msgReq == nil {
-		return result, fmt.Errorf("ков Артемий Вячеславович 0xc000502270}")
+		return result, fmt.Errorf("the accepted json document does not contain the request parameters")
 	}
 
 	if err := json.Unmarshal(*msgReq, &resultTmp); err != nil {

@@ -278,7 +278,7 @@ func (settingsServerAPI *settingsServerAPI) serverWss(w http.ResponseWriter, req
 				break
 			}
 
-			mrpc := datamodels.ModuleReguestProcessingChannel{
+			cmapirp.OutputModule <- datamodels.ModuleReguestProcessingChannel{
 				CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
 					ModuleGeneratorMessage: "module api request processing",
 					ModuleReceiverMessage:  "module core application",
@@ -287,8 +287,6 @@ func (settingsServerAPI *settingsServerAPI) serverWss(w http.ResponseWriter, req
 				ClientName: cp.ClientName,
 				Data:       &msg,
 			}
-
-			cmapirp.OutputModule <- mrpc
 		}
 	}()
 }

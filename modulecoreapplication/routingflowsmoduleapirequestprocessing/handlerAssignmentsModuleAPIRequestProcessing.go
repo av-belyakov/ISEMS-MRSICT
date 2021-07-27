@@ -19,6 +19,7 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 	data *datamodels.ModuleReguestProcessingChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
 	clim *moddatamodels.ChannelsListInteractingModules) {
+
 	commonMsgReq, err := unmarshalJSONCommonReq(data.Data)
 	if err != nil {
 		chanSaveLog <- modulelogginginformationerrors.LogMessageType{

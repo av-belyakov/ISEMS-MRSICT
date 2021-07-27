@@ -117,7 +117,7 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 
 		//добавляем информацию о запросе клиента в лог-файл
 		chanSaveLog <- modulelogginginformationerrors.LogMessageType{
-			TypeMessage: "info",
+			TypeMessage: "requests",
 			Description: fmt.Sprintf("Client ID: '%s' (%s), task ID: '%s', section: '%s'", data.ClientID, data.ClientName, commonMsgReq.TaskID, commonMsgReq.Section),
 			FuncName:    "SendNotificationModuleAPI",
 		}
@@ -235,7 +235,7 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 
 			//добавляем информацию о запросе клиента в лог-файл
 			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
-				TypeMessage: "info",
+				TypeMessage: "requests",
 				Description: fmt.Sprintf("Client ID: '%s' (%s), task ID: '%s', section: '%s', command: '%s'", data.ClientID, data.ClientName, commonMsgReq.TaskID, commonMsgReq.Section, at.ActionType),
 				FuncName:    "SendNotificationModuleAPI",
 			}
@@ -523,7 +523,7 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 
 		//добавляем информацию о запросе клиента в лог-файл
 		chanSaveLog <- modulelogginginformationerrors.LogMessageType{
-			TypeMessage: "info",
+			TypeMessage: "requests",
 			Description: fmt.Sprintf("Client ID: '%s' (%s), task ID: '%s', section: '%s'", data.ClientID, data.ClientName, commonMsgReq.TaskID, commonMsgReq.Section),
 			FuncName:    "SendNotificationModuleAPI",
 		}
@@ -628,7 +628,7 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 
 		//добавляем информацию о запросе клиента в лог-файл
 		chanSaveLog <- modulelogginginformationerrors.LogMessageType{
-			TypeMessage: "info",
+			TypeMessage: "requests",
 			Description: fmt.Sprintf("Client ID: '%s' (%s), task ID: '%s', section: '%s'", data.ClientID, data.ClientName, commonMsgReq.TaskID, commonMsgReq.Section),
 			FuncName:    "SendNotificationModuleAPI",
 		}

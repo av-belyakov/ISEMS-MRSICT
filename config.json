@@ -13,7 +13,7 @@
     },
     "connectionsDataBase_comments": "настройки доступа к системам управления базами данных",
     "moduleAPIRequestProcessingSettings": {
-        "host": "127.0.0.1",
+        "host": "192.168.13.201",
         "port": 13000,
         "users": [{
                 "clientName": "first_isems-ui",
@@ -41,7 +41,7 @@
         "settingsStatusesDecisionsMadeComputerThreats": "defaultsettingsfiles/settingsStatusesDecisionsMadeComputerThreats.json",
         "settingsComputerThreatTypes": "defaultsettingsfiles/settingsComputerThreatTypes.json"
     },
-    "defaultSettingsFiles_comments": "файлы с дефолтными настройками приложения",
+    "defaultSettingsFiles_comments": "файлы с настройками приложения заданными по умолчанию",
     "pathStorageDownloadedFiles": "/home/ISEMS-MRSICT/storage_files",
     "pathStorageDownloadedFiles_comments": "место для хранения загруженных файлов",
     "locationLogDirectory": "/var/log/",

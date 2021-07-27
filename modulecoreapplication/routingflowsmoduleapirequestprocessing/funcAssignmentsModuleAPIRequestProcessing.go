@@ -53,7 +53,7 @@ func UnmarshalJSONObjectReqSearchParameters(msgReq *json.RawMessage) (datamodels
 			CollectionName:     resultTmp.CollectionName,
 			PaginateParameters: resultTmp.PaginateParameters,
 			SortableField:      resultTmp.SortableField,
-			SearchParameters:   resultTmp.SearchParameters,
+			SearchParameters:   msgSearch,
 		}
 
 	case "":
@@ -61,6 +61,7 @@ func UnmarshalJSONObjectReqSearchParameters(msgReq *json.RawMessage) (datamodels
 	}
 
 	fmt.Printf("func 'UnmarshalJSONObjectReqSearchParameters', result: '%v'\n", result)
+	fmt.Printf("func 'UnmarshalJSONObjectReqSearchParameters', SearchParameters: '%v'\n", result.SearchParameters)
 	fmt.Println("--------------------------------")
 
 	return result, nil

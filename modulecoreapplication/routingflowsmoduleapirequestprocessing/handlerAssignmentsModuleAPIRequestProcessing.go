@@ -424,6 +424,9 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 		section := "обработка поискового запроса"
 		taskType := "поиск структурированных данных"
 
+		fmt.Println("func 'HandlerAssigmentsModuleAPIRequestProcessing', section: 'handling search requests'")
+		fmt.Println(commonMsgReq)
+
 		l, err := UnmarshalJSONObjectReqSearchParameters(commonMsgReq.RequestDetails)
 		if err != nil {
 			chanSaveLog <- modulelogginginformationerrors.LogMessageType{

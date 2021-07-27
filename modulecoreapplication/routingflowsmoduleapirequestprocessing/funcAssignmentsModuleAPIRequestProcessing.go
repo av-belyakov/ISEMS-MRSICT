@@ -35,6 +35,9 @@ func UnmarshalJSONObjectReqSearchParameters(msgReq *json.RawMessage) (datamodels
 	var result datamodels.ModAPIRequestProcessingResJSONSearchReqType
 	var resultTmp datamodels.CommonModAPIRequestProcessingResJSONSearchReqType
 
+	fmt.Println("func 'UnmarshalJSONObjectReqSearchParameters', msgRes")
+	fmt.Println(*msgReq)
+
 	if err := json.Unmarshal(*msgReq, &resultTmp); err != nil {
 		return result, err
 	}

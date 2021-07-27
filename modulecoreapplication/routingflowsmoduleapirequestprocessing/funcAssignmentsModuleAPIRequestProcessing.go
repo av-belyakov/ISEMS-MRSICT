@@ -49,12 +49,10 @@ func UnmarshalJSONObjectReqSearchParameters(msgReq *json.RawMessage) (datamodels
 			return result, err
 		}
 
-		result = datamodels.ModAPIRequestProcessingResJSONSearchReqType{
-			CollectionName:     resultTmp.CollectionName,
-			PaginateParameters: resultTmp.PaginateParameters,
-			SortableField:      resultTmp.SortableField,
-			SearchParameters:   msgSearch,
-		}
+		result.CollectionName = resultTmp.CollectionName
+		result.PaginateParameters = resultTmp.PaginateParameters
+		result.SortableField = resultTmp.SortableField
+		result.SearchParameters = msgSearch
 
 	case "":
 

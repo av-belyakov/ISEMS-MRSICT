@@ -361,6 +361,8 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 		return
 	}
 
+	fmt.Printf("func 'wrapperFuncTypeHandlingSearchRequests', taskInfo: '%v'\n", taskInfo)
+
 	psr, ok := taskInfo.TaskParameters.(datamodels.ModAPIRequestProcessingResJSONSearchReqType)
 	if !ok {
 		errorMessage.ErrorMessage.Error = fmt.Errorf("type conversion error")
@@ -368,6 +370,8 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 
 		return
 	}
+
+	fmt.Printf("func 'wrapperFuncTypeHandlingSearchRequests', TaskParameters: '%v'\n", psr)
 
 	//изменяем время модификации информации о задаче
 	_ = tst.ChangeDateTaskModification(ws.DataRequest.AppTaskID)

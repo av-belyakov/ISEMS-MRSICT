@@ -59,7 +59,7 @@ type ModAPIRequestProcessingResJSONInfoMsgType struct {
 // PaginateParameters - параметры разбиения на страницы
 //  MaxPartNum - размер части, то есть максимальное количество найденных элементов, которое может содержаться в одном ответе
 //	CurrentPartNumber - номер текущей части (0 или 1 считаются за первую часть)
-// SortParameters - параметр в котором можно указать значение, по которому будет выполнятся сортировка полей. Параметр должен содержать
+// SortableField - параметр в котором можно указать значение, по которому будет выполнятся сортировка полей. Параметр должен содержать
 //  одно из следующих значений: "document_type", "data_created", "data_modified", "data_first_seen", "data_last_seen", "ipv4", "ipv6",
 //  "country". Если данное поле пустое, то сортировка будет выполнятся по свойству ObjectId БД MongoDB
 // SearchParameters - параметры поиска (для разных коллекций параметры поиска отличаются)
@@ -69,7 +69,7 @@ type CommonModAPIRequestProcessingResJSONSearchReqType struct {
 		MaxPartNum        int `json:"max_part_num"`
 		CurrentPartNumber int `json:"current_part_number"`
 	} `json:"paginate_parameters"`
-	SortParameters   string           `json:"sort_parameters"`
+	SortableField    string           `json:"sortable_field"`
 	SearchParameters *json.RawMessage `json:"search_parameters"`
 }
 

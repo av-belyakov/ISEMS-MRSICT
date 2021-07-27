@@ -400,7 +400,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 		}
 
 	default:
-		errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = fmt.Errorf("the name of the database collection is not defined")
+		errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = fmt.Errorf("the name '%s' of the database collection is not defined", psr.CollectionName)
 		chanOutput <- errorMessage
 
 		return

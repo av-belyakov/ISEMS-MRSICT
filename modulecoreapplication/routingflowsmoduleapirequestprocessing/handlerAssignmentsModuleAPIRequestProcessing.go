@@ -146,7 +146,7 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 			return
 		}
 
-		fmt.Printf("func 'HandlerAssigmentsModuleAPIRequestProcessing', application task ID: '%s'\n", appTaskID)
+		fmt.Printf("func 'HandlerAssigmentsModuleAPIRequestProcessing', ----------- application task ID: '%s'\n", appTaskID)
 
 		clim.ChannelsModuleDataBaseInteraction.ChannelsMongoDB.InputModule <- datamodels.ModuleDataBaseInteractionChannel{
 			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{

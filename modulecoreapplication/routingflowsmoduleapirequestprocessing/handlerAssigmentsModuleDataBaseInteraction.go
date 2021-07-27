@@ -126,7 +126,7 @@ func HandlerAssigmentsModuleDataBaseInteraction(
 		return
 	}
 
-	if err := handlerDataBaseResponse(clim.ChannelsModuleAPIRequestProcessing.OutputModule, data, tst, ti); err != nil {
+	if err := handlerDataBaseResponse(clim.ChannelsModuleAPIRequestProcessing.InputModule, data, tst, ti); err != nil {
 		if err = auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{
 			ClientID:         ti.ClientID,
 			TaskID:           taskID,

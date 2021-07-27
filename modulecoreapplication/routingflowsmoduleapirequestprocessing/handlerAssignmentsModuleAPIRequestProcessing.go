@@ -455,6 +455,8 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 			return
 		}
 
+		fmt.Printf("func 'HandlerAssigmentsModuleAPIRequestProcessing', search request detals: '%v'\n", l)
+
 		switch l.CollectionName {
 		case "stix object":
 			//выполняем валидацию и санитаризацию поискового запроса для выполнения поиска по коллекции STIX объектов

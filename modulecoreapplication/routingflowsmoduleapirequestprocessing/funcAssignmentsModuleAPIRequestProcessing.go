@@ -43,9 +43,6 @@ func UnmarshalJSONObjectReqSearchParameters(msgReq *json.RawMessage) (datamodels
 		return result, err
 	}
 
-	fmt.Println("--------------------------------")
-	fmt.Printf("func 'UnmarshalJSONObjectReqSearchParameters', resultTMP: '%v'\n", resultTmp)
-
 	switch resultTmp.CollectionName {
 	case "stix object":
 		var msgSearch datamodels.SearchThroughCollectionSTIXObjectsType
@@ -61,10 +58,6 @@ func UnmarshalJSONObjectReqSearchParameters(msgReq *json.RawMessage) (datamodels
 	case "":
 
 	}
-
-	fmt.Printf("func 'UnmarshalJSONObjectReqSearchParameters', result: '%v'\n", result)
-	fmt.Printf("func 'UnmarshalJSONObjectReqSearchParameters', SearchParameters: '%v'\n", result.SearchParameters)
-	fmt.Println("--------------------------------")
 
 	return result, nil
 }

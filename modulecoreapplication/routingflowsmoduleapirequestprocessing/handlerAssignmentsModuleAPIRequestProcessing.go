@@ -46,8 +46,6 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 		return
 	}
 
-	fmt.Printf("func 'HandlerAssigmentsModuleAPIRequestProcessing', Section: '%s', task ID: '%s'\n", commonMsgReq.Section, commonMsgReq.TaskID)
-
 	switch commonMsgReq.Section {
 	case "handling stix object":
 
@@ -426,9 +424,6 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 		section := "обработка поискового запроса"
 		taskType := "поиск структурированных данных"
 
-		fmt.Println("func 'HandlerAssigmentsModuleAPIRequestProcessing', section: 'handling search requests'")
-		fmt.Println(commonMsgReq)
-
 		l, err := UnmarshalJSONObjectReqSearchParameters(commonMsgReq.RequestDetails)
 		if err != nil {
 			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
@@ -459,8 +454,6 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 
 			return
 		}
-
-		fmt.Printf("func 'HandlerAssigmentsModuleAPIRequestProcessing', search request detals: '%v'\n", l)
 
 		switch l.CollectionName {
 		case "stix object":
@@ -576,8 +569,6 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 
 			return
 		}
-
-		fmt.Printf("func 'HandlerAssigmentsModuleAPIRequestProcessing', ----------- application task ID: '%s'\n", appTaskID)
 
 		clim.ChannelsModuleDataBaseInteraction.ChannelsMongoDB.InputModule <- datamodels.ModuleDataBaseInteractionChannel{
 			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{

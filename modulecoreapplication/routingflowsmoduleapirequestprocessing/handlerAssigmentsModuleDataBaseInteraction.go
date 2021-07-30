@@ -203,7 +203,7 @@ func handlingSearchRequestsSTIXObject(
 			return err
 		}
 
-		fmt.Printf("func 'handlingSearchRequestsSTIXObject', CollectionName: '%s', TaskID: '%s', detailet: '%v'\n", tp.CollectionName, taskID)
+		fmt.Printf("func 'handlingSearchRequestsSTIXObject', CollectionName: '%s', TaskID: '%s', detailet: '%v'\n", tp.CollectionName, taskID, dt)
 
 		msgRes := datamodels.ModAPIRequestProcessingResJSON{
 			ModAPIRequestProcessingCommonJSON: datamodels.ModAPIRequestProcessingCommonJSON{

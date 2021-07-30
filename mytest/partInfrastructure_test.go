@@ -138,7 +138,7 @@ func handlingSearchRequestsSTIXObject(
 			return err
 		}
 
-		taskID, di, err := tst.GetTaskByID(data.AppTaskID)
+		_, di, err := tst.GetTaskByID(data.AppTaskID)
 		if err != nil {
 			return err
 		}

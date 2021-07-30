@@ -138,11 +138,16 @@ func handlingSearchRequestsSTIXObject(
 			return err
 		}
 
+		taskID, _, err := tst.GetTaskByID(data.AppTaskID)
+		if err != nil {
+			return err
+		}
+
 		fmt.Printf("func 'handlerDataBaseResponse', Found Information: '%v'\n", result)
 
 		msgRes := datamodels.ModAPIRequestProcessingResJSON{
 			ModAPIRequestProcessingCommonJSON: datamodels.ModAPIRequestProcessingCommonJSON{
-				TaskID:  data.AppTaskID,
+				TaskID:  taskID,
 				Section: data.Section,
 			},
 			IsSuccessful: true,

@@ -198,12 +198,12 @@ func handlingSearchRequestsSTIXObject(
 			return err
 		}
 
-		taskID, _, err := tst.GetTaskByID(data.AppTaskID)
+		taskID, dt, err := tst.GetTaskByID(data.AppTaskID)
 		if err != nil {
 			return err
 		}
 
-		fmt.Printf("func 'handlingSearchRequestsSTIXObject', CollectionName: '%s', TaskID: '%s'\n", tp.CollectionName, taskID)
+		fmt.Printf("func 'handlingSearchRequestsSTIXObject', CollectionName: '%s', TaskID: '%s', detailet: '%v'\n", tp.CollectionName, taskID)
 
 		msgRes := datamodels.ModAPIRequestProcessingResJSON{
 			ModAPIRequestProcessingCommonJSON: datamodels.ModAPIRequestProcessingCommonJSON{

@@ -790,6 +790,8 @@ func GetIDGroupingObjectSTIX(qp QueryParameters, listSearch map[string]datamodel
 				},
 				Name:        ko,
 				Description: vo.Description,
+				Context:     datamodels.OpenVocabTypeSTIX(ko),
+				ObjectRefs:  []datamodels.IdentifierTypeSTIX{},
 			})
 
 			listID[ko] = datamodels.StorageApplicationCommonListType{

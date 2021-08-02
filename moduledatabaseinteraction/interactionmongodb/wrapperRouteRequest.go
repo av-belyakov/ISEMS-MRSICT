@@ -465,10 +465,8 @@ func (ws *wrappersSetting) wrapperFuncTypeTechnicalPart(
 
 	switch ws.DataRequest.Command {
 	case "create STIX DO type 'grouping'":
-		/*
-			проверяем наличие объектов STIX DO типа 'grouping', содержащих списки 'подтвержденных' или 'отклоненных' объектов STIX DO типа 'report'
-			и при необходимости создаем новые STIX DO объекты типа 'grouping'
-		*/
+		//проверяем наличие объектов STIX DO типа 'grouping', содержащих списки 'подтвержденных' или 'отклоненных' объектов STIX DO типа 'report'
+		// и при необходимости создаем новые STIX DO объекты типа 'grouping'
 		go func() {
 			ldm, err := tst.GetListDecisionsMade()
 			if err != nil {

@@ -777,8 +777,13 @@ func GetIDGroupingObjectSTIX(qp QueryParameters, listSearch map[string]datamodel
 			}
 		}
 
+		context := datamodels.OpenVocabTypeSTIX("suspicious-activity")
 		if !isTrue {
 			id := uuid.NewString()
+			if (ko == "successfully implemented computer threat") || (ko == "unsuccessfully computer threat") || (ko == "false positive") {
+				context = datamodels.OpenVocabTypeSTIX(ko)
+			}
+
 			listInsert = append(listInsert, datamodels.GroupingDomainObjectsSTIX{
 				CommonPropertiesObjectSTIX: datamodels.CommonPropertiesObjectSTIX{
 					Type: "grouping",
@@ -790,7 +795,7 @@ func GetIDGroupingObjectSTIX(qp QueryParameters, listSearch map[string]datamodel
 				},
 				Name:        ko,
 				Description: vo.Description,
-				Context:     datamodels.OpenVocabTypeSTIX(ko),
+				Context:     context,
 				ObjectRefs:  []datamodels.IdentifierTypeSTIX{},
 			})
 

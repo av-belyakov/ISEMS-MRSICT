@@ -123,6 +123,9 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 			FuncName:    "SendNotificationModuleAPI",
 		}
 
+		//обрабатываем содержимое полей которые не относятся к спецификации STIX 2.0
+		VerifyOutsideSpecificationFields(l, tst)
+
 		//добавляем информацию о задаче в хранилище задач
 		appTaskID, err := tst.AddNewTask(&memorytemporarystoragecommoninformation.TemporaryStorageTaskType{
 			TaskGenerator:        data.ModuleGeneratorMessage,

@@ -402,3 +402,13 @@ type CommonPropertiesObjectSTIX struct {
 func (cp CommonPropertiesObjectSTIX) ToStringBeautiful() string {
 	return fmt.Sprintf("type: '%s'\nid: '%s'\n", cp.Type, cp.ID)
 }
+
+/********** 			Свойства не входящие в основную спецификацию STIX 2.0 (добавляемые ПО ISEMS-MRSICT) 			**********/
+
+//ReportOutsideSpecification свойства не входящие в основную спецификацию STIX 2.0 и расширяющие набор свойств объекта "Report"
+// DecisionsMadeComputerThreat - принятые решения по компьютерной угрозе
+// ComputerThreatType - тип компьютерной угрозы
+type ReportOutsideSpecification struct {
+	DecisionsMadeComputerThreat string `json:"decisions_made_computer_threat" bson:"decisions_made_computer_threat"`
+	ComputerThreatType          string `json:"computer_threat_type" bson:"computer_threat_type"`
+}

@@ -345,14 +345,16 @@ type OpinionDomainObjectsSTIX struct {
 // ReportTypes - заранее определенный (предложенный) перечень возможных типов контента содержащихся в этом отчете
 // Published - время, в формате "2016-05-12T08:17:27.000Z", когда данный отчет был официально опубликован (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // ObjectRefs - список идентификаторов STIX объектов, которые ссылаются на этот отчет (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+// OutsideSpecification - свойства не входящие в основную спецификацию STIX 2.0
 type ReportDomainObjectsSTIX struct {
 	CommonPropertiesObjectSTIX
 	CommonPropertiesDomainObjectSTIX
-	Name        string               `json:"name" bson:"name" required:"true"`
-	Description string               `json:"description" bson:"description"`
-	ReportTypes []OpenVocabTypeSTIX  `json:"report_types" bson:"report_types"`
-	Published   time.Time            `json:"published" bson:"published" required:"true"`
-	ObjectRefs  []IdentifierTypeSTIX `json:"object_refs" bson:"object_refs" required:"true"`
+	Name                 string                     `json:"name" bson:"name" required:"true"`
+	Description          string                     `json:"description" bson:"description"`
+	ReportTypes          []OpenVocabTypeSTIX        `json:"report_types" bson:"report_types"`
+	Published            time.Time                  `json:"published" bson:"published" required:"true"`
+	ObjectRefs           []IdentifierTypeSTIX       `json:"object_refs" bson:"object_refs" required:"true"`
+	OutsideSpecification ReportOutsideSpecification `json:"outside_specification" bson:"outside_specification"`
 }
 
 //ThreatActorDomainObjectsSTIX объект "Threat Actor", по терминалогии STIX, содержит информацию о физических лицах или их группах и организациях

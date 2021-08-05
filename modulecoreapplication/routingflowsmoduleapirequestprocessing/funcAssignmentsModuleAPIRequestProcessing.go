@@ -9,6 +9,7 @@ import (
 	"ISEMS-MRSICT/commonlibs"
 	"ISEMS-MRSICT/datamodels"
 	"ISEMS-MRSICT/decoders"
+	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
 
 	"github.com/asaskevich/govalidator"
 )
@@ -145,6 +146,12 @@ func CheckSearchSTIXObject(req *datamodels.ModAPIRequestProcessingResJSONSearchR
 
 	sp.CreatedByRef = commonlibs.StringSanitize(sp.CreatedByRef)
 
+	//поля не входящие в основную спецификацию STIX
+	sp.OutsideSpecificationSearchFields = datamodels.OutsideSpecificationSearchFieldsType{
+		DecisionsMadeComputerThreat: commonlibs.StringSanitize(sp.OutsideSpecificationSearchFields.DecisionsMadeComputerThreat),
+		ComputerThreatType:          commonlibs.StringSanitize(sp.OutsideSpecificationSearchFields.ComputerThreatType),
+	}
+
 	//наличие дополнительных полей
 	if len(sp.SpecificSearchFields) == 0 {
 		return *req, nil
@@ -230,11 +237,91 @@ func CheckSTIXObjects(l []*datamodels.ElementSTIXObject) error {
 			continue
 		}
 
-		fmt.Printf("Error checking type STIX object: '%s'\n", item.DataType)
 		return fmt.Errorf("one or more STIX objects are invalid")
 	}
 
 	return nil
+}
+
+func VerifyOutsideSpecificationFields(l []*datamodels.ElementSTIXObject, tst *memorytemporarystoragecommoninformation.TemporaryStorageType) {
+	verifyDecisionsMadeComputerThreat := func(valueBeChecked string) string {
+		result := "undefined"
+
+		if valueBeChecked == "" {
+			return result
+		}
+
+		ldm, err := tst.GetListDecisionsMade()
+		if err != nil {
+			return result
+		}
+
+		var isExist bool
+		for k := range ldm {
+
+			fmt.Printf("func 'VerifyOutsideSpecificationFields', k(%s) == (%s)valueBeChecked", k, valueBeChecked)
+
+			if k == valueBeChecked {
+				isExist = true
+
+				break
+			}
+		}
+
+		if isExist {
+			return valueBeChecked
+		}
+
+		return result
+	}
+
+	verifyComputerThreatType := func(valueBeChecked string) string {
+		result := "undefined"
+
+		if valueBeChecked == "" {
+			return result
+		}
+
+		ldm, err := tst.GetListComputerThreat()
+		if err != nil {
+			return result
+		}
+
+		var isExist bool
+		for k := range ldm {
+			if k == valueBeChecked {
+				isExist = true
+
+				break
+			}
+		}
+
+		if isExist {
+			return valueBeChecked
+		}
+
+		return result
+	}
+
+	for k, v := range l {
+		switch v.DataType {
+		case "report":
+			e, ok := v.Data.(datamodels.ReportDomainObjectsSTIX)
+			if !ok {
+				continue
+			}
+
+			e.OutsideSpecification = datamodels.ReportOutsideSpecification{
+				DecisionsMadeComputerThreat: verifyDecisionsMadeComputerThreat(e.OutsideSpecification.DecisionsMadeComputerThreat),
+				ComputerThreatType:          verifyComputerThreatType(e.OutsideSpecification.ComputerThreatType),
+			}
+
+			l[k] = &datamodels.ElementSTIXObject{
+				DataType: v.DataType,
+				Data:     e,
+			}
+		}
+	}
 }
 
 //SanitizeSTIXObject выполняем санитаризацию полученных STIX объектов

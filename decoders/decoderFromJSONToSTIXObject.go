@@ -3,6 +3,7 @@ package decoders
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"ISEMS-MRSICT/datamodels"
 )
@@ -358,9 +359,29 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ElementST
 				return result, fmt.Errorf("error: type conversion error")
 			}
 
+			newreport := changeReportTypes(e)
+			/*
+				+ 1. Думаю здесь надо добавить обработку поля 'report_types' которое содержит списки типов SDO
+				получаемые из открытого словаря report-type-ov. Надо сделать что бы при добавлении или удалении
+				id объекта SDO в поле 'object_refs', аналогичный объект добавлялся или убирался и в поле 'report_types'
+
+				2. Свойство name заполнять основываясь на определенной логике, свойственной для полей name всех объектов STIX,
+				НО ТОЛЬКО если оно пустое и это должно делать ISEMS-UI
+
+				3. Нужно добавить два дополнительных поля в объект типа 'report'. Первое будет служить для учета статуса угрозы:
+				- подтвержденная успешная (successfully_implemented_computer_threat)
+				- подтвержденная безуспешная (unsuccessfully_computer_threat)
+				- отклоненная (false_positive)
+				- не определено (undefined)
+					Второе для типа угрозы. Оба этих типа должны иметь тип открытого словоря (open-vocab). Придется править секции
+				обработки STIX объектов и поиска данных по ним, а так же валидацию объектов 'report'. Но здесь, я думаю, для того что бы
+				сохранить обратную совместимость с ПО которое ничего не знает о дополнительных поля, если они пустые, то надо ставить
+				дефолтное значение.
+			*/
+
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     newreport,
 			})
 
 		case "threat-actor":
@@ -760,4 +781,51 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ElementST
 	}
 
 	return result, nil
+}
+
+func changeReportTypes(rdostix datamodels.ReportDomainObjectsSTIX) datamodels.ReportDomainObjectsSTIX {
+	var reportTypeOV = []string{
+		"attack-pattern",
+		"campaign",
+		"identity",
+		"indicator",
+		"intrusion-set",
+		"malware",
+		"observed-data",
+		"threat-actor",
+		"threat-report",
+		"tool",
+		"vulnerability",
+	}
+
+	newrdostix := datamodels.ReportDomainObjectsSTIX{
+		CommonPropertiesObjectSTIX:       rdostix.CommonPropertiesObjectSTIX,
+		CommonPropertiesDomainObjectSTIX: rdostix.CommonPropertiesDomainObjectSTIX,
+		Name:                             rdostix.Name,
+		Description:                      rdostix.Description,
+		Published:                        rdostix.Published,
+		OutsideSpecification:             rdostix.OutsideSpecification,
+	}
+	newrdostix.ObjectRefs = append(newrdostix.ObjectRefs, rdostix.ObjectRefs...)
+
+	for _, v := range newrdostix.ObjectRefs {
+		typeName := strings.Split(string(v), "--")[0]
+
+		for _, tn := range reportTypeOV {
+			if typeName == tn {
+				var isExist bool
+				for _, nrt := range newrdostix.ReportTypes {
+					if string(nrt) == typeName {
+						isExist = true
+					}
+				}
+
+				if !isExist {
+					newrdostix.ReportTypes = append(newrdostix.ReportTypes, datamodels.OpenVocabTypeSTIX(typeName))
+				}
+			}
+		}
+	}
+
+	return newrdostix
 }

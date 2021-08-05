@@ -100,6 +100,7 @@ type ModAPIRequestProcessingResJSONSearchReqType struct {
 // Modified - время модификации объекта, в формате "2016-05-12T08:17:27.000Z" (только для DO или RO STIX)
 // CreatedByRef - содержит идентификатор источника создавшего данный объект (только для DO STIX)
 // SpecificSearchFields - содержит список специфичных полей объектов (при этом используется логика "ИЛИ" между объектами предназначенными для поиска)
+// OutsideSpecificationSearchFields - содержит поля не входящие в основную спецификацию STIX 2.0 и расширяющие набор некоторых свойств объектов STIX
 type SearchThroughCollectionSTIXObjectsType struct {
 	DocumentsID   []string `json:"documents_id"`
 	DocumentsType []string `json:"documents_type"`
@@ -111,8 +112,9 @@ type SearchThroughCollectionSTIXObjectsType struct {
 		Start time.Time `json:"start"`
 		End   time.Time `json:"end"`
 	} `json:"modified"`
-	CreatedByRef         string                               `json:"created_by_ref"`
-	SpecificSearchFields []SpecificSearchFieldsSTIXObjectType `json:"specific_search_fields"`
+	CreatedByRef                     string                               `json:"created_by_ref"`
+	SpecificSearchFields             []SpecificSearchFieldsSTIXObjectType `json:"specific_search_fields"`
+	OutsideSpecificationSearchFields OutsideSpecificationSearchFieldsType `json:"outside_specification_search_fields"`
 }
 
 //SpecificSearchFieldsSTIXObjectType содержит набор полей для поиска, которые являются специфичными для объектов STIX (между полями используется
@@ -146,6 +148,15 @@ type SpecificSearchFieldsSTIXObjectType struct {
 	City                   string    `json:"city"`
 	NumberAutonomousSystem int       `json:"number_autonomous_system"`
 	Value                  []string  `json:"value"`
+}
+
+//OutsideSpecificationSearchFieldsType содержит набор полей для поиска по полям, не входящим в основную спецификацию STIX 2.0 и расширяющим набор
+//  некоторых свойств объектов STIX
+// DecisionsMadeComputerThreat - принятые решения по компьютерной угрозе
+// ComputerThreatType - тип компьютерной угрозы
+type OutsideSpecificationSearchFieldsType struct {
+	DecisionsMadeComputerThreat string `json:"decisions_made_computer_threat"`
+	ComputerThreatType          string `json:"computer_threat_type"`
 }
 
 //ResJSONParts содержит информацию передаваемую в ответ на запрашиваемые данные

@@ -5,6 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os"
+	"path"
+	"path/filepath"
 	"reflect"
 	"time"
 
@@ -14,9 +17,32 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"ISEMS-MRSICT/datamodels"
+	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
 	"ISEMS-MRSICT/modulecoreapplication/routingflowsmoduleapirequestprocessing"
 	"ISEMS-MRSICT/moduledatabaseinteraction/interactionmongodb"
 )
+
+func getListSettings(f string, appConfig *datamodels.AppConfig) (map[string]datamodels.StorageApplicationCommonListType, error) {
+	tmp := map[string]string{}
+	configFileSettings := map[string]datamodels.StorageApplicationCommonListType{}
+
+	//проверяем наличие файлов с дефолтными настройками приложения
+	row, err := ioutil.ReadFile(path.Join(appConfig.RootDir, f))
+	if err != nil {
+		return configFileSettings, fmt.Errorf("Error! The file '%s' with default settings not found.", f)
+	}
+
+	err = json.Unmarshal(row, &tmp)
+	if err != nil {
+		return configFileSettings, err
+	}
+
+	for k, v := range tmp {
+		configFileSettings[k] = datamodels.StorageApplicationCommonListType{Description: v}
+	}
+
+	return configFileSettings, err
+}
 
 var _ = Describe("HandlerSTIXCollection", func() {
 	var (
@@ -26,6 +52,8 @@ var _ = Describe("HandlerSTIXCollection", func() {
 		l                                                              []*datamodels.ElementSTIXObject
 		qp                                                             interactionmongodb.QueryParameters
 		modAPIRequestProcessingReqJSON                                 datamodels.ModAPIRequestProcessingReqJSON
+		tst                                                            *memorytemporarystoragecommoninformation.TemporaryStorageType
+		appConfig                                                      datamodels.AppConfig
 	)
 
 	var _ = BeforeSuite(func() {
@@ -54,6 +82,23 @@ var _ = Describe("HandlerSTIXCollection", func() {
 			CollectionName: "stix_object_collection",
 			ConnectDB:      cdmdb.Connection,
 		}
+
+		appConfig.RootDir = "/Users/user/go/src/ISEMS-MRSICT"
+
+		tst = memorytemporarystoragecommoninformation.NewTemporaryStorage()
+		/* получаем и сохраняем во временном хранилище дефолтные настройки приложения */
+		ssdmct, _ := getListSettings("defaultsettingsfiles/settingsStatusesDecisionsMadeComputerThreats.json", &appConfig)
+		tst.SetListDecisionsMade(ssdmct)
+
+		sctt, _ := getListSettings("defaultsettingsfiles/settingsComputerThreatTypes.json", &appConfig)
+		tst.SetListComputerThreat(sctt)
+
+		fmt.Println("============")
+		dir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
+		fmt.Printf("DIR path: '%s'\n", dir)
+		fmt.Println(tst.GetListDecisionsMade())
+		//fmt.Println(tst.GetListComputerThreat())
+		fmt.Println("============")
 	})
 
 	var _ = AfterSuite(func() {
@@ -179,6 +224,8 @@ var _ = Describe("HandlerSTIXCollection", func() {
 
 	Context("Тест 5. Взаимодействие с коллекцией STIX объектов.", func() {
 		It("При добавлении STIX объектов не должно быть ошибок. STIX объекты идентификаторы которых уже есть в БД добавлятся не должны.", func() {
+			routingflowsmoduleapirequestprocessing.VerifyOutsideSpecificationFields(l, tst)
+
 			err := interactionmongodb.ReplacementElementsSTIXObject(qp, l)
 
 			fmt.Printf("Error : %v\n", err)

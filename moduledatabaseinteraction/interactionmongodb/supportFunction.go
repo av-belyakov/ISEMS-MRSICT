@@ -846,6 +846,38 @@ func GetListGroupingObjectSTIX(cur *mongo.Cursor) []datamodels.GroupingDomainObj
 	return list
 }
 
+//GetListGroupingComputerThreat обрабатывает список STIX DO объектов типа Grouping и возвращает набор элементов содержащий лишь некоторые поля
+// из данного объекта, а также подсчитывает количество элементов в поле object_ref
+func GetListGroupingComputerThreat(cur *mongo.Cursor) []datamodels.ShortDescriptionElementGroupingComputerThreat {
+	var (
+		list               []datamodels.GroupingDomainObjectsSTIX
+		listComputerThreat []datamodels.ShortDescriptionElementGroupingComputerThreat
+	)
+
+	for cur.Next(context.Background()) {
+		var gdostix datamodels.GroupingDomainObjectsSTIX
+		if err := cur.Decode(&gdostix); err != nil {
+			continue
+		}
+
+		list = append(list, gdostix)
+	}
+
+	for _, v := range list {
+		listComputerThreat = append(listComputerThreat, datamodels.ShortDescriptionElementGroupingComputerThreat{
+			ID:              v.ID,
+			Type:            v.Type,
+			Name:            v.Name,
+			Description:     v.Description,
+			CountObjectRefs: len(v.ObjectRefs),
+		})
+	}
+
+	list = make([]datamodels.GroupingDomainObjectsSTIX, 0, 0)
+
+	return listComputerThreat
+}
+
 //getPropertyObjectRefs вспомогоательная функция для получения списка идентификаторов объектов STIX содержащихся с свойстве 'object_refs' некоторых
 // объектов STIX
 func getPropertyObjectRefs(element *datamodels.ElementSTIXObject) ([]datamodels.IdentifierTypeSTIX, error) {

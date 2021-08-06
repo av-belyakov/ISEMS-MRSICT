@@ -90,6 +90,62 @@ func searchSTIXObject(
 	return fn, nil
 }
 
+//searchListComputerThreat обработчик запроса, на получения списка id объектов типа 'grouping', с их описанием, относящихся к типам "types decisions
+// made computer threat" или "types computer threat"
+func searchListComputerThreat(appTaskID string,
+	qp QueryParameters,
+	taskInfo datamodels.ModAPIRequestProcessingResJSONSearchReqType,
+	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) (string, error) {
+
+	var (
+		err error
+		fn  string = commonlibs.GetFuncName()
+		l          = map[string]datamodels.StorageApplicationCommonListType{}
+	)
+
+	searchType, ok := taskInfo.SearchParameters.(struct {
+		TypeList string `json:"type_list"`
+	})
+	if !ok {
+		return fn, fmt.Errorf("type conversion error")
+	}
+
+	switch searchType.TypeList {
+	case "types decisions made computer threat":
+		l, err = tst.GetListDecisionsMade()
+
+	case "types computer threat":
+		l, err = tst.GetListComputerThreat()
+
+	default:
+		return fn, fmt.Errorf("undefined type of computer threat list")
+
+	}
+
+	if err != nil {
+		return fn, err
+	}
+
+	//сохраняем найденные значения во временном хранилище
+	if err = tst.AddNewFoundInformation(
+		appTaskID,
+		&memorytemporarystoragecommoninformation.TemporaryStorageFoundInformation{
+			Collection: "stix_object_collection",
+			ResultType: "list_computer_threat",
+			Information: struct {
+				TypeList string                                                 `json:"type_list"`
+				List     map[string]datamodels.StorageApplicationCommonListType `json:"list"`
+			}{
+				TypeList: searchType.TypeList,
+				List:     l,
+			},
+		}); err != nil {
+		return fn, err
+	}
+
+	return fn, nil
+}
+
 //searchSTIXObjectListTypeGrouping обработчик поисковых запросов, связанных с поиском предустановленного набора STIX объектов типа 'Grouping',
 // относящихся к спискам 'типы принимаемых решений по компьютерным угрозам' и 'типы компьютерных угроз'
 func searchSTIXObjectListTypeGrouping(
@@ -150,7 +206,7 @@ func searchSTIXObjectListTypeGrouping(
 		&memorytemporarystoragecommoninformation.TemporaryStorageFoundInformation{
 			Collection:  "stix_object_collection",
 			ResultType:  "found_info_list_computer_threat",
-			Information: GetListGroupingObjectSTIX(cur),
+			Information: GetListGroupingComputerThreat(cur),
 		})
 	if err != nil {
 		return fn, err

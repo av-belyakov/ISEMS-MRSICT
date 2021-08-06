@@ -15,7 +15,7 @@ import (
 	"ISEMS-MRSICT/moduledatabaseinteraction/interactionmongodb"
 )
 
-func addListTestSTIXObject(cdmdb interactionmongodb.ConnectionDescriptorMongoDB, qp interactionmongodb.QueryParameters) error {
+func addListTestSTIXObject1(cdmdb interactionmongodb.ConnectionDescriptorMongoDB, qp interactionmongodb.QueryParameters) error {
 	/*
 						Описание тестового файла jsonSTIXExample_2.json
 				Файл содержит 5 объекта: 1-'report', 2-'grouping', 1-'note', 1-'observed-data' при этом свойства ObjectRefs этих объектов содержит:
@@ -84,7 +84,7 @@ func addListTestSTIXObject(cdmdb interactionmongodb.ConnectionDescriptorMongoDB,
 	return nil
 }
 
-func delListTestSTIXObject(cdmdb interactionmongodb.ConnectionDescriptorMongoDB, qp interactionmongodb.QueryParameters) error {
+func delListTestSTIXObject1(cdmdb interactionmongodb.ConnectionDescriptorMongoDB, qp interactionmongodb.QueryParameters) error {
 	/*
 		Так же может возникнуть ситуация когда из свойства ObjectRefs объектов типа:
 			- 'grouping'
@@ -178,7 +178,7 @@ var _ = Describe("AddSTIXObjSetBackLink", func() {
 		//tempStorage = memorytemporarystoragecommoninformation.NewTemporaryStorage()
 
 		if connectError == nil {
-			errAddListObj = addListTestSTIXObject(cdmdb, qp)
+			errAddListObj = addListTestSTIXObject1(cdmdb, qp)
 		}
 	})
 
@@ -200,7 +200,7 @@ var _ = Describe("AddSTIXObjSetBackLink", func() {
 
 	Context("Тест 3. Удаление объектов типа 'relationship' обеспечивающих обратные связи, при удалении ID объекта из свойства 'object_ref'", func() {
 		It("При удалении объектов типа 'relationship' ошибок быть не должно", func() {
-			err := delListTestSTIXObject(cdmdb, qp)
+			err := delListTestSTIXObject1(cdmdb, qp)
 			Expect(err).ShouldNot(HaveOccurred())
 		})
 	})

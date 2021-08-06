@@ -390,6 +390,15 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 			return
 		}
 
+	case "get list computer threat":
+		if fn, err := searchListComputerThreat(ws.DataRequest.AppTaskID, qp, psr, tst); err != nil {
+			errorMessage.ErrorMessage.FuncName = fn
+			errorMessage.ErrorMessage.Error = err
+			chanOutput <- errorMessage
+
+			return
+		}
+
 	case "stix object list type grouping":
 		if fn, err := searchSTIXObjectListTypeGrouping(ws.DataRequest.AppTaskID, qp, psr, tst); err != nil {
 			errorMessage.ErrorMessage.FuncName = fn

@@ -181,13 +181,14 @@ func handlingSearchRequestsSTIXObject(
 	data *datamodels.ModuleDataBaseInteractionChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
 	ti *memorytemporarystoragecommoninformation.TemporaryStorageTaskInDetailType) error {
+
 	if ti.TaskStatus != "completed" {
 		return nil
 	}
 
 	tp, ok := ti.TaskParameters.(datamodels.ModAPIRequestProcessingResJSONSearchReqType)
 	if !ok {
-		return fmt.Errorf("type conversion error, line 190")
+		return fmt.Errorf("type conversion error, line 189")
 	}
 
 	//обрабатываем результаты опираясь на типы коллекций
@@ -211,144 +212,105 @@ func handlingSearchRequestsSTIXObject(
 			IsSuccessful: true,
 		}
 
-		//для КРАТКОЙ информации, только колличество, по найденным STIX объектам
-		if result.Collection == "stix_object_collection" && result.ResultType == "only_count" {
-			numFound, ok := result.Information.(int64)
-			if !ok {
-				return fmt.Errorf("type conversion error, line 213")
-			}
+		if result.Collection == "stix_object_collection" {
+			switch result.ResultType {
+			case "only_count":
+				//для КРАТКОЙ информации, только количество, по найденным STIX объектам
 
-			msgRes.AdditionalParameters = struct {
-				NumberDocumentsFound int64 `json:"number_documents_found"`
-			}{
-				NumberDocumentsFound: numFound,
-			}
-
-			msg, err := json.Marshal(msgRes)
-			if err != nil {
-				return err
-			}
-
-			chanResModAPI <- datamodels.ModuleReguestProcessingChannel{
-				CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
-					ModuleGeneratorMessage: "module core application",
-					ModuleReceiverMessage:  "module api request processing",
-				},
-				ClientID: ti.ClientID,
-				DataType: 1,
-				Data:     &msg,
-			}
-		}
-
-		//для ПОЛНОЙ информации по найденным STIX объектам
-		if result.Collection == "stix_object_collection" && result.ResultType == "full_found_info" {
-			listElemSTIXObj, ok := result.Information.([]*datamodels.ElementSTIXObject)
-			if !ok {
-				return fmt.Errorf("type conversion error, line 242")
-			}
-
-			sestixo := len(listElemSTIXObj)
-			listMsgRes := make([]interface{}, 0, sestixo)
-			for _, v := range listElemSTIXObj {
-				listMsgRes = append(listMsgRes, v.Data)
-			}
-
-			//обрабатываем полученный список STIX объектов, в том числе если он превышает размер в 100 объектов
-			if sestixo < maxChunkSize {
-				msgRes.AdditionalParameters = datamodels.ResJSONParts{
-					TotalNumberParts:      1,
-					GivenSizePart:         maxChunkSize,
-					NumberTransmittedPart: 1,
-					TransmittedData:       listMsgRes,
+				numFound, ok := result.Information.(int64)
+				if !ok {
+					return fmt.Errorf("type conversion error, line 220")
 				}
 
-				msg, err := json.Marshal(msgRes)
-				if err != nil {
-					return err
+				msgRes.AdditionalParameters = struct {
+					NumberDocumentsFound int64 `json:"number_documents_found"`
+				}{
+					NumberDocumentsFound: numFound,
 				}
 
-				chanResModAPI <- datamodels.ModuleReguestProcessingChannel{
-					CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
-						ModuleGeneratorMessage: "module core application",
-						ModuleReceiverMessage:  "module api request processing",
-					},
-					ClientID: ti.ClientID,
-					DataType: 1,
-					Data:     &msg,
-				}
-			} else {
-				num := commonlibs.GetCountChunk(int64(sestixo), maxChunkSize)
+			case "full_found_info":
+				//для ПОЛНОЙ информации по найденным STIX объектам
 
-				min := 0
-				max := maxChunkSize
-				for i := 0; i < num; i++ {
-					data := datamodels.ResJSONParts{
-						TotalNumberParts:      num,
+				listElemSTIXObj, ok := result.Information.([]*datamodels.ElementSTIXObject)
+				if !ok {
+					return fmt.Errorf("type conversion error, line 234")
+				}
+
+				sestixo := len(listElemSTIXObj)
+				listMsgRes := make([]interface{}, 0, sestixo)
+				for _, v := range listElemSTIXObj {
+					listMsgRes = append(listMsgRes, v.Data)
+				}
+
+				//обрабатываем полученный список STIX объектов, в том числе если он превышает размер в 100 объектов
+				if sestixo < maxChunkSize {
+					msgRes.AdditionalParameters = datamodels.ResJSONParts{
+						TotalNumberParts:      1,
 						GivenSizePart:         maxChunkSize,
-						NumberTransmittedPart: i + 1,
+						NumberTransmittedPart: 1,
+						TransmittedData:       listMsgRes,
 					}
+				} else {
+					num := commonlibs.GetCountChunk(int64(sestixo), maxChunkSize)
+					min := 0
+					max := maxChunkSize
+					for i := 0; i < num; i++ {
+						data := datamodels.ResJSONParts{
+							TotalNumberParts:      num,
+							GivenSizePart:         maxChunkSize,
+							NumberTransmittedPart: i + 1,
+						}
 
-					if i == 0 {
-						data.TransmittedData = listMsgRes[:max]
-					} else if i == num-1 {
-						data.TransmittedData = listMsgRes[min:]
-					} else {
-						data.TransmittedData = listMsgRes[min:max]
-					}
+						if i == 0 {
+							data.TransmittedData = listMsgRes[:max]
+						} else if i == num-1 {
+							data.TransmittedData = listMsgRes[min:]
+						} else {
+							data.TransmittedData = listMsgRes[min:max]
+						}
 
-					min = min + maxChunkSize
-					max = max + maxChunkSize
+						min = min + maxChunkSize
+						max = max + maxChunkSize
 
-					msgRes.AdditionalParameters = data
-					msg, err := json.Marshal(msgRes)
-					if err != nil {
-						return err
-					}
-
-					chanResModAPI <- datamodels.ModuleReguestProcessingChannel{
-						CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
-							ModuleGeneratorMessage: "module core application",
-							ModuleReceiverMessage:  "module api request processing",
-						},
-						ClientID: ti.ClientID,
-						DataType: 1,
-						Data:     &msg,
+						msgRes.AdditionalParameters = data
 					}
 				}
-			}
 
-			return nil
+			case "list_computer_threat":
+				ad, ok := result.Information.(struct {
+					TypeList string                                                 `json:"type_list"`
+					List     map[string]datamodels.StorageApplicationCommonListType `json:"list"`
+				})
+				if !ok {
+					return fmt.Errorf("type conversion error, line 280")
+				}
+
+				msgRes.AdditionalParameters = ad
+
+			case "found_info_list_computer_threat":
+				list, ok := result.Information.([]datamodels.ShortDescriptionElementGroupingComputerThreat)
+				if !ok {
+					return fmt.Errorf("type conversion error, line 291")
+				}
+
+				msgRes.AdditionalParameters = list
+
+			}
 		}
 
-		//для ПОЛНОЙ информации по найденным STIX объектам типа 'Grouping', относящихся к спискам 'типы принимаемых решений по компьютерным угрозам'
-		// и 'типы компьютерных угроз'
-		if result.Collection == "stix_object_collection" && result.ResultType == "found_info_list_computer_threat" {
-			listElemSTIXObj, ok := result.Information.([]*datamodels.GroupingDomainObjectsSTIX)
-			if !ok {
-				return fmt.Errorf("type conversion error, line 323")
-			}
+		msg, err := json.Marshal(msgRes)
+		if err != nil {
+			return err
+		}
 
-			msgRes.AdditionalParameters = datamodels.ResJSONParts{
-				TotalNumberParts:      1,
-				GivenSizePart:         maxChunkSize,
-				NumberTransmittedPart: 1,
-				TransmittedData:       listElemSTIXObj,
-			}
-
-			msg, err := json.Marshal(msgRes)
-			if err != nil {
-				return err
-			}
-
-			chanResModAPI <- datamodels.ModuleReguestProcessingChannel{
-				CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
-					ModuleGeneratorMessage: "module core application",
-					ModuleReceiverMessage:  "module api request processing",
-				},
-				ClientID: ti.ClientID,
-				DataType: 1,
-				Data:     &msg,
-			}
+		chanResModAPI <- datamodels.ModuleReguestProcessingChannel{
+			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+				ModuleGeneratorMessage: "module core application",
+				ModuleReceiverMessage:  "module api request processing",
+			},
+			ClientID: ti.ClientID,
+			DataType: 1,
+			Data:     &msg,
 		}
 	}
 

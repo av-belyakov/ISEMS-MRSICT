@@ -1,7 +1,9 @@
 package interactionmongodb
 
 import (
+	"fmt"
 	"net"
+	"reflect"
 
 	"ISEMS-MRSICT/commonlibs"
 	"ISEMS-MRSICT/datamodels"
@@ -14,10 +16,16 @@ import (
 //CreateSearchQueriesSTIXObject обработчик формирующий поисковые запросы для осуществления поиска по коллекции содержащей документы в формате STIX
 func CreateSearchQueriesSTIXObject(sp *datamodels.SearchThroughCollectionSTIXObjectsType) bson.D {
 	var (
-		documentsType           bson.E
-		dataTimeActionForObject bson.E
-		createdByRef            bson.E
-		ssf                     bson.A
+		documentsType                        bson.E
+		dataTimeActionForObject              bson.E
+		createdByRef                         bson.E
+		outsideSpecificationSearchFields     bson.E
+		outsideSpecificationSearchFieldsList bson.A
+		ssf                                  bson.A
+		listTypeName                         = map[string]string{
+			"ComputerThreatType":          "computer_threat_type",
+			"DecisionsMadeComputerThreat": "decisions_made_computer_threat",
+		}
 	)
 
 	if len(sp.DocumentsID) > 0 {
@@ -58,13 +66,32 @@ func CreateSearchQueriesSTIXObject(sp *datamodels.SearchThroughCollectionSTIXObj
 		createdByRef = bson.E{Key: "commonpropertiesdomainobjectstix.created_by_ref", Value: sp.CreatedByRef}
 	}
 
-	sizessf := len(sp.SpecificSearchFields)
+	ossfValue := reflect.ValueOf(sp.OutsideSpecificationSearchFields)
+	ossfType := ossfValue.Type()
+	for i := 0; i < ossfType.NumField(); i++ {
+		switch ossfType.Field(i).Type.Kind() {
+		case reflect.String:
+			if ossfValue.Field(i).String() != "" {
+				outsideSpecificationSearchFields = bson.E{Key: fmt.Sprintf("outside_specification.%s", listTypeName[ossfType.Field(i).Name]), Value: ossfValue.Field(i).String()}
+				outsideSpecificationSearchFieldsList = append(outsideSpecificationSearchFieldsList, bson.D{outsideSpecificationSearchFields})
+			}
 
-	if sizessf == 0 {
+			//case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+
+		}
+	}
+
+	countossfl := len(outsideSpecificationSearchFieldsList)
+	if countossfl > 1 {
+		outsideSpecificationSearchFields = bson.E{Key: "$or", Value: outsideSpecificationSearchFieldsList}
+	}
+
+	if len(sp.SpecificSearchFields) == 0 {
 		return bson.D{
 			documentsType,
 			dataTimeActionForObject,
 			createdByRef,
+			outsideSpecificationSearchFields,
 		}
 	}
 
@@ -76,6 +103,7 @@ func CreateSearchQueriesSTIXObject(sp *datamodels.SearchThroughCollectionSTIXObj
 		documentsType,
 		dataTimeActionForObject,
 		createdByRef,
+		outsideSpecificationSearchFields,
 		bson.E{Key: "$or", Value: ssf},
 	}
 }

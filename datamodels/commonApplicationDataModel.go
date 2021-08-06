@@ -85,6 +85,16 @@ type OldFieldValueObjectType struct {
 	Value     interface{} `bson:"value"`
 }
 
+//ShortDescriptionElementComputerThreat содержит краткое описание элемента 'grouping' содержащего списки STIX объектов типа 'report' компьютерных
+// угроз
+type ShortDescriptionElementGroupingComputerThreat struct {
+	ID              string `json:"id"`
+	Type            string `json:"type"`
+	Name            string `json:"name"`
+	Description     string `json:"description"`
+	CountObjectRefs int    `json:"count_object_refs"`
+}
+
 /********** 			Domain Objects STIX			**********/
 
 //GetAttackPatternDomainObjectsSTIX возвращает объект STIX типа 'attack-pattern'

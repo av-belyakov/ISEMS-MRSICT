@@ -20,6 +20,11 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
 	clim *moddatamodels.ChannelsListInteractingModules) {
 
+	var listTypesComputerThreat = []string{
+		"types decisions made computer threat",
+		"types computer threat",
+	}
+
 	commonMsgReq, err := unmarshalJSONCommonReq(data.Data)
 	if err != nil {
 		chanSaveLog <- modulelogginginformationerrors.LogMessageType{
@@ -460,7 +465,9 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 
 		switch l.CollectionName {
 		case "stix object":
-			//выполняем валидацию и санитаризацию поискового запроса для выполнения поиска по коллекции STIX объектов
+			/*
+				общий поиск по коллекции STIX объектов
+			*/
 			l, err = CheckSearchSTIXObject(&l)
 			if err != nil {
 				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
@@ -492,8 +499,77 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 				return
 			}
 
-		case "":
-			//выполняем валидацию и санитаризацию поискового запроса для выполнения поиска по коллекции
+		case "get list computer threat", "stix object list type grouping":
+			/*
+				получить список id объектов типа 'grouping' с их наименованием, относящихся или к "types decisions made computer threat"
+				или к "types computer threat", данный список нужен для построения выпадающих списков в ISEMS-UI, для первого совпадения или
+				получить СПИСОК STIX объектов типа 'Grouping' относящихся, к заранее определенному в приложении, списку, 'типы принимаемых решений по
+				компьютерным угрозам' (types decisions made computer threat) или 'типы компьютерных угроз' (types computer threat), для второго совпадения
+			*/
+
+			if l.SortableField != "name" {
+				l.SortableField = "name"
+			}
+
+			sp, ok := l.SearchParameters.(struct {
+				TypeList string `json:"type_list"`
+			})
+			if !ok {
+				if err = auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{
+					ClientID:         data.ClientID,
+					TaskID:           commonMsgReq.TaskID,
+					Section:          commonMsgReq.Section,
+					TypeNotification: "danger",
+					Notification: commonlibs.PatternUserMessage(&commonlibs.PatternUserMessageType{
+						Section:     section,
+						TaskType:    taskType,
+						FinalResult: "задача отклонена",
+						Message:     "ошибка при декодировании JSON документа",
+					}),
+					C: clim.ChannelsModuleAPIRequestProcessing.InputModule,
+				}); err != nil {
+					chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+						TypeMessage: "error",
+						Description: fmt.Sprint(err),
+						FuncName:    "SendNotificationModuleAPI",
+					}
+				}
+
+				return
+			}
+
+			var isExist bool
+			for _, v := range listTypesComputerThreat {
+				if v == sp.TypeList {
+					isExist = true
+
+					break
+				}
+			}
+
+			if !isExist {
+				if err = auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{
+					ClientID:         data.ClientID,
+					TaskID:           commonMsgReq.TaskID,
+					Section:          commonMsgReq.Section,
+					TypeNotification: "danger",
+					Notification: commonlibs.PatternUserMessage(&commonlibs.PatternUserMessageType{
+						Section:     section,
+						TaskType:    taskType,
+						FinalResult: "задача отклонена",
+						Message:     "получено невалидное значение поискового запроса",
+					}),
+					C: clim.ChannelsModuleAPIRequestProcessing.InputModule,
+				}); err != nil {
+					chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+						TypeMessage: "error",
+						Description: fmt.Sprint(err),
+						FuncName:    "SendNotificationModuleAPI",
+					}
+				}
+			}
+
+			l.SearchParameters = sp
 
 		default:
 			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
@@ -685,6 +761,7 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 			Section:   "handling reference book",
 			AppTaskID: appTaskID,
 		}
+
 	case "":
 
 		/* *** обработчик JSON сообщений с иными запросами  *** */

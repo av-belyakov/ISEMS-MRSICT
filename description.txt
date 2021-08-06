@@ -140,7 +140,7 @@ STIX объектов. Все дополнительные, нестандарт
             ]
 
             outside_specification_search_fields: {} /* содержит поля не входящие в основную спецификацию STIX 2.0 и расширяющие набор некоторых свойств 
-             объектов STIX. Логика между ними это "И", пустое содержимое полей не учитывается */
+             объектов STIX. Логика между ними это "ИЛИ", пустое содержимое полей не учитывается */
 
             outside_specification_search_fields: {
                 decisions_made_computer_threat: STRING // принятые решения по компьютерной угрозе
@@ -309,10 +309,10 @@ STIX объектов. Все дополнительные, нестандарт
 }
 
     7.1.  Структура и формат JSON документа, получаемого от графического пользовательского интерфейса ISEMS-UI и содержащего поисковый запрос для поиска
-СПИСКОВ STIX объектов типа 'Grouping' относящихся, к заранее определенному в приложении, списку, 'типы принимаемых решений по компьютерным угрозам'.
+СПИСКОВ STIX объектов типа 'Grouping' относящихся, к заранее определенному в приложении, списку, 'типы принимаемых решений по компьютерным угрозам'
+(types decisions made computer threat) или 'типы компьютерных угроз' (types computer threat).
         
-    !!! Я ТАК ПОНИМАЮ ЧТО ЭТО СДЕЛАННО ДЛЯ ПОЛУЧЕНИЯ СПИСКОВ "СТАТУСОВ КОМПЬЮТЕРНЫХ УГРОЗ", может стоит отказатся от запроса к БД с поиском специальных
-    объектов типа 'Grouping', да и сами объекты удалить, а список получать из временного хранилища, которое, в свою очередь из json файла!!!
+    Здесь нужно продумать обработку всех шаго начиная с функции handlerAssignmentsModuleAPIRequestProcessing (стр. 496) и далее
 
 {
     task_id: STRING // уникальный ID задачи (обязательное значение)
@@ -321,48 +321,67 @@ STIX объектов. Все дополнительные, нестандарт
     request_details: {
         collection_name: "stix object list type grouping",
         paginate_parameters: {
-            max_part_size: 100,
+            max_part_size: 0, /если "0" то только количество элементов в поле object_ref
             current_part_number: 1
         }
 
-        sortable_field: "commonpropertiesdomainobjectstix.name", // для сортировки по алфавиту наименований групп
+        sortable_field: "name", // для сортировки по алфавиту наименований групп
 
         /* параметры поиска для коллекции типа "stix object list type grouping" */
         search_parameters: {
-            type_list: "types decisions made computer threat"
+            type_list: "" //"types decisions made computer threat" для 'типы принимаемых решений по компьютерным угрозам' или
+            // "types computer threat" для 'типы компьютерных угроз'
         }
     } 
 }
 
-    7.2.  Структура и формат JSON документа, получаемого от графического пользовательского интерфейса ISEMS-UI и содержащего поисковый запрос для поиска
-СПИСКОВ STIX объектов типа 'Grouping', относящихся к заранее определенному в приложении списку, 'типы компьютерных угроз'.
-
-!!! Я ТАК ПОНИМАЮ ЧТО ЭТО СДЕЛАННО ДЛЯ ПОЛУЧЕНИЯ СПИСКОВ "ТИПОВ КОМПЬЮТЕРНЫХ УГРОЗ", может стоит отказатся от запроса к БД с поиском специальных
-    объектов типа 'Grouping', да и сами объекты удалить, а список получать из временного хранилища, которое, в свою очередь из json файла!!!
-
+    7.2. Структура и формат JSON документа, отправляемого в графический пользовательский интерфейс ISEMS-UI и содержащего ответ на поисковый запрос 
+списков STIX объектов типа 'Grouping', относящихся к заранее определенному в приложении списку, 'типы принимаемых решений по компьютерным угрозам' или 
+'типы компьютерных угроз' где поле paginate_parameters.max_part_size = 0.
 {
     task_id: STRING // уникальный ID задачи (обязательное значение)
-    section: "handling search requests",
-    user_name_generated_task: "",
-    request_details: {
-        collection_name: "stix object list type grouping",
-        paginate_parameters: {
-            max_part_size: 100,
-            current_part_number: 1
-        }
-
-        sortable_field: "commonpropertiesdomainobjectstix.name", // для сортировки по алфавиту наименований групп
-
-        /* параметры поиска для коллекции типа "stix object list type grouping" */
-        search_parameters: {
-            type_list: "types computer threat"
-        }
-    } 
+    section: "handling search requests" // секция обработки данных (обязательное значение, для данного типа действия ТОЛЬКО "handling search requests")
+	is_successful: BOOL // был ли запрос успешно обработан (в данном случае TRUE)
+	description: STRING // дополнительное описание (В ДАННОМ СЛУЧАЕ НЕ ЗАПОЛНЯЕТСЯ)
+	information_message: { // информационное сообщение (НЕ ОБЯЗАТЕЛЬНО К ЗАПОЛНЕНИЮ)
+        msg_type: STRING // тип информационного сообщения
+        msg: STRING // информационное сообщение
+    }
+	additional_parameters: [
+    {
+        commonpropertiesobjectstix: {
+            type: "grouping",
+            id: "grouping--<uuid>",
+        },
+        commonpropertiesdomainobjectstix: {
+            spec_version: STRING
+            created: STRING типа time
+            modified: STRING типа time
+            created_by_ref: STRING
+            revoked: BOOL,
+            labels: []STRING
+            confidence: INT
+            lang: STRING
+            external_references: []STRING
+            object_marking_refs: []STRING
+            granular_markings: { lang: STRING, marking_ref: STRING, selectors: []string }
+            defanged: BOOL
+            extensions: { STRING: STRING }
+        },
+        name: STRING
+        description: STRING
+        context: STRING
+        count_object_refs: INT //только для ответы на запросы где paginate_parameters.max_part_size = 0
+    }
+    ]
 }
 
     7.3. Структура и формат JSON документа, отправляемого в графический пользовательский интерфейс ISEMS-UI и содержащего ответ на поисковый запрос 
 списков STIX объектов типа 'Grouping', относящихся к заранее определенному в приложении списку, 'типы принимаемых решений по компьютерным угрозам' или 
-'типы компьютерных угроз' полностью совпадает со структурой и форматом документа, пример которого приведен в пункте 5 данного руководства.
+'типы компьютерных угроз' где поле paginate_parameters.max_part_size > 0.
+{
+    ВОТ ТУТ НАДО ПРОДУМАТЬ КАК ОТПРАВЛЯТЬ КУСОЧКМИ СОДЕРЖИМОЕ ПОЛЯ object_ref объекта 'grouping' представляющее собой массив данных
+}
 
     8. Структура и формат JSON документов, получаемых от графического пользовательского интерфейса ISEMS-UI и содержащих команды для управления 
 STIX объектами. Пример сообщения:

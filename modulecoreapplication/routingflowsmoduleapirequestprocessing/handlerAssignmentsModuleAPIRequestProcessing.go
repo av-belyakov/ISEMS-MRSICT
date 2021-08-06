@@ -492,8 +492,84 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 				return
 			}
 
-		case "":
-			//выполняем валидацию и санитаризацию поискового запроса для выполнения поиска по коллекции
+		case "stix object list type grouping":
+			var (
+				listTypesComputerThreat = []string{
+					"types decisions made computer threat",
+					"types computer threat",
+				}
+				isExist bool
+			)
+
+			//проверяем значение поля по которому будет выполнена сортировка
+			if l.SortableField != "name" {
+				l.SortableField = "name"
+			}
+
+			sp, ok := l.SearchParameters.(struct{ type_list string })
+			if !ok {
+				if err = auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{
+					ClientID:         data.ClientID,
+					TaskID:           commonMsgReq.TaskID,
+					Section:          commonMsgReq.Section,
+					TypeNotification: "danger",
+					Notification: commonlibs.PatternUserMessage(&commonlibs.PatternUserMessageType{
+						Section:     section,
+						TaskType:    taskType,
+						FinalResult: "задача отклонена",
+						Message:     "ошибка при декодировании JSON документа",
+					}),
+					C: clim.ChannelsModuleAPIRequestProcessing.InputModule,
+				}); err != nil {
+					chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+						TypeMessage: "error",
+						Description: fmt.Sprint(err),
+						FuncName:    "SendNotificationModuleAPI",
+					}
+				}
+
+				return
+			}
+
+			for _, v := range listTypesComputerThreat {
+				if v == sp.type_list {
+					isExist = true
+
+					break
+				}
+			}
+
+			if !isExist {
+				if err = auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{
+					ClientID:         data.ClientID,
+					TaskID:           commonMsgReq.TaskID,
+					Section:          commonMsgReq.Section,
+					TypeNotification: "danger",
+					Notification: commonlibs.PatternUserMessage(&commonlibs.PatternUserMessageType{
+						Section:     section,
+						TaskType:    taskType,
+						FinalResult: "задача отклонена",
+						Message:     "получено невалидное значение поискового запроса",
+					}),
+					C: clim.ChannelsModuleAPIRequestProcessing.InputModule,
+				}); err != nil {
+					chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+						TypeMessage: "error",
+						Description: fmt.Sprint(err),
+						FuncName:    "SendNotificationModuleAPI",
+					}
+				}
+			}
+
+			l.SearchParameters = sp
+
+			/*
+				НАДО СДЕЛАТЬ ЗДЕСЬ ОБРАБОТКУ ЗАПРОСОВ для поиска СПИСКОВ STIX объектов типа 'Grouping' относящихся, к заранее определенному в приложении,
+				списку, 'типы принимаемых решений по компьютерным угрозам' (types decisions made computer threat) или 'типы компьютерных угроз' (types
+				computer threat). Все подробности в файле description.txt строка 311.
+
+					ТЕПЕРЬ НУЖНО ВЫПОЛНИТЬ ОБРАБОТКУ В МОДУЛЕ moduledatabaseinteraction И ПОИСК в БД
+			*/
 
 		default:
 			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
@@ -685,6 +761,7 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 			Section:   "handling reference book",
 			AppTaskID: appTaskID,
 		}
+
 	case "":
 
 		/* *** обработчик JSON сообщений с иными запросами  *** */

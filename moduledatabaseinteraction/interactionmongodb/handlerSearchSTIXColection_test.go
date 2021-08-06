@@ -81,7 +81,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 			}))
 
 			Expect(err).ShouldNot(HaveOccurred())
-			Expect(sizeElem).Should(Equal(int64(44)))
+			Expect(sizeElem).Should(Equal(int64(47)))
 		})
 
 		It("Поиск ТОЛЬКО по времени создания STIX объекта, должно быть найдено определенное количество объектов", func() {
@@ -104,7 +104,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 			sizeElem, err := qp.CountDocuments(interactionmongodb.CreateSearchQueriesSTIXObject(&qrotc))
 
 			Expect(err).ShouldNot(HaveOccurred())
-			Expect(sizeElem).Should(Equal(int64(19)))
+			Expect(sizeElem).Should(Equal(int64(23)))
 
 			cur, errfl := qp.FindAllWithLimit(interactionmongodb.CreateSearchQueriesSTIXObject(&qrotc), &interactionmongodb.FindAllWithLimitOptions{
 				Offset:        1,
@@ -120,7 +120,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 			}*/
 
 			Expect(errfl).ShouldNot(HaveOccurred())
-			Expect(int64(len(elemSTIXObj))).Should(Equal(int64(19)))
+			Expect(int64(len(elemSTIXObj))).Should(Equal(int64(23)))
 		})
 
 		It("Поиск ТОЛЬКО по времени модификации STIX объекта, должно быть найдено определенное количество объектов", func() {
@@ -142,7 +142,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 			sizeElem, err := qp.CountDocuments(interactionmongodb.CreateSearchQueriesSTIXObject(&qrotc))
 
 			Expect(err).ShouldNot(HaveOccurred())
-			Expect(sizeElem).Should(Equal(int64(7)))
+			Expect(sizeElem).Should(Equal(int64(8)))
 		})
 
 		It("Поиск ТОЛЬКО по времени создания или модификации STIX объекта, должно быть найдено определенное количество объектов", func() {
@@ -178,7 +178,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 			sizeElem, err := qp.CountDocuments(interactionmongodb.CreateSearchQueriesSTIXObject(&qrotc))
 
 			Expect(err).ShouldNot(HaveOccurred())
-			Expect(sizeElem).Should(Equal(int64(20)))
+			Expect(sizeElem).Should(Equal(int64(24)))
 		})
 
 		It("Поиск по времени модификации STIX объекта и его типу, должно быть найдено определенное количество объектов", func() {
@@ -361,7 +361,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 			   а для STIX CO 'file' поле 'optionalcommonpropertiescyberobservableobjectstix'
 			*/
 
-			Expect(len(elemSTIXObj)).Should(Equal(47))
+			Expect(len(elemSTIXObj)).Should(Equal(50))
 		})
 	})
 
@@ -485,7 +485,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 			Expect(len(elemSTIXObj)).Should(Equal(1))
 		})
 
-		It("Должен быть получен список из 1 элемента типа 'report', с заполненным полем 'published'", func() {
+		It("Должен быть получен список из 2 элемента типа 'report', с заполненным полем 'published'", func() {
 			t, errtp := time.Parse(time.RFC3339, "2016-01-01T00:00:01.000Z")
 			Expect(errtp).ShouldNot(HaveOccurred())
 
@@ -505,7 +505,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 			fmt.Printf("Должен быть получен список из 1 элемента типа 'report', с заполненным полем 'published': '%v'\n", *elemSTIXObj[0])
 
-			Expect(len(elemSTIXObj)).Should(Equal(1))
+			Expect(len(elemSTIXObj)).Should(Equal(2))
 		})
 
 		It("Должен быть получен список из определенного количества элементов типа 'report', 'grouping', 'location', с заполненным полем 'published'", func() {
@@ -541,7 +541,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 				fmt.Printf("Element type: '%s' = %d\n", k, v)
 			}
 
-			Expect(len(elemSTIXObj)).Should(Equal(44))
+			Expect(len(elemSTIXObj)).Should(Equal(47))
 		})
 
 		It("Должен быть получен STIX объект типа 'grouping' с заданным именем в поле Name", func() {
@@ -562,6 +562,93 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 			fmt.Printf("STIX DO type 'grouping': '%v'\n", *elemSTIXObj[0])
 
 			Expect(len(elemSTIXObj)).Should(Equal(1))
+		})
+	})
+
+	Context("Тест 9. Поиск по типу STIX объектов и нестандартным полям", func() {
+		It("Должен быть найден STIX объект с заданным содержимым нестандартного поля outside_specification.computer_threat_type", func() {
+			cur, err := qp.FindAllWithLimit(
+				interactionmongodb.CreateSearchQueriesSTIXObject(&datamodels.SearchThroughCollectionSTIXObjectsType{
+					DocumentsType: []string{"report"},
+					OutsideSpecificationSearchFields: datamodels.OutsideSpecificationSearchFieldsType{
+						//DecisionsMadeComputerThreat: "",
+						//DecisionsMadeComputerThreat: "successfully implemented computer threat",
+						ComputerThreatType: "SQL-Injection",
+					},
+				}), &interactionmongodb.FindAllWithLimitOptions{
+					Offset:        1,
+					LimitMaxSize:  200,
+					SortField:     "",
+					SortAscending: false,
+				})
+			Expect(err).ShouldNot(HaveOccurred())
+
+			elemSTIXObj := interactionmongodb.GetListElementSTIXObject(cur)
+
+			/*
+				fmt.Println("Test 9.1:")
+				for k, v := range elemSTIXObj {
+					fmt.Printf("%d. STIX object type: '%s', value: '%v'\n", k, v.DataType, v.Data.GetID())
+				}
+			*/
+
+			Expect(len(elemSTIXObj)).Should(Equal(2))
+		})
+
+		It("Должен быть найден STIX объект с заданным содержимым нестандартного поля outside_specification.decisions_made_computer_threat", func() {
+			cur, err := qp.FindAllWithLimit(
+				interactionmongodb.CreateSearchQueriesSTIXObject(&datamodels.SearchThroughCollectionSTIXObjectsType{
+					DocumentsType: []string{"report"},
+					OutsideSpecificationSearchFields: datamodels.OutsideSpecificationSearchFieldsType{
+						DecisionsMadeComputerThreat: "successfully implemented computer threat",
+						ComputerThreatType:          "",
+					},
+				}), &interactionmongodb.FindAllWithLimitOptions{
+					Offset:        1,
+					LimitMaxSize:  200,
+					SortField:     "",
+					SortAscending: false,
+				})
+			Expect(err).ShouldNot(HaveOccurred())
+
+			elemSTIXObj := interactionmongodb.GetListElementSTIXObject(cur)
+
+			/*
+				fmt.Println("Test 9.2:")
+				for k, v := range elemSTIXObj {
+					fmt.Printf("%d. STIX object type: '%s', value: '%v'\n", k, v.DataType, v.Data.GetID())
+				}
+			*/
+
+			Expect(len(elemSTIXObj)).Should(Equal(3))
+		})
+
+		It("Должен быть найден STIX объект с заданным содержимым нестандартного поля outside_specification.decisions_made_computer_threat и outside_specification.decisions_made_computer_threat", func() {
+			cur, err := qp.FindAllWithLimit(
+				interactionmongodb.CreateSearchQueriesSTIXObject(&datamodels.SearchThroughCollectionSTIXObjectsType{
+					DocumentsType: []string{"report"},
+					OutsideSpecificationSearchFields: datamodels.OutsideSpecificationSearchFieldsType{
+						DecisionsMadeComputerThreat: "successfully implemented computer threat",
+						ComputerThreatType:          "malware",
+					},
+				}), &interactionmongodb.FindAllWithLimitOptions{
+					Offset:        1,
+					LimitMaxSize:  200,
+					SortField:     "",
+					SortAscending: false,
+				})
+			Expect(err).ShouldNot(HaveOccurred())
+
+			elemSTIXObj := interactionmongodb.GetListElementSTIXObject(cur)
+
+			/*
+				fmt.Println("Test 9.3:")
+				for k, v := range elemSTIXObj {
+					fmt.Printf("%d. STIX object type: '%s', value: '%v'\n", k, v.DataType, v.Data.GetID())
+				}
+			*/
+
+			Expect(len(elemSTIXObj)).Should(Equal(3))
 		})
 	})
 })

@@ -199,12 +199,24 @@ func handlingSearchRequestsSTIXObject(
 	if tp.CollectionName == "stix object" {
 		//делаем запрос к временному хранилищу информации
 		result, err := tst.GetFoundInformationByID(data.AppTaskID)
+
+		fmt.Printf("func 'handlingSearchRequestsSTIXObject', temporary status task: '%v'\n", result)
+
 		if err != nil {
+
+			fmt.Printf("func 'handlingSearchRequestsSTIXObject', ERROR 111: '%v'\n", err)
+
 			return err
 		}
 
 		_, di, err := tst.GetTaskByID(data.AppTaskID)
+
+		fmt.Printf("func 'handlingSearchRequestsSTIXObject', temporary status detail task: '%v'\n", di)
+
 		if err != nil {
+
+			fmt.Printf("func 'handlingSearchRequestsSTIXObject', ERROR 222: '%v'\n", err)
+
 			return err
 		}
 
@@ -296,6 +308,8 @@ func handlingSearchRequestsSTIXObject(
 				if !ok {
 					return fmt.Errorf("type conversion error, line 291")
 				}
+
+				fmt.Printf("func 'handlingSearchRequestsSTIXObject', found_info_list_computer_threat: '%v'\n", list)
 
 				msgRes.AdditionalParameters = list
 

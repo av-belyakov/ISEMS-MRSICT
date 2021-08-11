@@ -129,7 +129,7 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 		}
 
 		//обрабатываем содержимое полей которые не относятся к спецификации STIX 2.0
-		VerifyOutsideSpecificationFields(l, tst)
+		VerifyOutsideSpecificationFields(l, tst, data.ClientName)
 
 		//добавляем информацию о задаче в хранилище задач
 		appTaskID, err := tst.AddNewTask(&memorytemporarystoragecommoninformation.TemporaryStorageTaskType{

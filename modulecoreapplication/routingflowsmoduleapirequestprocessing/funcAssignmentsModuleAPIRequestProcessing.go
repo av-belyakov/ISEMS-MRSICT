@@ -3,8 +3,10 @@ package routingflowsmoduleapirequestprocessing
 import (
 	"encoding/json"
 	"fmt"
+	"math/rand"
 	"net"
 	"regexp"
+	"time"
 
 	"ISEMS-MRSICT/commonlibs"
 	"ISEMS-MRSICT/datamodels"
@@ -243,7 +245,10 @@ func CheckSTIXObjects(l []*datamodels.ElementSTIXObject) error {
 	return nil
 }
 
-func VerifyOutsideSpecificationFields(l []*datamodels.ElementSTIXObject, tst *memorytemporarystoragecommoninformation.TemporaryStorageType) {
+func VerifyOutsideSpecificationFields(
+	l []*datamodels.ElementSTIXObject,
+	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
+	clientName string) {
 	verifyDecisionsMadeComputerThreat := func(valueBeChecked string) string {
 		result := "undefined"
 
@@ -258,9 +263,6 @@ func VerifyOutsideSpecificationFields(l []*datamodels.ElementSTIXObject, tst *me
 
 		var isExist bool
 		for k := range ldm {
-
-			fmt.Printf("func 'VerifyOutsideSpecificationFields', k(%s) == (%s)valueBeChecked", k, valueBeChecked)
-
 			if k == valueBeChecked {
 				isExist = true
 
@@ -303,6 +305,8 @@ func VerifyOutsideSpecificationFields(l []*datamodels.ElementSTIXObject, tst *me
 		return result
 	}
 
+	rand.Seed(82)
+
 	for k, v := range l {
 		switch v.DataType {
 		case "report":
@@ -311,7 +315,10 @@ func VerifyOutsideSpecificationFields(l []*datamodels.ElementSTIXObject, tst *me
 				continue
 			}
 
+			salt := fmt.Sprint(rand.Intn(10000))
+
 			e.OutsideSpecification = datamodels.ReportOutsideSpecification{
+				AdditionalName:              fmt.Sprintf("report--%s-%v.%v", clientName, time.Now().Unix(), salt),
 				DecisionsMadeComputerThreat: verifyDecisionsMadeComputerThreat(e.OutsideSpecification.DecisionsMadeComputerThreat),
 				ComputerThreatType:          verifyComputerThreatType(e.OutsideSpecification.ComputerThreatType),
 			}

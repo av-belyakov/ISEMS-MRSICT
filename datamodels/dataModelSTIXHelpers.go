@@ -406,9 +406,11 @@ func (cp CommonPropertiesObjectSTIX) ToStringBeautiful() string {
 /********** 			Свойства не входящие в основную спецификацию STIX 2.0 (добавляемые ПО ISEMS-MRSICT) 			**********/
 
 //ReportOutsideSpecification свойства не входящие в основную спецификацию STIX 2.0 и расширяющие набор свойств объекта "Report"
+// AdditionalName - дополнительное наименование
 // DecisionsMadeComputerThreat - принятые решения по компьютерной угрозе
 // ComputerThreatType - тип компьютерной угрозы
 type ReportOutsideSpecification struct {
+	AdditionalName              string `json:"additional_name" bson:"additional_name"`
 	DecisionsMadeComputerThreat string `json:"decisions_made_computer_threat" bson:"decisions_made_computer_threat"`
 	ComputerThreatType          string `json:"computer_threat_type" bson:"computer_threat_type"`
 }

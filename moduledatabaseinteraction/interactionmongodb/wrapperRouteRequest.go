@@ -110,7 +110,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 	}
 
 	//добавляем или обновляем STIX объекты в БД
-	err = ReplacementElementsSTIXObject(qp, ti)
+	err = ReplacementElementsSTIXObject(qp, SavingAdditionalNameListSTIXObject(listElemetSTIXObject, ti))
 	if err != nil {
 		errorMessage.ErrorMessage.Error = err
 		chanOutput <- errorMessage

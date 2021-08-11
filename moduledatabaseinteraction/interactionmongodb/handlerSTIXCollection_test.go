@@ -16,6 +16,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
+	"ISEMS-MRSICT/commonhandlers"
 	"ISEMS-MRSICT/datamodels"
 	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
 	"ISEMS-MRSICT/modulecoreapplication/routingflowsmoduleapirequestprocessing"
@@ -224,13 +225,28 @@ var _ = Describe("HandlerSTIXCollection", func() {
 
 	Context("Тест 5. Взаимодействие с коллекцией STIX объектов.", func() {
 		It("При добавлении STIX объектов не должно быть ошибок. STIX объекты идентификаторы которых уже есть в БД добавлятся не должны.", func() {
-			routingflowsmoduleapirequestprocessing.VerifyOutsideSpecificationFields(l, tst)
+			//получаем список ID STIX объектов предназначенных для добавление в БД
+			listID := commonhandlers.GetListIDFromListSTIXObjects(l)
 
-			err := interactionmongodb.ReplacementElementsSTIXObject(qp, l)
+			fmt.Println("-----------=====================================================----------")
 
-			fmt.Printf("Error : %v\n", err)
+			countBefore := len(l)
+
+			//выполняем запрос к БД, для получения полной информации об STIX объектах по их ID
+			listElemetSTIXObject, err := interactionmongodb.FindSTIXObjectByID(qp, listID)
+			Expect(err).ShouldNot(HaveOccurred())
+
+			routingflowsmoduleapirequestprocessing.VerifyOutsideSpecificationFields(l, tst, "client-test")
+			l := interactionmongodb.SavingAdditionalNameListSTIXObject(listElemetSTIXObject, l)
+
+			countAfter := len(l)
+
+			err = interactionmongodb.ReplacementElementsSTIXObject(qp, l)
+
+			fmt.Println("-----------=====================================================----------")
 
 			Expect(err).ShouldNot(HaveOccurred())
+			Expect(countBefore).Should(Equal(countAfter))
 		})
 	})
 

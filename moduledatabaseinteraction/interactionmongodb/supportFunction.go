@@ -105,6 +105,45 @@ func ComparasionListSTIXObject(clt ComparasionListTypeSTIXObject) []datamodels.D
 	return listDifferentResult
 }
 
+//SavingAdditionalNameListSTIXObject сохранение дополнительного наименования в некоторых STIX объектах, имеющих свойства не входящие
+// в основную спецификацию STIX 2.0
+func SavingAdditionalNameListSTIXObject(currentList, addedList []*datamodels.ElementSTIXObject) []*datamodels.ElementSTIXObject {
+	for k, vadd := range addedList {
+		if vadd.DataType != "report" {
+			continue
+		}
+
+		reportAdd, ok := vadd.Data.(datamodels.ReportDomainObjectsSTIX)
+		if !ok {
+			continue
+		}
+
+	DONE:
+		for _, vcurrent := range currentList {
+			switch vcurrent.DataType {
+			case "report":
+				if vadd.Data.GetID() != vcurrent.Data.GetID() {
+					continue
+				}
+
+				reportCurrent, ok := vcurrent.Data.(datamodels.ReportDomainObjectsSTIX)
+				if !ok {
+					break DONE
+				}
+
+				reportAdd.OutsideSpecification.AdditionalName = reportCurrent.OutsideSpecification.AdditionalName
+
+				addedList[k] = &datamodels.ElementSTIXObject{
+					DataType: reportAdd.GetType(),
+					Data:     reportAdd,
+				}
+			}
+		}
+	}
+
+	return addedList
+}
+
 type definingTypeSTIXObject struct {
 	datamodels.CommonPropertiesObjectSTIX
 }

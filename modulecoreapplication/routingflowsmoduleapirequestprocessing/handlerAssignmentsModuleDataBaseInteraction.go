@@ -311,7 +311,7 @@ func handlingSearchRequestsSTIXObject(
 				return fmt.Errorf("type conversion error, line 291")
 			}
 
-			//fmt.Printf("func 'handlingSearchRequestsSTIXObject', found_info_list_computer_threat: '%v'\n", list)
+			fmt.Printf("func 'handlingSearchRequestsSTIXObject', ---- list ShortDescriptionElementGroupingComputerThreat: '%v'\n", list)
 
 			msgRes.AdditionalParameters = list
 

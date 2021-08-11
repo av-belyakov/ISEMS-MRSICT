@@ -208,7 +208,9 @@ func searchSTIXObjectListTypeGrouping(
 		return fn, err
 	}
 
-	fmt.Printf("func 'searchSTIXObjectListTypeGrouping', получить все найденные документы, с учетом лимита: '%v'\n", GetListGroupingComputerThreat(cur))
+	listComputerThreat := GetListGroupingComputerThreat(cur)
+
+	fmt.Printf("func 'searchSTIXObjectListTypeGrouping', получить все найденные документы, с учетом лимита: '%v'\n", listComputerThreat)
 
 	//сохраняем найденные значения во временном хранилище
 	err = tst.AddNewFoundInformation(
@@ -216,7 +218,7 @@ func searchSTIXObjectListTypeGrouping(
 		&memorytemporarystoragecommoninformation.TemporaryStorageFoundInformation{
 			Collection:  "stix_object_collection",
 			ResultType:  "found_info_list_computer_threat",
-			Information: GetListGroupingComputerThreat(cur),
+			Information: listComputerThreat,
 		})
 	if err != nil {
 		return fn, err

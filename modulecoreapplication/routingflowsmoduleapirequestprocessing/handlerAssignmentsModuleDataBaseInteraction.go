@@ -182,6 +182,8 @@ func handlingSearchRequestsSTIXObject(
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
 	ti *memorytemporarystoragecommoninformation.TemporaryStorageTaskInDetailType) error {
 
+	fmt.Println("func 'handlingSearchRequestsSTIXObject', START...")
+
 	if ti.TaskStatus != "completed" {
 		return nil
 	}
@@ -190,6 +192,8 @@ func handlingSearchRequestsSTIXObject(
 	if !ok {
 		return fmt.Errorf("type conversion error, line 189")
 	}
+
+	fmt.Printf("func 'handlingSearchRequestsSTIXObject', task parametr: '%v'\n", tp)
 
 	//обрабатываем результаты опираясь на типы коллекций
 	if tp.CollectionName == "stix object" {
@@ -297,6 +301,8 @@ func handlingSearchRequestsSTIXObject(
 
 			}
 		}
+
+		fmt.Printf("func 'handlingSearchRequestsSTIXObject', msg result: '%v'\n", msgRes)
 
 		msg, err := json.Marshal(msgRes)
 		if err != nil {

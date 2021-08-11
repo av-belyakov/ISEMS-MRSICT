@@ -159,6 +159,8 @@ func searchSTIXObjectListTypeGrouping(
 		fn  string = commonlibs.GetFuncName()
 	)
 
+	fmt.Println("func 'searchSTIXObjectListTypeGrouping', START...")
+
 	searchType, ok := taskInfo.SearchParameters.(struct {
 		TypeList string `json:"type_list"`
 	})
@@ -170,9 +172,15 @@ func searchSTIXObjectListTypeGrouping(
 
 	switch searchType.TypeList {
 	case "types decisions made computer threat":
+
+		fmt.Println("func 'searchSTIXObjectListTypeGrouping', types decisions made computer threat")
+
 		l, err = tst.GetListDecisionsMade()
 
 	case "types computer threat":
+
+		fmt.Println("func 'searchSTIXObjectListTypeGrouping', types computer threat")
+
 		l, err = tst.GetListComputerThreat()
 
 	default:
@@ -199,6 +207,8 @@ func searchSTIXObjectListTypeGrouping(
 	if err != nil {
 		return fn, err
 	}
+
+	fmt.Printf("func 'searchSTIXObjectListTypeGrouping', получить все найденные документы, с учетом лимита: '%v'\n", GetListGroupingComputerThreat(cur))
 
 	//сохраняем найденные значения во временном хранилище
 	err = tst.AddNewFoundInformation(

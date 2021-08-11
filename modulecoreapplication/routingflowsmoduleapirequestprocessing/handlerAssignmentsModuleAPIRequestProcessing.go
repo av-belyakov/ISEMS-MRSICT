@@ -463,16 +463,6 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 			return
 		}
 
-		// --- test
-		if l.CollectionName != "stix object" {
-			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
-				TypeMessage: "info",
-				Description: fmt.Sprint(l),
-				FuncName:    "UnmarshalJSONObjectReqSearchParameters",
-			}
-		}
-		// --- test
-
 		switch l.CollectionName {
 		case "stix object":
 			/*

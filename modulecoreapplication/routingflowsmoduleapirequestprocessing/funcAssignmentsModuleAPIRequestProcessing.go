@@ -58,8 +58,19 @@ func UnmarshalJSONObjectReqSearchParameters(msgReq *json.RawMessage) (datamodels
 		result.SortableField = resultTmp.SortableField
 		result.SearchParameters = msgSearch
 
-	case "":
+	case "get list computer threat", "stix object list type grouping":
+		var msgSearch struct {
+			TypeList string `json:"type_list"`
+		}
 
+		if err := json.Unmarshal(*resultTmp.SearchParameters, &msgSearch); err != nil {
+			return result, err
+		}
+
+		result.CollectionName = resultTmp.CollectionName
+		result.PaginateParameters = resultTmp.PaginateParameters
+		result.SortableField = resultTmp.SortableField
+		result.SearchParameters = msgSearch
 	}
 
 	return result, nil

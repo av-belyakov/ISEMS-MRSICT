@@ -195,184 +195,144 @@ func handlingSearchRequestsSTIXObject(
 
 	fmt.Printf("func 'handlingSearchRequestsSTIXObject', task parametr: '%v'\n", tp)
 
-	/*
-	   &memorytemporarystoragecommoninformation.TemporaryStorageFoundInformation{
-	   			Collection:  "stix_object_collection",
-	   			ResultType:  "found_info_list_computer_threat",
-	   			Information: GetListGroupingComputerThreat(cur),
-	   		})
-	*/
+	//делаем запрос к временному хранилищу информации
+	result, err := tst.GetFoundInformationByID(data.AppTaskID)
+	if err != nil {
+
+		fmt.Printf("func 'handlingSearchRequestsSTIXObject', ERROR -123: '%v'\n", err)
+
+		return err
+	}
+
+	fmt.Printf("func 'handlingSearchRequestsSTIXObject', collection name temporary INFORMATION: '%v'\n", result)
+
+	_, di, err := tst.GetTaskByID(data.AppTaskID)
+	if err != nil {
+
+		fmt.Printf("func 'handlingSearchRequestsSTIXObject', ERROR 222: '%v'\n", err)
+
+		return err
+	}
+
+	fmt.Printf("func 'handlingSearchRequestsSTIXObject', temporary DETAIL TASK: '%v'\n", di)
+
+	msgRes := datamodels.ModAPIRequestProcessingResJSON{
+		ModAPIRequestProcessingCommonJSON: datamodels.ModAPIRequestProcessingCommonJSON{
+			TaskID:  di.ClientTaskID,
+			Section: data.Section,
+		},
+		IsSuccessful: true,
+	}
 
 	//обрабатываем результаты опираясь на типы коллекций
-	if tp.CollectionName == "stix object" {
-		//делаем запрос к временному хранилищу информации
-		result, err := tst.GetFoundInformationByID(data.AppTaskID)
+	if tp.CollectionName == "stix object" && result.Collection == "stix_object_collection" {
+		switch result.ResultType {
+		case "only_count":
+			//для КРАТКОЙ информации, только количество, по найденным STIX объектам
 
-		fmt.Printf("func 'handlingSearchRequestsSTIXObject', temporary status task: '%v'\n", result)
+			numFound, ok := result.Information.(int64)
+			if !ok {
+				return fmt.Errorf("type conversion error, line 220")
+			}
 
-		if err != nil {
+			msgRes.AdditionalParameters = struct {
+				NumberDocumentsFound int64 `json:"number_documents_found"`
+			}{
+				NumberDocumentsFound: numFound,
+			}
 
-			fmt.Printf("func 'handlingSearchRequestsSTIXObject', ERROR 111: '%v'\n", err)
+		case "full_found_info":
+			//для ПОЛНОЙ информации по найденным STIX объектам
 
-			return err
-		}
+			listElemSTIXObj, ok := result.Information.([]*datamodels.ElementSTIXObject)
+			if !ok {
+				return fmt.Errorf("type conversion error, line 234")
+			}
 
-		_, di, err := tst.GetTaskByID(data.AppTaskID)
+			sestixo := len(listElemSTIXObj)
+			listMsgRes := make([]interface{}, 0, sestixo)
+			for _, v := range listElemSTIXObj {
+				listMsgRes = append(listMsgRes, v.Data)
+			}
 
-		fmt.Printf("func 'handlingSearchRequestsSTIXObject', temporary status detail task: '%v'\n", di)
-
-		if err != nil {
-
-			fmt.Printf("func 'handlingSearchRequestsSTIXObject', ERROR 222: '%v'\n", err)
-
-			return err
-		}
-
-		msgRes := datamodels.ModAPIRequestProcessingResJSON{
-			ModAPIRequestProcessingCommonJSON: datamodels.ModAPIRequestProcessingCommonJSON{
-				TaskID:  di.ClientTaskID,
-				Section: data.Section,
-			},
-			IsSuccessful: true,
-		}
-
-		if result.Collection == "stix_object_collection" {
-			switch result.ResultType {
-			case "only_count":
-				//для КРАТКОЙ информации, только количество, по найденным STIX объектам
-
-				numFound, ok := result.Information.(int64)
-				if !ok {
-					return fmt.Errorf("type conversion error, line 220")
+			//обрабатываем полученный список STIX объектов, в том числе если он превышает размер в 100 объектов
+			if sestixo < maxChunkSize {
+				msgRes.AdditionalParameters = datamodels.ResJSONParts{
+					TotalNumberParts:      1,
+					GivenSizePart:         maxChunkSize,
+					NumberTransmittedPart: 1,
+					TransmittedData:       listMsgRes,
 				}
-
-				msgRes.AdditionalParameters = struct {
-					NumberDocumentsFound int64 `json:"number_documents_found"`
-				}{
-					NumberDocumentsFound: numFound,
-				}
-
-			case "full_found_info":
-				//для ПОЛНОЙ информации по найденным STIX объектам
-
-				listElemSTIXObj, ok := result.Information.([]*datamodels.ElementSTIXObject)
-				if !ok {
-					return fmt.Errorf("type conversion error, line 234")
-				}
-
-				sestixo := len(listElemSTIXObj)
-				listMsgRes := make([]interface{}, 0, sestixo)
-				for _, v := range listElemSTIXObj {
-					listMsgRes = append(listMsgRes, v.Data)
-				}
-
-				//обрабатываем полученный список STIX объектов, в том числе если он превышает размер в 100 объектов
-				if sestixo < maxChunkSize {
-					msgRes.AdditionalParameters = datamodels.ResJSONParts{
-						TotalNumberParts:      1,
+			} else {
+				num := commonlibs.GetCountChunk(int64(sestixo), maxChunkSize)
+				min := 0
+				max := maxChunkSize
+				for i := 0; i < num; i++ {
+					data := datamodels.ResJSONParts{
+						TotalNumberParts:      num,
 						GivenSizePart:         maxChunkSize,
-						NumberTransmittedPart: 1,
-						TransmittedData:       listMsgRes,
+						NumberTransmittedPart: i + 1,
 					}
-				} else {
-					num := commonlibs.GetCountChunk(int64(sestixo), maxChunkSize)
-					min := 0
-					max := maxChunkSize
-					for i := 0; i < num; i++ {
-						data := datamodels.ResJSONParts{
-							TotalNumberParts:      num,
-							GivenSizePart:         maxChunkSize,
-							NumberTransmittedPart: i + 1,
-						}
 
-						if i == 0 {
-							data.TransmittedData = listMsgRes[:max]
-						} else if i == num-1 {
-							data.TransmittedData = listMsgRes[min:]
-						} else {
-							data.TransmittedData = listMsgRes[min:max]
-						}
-
-						min = min + maxChunkSize
-						max = max + maxChunkSize
-
-						msgRes.AdditionalParameters = data
+					if i == 0 {
+						data.TransmittedData = listMsgRes[:max]
+					} else if i == num-1 {
+						data.TransmittedData = listMsgRes[min:]
+					} else {
+						data.TransmittedData = listMsgRes[min:max]
 					}
+
+					min = min + maxChunkSize
+					max = max + maxChunkSize
+
+					msgRes.AdditionalParameters = data
 				}
-
-			case "list_computer_threat":
-				ad, ok := result.Information.(struct {
-					TypeList string                                                 `json:"type_list"`
-					List     map[string]datamodels.StorageApplicationCommonListType `json:"list"`
-				})
-				if !ok {
-					return fmt.Errorf("type conversion error, line 280")
-				}
-
-				msgRes.AdditionalParameters = ad
-
-			case "found_info_list_computer_threat":
-				list, ok := result.Information.([]datamodels.ShortDescriptionElementGroupingComputerThreat)
-				if !ok {
-					return fmt.Errorf("type conversion error, line 291")
-				}
-
-				fmt.Printf("func 'handlingSearchRequestsSTIXObject', found_info_list_computer_threat: '%v'\n", list)
-
-				msgRes.AdditionalParameters = list
-
 			}
 		}
 
 		fmt.Printf("func 'handlingSearchRequestsSTIXObject', msg result: '%v'\n", msgRes)
 
-		msg, err := json.Marshal(msgRes)
-		if err != nil {
-			return err
-		}
+	} else if tp.CollectionName == "stix object list type grouping" && result.Collection == "stix_object_collection" {
+		switch result.ResultType {
+		case "list_computer_threat":
+			list, ok := result.Information.(struct {
+				TypeList string                                                 `json:"type_list"`
+				List     map[string]datamodels.StorageApplicationCommonListType `json:"list"`
+			})
+			if !ok {
+				return fmt.Errorf("type conversion error, line 280")
+			}
 
-		chanResModAPI <- datamodels.ModuleReguestProcessingChannel{
-			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
-				ModuleGeneratorMessage: "module core application",
-				ModuleReceiverMessage:  "module api request processing",
-			},
-			ClientID: ti.ClientID,
-			DataType: 1,
-			Data:     &msg,
-		}
-	} else if tp.CollectionName == "stix object list type grouping" {
-		//делаем запрос к временному хранилищу информации
-		result, err := tst.GetFoundInformationByID(data.AppTaskID)
+			msgRes.AdditionalParameters = list
 
-		fmt.Printf("func 'handlingSearchRequestsSTIXObject', collection name 'stix object list type grouping' temporary status task: '%v'\n", result)
+		case "found_info_list_computer_threat":
+			list, ok := result.Information.([]datamodels.ShortDescriptionElementGroupingComputerThreat)
+			if !ok {
+				return fmt.Errorf("type conversion error, line 291")
+			}
 
-		if err != nil {
+			//fmt.Printf("func 'handlingSearchRequestsSTIXObject', found_info_list_computer_threat: '%v'\n", list)
 
-			fmt.Printf("func 'handlingSearchRequestsSTIXObject', ERROR -123: '%v'\n", err)
+			msgRes.AdditionalParameters = list
 
-			return err
-		}
-
-		_, di, err := tst.GetTaskByID(data.AppTaskID)
-
-		fmt.Printf("func 'handlingSearchRequestsSTIXObject', collection name 'stix object list type grouping' temporary status detail task: '%v'\n", di)
-
-		if err != nil {
-
-			fmt.Printf("func 'handlingSearchRequestsSTIXObject', ERROR -234: '%v'\n", err)
-
-			return err
-		}
-
-		msgRes := datamodels.ModAPIRequestProcessingResJSON{
-			ModAPIRequestProcessingCommonJSON: datamodels.ModAPIRequestProcessingCommonJSON{
-				TaskID:  di.ClientTaskID,
-				Section: data.Section,
-			},
-			IsSuccessful: true,
 		}
 
 		fmt.Printf("func 'handlingSearchRequestsSTIXObject', collection name 'stix object list type grouping' msgRes: '%v'\n", msgRes)
+	}
+
+	msg, err := json.Marshal(msgRes)
+	if err != nil {
+		return err
+	}
+
+	chanResModAPI <- datamodels.ModuleReguestProcessingChannel{
+		CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+			ModuleGeneratorMessage: "module core application",
+			ModuleReceiverMessage:  "module api request processing",
+		},
+		ClientID: ti.ClientID,
+		DataType: 1,
+		Data:     &msg,
 	}
 
 	return nil

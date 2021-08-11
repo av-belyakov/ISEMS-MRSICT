@@ -587,7 +587,8 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 					Section:     section,
 					TaskType:    taskType,
 					FinalResult: "задача отклонена",
-					Message:     "получено невалидное название коллекции в которой должен был быть выполнен поиск",
+					//Message:     "получено невалидное название коллекции в которой должен был быть выполнен поиск",
+					Message: fmt.Sprintf("получено невалидное название коллекции в которой должен был быть выполнен поиск, collection name: '%s'", l.CollectionName),
 				}),
 				C: clim.ChannelsModuleAPIRequestProcessing.InputModule,
 			}); err != nil {

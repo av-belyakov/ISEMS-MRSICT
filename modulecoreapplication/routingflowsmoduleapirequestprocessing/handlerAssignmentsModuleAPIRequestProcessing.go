@@ -463,6 +463,14 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 			return
 		}
 
+		// --- test
+		chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+			TypeMessage: "info",
+			Description: fmt.Sprint(l),
+			FuncName:    "UnmarshalJSONObjectReqSearchParameters",
+		}
+		// --- test
+
 		switch l.CollectionName {
 		case "stix object":
 			/*
@@ -588,7 +596,7 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 					TaskType:    taskType,
 					FinalResult: "задача отклонена",
 					//Message:     "получено невалидное название коллекции в которой должен был быть выполнен поиск",
-					Message: fmt.Sprintf("получено невалидное название коллекции в которой должен был быть выполнен поиск, collection name: '%s'", l.CollectionName),
+					Message: fmt.Sprintf("получено невалидное название коллекции в которой должен был быть выполнен поиск, collection name: (%s)", l.CollectionName),
 				}),
 				C: clim.ChannelsModuleAPIRequestProcessing.InputModule,
 			}); err != nil {

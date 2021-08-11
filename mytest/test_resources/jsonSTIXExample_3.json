@@ -18,7 +18,11 @@
             "object_refs": [
                 "campaign--ce88a5a8-69ff-4349-86da-ac59b35c5672",
                 "grouping--11ff0f44-1e8b-5607-ab36-ce89b1d11ce6"
-            ]
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "successfully implemented computer threat",
+                "computer_threat_type": "Malware"
+            }
         },
         {
             "type": "observed-data",

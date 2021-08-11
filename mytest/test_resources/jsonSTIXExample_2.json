@@ -20,7 +20,11 @@
                 "campaign--ce88a5a8-69ff-4349-86da-ac59b35c5672",
                 "grouping--23af0f32-2e61-4f00-7020-b378bdd3b201",
                 "grouping--11ff0f44-1e8b-5607-ab36-ce89b1d11ce6"
-            ]
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "unsuccessfully computer threat",
+                "computer_threat_type": "SSH BruteForce"
+            }
         },
         {
             "type": "relationship",

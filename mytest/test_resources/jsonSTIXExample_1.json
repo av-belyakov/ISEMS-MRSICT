@@ -20,7 +20,11 @@
                 "campaign--83422c77-904c-4dc1-aff5-5c38f3a189ef",
                 "grouping--911f0f43-1e7c-4f97-7070-a787bdd3b100",
                 "grouping--911f0f23-2e7c-4f07-9436-d6e7bdd3b236"
-            ]
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "unsuccessfully computer threat",
+                "computer_threat_type": "Telnet BruteForce"
+            }
         },
         {
             "type": "relationship",

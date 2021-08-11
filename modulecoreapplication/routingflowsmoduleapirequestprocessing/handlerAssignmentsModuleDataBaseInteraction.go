@@ -195,6 +195,14 @@ func handlingSearchRequestsSTIXObject(
 
 	fmt.Printf("func 'handlingSearchRequestsSTIXObject', task parametr: '%v'\n", tp)
 
+	/*
+	   &memorytemporarystoragecommoninformation.TemporaryStorageFoundInformation{
+	   			Collection:  "stix_object_collection",
+	   			ResultType:  "found_info_list_computer_threat",
+	   			Information: GetListGroupingComputerThreat(cur),
+	   		})
+	*/
+
 	//обрабатываем результаты опираясь на типы коллекций
 	if tp.CollectionName == "stix object" {
 		//делаем запрос к временному хранилищу информации
@@ -332,6 +340,39 @@ func handlingSearchRequestsSTIXObject(
 			DataType: 1,
 			Data:     &msg,
 		}
+	} else if tp.CollectionName == "stix object list type grouping" {
+		//делаем запрос к временному хранилищу информации
+		result, err := tst.GetFoundInformationByID(data.AppTaskID)
+
+		fmt.Printf("func 'handlingSearchRequestsSTIXObject', collection name 'stix object list type grouping' temporary status task: '%v'\n", result)
+
+		if err != nil {
+
+			fmt.Printf("func 'handlingSearchRequestsSTIXObject', ERROR -123: '%v'\n", err)
+
+			return err
+		}
+
+		_, di, err := tst.GetTaskByID(data.AppTaskID)
+
+		fmt.Printf("func 'handlingSearchRequestsSTIXObject', collection name 'stix object list type grouping' temporary status detail task: '%v'\n", di)
+
+		if err != nil {
+
+			fmt.Printf("func 'handlingSearchRequestsSTIXObject', ERROR -234: '%v'\n", err)
+
+			return err
+		}
+
+		msgRes := datamodels.ModAPIRequestProcessingResJSON{
+			ModAPIRequestProcessingCommonJSON: datamodels.ModAPIRequestProcessingCommonJSON{
+				TaskID:  di.ClientTaskID,
+				Section: data.Section,
+			},
+			IsSuccessful: true,
+		}
+
+		fmt.Printf("func 'handlingSearchRequestsSTIXObject', collection name 'stix object list type grouping' msgRes: '%v'\n", msgRes)
 	}
 
 	return nil

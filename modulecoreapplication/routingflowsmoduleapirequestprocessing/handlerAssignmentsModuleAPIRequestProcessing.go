@@ -14,7 +14,7 @@ import (
 )
 
 //HandlerAssigmentsModuleAPIRequestProcessing является обработчиком приходящих JSON сообщений
-func HandlerAssigmentsModuleAPIRequestProcessing(
+func HandlerAssignmentsModuleAPIRequestProcessing(
 	chanSaveLog chan<- modulelogginginformationerrors.LogMessageType,
 	data *datamodels.ModuleReguestProcessingChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
@@ -658,6 +658,12 @@ func HandlerAssigmentsModuleAPIRequestProcessing(
 			Section:   "handling search requests",
 			AppTaskID: appTaskID,
 		}
+
+	case "handling statistical requests":
+
+		/* *** обработчик JSON сообщений со статистическими запросами *** */
+
+		handlingStatisticalRequests(chanSaveLog, data, tst, commonMsgReq, clim)
 
 	case "handling reference book":
 

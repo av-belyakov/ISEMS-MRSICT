@@ -12,16 +12,18 @@ import (
 	"ISEMS-MRSICT/modulelogginginformationerrors"
 )
 
-func HandlerAssigmentsModuleDataBaseInteraction(
+func HandlerAssignmentsModuleDataBaseInteraction(
 	chanSaveLog chan<- modulelogginginformationerrors.LogMessageType,
 	data *datamodels.ModuleDataBaseInteractionChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
 	clim *moddatamodels.ChannelsListInteractingModules) {
 
 	var (
-		err                       error
-		ti                        *memorytemporarystoragecommoninformation.TemporaryStorageTaskInDetailType
-		section, taskType, taskID string
+		err      error
+		ti       *memorytemporarystoragecommoninformation.TemporaryStorageTaskInDetailType
+		section  string = "не определена"
+		taskType string = "не определен"
+		taskID   string
 	)
 
 	if data.Section == "handling stix object" {
@@ -33,9 +35,9 @@ func HandlerAssigmentsModuleDataBaseInteraction(
 	} else if data.Section == "handling reference book" {
 		section = "обработка справочной информации"
 		taskType = "добавление или обновление справочной информации"
-	} else {
-		section = "не определена"
-		taskType = "не определен"
+	} else if data.Section == "handling statistical requests" {
+		section = "обработка статистического запроса"
+		taskType = "статистика по структурированным данным"
 	}
 
 	//получаем всю информацию о задаче
@@ -164,8 +166,10 @@ func handlerDataBaseResponse(
 			return err
 		}
 
-	case "":
-		//пока заглушка, будет использоватся для обработки ответов от БД не связанных с секцией 'handling search requests'
+	case "handling statistical requests":
+		fmt.Println("_______________________________________________________________________")
+		fmt.Printf("func 'handlerDataBaseResponse', Section: '%s', ЗДЕСЬ НУЖНО СДЕЛАТЬ ОБРАБОТКУ СТАТИСТИЧЕСКОЙ ИНФОРМАЦИИ ИЗ БД\n", data.Section)
+		fmt.Println("=======================================================================")
 	}
 
 	//удаляем задачу и результаты поиска информации, если они есть

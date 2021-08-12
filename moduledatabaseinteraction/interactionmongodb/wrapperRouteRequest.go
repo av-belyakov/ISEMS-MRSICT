@@ -29,7 +29,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 
 	var (
 		err error
-		fn  = commonlibs.GetFuncName() //"wrapperFuncTypeHandlingSTIXObject"
+		fn  = commonlibs.GetFuncName()
 		qp  = QueryParameters{
 			NameDB:         ws.NameDB,
 			CollectionName: "stix_object_collection",
@@ -436,23 +436,6 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 	}
 }
 
-//switchMSGType - функция заполняющая одно из информационных полей cообщения
-// распознавая тип объекта передаваемого в нее
-func switchMSGType(msg *datamodels.ModuleDataBaseInteractionChannel, m interface{}) bool {
-	msg.ErrorMessage = datamodels.ErrorDataTypePassedThroughChannels{}
-	msg.InformationMessage = datamodels.InformationDataTypePassedThroughChannels{}
-	switch m.(type) {
-	case datamodels.ErrorDataTypePassedThroughChannels:
-		msg.ErrorMessage = m.(datamodels.ErrorDataTypePassedThroughChannels)
-		return true
-	case datamodels.InformationDataTypePassedThroughChannels:
-		msg.InformationMessage = m.(datamodels.InformationDataTypePassedThroughChannels)
-		return true
-	default:
-		return false
-	}
-}
-
 //wrapperFuncTypeTechnicalPart набор обработчиков для осуществления задач, связанных с технической частью приложения: формирование документов БД
 // связанных с хранением технической информации или документов, учавствующих в посторении иерархии объектов типа STIX. Запись идентификаторов таких
 // объектов во временное хранилище и т.д.
@@ -519,6 +502,106 @@ func (ws *wrappersSetting) wrapperFuncTypeTechnicalPart(
 			//добавляем список ID во временное хранилище
 			tst.SetListComputerThreat(listID)
 		}()
+	}
+}
+
+//wrapperFuncTypeHandlingStatisticalRequests набор обработчиков для обработки статистических запросов
+func (ws *wrappersSetting) wrapperFuncTypeHandlingStatisticalRequests(
+	chanOutput chan<- datamodels.ModuleDataBaseInteractionChannel,
+	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) {
+	var (
+		err error
+		fn  = commonlibs.GetFuncName()
+		qp  = QueryParameters{
+			NameDB:         ws.NameDB,
+			CollectionName: "stix_object_collection",
+			ConnectDB:      ws.ConnectionDB.Connection,
+		}
+	)
+
+	errorMessage.ErrorMessage.FuncName = fn
+	errorMessage.Section = "handling statistical requests"
+	errorMessage.AppTaskID = ws.DataRequest.AppTaskID
+
+	//получаем всю информацию о выполняемой задаче из временного хранилища задач
+	_, taskInfo, err := tst.GetTaskByID(ws.DataRequest.AppTaskID)
+	if err != nil {
+		errorMessage.ErrorMessage.Error = err
+		chanOutput <- errorMessage
+
+		return
+	}
+
+	tp, ok := taskInfo.TaskParameters.(struct {
+		CollectionName             string `json:"collection_name"`
+		TypeStatisticalInformation string `json:"type_statistical_information"`
+	})
+	if !ok {
+		errorMessage.ErrorMessage.Error = fmt.Errorf("type conversion error")
+		chanOutput <- errorMessage
+
+		return
+	}
+
+	//изменяем время модификации информации о задаче
+	_ = tst.ChangeDateTaskModification(ws.DataRequest.AppTaskID)
+
+	//изменяем статус выполняемой задачи на 'in progress'
+	if err := tst.ChangeTaskStatus(ws.DataRequest.AppTaskID, "in progress"); err != nil {
+		errorMessage.ErrorMessage.Error = err
+		chanOutput <- errorMessage
+
+		return
+	}
+
+	switch tp.CollectionName {
+	case "stix object":
+		if fn, err := statisticalInformationSTIXObject(
+			struct {
+				appTaskID                  string
+				qp                         QueryParameters
+				tst                        *memorytemporarystoragecommoninformation.TemporaryStorageType
+				TypeStatisticalInformation string
+			}{
+				ws.DataRequest.AppTaskID,
+				qp,
+				tst,
+				tp.TypeStatisticalInformation,
+			}); err != nil {
+			errorMessage.ErrorMessage.FuncName = fn
+			errorMessage.ErrorMessage.Error = err
+			chanOutput <- errorMessage
+
+			return
+		}
+
+	case "":
+
+	default:
+		errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = fmt.Errorf("the name '%s' of the database collection is not defined", tp.CollectionName)
+		chanOutput <- errorMessage
+
+		return
+	}
+
+	_ = tst.ChangeDateTaskModification(ws.DataRequest.AppTaskID)
+
+	//изменяем состояние задачи на 'completed'
+	if err := tst.ChangeTaskStatus(ws.DataRequest.AppTaskID, "completed"); err != nil {
+		errorMessage.ErrorMessage.Error = err
+		chanOutput <- errorMessage
+
+		return
+	}
+
+	//отправляем в канал идентификатор задачи и специальные параметры которые информируют что задача была выполненна
+	chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
+		CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+			ModuleGeneratorMessage: "module database interaction",
+			ModuleReceiverMessage:  "module core application",
+		},
+		Section:   "handling statistical requests",
+		AppTaskID: ws.DataRequest.AppTaskID,
 	}
 }
 

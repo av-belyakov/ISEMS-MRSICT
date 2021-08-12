@@ -22,10 +22,10 @@ func RoutingCoreApp(
 	for {
 		select {
 		case data := <-clim.ChannelsModuleDataBaseInteraction.ChannelsMongoDB.OutputModule:
-			go routingflowsmoduleapirequestprocessing.HandlerAssigmentsModuleDataBaseInteraction(chanSaveLog, &data, tst, clim)
+			go routingflowsmoduleapirequestprocessing.HandlerAssignmentsModuleDataBaseInteraction(chanSaveLog, &data, tst, clim)
 
 		case data := <-clim.ChannelsModuleAPIRequestProcessing.OutputModule:
-			go routingflowsmoduleapirequestprocessing.HandlerAssigmentsModuleAPIRequestProcessing(chanSaveLog, &data, tst, clim)
+			go routingflowsmoduleapirequestprocessing.HandlerAssignmentsModuleAPIRequestProcessing(chanSaveLog, &data, tst, clim)
 		}
 	}
 }

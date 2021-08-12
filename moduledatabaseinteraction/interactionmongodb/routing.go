@@ -44,6 +44,9 @@ func Routing(
 		case "handling technical part":
 			go ws.wrapperFuncTypeTechnicalPart(chanOutput, tst)
 
+		case "handling statistical requests":
+			go ws.wrapperFuncTypeHandlingStatisticalRequests(chanOutput, tst)
+
 		}
 	}
 }

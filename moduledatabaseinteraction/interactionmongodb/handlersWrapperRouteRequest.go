@@ -3,11 +3,11 @@ package interactionmongodb
 import (
 	"fmt"
 
+	"go.mongodb.org/mongo-driver/bson"
+
 	"ISEMS-MRSICT/commonlibs"
 	"ISEMS-MRSICT/datamodels"
 	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
-
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 //searchSTIXObject обработчик поисковых запросов, связанных с поиском, по заданным параметрам, STIX объектов
@@ -90,8 +90,8 @@ func searchSTIXObject(
 	return fn, nil
 }
 
-//searchListComputerThreat обработчик запроса, на получения списка id объектов типа 'grouping', с их описанием, относящихся к типам "types decisions
-// made computer threat" или "types computer threat"
+//searchListComputerThreat обработчик запроса, на получения списка "types decisions made computer threat" или "types computer threat"
+// с id и описанием пунктов списка
 func searchListComputerThreat(appTaskID string,
 	qp QueryParameters,
 	taskInfo datamodels.ModAPIRequestProcessingResJSONSearchReqType,
@@ -141,6 +141,75 @@ func searchListComputerThreat(appTaskID string,
 			},
 		}); err != nil {
 		return fn, err
+	}
+
+	return fn, nil
+}
+
+//statisticalInformationSTIXObject обработчик поиска статистической информации о STIX объектах
+func statisticalInformationSTIXObject(
+	parameters struct {
+		appTaskID                  string
+		qp                         QueryParameters
+		tst                        *memorytemporarystoragecommoninformation.TemporaryStorageType
+		TypeStatisticalInformation string
+	}) (string, error) {
+
+	fmt.Println("func 'statisticalInformationSTIXObject', START...")
+	fmt.Println(parameters)
+
+	var (
+		//			err error
+		fn string = commonlibs.GetFuncName()
+	)
+	/*
+		collection := parameters.qp.ConnectDB.Database(parameters.qp.NameDB).Collection(parameters.qp.CollectionName)
+		options := options.Find().SetAllowDiskUse(true).SetSort(bson.D{{Key: "_id", Value: -1}})
+
+		collection.Find(context.TODO(), bson.D{{}}, options)
+	*/
+
+	/*
+				!!!!
+		   Поиск статестической информации в БД по тестам прошел успешно
+		   теперь весь необходимый код надо перенести сюда
+				!!!!
+	*/
+
+	switch parameters.TypeStatisticalInformation {
+	case "types decisions made computer threat":
+		//типы принимаемых решений по компьютерным угрозам
+
+		/*
+				//сохраняем найденные значения во временном хранилище
+			err = tst.AddNewFoundInformation(
+				appTaskID,
+				&memorytemporarystoragecommoninformation.TemporaryStorageFoundInformation{
+					Collection:  "stix_object_collection",
+					ResultType:  "full_found_info",
+					Information: GetListElementSTIXObject(cur),
+				})
+			if err != nil {
+				return fn, err
+			}
+		*/
+
+	case "types computer threat":
+		//типы компьютерных угроз
+
+		/*
+				//сохраняем найденные значения во временном хранилище
+			err = tst.AddNewFoundInformation(
+				appTaskID,
+				&memorytemporarystoragecommoninformation.TemporaryStorageFoundInformation{
+					Collection:  "stix_object_collection",
+					ResultType:  "full_found_info",
+					Information: GetListElementSTIXObject(cur),
+				})
+			if err != nil {
+				return fn, err
+			}
+		*/
 	}
 
 	return fn, nil

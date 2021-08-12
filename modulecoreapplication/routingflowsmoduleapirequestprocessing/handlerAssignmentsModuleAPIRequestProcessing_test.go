@@ -82,7 +82,7 @@ var _ = Describe("Тестирование HandlerAssigmentsModuleAPIRequestProc
 	assertionCheckChanel()
 	Describe("Тестирование прохождения API запросов через секцию handling reference book", func() {
 		Context("Тест: обработка валидных запросов", func() {
-			go routingflowsmoduleapirequestprocessing.HandlerAssigmentsModuleAPIRequestProcessing(chanSaveLog, TestData["TestGoodRBook"], tst, clim)
+			go routingflowsmoduleapirequestprocessing.HandlerAssignmentsModuleAPIRequestProcessing(chanSaveLog, TestData["TestGoodRBook"], tst, clim)
 			assertionGoodBehavior()
 		})
 		//Context("Тест: обработка не валидных запросов", func() {

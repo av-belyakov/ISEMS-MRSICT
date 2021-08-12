@@ -10,6 +10,8 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"ISEMS-MRSICT/datamodels"
 	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
@@ -81,7 +83,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 			}))
 
 			Expect(err).ShouldNot(HaveOccurred())
-			Expect(sizeElem).Should(Equal(int64(47)))
+			Expect(sizeElem).Should(Equal(int64(46)))
 		})
 
 		It("Поиск ТОЛЬКО по времени создания STIX объекта, должно быть найдено определенное количество объектов", func() {
@@ -104,7 +106,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 			sizeElem, err := qp.CountDocuments(interactionmongodb.CreateSearchQueriesSTIXObject(&qrotc))
 
 			Expect(err).ShouldNot(HaveOccurred())
-			Expect(sizeElem).Should(Equal(int64(23)))
+			Expect(sizeElem).Should(Equal(int64(22)))
 
 			cur, errfl := qp.FindAllWithLimit(interactionmongodb.CreateSearchQueriesSTIXObject(&qrotc), &interactionmongodb.FindAllWithLimitOptions{
 				Offset:        1,
@@ -120,7 +122,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 			}*/
 
 			Expect(errfl).ShouldNot(HaveOccurred())
-			Expect(int64(len(elemSTIXObj))).Should(Equal(int64(23)))
+			Expect(int64(len(elemSTIXObj))).Should(Equal(int64(22)))
 		})
 
 		It("Поиск ТОЛЬКО по времени модификации STIX объекта, должно быть найдено определенное количество объектов", func() {
@@ -178,7 +180,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 			sizeElem, err := qp.CountDocuments(interactionmongodb.CreateSearchQueriesSTIXObject(&qrotc))
 
 			Expect(err).ShouldNot(HaveOccurred())
-			Expect(sizeElem).Should(Equal(int64(24)))
+			Expect(sizeElem).Should(Equal(int64(23)))
 		})
 
 		It("Поиск по времени модификации STIX объекта и его типу, должно быть найдено определенное количество объектов", func() {
@@ -307,7 +309,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 				}},
 			})*/
 
-			fmt.Printf("_________||||| %v |||||________\n", sr)
+			//fmt.Printf("_________||||| %v |||||________\n", sr)
 
 			cur, err := qp.FindAllWithLimit(
 				sr,
@@ -333,7 +335,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 	})
 
 	Context("Тест 4. Формируем поисковые запросы с сортировкой и с выборкой по определенным полям", func() {
-		It("В результате поиска по типу документов должно быть найдено 47 документов и отсортировано по полю 'commonpropertiesdomainobjectstix.created'", func() {
+		It("В результате поиска по типу документов, отсортировка по полю 'commonpropertiesdomainobjectstix.created'", func() {
 			cur, err := qp.FindAllWithLimit(
 				interactionmongodb.CreateSearchQueriesSTIXObject(&datamodels.SearchThroughCollectionSTIXObjectsType{
 					DocumentsType: []string{"grouping", "location", "report", "malware", "attack-pattern"},
@@ -361,7 +363,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 			   а для STIX CO 'file' поле 'optionalcommonpropertiescyberobservableobjectstix'
 			*/
 
-			Expect(len(elemSTIXObj)).Should(Equal(50))
+			Expect(len(elemSTIXObj)).Should(Equal(49))
 		})
 	})
 
@@ -390,11 +392,10 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 				Expect(tempStorage.SetListDecisionsMade(listID)).ShouldNot(HaveOccurred())
 
-				ldm, errldm := tempStorage.GetListDecisionsMade()
+				//ldm, errldm := tempStorage.GetListDecisionsMade()
+				//fmt.Printf("-= ListDecisionsMade: (%v)=-", ldm)
 
-				fmt.Printf("-= ListDecisionsMade: (%v)=-", ldm)
-
-				Expect(errldm).ShouldNot(HaveOccurred())
+				//Expect(errldm).ShouldNot(HaveOccurred())
 				Expect(err).ShouldNot(HaveOccurred())
 				Expect(len(listID)).Should(Equal(3))
 
@@ -407,25 +408,25 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 	Context("Тест 6. Тестируем получение ID решений к компьютерным угрозам", func() {
 		It("Должен быть получен ID типа 'successfully implemented computer threat'", func() {
-			id, err := tempStorage.GetIDDecisionsMadeSuccessfully()
+			_, err := tempStorage.GetIDDecisionsMadeSuccessfully()
 
-			fmt.Printf("\tTYPE: 'successfully implemented computer threat' = %s\n", id)
+			//fmt.Printf("\tTYPE: 'successfully implemented computer threat' = %s\n", id)
 
 			Expect(err).ShouldNot(HaveOccurred())
 		})
 
 		It("Должен быть получен ID типа 'unsuccessfully computer threat'", func() {
-			id, err := tempStorage.GetIDDecisionsMadeUnsuccessfully()
+			_, err := tempStorage.GetIDDecisionsMadeUnsuccessfully()
 
-			fmt.Printf("\tTYPE: 'unsuccessfully computer threat' = %s\n", id)
+			//fmt.Printf("\tTYPE: 'unsuccessfully computer threat' = %s\n", id)
 
 			Expect(err).ShouldNot(HaveOccurred())
 		})
 
 		It("Должен быть получен ID типа 'false positive'", func() {
-			id, err := tempStorage.GetIDDecisionsMadeFalsePositive()
+			_, err := tempStorage.GetIDDecisionsMadeFalsePositive()
 
-			fmt.Printf("\tTYPE: 'false positive' = %s\n", id)
+			//fmt.Printf("\tTYPE: 'false positive' = %s\n", id)
 
 			Expect(err).ShouldNot(HaveOccurred())
 		})
@@ -455,10 +456,9 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 			Expect(tempStorage.SetListComputerThreat(listID)).ShouldNot(HaveOccurred())
 
 			//ldm, errldm := tempStorage.GetListComputerThreat()
-
 			//fmt.Printf("-= ComputerThreat: (%v)=-", ldm)
-
 			//Expect(errldm).ShouldNot(HaveOccurred())
+
 			Expect(err).ShouldNot(HaveOccurred())
 			Expect(len(listID)).Should(Equal(35))
 		})
@@ -480,7 +480,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 			elemSTIXObj := interactionmongodb.GetListElementSTIXObject(cur)
 
-			fmt.Printf("Должен быть получен список из 1 элемента типа 'report', поле 'published' которого содержит пустое значение: '%v'\n", *elemSTIXObj[0])
+			//fmt.Printf("Должен быть получен список из 1 элемента типа 'report', поле 'published' которого содержит пустое значение: '%v'\n", *elemSTIXObj[0])
 
 			Expect(len(elemSTIXObj)).Should(Equal(1))
 		})
@@ -503,7 +503,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 			elemSTIXObj := interactionmongodb.GetListElementSTIXObject(cur)
 
-			fmt.Printf("Должен быть получен список из 1 элемента типа 'report', с заполненным полем 'published': '%v'\n", *elemSTIXObj[0])
+			//fmt.Printf("Должен быть получен список из 1 элемента типа 'report', с заполненным полем 'published': '%v'\n", *elemSTIXObj[0])
 
 			Expect(len(elemSTIXObj)).Should(Equal(2))
 		})
@@ -536,12 +536,12 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 				}
 			}
 
-			fmt.Println("____ COUNT ELEMENT TYPES____")
+			/*fmt.Println("____ COUNT ELEMENT TYPES____")
 			for k, v := range listType {
 				fmt.Printf("Element type: '%s' = %d\n", k, v)
-			}
+			}*/
 
-			Expect(len(elemSTIXObj)).Should(Equal(47))
+			Expect(len(elemSTIXObj)).Should(Equal(46))
 		})
 
 		It("Должен быть получен STIX объект типа 'grouping' с заданным именем в поле Name", func() {
@@ -559,7 +559,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 			elemSTIXObj := interactionmongodb.GetListElementSTIXObject(cur)
 
-			fmt.Printf("STIX DO type 'grouping': '%v'\n", *elemSTIXObj[0])
+			//fmt.Printf("STIX DO type 'grouping': '%v'\n", *elemSTIXObj[0])
 
 			Expect(len(elemSTIXObj)).Should(Equal(1))
 		})
@@ -592,7 +592,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 				}
 			*/
 
-			Expect(len(elemSTIXObj)).Should(Equal(2))
+			Expect(len(elemSTIXObj)).Should(Equal(1))
 		})
 
 		It("Должен быть найден STIX объект с заданным содержимым нестандартного поля outside_specification.decisions_made_computer_threat", func() {
@@ -620,7 +620,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 				}
 			*/
 
-			Expect(len(elemSTIXObj)).Should(Equal(3))
+			Expect(len(elemSTIXObj)).Should(Equal(1))
 		})
 
 		It("Должен быть найден STIX объект с заданным содержимым нестандартного поля outside_specification.decisions_made_computer_threat и outside_specification.decisions_made_computer_threat", func() {
@@ -648,7 +648,73 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 				}
 			*/
 
-			Expect(len(elemSTIXObj)).Should(Equal(3))
+			Expect(len(elemSTIXObj)).Should(Equal(1))
+		})
+	})
+
+	Context("Тест 10. Поиск по типу 'report' STIX объектов и нестандартным полям типов и статусов компьютерных угроз", func() {
+		It("Должно быть получена статистическая информация о статусах компьютерных атак", func() {
+			collection := qp.ConnectDB.Database(qp.NameDB).Collection(qp.CollectionName)
+			opts := options.Aggregate().SetAllowDiskUse(true).SetMaxTime(2 * time.Second)
+
+			cur, err := collection.Aggregate(
+				context.TODO(),
+				mongo.Pipeline{
+					bson.D{bson.E{Key: "$match", Value: bson.D{
+						bson.E{Key: "commonpropertiesobjectstix.type", Value: "report"},
+					}}},
+					bson.D{
+						bson.E{Key: "$group", Value: bson.D{
+							bson.E{Key: "_id", Value: "$outside_specification.decisions_made_computer_threat"},
+							bson.E{Key: "count", Value: bson.D{
+								bson.E{Key: "$sum", Value: 1},
+							}},
+						}}}},
+				opts)
+
+			Expect(err).ShouldNot(HaveOccurred())
+
+			var results []bson.M
+			err = cur.All(context.TODO(), &results)
+
+			fmt.Printf("||| RESULT (decisions_made_computer_threat) |||\n'%v'\n", results)
+			for k, v := range results {
+				fmt.Printf("%d. ID:%s, Count:%v\n", k+1, v["_id"], v["count"])
+			}
+
+			Expect(err).ShouldNot(HaveOccurred())
+		})
+
+		It("Должно быть получена информация о типах компьютерных атак", func() {
+			collection := qp.ConnectDB.Database(qp.NameDB).Collection(qp.CollectionName)
+			opts := options.Aggregate().SetAllowDiskUse(true).SetMaxTime(2 * time.Second)
+
+			cur, err := collection.Aggregate(
+				context.TODO(),
+				mongo.Pipeline{
+					bson.D{bson.E{Key: "$match", Value: bson.D{
+						bson.E{Key: "commonpropertiesobjectstix.type", Value: "report"},
+					}}},
+					bson.D{
+						bson.E{Key: "$group", Value: bson.D{
+							bson.E{Key: "_id", Value: "$outside_specification.computer_threat_type"},
+							bson.E{Key: "count", Value: bson.D{
+								bson.E{Key: "$sum", Value: 1},
+							}},
+						}}}},
+				opts)
+
+			Expect(err).ShouldNot(HaveOccurred())
+
+			var results []bson.M
+			err = cur.All(context.TODO(), &results)
+
+			fmt.Printf("||| RESULT (computer_threat_type) |||\n'%v'\n", results)
+			for k, v := range results {
+				fmt.Printf("%d. ID:%s, Count:%v\n", k+1, v["_id"], v["count"])
+			}
+
+			Expect(err).ShouldNot(HaveOccurred())
 		})
 	})
 })

@@ -1206,3 +1206,20 @@ func DeleteOldRelationshipSTIXObject(qp QueryParameters, l []*datamodels.Element
 
 	return nil
 }
+
+//switchMSGType - функция заполняющая одно из информационных полей cообщения
+// распознавая тип объекта передаваемого в нее
+func switchMSGType(msg *datamodels.ModuleDataBaseInteractionChannel, m interface{}) bool {
+	msg.ErrorMessage = datamodels.ErrorDataTypePassedThroughChannels{}
+	msg.InformationMessage = datamodels.InformationDataTypePassedThroughChannels{}
+	switch m.(type) {
+	case datamodels.ErrorDataTypePassedThroughChannels:
+		msg.ErrorMessage = m.(datamodels.ErrorDataTypePassedThroughChannels)
+		return true
+	case datamodels.InformationDataTypePassedThroughChannels:
+		msg.InformationMessage = m.(datamodels.InformationDataTypePassedThroughChannels)
+		return true
+	default:
+		return false
+	}
+}

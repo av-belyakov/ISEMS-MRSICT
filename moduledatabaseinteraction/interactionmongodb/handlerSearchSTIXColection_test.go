@@ -684,12 +684,18 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 					fmt.Println("Convert 'Name' ERROR")
 				}
 
-				/*count, ok := v["count"].(uint64)
+				count, ok := v["count"].(int32)
 				if !ok {
 					fmt.Println("Convert 'Count' ERROR")
-				}*/
+				}
 
-				fmt.Printf("%d. Name:%s, Count:%s\n", k+1, name, fmt.Sprintln(v["count"]))
+				/*count := v["count"]
+
+				newValue := reflect.ValueOf(count)
+				typeOfNewValue := newValue.Type()
+				fmt.Println(typeOfNewValue)*/
+
+				fmt.Printf("%d. Name:%s, Count:%s\n", k+1, name, fmt.Sprintln(count))
 			}
 
 			Expect(err).ShouldNot(HaveOccurred())

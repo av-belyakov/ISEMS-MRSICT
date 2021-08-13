@@ -153,8 +153,8 @@ func searchListComputerThreat(appTaskID string,
 // InformationType - тип статистической информации
 // ListComputerThreat - список статистической информации по компьютерным угрозам
 type ResultStatisticalInformationSTIXObject struct {
-	InformationType    string            `json:"information_type"`
-	ListComputerThreat map[string]string `json:"list_computer_threat"`
+	InformationType    string           `json:"information_type"`
+	ListComputerThreat map[string]int32 `json:"list_computer_threat"`
 }
 
 //statisticalInformationSTIXObject обработчик поиска статистической информации о STIX объектах
@@ -176,7 +176,7 @@ func statisticalInformationSTIXObject(
 		outsideSpecificationField = "decisions_made_computer_threat"
 		rsiSTIXObject             = ResultStatisticalInformationSTIXObject{
 			InformationType:    "decisions_made_computer_threat",
-			ListComputerThreat: map[string]string{},
+			ListComputerThreat: map[string]int32{},
 		}
 	)
 
@@ -211,7 +211,9 @@ func statisticalInformationSTIXObject(
 	}
 
 	for _, v := range tmpResults {
-		rsiSTIXObject.ListComputerThreat[fmt.Sprintln(v["_id"])] = fmt.Sprintln(v["count"])
+		if count, ok := v["count"].(int32); ok {
+			rsiSTIXObject.ListComputerThreat[fmt.Sprintln(v["_id"])] = count
+		}
 	}
 
 	fmt.Printf("func 'statisticalInformationSTIXObject', \n --== ResultStatisticalInformationSTIXObject ==--\n%v\n", rsiSTIXObject)

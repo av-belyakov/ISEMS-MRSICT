@@ -399,14 +399,16 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 			return
 		}
 
-	case "stix object list type grouping":
-		if fn, err := searchSTIXObjectListTypeGrouping(ws.DataRequest.AppTaskID, qp, psr, tst); err != nil {
-			errorMessage.ErrorMessage.FuncName = fn
-			errorMessage.ErrorMessage.Error = err
-			chanOutput <- errorMessage
+	/*
+		case "stix object list type grouping":
+			if fn, err := searchSTIXObjectListTypeGrouping(ws.DataRequest.AppTaskID, qp, psr, tst); err != nil {
+				errorMessage.ErrorMessage.FuncName = fn
+				errorMessage.ErrorMessage.Error = err
+				chanOutput <- errorMessage
 
-			return
-		}
+				return
+			}
+	*/
 
 	default:
 		errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = fmt.Errorf("the name '%s' of the database collection is not defined", psr.CollectionName)

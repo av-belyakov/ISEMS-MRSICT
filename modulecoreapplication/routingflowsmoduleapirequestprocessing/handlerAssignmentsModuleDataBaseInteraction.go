@@ -9,6 +9,7 @@ import (
 	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
 	"ISEMS-MRSICT/moduleapirequestprocessing/auxiliaryfunctions"
 	moddatamodels "ISEMS-MRSICT/modulecoreapplication/datamodels"
+	"ISEMS-MRSICT/moduledatabaseinteraction/interactionmongodb"
 	"ISEMS-MRSICT/modulelogginginformationerrors"
 )
 
@@ -167,9 +168,10 @@ func handlerDataBaseResponse(
 		}
 
 	case "handling statistical requests":
-		fmt.Println("_______________________________________________________________________")
-		fmt.Printf("func 'handlerDataBaseResponse', Section: '%s', ЗДЕСЬ НУЖНО СДЕЛАТЬ ОБРАБОТКУ СТАТИСТИЧЕСКОЙ ИНФОРМАЦИИ ИЗ БД\n", data.Section)
-		fmt.Println("=======================================================================")
+		if err := handlingStatisticalRequestsSTIXObject(chanResModAPI, data, tst, ti); err != nil {
+			return err
+		}
+
 	}
 
 	//удаляем задачу и результаты поиска информации, если они есть
@@ -210,19 +212,9 @@ func handlingSearchRequestsSTIXObject(
 
 	fmt.Printf("func 'handlingSearchRequestsSTIXObject', collection name temporary INFORMATION: '%v'\n", result)
 
-	_, di, err := tst.GetTaskByID(data.AppTaskID)
-	if err != nil {
-
-		fmt.Printf("func 'handlingSearchRequestsSTIXObject', ERROR 222: '%v'\n", err)
-
-		return err
-	}
-
-	fmt.Printf("func 'handlingSearchRequestsSTIXObject', temporary DETAIL TASK: '%v'\n", di)
-
 	msgRes := datamodels.ModAPIRequestProcessingResJSON{
 		ModAPIRequestProcessingCommonJSON: datamodels.ModAPIRequestProcessingCommonJSON{
-			TaskID:  di.ClientTaskID,
+			TaskID:  ti.ClientTaskID,
 			Section: data.Section,
 		},
 		IsSuccessful: true,
@@ -288,7 +280,6 @@ func handlingSearchRequestsSTIXObject(
 
 					min = min + maxChunkSize
 					max = max + maxChunkSize
-
 					msgRes.AdditionalParameters = data
 				}
 			}
@@ -309,7 +300,7 @@ func handlingSearchRequestsSTIXObject(
 
 			msgRes.AdditionalParameters = list
 
-		case "found_info_list_computer_threat":
+			/*case "found_info_list_computer_threat":
 			list, ok := result.Information.([]datamodels.ShortDescriptionElementGroupingComputerThreat)
 			if !ok {
 				return fmt.Errorf("type conversion error, line 291")
@@ -317,12 +308,74 @@ func handlingSearchRequestsSTIXObject(
 
 			fmt.Printf("func 'handlingSearchRequestsSTIXObject', ---- list ShortDescriptionElementGroupingComputerThreat: '%v'\n", list)
 
-			msgRes.AdditionalParameters = list
+			msgRes.AdditionalParameters = list*/
 
 		}
 
 		fmt.Printf("func 'handlingSearchRequestsSTIXObject', collection name 'stix object list type grouping' msgRes: '%v'\n", msgRes)
 	}
+
+	msg, err := json.Marshal(msgRes)
+	if err != nil {
+		return err
+	}
+
+	chanResModAPI <- datamodels.ModuleReguestProcessingChannel{
+		CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+			ModuleGeneratorMessage: "module core application",
+			ModuleReceiverMessage:  "module api request processing",
+		},
+		ClientID: ti.ClientID,
+		DataType: 1,
+		Data:     &msg,
+	}
+
+	return nil
+}
+
+func handlingStatisticalRequestsSTIXObject(
+	chanResModAPI chan<- datamodels.ModuleReguestProcessingChannel,
+	data *datamodels.ModuleDataBaseInteractionChannel,
+	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
+	ti *memorytemporarystoragecommoninformation.TemporaryStorageTaskInDetailType) error {
+
+	fmt.Println("_______________________________________________________________________")
+	fmt.Printf("func 'handlingStatisticalRequestsSTIXObject', Section: '%s', ЗДЕСЬ НУЖНО СДЕЛАТЬ ОБРАБОТКУ СТАТИСТИЧЕСКОЙ ИНФОРМАЦИИ ИЗ БД\n", data.Section)
+	fmt.Println("=======================================================================")
+
+	if ti.TaskStatus != "completed" {
+		return nil
+	}
+
+	//делаем запрос к временному хранилищу информации
+	result, err := tst.GetFoundInformationByID(data.AppTaskID)
+	if err != nil {
+
+		fmt.Printf("func 'handlingStatisticalRequestsSTIXObject', ERROR -360: '%v'\n", err)
+
+		return err
+	}
+
+	fmt.Printf("func 'handlingStatisticalRequestsSTIXObject', collection name temporary INFORMATION: '%v'\n", result)
+
+	msgRes := datamodels.ModAPIRequestProcessingResJSON{
+		ModAPIRequestProcessingCommonJSON: datamodels.ModAPIRequestProcessingCommonJSON{
+			TaskID:  ti.ClientTaskID,
+			Section: data.Section,
+		},
+		IsSuccessful: true,
+	}
+
+	if result.ResultType == "handling_statistical_requests" {
+		info, ok := result.Information.(interactionmongodb.ResultStatisticalInformationSTIXObject)
+		if !ok {
+			return fmt.Errorf("type conversion error, line 371")
+		}
+
+		msgRes.AdditionalParameters = info
+	}
+
+	fmt.Printf("func 'handlingStatisticalRequestsSTIXObject', RESPONSE: '%v'\n", msgRes)
 
 	msg, err := json.Marshal(msgRes)
 	if err != nil {

@@ -679,7 +679,17 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 			fmt.Printf("||| RESULT (decisions_made_computer_threat) |||\n'%v'\n", results)
 			for k, v := range results {
-				fmt.Printf("%d. ID:%s, Count:%v\n", k+1, v["_id"], v["count"])
+				name, ok := v["_id"].(string)
+				if !ok {
+					fmt.Println("Convert 'Name' ERROR")
+				}
+
+				/*count, ok := v["count"].(uint64)
+				if !ok {
+					fmt.Println("Convert 'Count' ERROR")
+				}*/
+
+				fmt.Printf("%d. Name:%s, Count:%s\n", k+1, name, fmt.Sprintln(v["count"]))
 			}
 
 			Expect(err).ShouldNot(HaveOccurred())
@@ -687,7 +697,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 		It("Должно быть получена информация о типах компьютерных атак", func() {
 			collection := qp.ConnectDB.Database(qp.NameDB).Collection(qp.CollectionName)
-			opts := options.Aggregate().SetAllowDiskUse(true).SetMaxTime(2 * time.Second)
+			opts := options.Aggregate().SetAllowDiskUse(true) //.SetMaxTime(2 * time.Second)
 
 			cur, err := collection.Aggregate(
 				context.TODO(),

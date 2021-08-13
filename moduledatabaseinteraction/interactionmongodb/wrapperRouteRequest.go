@@ -391,6 +391,11 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 		}
 
 	case "get list computer threat":
+		/*
+			Думаю НУЖНо УДАЛИТЬ эту часть по поиску списков типов компьютерных угроз и типов решений о компьютерных угрозах
+			так как к поиску в БД это не имеет никакого отношения
+		*/
+
 		if fn, err := searchListComputerThreat(ws.DataRequest.AppTaskID, qp, psr, tst); err != nil {
 			errorMessage.ErrorMessage.FuncName = fn
 			errorMessage.ErrorMessage.Error = err
@@ -398,17 +403,6 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 
 			return
 		}
-
-	/*
-		case "stix object list type grouping":
-			if fn, err := searchSTIXObjectListTypeGrouping(ws.DataRequest.AppTaskID, qp, psr, tst); err != nil {
-				errorMessage.ErrorMessage.FuncName = fn
-				errorMessage.ErrorMessage.Error = err
-				chanOutput <- errorMessage
-
-				return
-			}
-	*/
 
 	default:
 		errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = fmt.Errorf("the name '%s' of the database collection is not defined", psr.CollectionName)

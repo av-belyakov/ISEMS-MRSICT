@@ -499,12 +499,17 @@ func HandlerAssignmentsModuleAPIRequestProcessing(
 				return
 			}
 
-		case "get list computer threat", "stix object list type grouping":
+		case "get list computer threat":
 			/*
-				получить список id объектов типа 'grouping' с их наименованием, относящихся или к "types decisions made computer threat"
-				или к "types computer threat", данный список нужен для построения выпадающих списков в ISEMS-UI, для первого совпадения или
-				получить СПИСОК STIX объектов типа 'Grouping' относящихся, к заранее определенному в приложении, списку, 'типы принимаемых решений по
-				компьютерным угрозам' (types decisions made computer threat) или 'типы компьютерных угроз' (types computer threat), для второго совпадения
+							получить список "types decisions made computer threat" ('типы принимаемых решений по компьютерным угрозам') или "types computer
+							threat" ('типы компьютерных угроз'), данные списки нужны для построения выпадающих списков в ISEMS-UI
+
+				1. Доделать функцию getListComputerThreat() которая должна заменить код ниже, который формирует запрос к БД.
+				Так как данные списки хранятся во временном хранилище. В функции getListComputerThreat() нужносделать
+				отправку JSON сообщения с этими списками в moduleAPI
+
+				2. Перенести часть кода из case swicth этой функции (HandlerAssignmentsModuleAPIRequestProcessing) в отдельные функции, что
+				бы не было мешанины кода. Сделать это надо для более читабельности кода.
 			*/
 
 			if l.SortableField != "name" {

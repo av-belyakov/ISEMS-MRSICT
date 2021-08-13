@@ -12,6 +12,110 @@ import (
 	"ISEMS-MRSICT/modulelogginginformationerrors"
 )
 
+//getListComputerThreat обработчик JSON сообщений с запросами списков "types decisions made computer threat" ('типы принимаемых решений по компьютерным
+// угрозам') и "types computer threat" ('типы компьютерных угроз')
+func getListComputerThreat(
+	chanSaveLog chan<- modulelogginginformationerrors.LogMessageType,
+	req *datamodels.ModAPIRequestProcessingResJSONSearchReqType,
+	data *datamodels.ModuleReguestProcessingChannel,
+	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
+	commonMsgReq *datamodels.ModAPIRequestProcessingReqJSON,
+	clim *moddatamodels.ChannelsListInteractingModules) {
+
+	var (
+		err                error
+		section            = "обработка запроса списков типов и решений по компьютерным угрозам"
+		taskType           = "поиск информации о типов и решений по компьютерным угрозам"
+		fn                 = commonlibs.GetFuncName()
+		listComputerThreat map[string]datamodels.StorageApplicationCommonListType
+		/*msgRes = datamodels.ModAPIRequestProcessingResJSON{
+			ModAPIRequestProcessingCommonJSON: datamodels.ModAPIRequestProcessingCommonJSON{
+				TaskID:  ti.ClientTaskID,
+				Section: data.Section,
+			},
+			IsSuccessful: true,
+		}*/
+	)
+
+	sp, ok := req.SearchParameters.(struct {
+		TypeList string `json:"type_list"`
+	})
+	if !ok {
+		chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+			TypeMessage: "error",
+			Description: "type conversion error",
+			FuncName:    fn,
+		}
+
+		if err = auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{
+			ClientID:         data.ClientID,
+			TaskID:           commonMsgReq.TaskID,
+			Section:          commonMsgReq.Section,
+			TypeNotification: "danger",
+			Notification: commonlibs.PatternUserMessage(&commonlibs.PatternUserMessageType{
+				Section:     section,
+				TaskType:    taskType,
+				FinalResult: "задача отклонена",
+				Message:     "ошибка при декодировании JSON документа",
+			}),
+			C: clim.ChannelsModuleAPIRequestProcessing.InputModule,
+		}); err != nil {
+			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+				TypeMessage: "error",
+				Description: fmt.Sprint(err),
+				FuncName:    "SendNotificationModuleAPI",
+			}
+		}
+
+		return
+	}
+
+	switch sp.TypeList {
+	case "types decisions made computer threat":
+		listComputerThreat, err = tst.GetListDecisionsMade()
+
+	case "types computer threat":
+		listComputerThreat, err = tst.GetListComputerThreat()
+
+	default:
+		err = fmt.Errorf("undefined type of computer threat list")
+
+	}
+
+	if err != nil {
+		chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+			TypeMessage: "error",
+			Description: "undefined type of computer threat list",
+			FuncName:    fn,
+		}
+
+		if err = auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{
+			ClientID:         data.ClientID,
+			TaskID:           commonMsgReq.TaskID,
+			Section:          commonMsgReq.Section,
+			TypeNotification: "danger",
+			Notification: commonlibs.PatternUserMessage(&commonlibs.PatternUserMessageType{
+				Section:     section,
+				TaskType:    taskType,
+				FinalResult: "задача отклонена",
+				Message:     "ошибка при декодировании JSON документа",
+			}),
+			C: clim.ChannelsModuleAPIRequestProcessing.InputModule,
+		}); err != nil {
+			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+				TypeMessage: "error",
+				Description: fmt.Sprint(err),
+				FuncName:    "SendNotificationModuleAPI",
+			}
+		}
+
+		return
+	}
+
+	fmt.Printf("func '%s', list computer threat '%v'\n", fn, listComputerThreat)
+
+}
+
 //handlingStatisticalRequests обработчик JSON сообщений со статистическими запросами
 func handlingStatisticalRequests(
 	chanSaveLog chan<- modulelogginginformationerrors.LogMessageType,

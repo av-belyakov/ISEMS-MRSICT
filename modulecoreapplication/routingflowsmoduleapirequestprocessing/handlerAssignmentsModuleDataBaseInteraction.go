@@ -288,6 +288,11 @@ func handlingSearchRequestsSTIXObject(
 		fmt.Printf("func 'handlingSearchRequestsSTIXObject', msg result: '%v'\n", msgRes)
 
 	} else if tp.CollectionName == "stix object list type grouping" && result.Collection == "stix_object_collection" {
+		/*
+			Думаю НУЖНо УДАЛИТЬ эту часть по поиску списков типов компьютерных угроз и типов решений о компьютерных угрозах
+			так как к поиску в БД это не имеет никакого отношения
+		*/
+
 		switch result.ResultType {
 		case "list_computer_threat":
 			list, ok := result.Information.(struct {
@@ -299,16 +304,6 @@ func handlingSearchRequestsSTIXObject(
 			}
 
 			msgRes.AdditionalParameters = list
-
-			/*case "found_info_list_computer_threat":
-			list, ok := result.Information.([]datamodels.ShortDescriptionElementGroupingComputerThreat)
-			if !ok {
-				return fmt.Errorf("type conversion error, line 291")
-			}
-
-			fmt.Printf("func 'handlingSearchRequestsSTIXObject', ---- list ShortDescriptionElementGroupingComputerThreat: '%v'\n", list)
-
-			msgRes.AdditionalParameters = list*/
 
 		}
 
@@ -338,10 +333,6 @@ func handlingStatisticalRequestsSTIXObject(
 	data *datamodels.ModuleDataBaseInteractionChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
 	ti *memorytemporarystoragecommoninformation.TemporaryStorageTaskInDetailType) error {
-
-	fmt.Println("_______________________________________________________________________")
-	fmt.Printf("func 'handlingStatisticalRequestsSTIXObject', Section: '%s', ЗДЕСЬ НУЖНО СДЕЛАТЬ ОБРАБОТКУ СТАТИСТИЧЕСКОЙ ИНФОРМАЦИИ ИЗ БД\n", data.Section)
-	fmt.Println("=======================================================================")
 
 	if ti.TaskStatus != "completed" {
 		return nil

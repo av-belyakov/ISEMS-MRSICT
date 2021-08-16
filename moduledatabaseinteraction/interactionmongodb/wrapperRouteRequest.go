@@ -710,7 +710,5 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingReferenceBook(
 			Section:   "handling stix object",
 			AppTaskID: ws.DataRequest.AppTaskID,
 		}
-
 	}
-
 }

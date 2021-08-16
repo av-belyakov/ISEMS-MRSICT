@@ -188,29 +188,20 @@ func handlingSearchRequestsSTIXObject(
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
 	ti *memorytemporarystoragecommoninformation.TemporaryStorageTaskInDetailType) error {
 
-	fmt.Println("func 'handlingSearchRequestsSTIXObject', START...")
-
 	if ti.TaskStatus != "completed" {
 		return nil
 	}
 
 	tp, ok := ti.TaskParameters.(datamodels.ModAPIRequestProcessingResJSONSearchReqType)
 	if !ok {
-		return fmt.Errorf("type conversion error, line 189")
+		return fmt.Errorf("type conversion error, line 195")
 	}
-
-	fmt.Printf("func 'handlingSearchRequestsSTIXObject', task parametr: '%v'\n", tp)
 
 	//делаем запрос к временному хранилищу информации
 	result, err := tst.GetFoundInformationByID(data.AppTaskID)
 	if err != nil {
-
-		fmt.Printf("func 'handlingSearchRequestsSTIXObject', ERROR -123: '%v'\n", err)
-
 		return err
 	}
-
-	fmt.Printf("func 'handlingSearchRequestsSTIXObject', collection name temporary INFORMATION: '%v'\n", result)
 
 	msgRes := datamodels.ModAPIRequestProcessingResJSON{
 		ModAPIRequestProcessingCommonJSON: datamodels.ModAPIRequestProcessingCommonJSON{
@@ -284,30 +275,6 @@ func handlingSearchRequestsSTIXObject(
 				}
 			}
 		}
-
-		fmt.Printf("func 'handlingSearchRequestsSTIXObject', msg result: '%v'\n", msgRes)
-
-	} else if tp.CollectionName == "stix object list type grouping" && result.Collection == "stix_object_collection" {
-		/*
-			Думаю НУЖНо УДАЛИТЬ эту часть по поиску списков типов компьютерных угроз и типов решений о компьютерных угрозах
-			так как к поиску в БД это не имеет никакого отношения
-		*/
-
-		switch result.ResultType {
-		case "list_computer_threat":
-			list, ok := result.Information.(struct {
-				TypeList string                                                 `json:"type_list"`
-				List     map[string]datamodels.StorageApplicationCommonListType `json:"list"`
-			})
-			if !ok {
-				return fmt.Errorf("type conversion error, line 280")
-			}
-
-			msgRes.AdditionalParameters = list
-
-		}
-
-		fmt.Printf("func 'handlingSearchRequestsSTIXObject', collection name 'stix object list type grouping' msgRes: '%v'\n", msgRes)
 	}
 
 	msg, err := json.Marshal(msgRes)
@@ -341,13 +308,8 @@ func handlingStatisticalRequestsSTIXObject(
 	//делаем запрос к временному хранилищу информации
 	result, err := tst.GetFoundInformationByID(data.AppTaskID)
 	if err != nil {
-
-		fmt.Printf("func 'handlingStatisticalRequestsSTIXObject', ERROR -360: '%v'\n", err)
-
 		return err
 	}
-
-	fmt.Printf("func 'handlingStatisticalRequestsSTIXObject', collection name temporary INFORMATION: '%v'\n", result)
 
 	msgRes := datamodels.ModAPIRequestProcessingResJSON{
 		ModAPIRequestProcessingCommonJSON: datamodels.ModAPIRequestProcessingCommonJSON{
@@ -360,13 +322,11 @@ func handlingStatisticalRequestsSTIXObject(
 	if result.ResultType == "handling_statistical_requests" {
 		info, ok := result.Information.(interactionmongodb.ResultStatisticalInformationSTIXObject)
 		if !ok {
-			return fmt.Errorf("type conversion error, line 371")
+			return fmt.Errorf("type conversion error, line 323")
 		}
 
 		msgRes.AdditionalParameters = info
 	}
-
-	fmt.Printf("func 'handlingStatisticalRequestsSTIXObject', RESPONSE: '%v'\n", msgRes)
 
 	msg, err := json.Marshal(msgRes)
 	if err != nil {

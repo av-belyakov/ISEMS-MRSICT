@@ -309,7 +309,7 @@ func getListComputerThreat(
 		TypeList string `json:"type_list"`
 	})
 	if !ok {
-		return fn, fmt.Errorf("type conversion error")
+		return fn, fmt.Errorf("type conversion error, line 308")
 	}
 
 	switch sp.TypeList {
@@ -329,8 +329,6 @@ func getListComputerThreat(
 		return fn, fmt.Errorf("undefined type of computer threat list")
 
 	}
-
-	fmt.Printf("func '%s', list computer threat '%v'\n", fn, listComputerThreat)
 
 	msgRes.AdditionalParameters = struct {
 		TypeList string                                                 `json:"type_list"`

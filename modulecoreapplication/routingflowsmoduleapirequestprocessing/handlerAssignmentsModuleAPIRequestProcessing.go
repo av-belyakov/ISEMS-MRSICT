@@ -201,9 +201,9 @@ func HandlerAssignmentsModuleAPIRequestProcessing(
 
 		switch l.CollectionName {
 		case "stix object":
-			/*
-				общий поиск по коллекции STIX объектов
-			*/
+
+			/* *** обработчик JSON сообщений с общими запросами поиска по коллекции STIX объектов *** */
+
 			l, err = CheckSearchSTIXObject(&l)
 			if err != nil {
 				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
@@ -236,10 +236,11 @@ func HandlerAssignmentsModuleAPIRequestProcessing(
 			}
 
 		case "get list computer threat":
-			/*
-				список "types decisions made computer threat" ('типы принимаемых решений по компьютерным угрозам') или "types computer
-				threat" ('типы компьютерных угроз'), данные списки нужны для построения выпадающих списков в ISEMS-UI
-			*/
+			/* ***
+				обработчик JSON запросов, выполняемых с целью получения списков "types decisions made computer threat" ('типы принимаемых решений
+				по компьютерным угрозам') или "types computer threat" ('типы компьютерных угроз'). Эта информация нужна для построения выпадающих
+				списков в ISEMS-UI
+			*** */
 
 			section = "обработка запроса списков типов и решений по компьютерным угрозам"
 			taskType = "поиск информации о типов и решений по компьютерным угрозам"
@@ -375,7 +376,6 @@ func HandlerAssignmentsModuleAPIRequestProcessing(
 
 		/* *** обработчик JSON сообщений с параметрами связанными со справочниками *** */
 		//l, err := UnmarshalJSONReferenceBookReq(*commonMsgReq)
-		/* *** обработчик JSON сообщений с параметрами связанными со справочниками **** */
 		l, err := UnmarshalJSONRBookReq(commonMsgReq.RequestDetails)
 		if err != nil {
 			chanSaveLog <- modulelogginginformationerrors.LogMessageType{

@@ -110,9 +110,6 @@ func statisticalInformationSTIXObject(
 		TypeStatisticalInformation string
 	}) (string, error) {
 
-	fmt.Println("func 'statisticalInformationSTIXObject', START...")
-	fmt.Println(parameters)
-
 	var (
 		err                       error
 		fn                        string = commonlibs.GetFuncName()
@@ -164,8 +161,6 @@ func statisticalInformationSTIXObject(
 			rsiSTIXObject.ListComputerThreat[name] = count
 		}
 	}
-
-	fmt.Printf("func 'statisticalInformationSTIXObject', \n --== ResultStatisticalInformationSTIXObject ==--\n%v\n", rsiSTIXObject)
 
 	//сохраняем найденные значения во временном хранилище
 	err = parameters.tst.AddNewFoundInformation(

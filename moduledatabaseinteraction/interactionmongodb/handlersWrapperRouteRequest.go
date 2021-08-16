@@ -155,8 +155,13 @@ func statisticalInformationSTIXObject(
 	}
 
 	for _, v := range tmpResults {
+		name, ok := v["_id"].(string)
+		if !ok {
+			continue
+		}
+
 		if count, ok := v["count"].(int32); ok {
-			rsiSTIXObject.ListComputerThreat[fmt.Sprintln(v["_id"])] = count
+			rsiSTIXObject.ListComputerThreat[name] = count
 		}
 	}
 

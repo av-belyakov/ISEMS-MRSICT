@@ -93,67 +93,6 @@ func searchSTIXObject(
 	return fn, nil
 }
 
-//searchListComputerThreat обработчик запроса, на получения списка "types decisions made computer threat" или "types computer threat"
-// с id и описанием пунктов списка
-func searchListComputerThreat(appTaskID string,
-	qp QueryParameters,
-	taskInfo datamodels.ModAPIRequestProcessingResJSONSearchReqType,
-	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) (string, error) {
-
-	/*
-		Думаю НУЖНо УДАЛИТЬ эту часть по поиску списков типов компьютерных угроз и типов решений о компьютерных угрозах
-		так как к поиску в БД это не имеет никакого отношения
-	*/
-
-	var (
-		err error
-		fn  string = commonlibs.GetFuncName()
-		l          = map[string]datamodels.StorageApplicationCommonListType{}
-	)
-
-	searchType, ok := taskInfo.SearchParameters.(struct {
-		TypeList string `json:"type_list"`
-	})
-	if !ok {
-		return fn, fmt.Errorf("type conversion error")
-	}
-
-	switch searchType.TypeList {
-	case "types decisions made computer threat":
-		l, err = tst.GetListDecisionsMade()
-
-	case "types computer threat":
-		l, err = tst.GetListComputerThreat()
-
-	default:
-		return fn, fmt.Errorf("undefined type of computer threat list")
-
-	}
-
-	if err != nil {
-		return fn, err
-	}
-
-	//сохраняем найденные значения во временном хранилище
-	if err = tst.AddNewFoundInformation(
-		appTaskID,
-		&memorytemporarystoragecommoninformation.TemporaryStorageFoundInformation{
-			Collection: "stix_object_collection",
-			ResultType: "list_computer_threat",
-			Information: struct {
-				TypeList string                                                 `json:"type_list"`
-				List     map[string]datamodels.StorageApplicationCommonListType `json:"list"`
-			}{
-				TypeList: searchType.TypeList,
-				List:     l,
-			},
-		}); err != nil {
-		return fn, err
-	}
-
-	return fn, nil
-}
-
 //ResultStatisticalInformationSTIXObject содержит результат поиска статистической информации по STIX объектам
 // InformationType - тип статистической информации
 // ListComputerThreat - список статистической информации по компьютерным угрозам

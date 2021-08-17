@@ -130,6 +130,12 @@ func HandlerAssignmentsModuleDataBaseInteraction(
 	}
 
 	if err := handlerDataBaseResponse(clim.ChannelsModuleAPIRequestProcessing.InputModule, data, tst, ti); err != nil {
+		chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+			TypeMessage: "error",
+			FuncName:    data.ErrorMessage.FuncName,
+			Description: fmt.Sprint(err),
+		}
+
 		if err = auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{
 			ClientID:         ti.ClientID,
 			TaskID:           taskID,

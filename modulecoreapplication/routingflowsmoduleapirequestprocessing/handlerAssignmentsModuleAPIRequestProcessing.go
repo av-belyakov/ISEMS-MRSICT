@@ -23,6 +23,7 @@ func HandlerAssignmentsModuleAPIRequestProcessing(
 	if err != nil {
 		chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 			TypeMessage: "error",
+			Description: fmt.Sprintln(err),
 			FuncName:    "unmarshalJSONCommonReq",
 		}
 

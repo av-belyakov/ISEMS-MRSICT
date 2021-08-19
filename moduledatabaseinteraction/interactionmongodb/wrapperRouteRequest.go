@@ -499,7 +499,6 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingStatisticalRequests(
 			CollectionName: "stix_object_collection",
 			ConnectDB:      ws.ConnectionDB.Connection,
 		}
-		tp = datamodels.CommonStatisticalRequest{}
 	)
 
 	errorMessage.ErrorMessage.FuncName = fn
@@ -517,10 +516,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingStatisticalRequests(
 
 	fmt.Printf("func 'wrapperFuncTypeHandlingStatisticalRequests', task parameters: '%v'\n", taskInfo.TaskParameters)
 
-	tp, ok := taskInfo.TaskParameters.(struct {
-		CollectionName             string `json:"collection_name"`
-		TypeStatisticalInformation string `json:"type_statistical_information"`
-	})
+	tp, ok := taskInfo.TaskParameters.(datamodels.CommonStatisticalRequest)
 	if !ok {
 		errorMessage.ErrorMessage.Error = fmt.Errorf("type conversion error")
 		chanOutput <- errorMessage

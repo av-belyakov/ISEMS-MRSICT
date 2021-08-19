@@ -239,6 +239,8 @@ func handlingSearchRequestsSTIXObject(
 		case "full_found_info":
 			//для ПОЛНОЙ информации по найденным STIX объектам
 
+			fmt.Printf("func 'handlingSearchRequestsSTIXObject', -=== result.Information: '%v'\n", result.Information)
+
 			listElemSTIXObj, ok := result.Information.([]*datamodels.ElementSTIXObject)
 			if !ok {
 				return fmt.Errorf("type conversion error, line 234")

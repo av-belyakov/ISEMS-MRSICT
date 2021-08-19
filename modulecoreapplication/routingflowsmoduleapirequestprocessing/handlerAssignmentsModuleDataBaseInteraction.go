@@ -258,6 +258,9 @@ func handlingSearchRequestsSTIXObject(
 					NumberTransmittedPart: 1,
 					TransmittedData:       listMsgRes,
 				}
+
+				fmt.Println("func 'handlingSearchRequestsSTIXObject', sestixo < maxChunkSize = TRUE")
+
 			} else {
 				num := commonlibs.GetCountChunk(int64(sestixo), maxChunkSize)
 				min := 0
@@ -283,6 +286,9 @@ func handlingSearchRequestsSTIXObject(
 				}
 			}
 		}
+
+		fmt.Printf("+++ func 'handlingSearchRequestsSTIXObject', AdditionalParameters: '%v'\n", msgRes.AdditionalParameters)
+
 	}
 
 	msg, err := json.Marshal(msgRes)

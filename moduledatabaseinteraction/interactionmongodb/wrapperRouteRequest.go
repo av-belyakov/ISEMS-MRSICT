@@ -25,6 +25,7 @@ var errorMessage = datamodels.ModuleDataBaseInteractionChannel{
 //wrapperFuncTypeHandlingSTIXObject набор обработчиков для работы с запросами, связанными со STIX объектами
 func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 	chanOutput chan<- datamodels.ModuleDataBaseInteractionChannel,
+	dataRequest datamodels.ModuleDataBaseInteractionChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) {
 
 	var (
@@ -39,10 +40,10 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 
 	errorMessage.ErrorMessage.FuncName = fn
 	errorMessage.Section = "handling stix object"
-	errorMessage.AppTaskID = ws.DataRequest.AppTaskID
+	errorMessage.AppTaskID = dataRequest.AppTaskID
 
 	//получаем всю информацию о выполняемой задаче из временного хранилища задач
-	_, taskInfo, err := tst.GetTaskByID(ws.DataRequest.AppTaskID)
+	_, taskInfo, err := tst.GetTaskByID(dataRequest.AppTaskID)
 	if err != nil {
 		errorMessage.ErrorMessage.Error = fmt.Errorf("no information about the task by its id was found in the temporary storage")
 		chanOutput <- errorMessage
@@ -128,13 +129,14 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 			},
 		},
 		Section:   "handling stix object",
-		AppTaskID: ws.DataRequest.AppTaskID,
+		AppTaskID: dataRequest.AppTaskID,
 	}
 }
 
 //wrapperFuncTypeHandlingManagingCollectionSTIXObjects набор обработчиков для работы с запросами, связанными с управлением STIX объектами
 func (ws *wrappersSetting) wrapperFuncTypeHandlingManagingCollectionSTIXObjects(
 	chanOutput chan<- datamodels.ModuleDataBaseInteractionChannel,
+	dataRequest datamodels.ModuleDataBaseInteractionChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) {
 
 	var (
@@ -149,10 +151,10 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingManagingCollectionSTIXObjects(
 
 	errorMessage.ErrorMessage.FuncName = fn
 	errorMessage.Section = "handling managing collection stix objects"
-	errorMessage.AppTaskID = ws.DataRequest.AppTaskID
+	errorMessage.AppTaskID = dataRequest.AppTaskID
 
 	//получаем всю информацию о выполняемой задаче из временного хранилища задач
-	_, taskInfo, err := tst.GetTaskByID(ws.DataRequest.AppTaskID)
+	_, taskInfo, err := tst.GetTaskByID(dataRequest.AppTaskID)
 	if err != nil {
 		errorMessage.ErrorMessage.Error = err
 		chanOutput <- errorMessage
@@ -161,10 +163,10 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingManagingCollectionSTIXObjects(
 	}
 
 	//изменяем время модификации информации о задаче
-	_ = tst.ChangeDateTaskModification(ws.DataRequest.AppTaskID)
+	_ = tst.ChangeDateTaskModification(dataRequest.AppTaskID)
 
 	//изменяем статус выполняемой задачи на 'in progress'
-	if err := tst.ChangeTaskStatus(ws.DataRequest.AppTaskID, "in progress"); err != nil {
+	if err := tst.ChangeTaskStatus(dataRequest.AppTaskID, "in progress"); err != nil {
 		errorMessage.ErrorMessage.Error = err
 		chanOutput <- errorMessage
 
@@ -336,6 +338,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingManagingCollectionSTIXObjects(
 //wrapperFuncTypeHandlingSearchRequests набор обработчиков для работы с запросами, связанными с поиском информации
 func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 	chanOutput chan<- datamodels.ModuleDataBaseInteractionChannel,
+	dataRequest datamodels.ModuleDataBaseInteractionChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) {
 
 	var (
@@ -350,10 +353,10 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 
 	errorMessage.ErrorMessage.FuncName = fn
 	errorMessage.Section = "handling search requests"
-	errorMessage.AppTaskID = ws.DataRequest.AppTaskID
+	errorMessage.AppTaskID = dataRequest.AppTaskID
 
 	//получаем всю информацию о выполняемой задаче из временного хранилища задач
-	_, taskInfo, err := tst.GetTaskByID(ws.DataRequest.AppTaskID)
+	_, taskInfo, err := tst.GetTaskByID(dataRequest.AppTaskID)
 	if err != nil {
 		errorMessage.ErrorMessage.Error = err
 		chanOutput <- errorMessage
@@ -370,10 +373,10 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 	}
 
 	//изменяем время модификации информации о задаче
-	_ = tst.ChangeDateTaskModification(ws.DataRequest.AppTaskID)
+	_ = tst.ChangeDateTaskModification(dataRequest.AppTaskID)
 
 	//изменяем статус выполняемой задачи на 'in progress'
-	if err := tst.ChangeTaskStatus(ws.DataRequest.AppTaskID, "in progress"); err != nil {
+	if err := tst.ChangeTaskStatus(dataRequest.AppTaskID, "in progress"); err != nil {
 		errorMessage.ErrorMessage.Error = err
 		chanOutput <- errorMessage
 
@@ -382,7 +385,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 
 	switch psr.CollectionName {
 	case "stix object":
-		if fn, err := searchSTIXObject(ws.DataRequest.AppTaskID, qp, psr, tst); err != nil {
+		if fn, err := searchSTIXObject(dataRequest.AppTaskID, qp, psr, tst); err != nil {
 			errorMessage.ErrorMessage.FuncName = fn
 			errorMessage.ErrorMessage.Error = err
 			chanOutput <- errorMessage
@@ -397,10 +400,10 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 		return
 	}
 
-	_ = tst.ChangeDateTaskModification(ws.DataRequest.AppTaskID)
+	_ = tst.ChangeDateTaskModification(dataRequest.AppTaskID)
 
 	//изменяем состояние задачи на 'completed'
-	if err := tst.ChangeTaskStatus(ws.DataRequest.AppTaskID, "completed"); err != nil {
+	if err := tst.ChangeTaskStatus(dataRequest.AppTaskID, "completed"); err != nil {
 		errorMessage.ErrorMessage.Error = err
 		chanOutput <- errorMessage
 
@@ -414,7 +417,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 			ModuleReceiverMessage:  "module core application",
 		},
 		Section:   "handling search requests",
-		AppTaskID: ws.DataRequest.AppTaskID,
+		AppTaskID: dataRequest.AppTaskID,
 	}
 }
 
@@ -423,6 +426,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 // объектов во временное хранилище и т.д.
 func (ws *wrappersSetting) wrapperFuncTypeTechnicalPart(
 	chanOutput chan<- datamodels.ModuleDataBaseInteractionChannel,
+	dataRequest datamodels.ModuleDataBaseInteractionChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) {
 
 	var (
@@ -437,7 +441,7 @@ func (ws *wrappersSetting) wrapperFuncTypeTechnicalPart(
 	errorMessage.ErrorMessage.FuncName = fn
 	errorMessage.Section = "handling technical part"
 
-	switch ws.DataRequest.Command {
+	switch dataRequest.Command {
 	case "create STIX DO type 'grouping'":
 		//проверяем наличие объектов STIX DO типа 'grouping', содержащих списки 'подтвержденных' или 'отклоненных' объектов STIX DO типа 'report'
 		// и при необходимости создаем новые STIX DO объекты типа 'grouping'
@@ -490,6 +494,7 @@ func (ws *wrappersSetting) wrapperFuncTypeTechnicalPart(
 //wrapperFuncTypeHandlingStatisticalRequests набор обработчиков для обработки статистических запросов
 func (ws *wrappersSetting) wrapperFuncTypeHandlingStatisticalRequests(
 	chanOutput chan<- datamodels.ModuleDataBaseInteractionChannel,
+	dataRequest datamodels.ModuleDataBaseInteractionChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) {
 	var (
 		err error
@@ -503,10 +508,10 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingStatisticalRequests(
 
 	errorMessage.ErrorMessage.FuncName = fn
 	errorMessage.Section = "handling statistical requests"
-	errorMessage.AppTaskID = ws.DataRequest.AppTaskID
+	errorMessage.AppTaskID = dataRequest.AppTaskID
 
 	//получаем всю информацию о выполняемой задаче из временного хранилища задач
-	_, taskInfo, err := tst.GetTaskByID(ws.DataRequest.AppTaskID)
+	_, taskInfo, err := tst.GetTaskByID(dataRequest.AppTaskID)
 	if err != nil {
 		errorMessage.ErrorMessage.Error = err
 		chanOutput <- errorMessage
@@ -525,10 +530,10 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingStatisticalRequests(
 	}
 
 	//изменяем время модификации информации о задаче
-	_ = tst.ChangeDateTaskModification(ws.DataRequest.AppTaskID)
+	_ = tst.ChangeDateTaskModification(dataRequest.AppTaskID)
 
 	//изменяем статус выполняемой задачи на 'in progress'
-	if err := tst.ChangeTaskStatus(ws.DataRequest.AppTaskID, "in progress"); err != nil {
+	if err := tst.ChangeTaskStatus(dataRequest.AppTaskID, "in progress"); err != nil {
 		errorMessage.ErrorMessage.Error = err
 		chanOutput <- errorMessage
 
@@ -544,7 +549,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingStatisticalRequests(
 				tst                        *memorytemporarystoragecommoninformation.TemporaryStorageType
 				TypeStatisticalInformation string
 			}{
-				ws.DataRequest.AppTaskID,
+				dataRequest.AppTaskID,
 				qp,
 				tst,
 				tp.TypeStatisticalInformation,
@@ -565,10 +570,10 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingStatisticalRequests(
 		return
 	}
 
-	_ = tst.ChangeDateTaskModification(ws.DataRequest.AppTaskID)
+	_ = tst.ChangeDateTaskModification(dataRequest.AppTaskID)
 
 	//изменяем состояние задачи на 'completed'
-	if err := tst.ChangeTaskStatus(ws.DataRequest.AppTaskID, "completed"); err != nil {
+	if err := tst.ChangeTaskStatus(dataRequest.AppTaskID, "completed"); err != nil {
 		errorMessage.ErrorMessage.Error = err
 		chanOutput <- errorMessage
 
@@ -582,13 +587,14 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingStatisticalRequests(
 			ModuleReceiverMessage:  "module core application",
 		},
 		Section:   "handling statistical requests",
-		AppTaskID: ws.DataRequest.AppTaskID,
+		AppTaskID: dataRequest.AppTaskID,
 	}
 }
 
 //wrapperFuncTypeHandlingReferenceBook набор обработчиков для работы с запросами к справочнику
 func (ws *wrappersSetting) wrapperFuncTypeHandlingReferenceBook(
 	chanOutput chan<- datamodels.ModuleDataBaseInteractionChannel,
+	dataRequest datamodels.ModuleDataBaseInteractionChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) {
 	var (
 		err error
@@ -607,7 +613,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingReferenceBook(
 			ModuleReceiverMessage:  "module core application",
 		},
 		Section:   "handling reference book request",
-		AppTaskID: ws.DataRequest.AppTaskID,
+		AppTaskID: dataRequest.AppTaskID,
 	}
 
 	errorMessage := datamodels.ErrorDataTypePassedThroughChannels{
@@ -619,7 +625,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingReferenceBook(
 		Type: "",
 	}
 	//получаем всю информацию о выполняемой задаче из временного хранилища задач
-	_, taskInfo, err := tst.GetTaskByID(ws.DataRequest.AppTaskID)
+	_, taskInfo, err := tst.GetTaskByID(dataRequest.AppTaskID)
 	if err != nil {
 		errorMessage.Error = err
 		switchMSGType(&message, errorMessage)
@@ -707,7 +713,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingReferenceBook(
 				},
 			},
 			Section:   "handling stix object",
-			AppTaskID: ws.DataRequest.AppTaskID,
+			AppTaskID: dataRequest.AppTaskID,
 		}
 	}
 }

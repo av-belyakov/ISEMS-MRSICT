@@ -6,7 +6,6 @@ import (
 )
 
 type wrappersSetting struct {
-	DataRequest                 datamodels.ModuleDataBaseInteractionChannel
 	AdditionalRequestParameters interface{}
 	NameDB                      string
 	ConnectionDB                ConnectionDescriptorMongoDB
@@ -26,26 +25,24 @@ func Routing(
 	}
 
 	for data := range chanInput {
-		ws.DataRequest = data
-
 		switch data.Section {
 		case "handling stix object":
-			go ws.wrapperFuncTypeHandlingSTIXObject(chanOutput, tst)
+			go ws.wrapperFuncTypeHandlingSTIXObject(chanOutput, data, tst)
 
 		case "handling managing collection stix objects":
-			go ws.wrapperFuncTypeHandlingManagingCollectionSTIXObjects(chanOutput, tst)
+			go ws.wrapperFuncTypeHandlingManagingCollectionSTIXObjects(chanOutput, data, tst)
 
 		case "handling search requests":
-			go ws.wrapperFuncTypeHandlingSearchRequests(chanOutput, tst)
+			go ws.wrapperFuncTypeHandlingSearchRequests(chanOutput, data, tst)
 
 		case "handling reference book":
-			go ws.wrapperFuncTypeHandlingReferenceBook(chanOutput, tst)
+			go ws.wrapperFuncTypeHandlingReferenceBook(chanOutput, data, tst)
 
 		case "handling technical part":
-			go ws.wrapperFuncTypeTechnicalPart(chanOutput, tst)
+			go ws.wrapperFuncTypeTechnicalPart(chanOutput, data, tst)
 
 		case "handling statistical requests":
-			go ws.wrapperFuncTypeHandlingStatisticalRequests(chanOutput, tst)
+			go ws.wrapperFuncTypeHandlingStatisticalRequests(chanOutput, data, tst)
 
 		}
 	}

@@ -16,7 +16,7 @@ import (
 //handlingManagingCollectionSTIXObjects обработчик JSON сообщений связанных с управлением STIX объектами
 func handlingManagingCollectionSTIXObjects(
 	chanSaveLog chan<- modulelogginginformationerrors.LogMessageType,
-	data *datamodels.ModuleReguestProcessingChannel,
+	data datamodels.ModuleReguestProcessingChannel,
 	commonMsgReq *datamodels.ModAPIRequestProcessingReqJSON,
 	clim *moddatamodels.ChannelsListInteractingModules,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) {
@@ -359,7 +359,7 @@ func getListComputerThreat(
 //handlingStatisticalRequests обработчик JSON сообщений со статистическими запросами
 func handlingStatisticalRequests(
 	chanSaveLog chan<- modulelogginginformationerrors.LogMessageType,
-	data *datamodels.ModuleReguestProcessingChannel,
+	data datamodels.ModuleReguestProcessingChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
 	commonMsgReq *datamodels.ModAPIRequestProcessingReqJSON,
 	clim *moddatamodels.ChannelsListInteractingModules) {

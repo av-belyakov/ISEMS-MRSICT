@@ -15,7 +15,7 @@ import (
 //HandlerAssigmentsModuleAPIRequestProcessing является обработчиком приходящих JSON сообщений
 func HandlerAssignmentsModuleAPIRequestProcessing(
 	chanSaveLog chan<- modulelogginginformationerrors.LogMessageType,
-	data *datamodels.ModuleReguestProcessingChannel,
+	data datamodels.ModuleReguestProcessingChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
 	clim *moddatamodels.ChannelsListInteractingModules) {
 

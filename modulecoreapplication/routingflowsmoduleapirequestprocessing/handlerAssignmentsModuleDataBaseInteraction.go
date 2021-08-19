@@ -15,7 +15,7 @@ import (
 
 func HandlerAssignmentsModuleDataBaseInteraction(
 	chanSaveLog chan<- modulelogginginformationerrors.LogMessageType,
-	data *datamodels.ModuleDataBaseInteractionChannel,
+	data datamodels.ModuleDataBaseInteractionChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
 	clim *moddatamodels.ChannelsListInteractingModules) {
 
@@ -162,7 +162,7 @@ func HandlerAssignmentsModuleDataBaseInteraction(
 
 func handlerDataBaseResponse(
 	chanResModAPI chan<- datamodels.ModuleReguestProcessingChannel,
-	data *datamodels.ModuleDataBaseInteractionChannel,
+	data datamodels.ModuleDataBaseInteractionChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
 	ti *memorytemporarystoragecommoninformation.TemporaryStorageTaskInDetailType) error {
 
@@ -192,7 +192,7 @@ func handlerDataBaseResponse(
 func handlingSearchRequestsSTIXObject(
 	chanResModAPI chan<- datamodels.ModuleReguestProcessingChannel,
 	maxChunkSize int,
-	data *datamodels.ModuleDataBaseInteractionChannel,
+	data datamodels.ModuleDataBaseInteractionChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
 	ti *memorytemporarystoragecommoninformation.TemporaryStorageTaskInDetailType) error {
 
@@ -305,7 +305,7 @@ func handlingSearchRequestsSTIXObject(
 
 func handlingStatisticalRequestsSTIXObject(
 	chanResModAPI chan<- datamodels.ModuleReguestProcessingChannel,
-	data *datamodels.ModuleDataBaseInteractionChannel,
+	data datamodels.ModuleDataBaseInteractionChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
 	ti *memorytemporarystoragecommoninformation.TemporaryStorageTaskInDetailType) error {
 

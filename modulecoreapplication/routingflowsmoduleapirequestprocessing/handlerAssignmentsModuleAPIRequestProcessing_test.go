@@ -46,18 +46,18 @@ var _ = Describe("Тестирование HandlerAssigmentsModuleAPIRequestProc
 		}
 	)
 	clim.ChannelsModuleDataBaseInteraction = chdbi
-	TestData := make(map[string]*datamodels.ModuleReguestProcessingChannel)
+	TestData := make(map[string]datamodels.ModuleReguestProcessingChannel)
 	dir, _ := os.Getwd()
 
 	// Тестовые данные для STIXObjects
 	TestFilePath := filepath.Join(dir, "..", "..", "mytest/test_resources/jsonSTIXExample.json")
-	TestData["TestSTIXObject"] = ReadTestJSONFile(TestFilePath)
+	TestData["TestSTIXObject"] = *ReadTestJSONFile(TestFilePath)
 
 	// Тестовые данные для RBook
 	TestFilePath = filepath.Join(dir, "..", "..", "mytest/test_resources/RBookAPIHNotationReq_good.json")
-	TestData["TestGoodRBook"] = ReadTestJSONFile(TestFilePath)
+	TestData["TestGoodRBook"] = *ReadTestJSONFile(TestFilePath)
 	TestFilePath = filepath.Join(dir, "..", "..", "mytest/test_resources/RBookAPIHNotationReq_bad.json")
-	TestData["TestBadRBook"] = ReadTestJSONFile(TestFilePath)
+	TestData["TestBadRBook"] = *ReadTestJSONFile(TestFilePath)
 
 	//assertionCheckChanel - Утверждения проверки создания каналов для тестирования
 	assertionCheckChanel := func() {

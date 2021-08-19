@@ -41,7 +41,7 @@ func HandlerAssignmentsModuleDataBaseInteraction(
 		taskType = "статистика по структурированным данным"
 	}
 
-	fmt.Printf("func 'HandlerAssignmentsModuleDataBaseInteraction', received appTaskID: '%s'\n", data.AppTaskID)
+	fmt.Printf("func 'HandlerAssignmentsModuleDataBaseInteraction', section: '%s' - received appTaskID: '%s'\n", data.Section, data.AppTaskID)
 
 	//получаем всю информацию о задаче
 	taskID, ti, err = tst.GetTaskByID(data.AppTaskID)

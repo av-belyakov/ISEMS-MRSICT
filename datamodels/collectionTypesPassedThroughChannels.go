@@ -69,3 +69,9 @@ type StorageApplicationCommonListType struct {
 	ID          string
 	Description string
 }
+
+//CommonStatisticalRequest описание общего типа запроса для получения статистической информации
+type CommonStatisticalRequest struct {
+	CollectionName             string `json:"collection_name"`
+	TypeStatisticalInformation string `json:"type_statistical_information"`
+}

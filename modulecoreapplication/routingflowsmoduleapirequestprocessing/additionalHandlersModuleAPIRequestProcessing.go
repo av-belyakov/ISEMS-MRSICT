@@ -368,10 +368,7 @@ func handlingStatisticalRequests(
 		fn              = commonlibs.GetFuncName()
 		section  string = "обработка статистического запроса"
 		taskType string = "статистика по структурированным данным"
-		statReq  struct {
-			CollectionName             string `json:"collection_name"`
-			TypeStatisticalInformation string `json:"type_statistical_information"`
-		}
+		statReq         = datamodels.CommonStatisticalRequest{}
 	)
 
 	if err := json.Unmarshal(*commonMsgReq.RequestDetails, &statReq); err != nil {

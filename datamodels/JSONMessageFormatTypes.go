@@ -57,7 +57,7 @@ type ModAPIRequestProcessingResJSONInfoMsgType struct {
 //CommonModAPIRequestProcessingResJSONSearchReqType содержит описание формата JSON запроса к поисковой машине
 // CollectionName - наименование коллекции документов. Для поиска STIX объектов collection_name = "stix object"
 // PaginateParameters - параметры разбиения на страницы
-//  MaxPartNum - размер части, то есть максимальное количество найденных элементов, которое может содержаться в одном ответе
+//  MaxPartSize - размер части, то есть максимальное количество найденных элементов, которое может содержаться в одном ответе
 //	CurrentPartNumber - номер текущей части (0 или 1 считаются за первую часть)
 // SortableField - параметр в котором можно указать значение, по которому будет выполнятся сортировка полей. Параметр должен содержать
 //  одно из следующих значений: "document_type", "data_created", "data_modified", "data_first_seen", "data_last_seen", "ipv4", "ipv6",
@@ -66,7 +66,7 @@ type ModAPIRequestProcessingResJSONInfoMsgType struct {
 type CommonModAPIRequestProcessingResJSONSearchReqType struct {
 	CollectionName     string `json:"collection_name"`
 	PaginateParameters struct {
-		MaxPartNum        int `json:"max_part_num"`
+		MaxPartSize       int `json:"max_part_size"`
 		CurrentPartNumber int `json:"current_part_number"`
 	} `json:"paginate_parameters"`
 	SortableField    string           `json:"sortable_field"`
@@ -76,7 +76,7 @@ type CommonModAPIRequestProcessingResJSONSearchReqType struct {
 //ModAPIRequestProcessingResJSONSearchReqType содержит описание формата JSON запроса к поисковой машине
 // CollectionName - наименование коллекции документов. Для поиска STIX объектов collection_name = "stix object"
 // PaginateParameters - параметры разбиения на страницы
-//  MaxPartNum - размер части, то есть максимальное количество найденных элементов, которое может содержаться в одном ответе
+//  MaxPartSize - размер части, то есть максимальное количество найденных элементов, которое может содержаться в одном ответе
 //	CurrentPartNumber - номер текущей части (0 или 1 считаются за первую часть)
 // SortableField - параметр в котором можно указать значение, по которому будет выполнятся сортировка полей. Параметр должен содержать
 //  одно из следующих значений: "document_type", "data_created", "data_modified", "data_first_seen", "data_last_seen", "ipv4", "ipv6",
@@ -85,7 +85,7 @@ type CommonModAPIRequestProcessingResJSONSearchReqType struct {
 type ModAPIRequestProcessingResJSONSearchReqType struct {
 	CollectionName     string `json:"collection_name"`
 	PaginateParameters struct {
-		MaxPartNum        int `json:"max_part_num"`
+		MaxPartSize       int `json:"max_part_size"`
 		CurrentPartNumber int `json:"current_part_number"`
 	} `json:"paginate_parameters"`
 	SortableField    string      `json:"sortable_field"`

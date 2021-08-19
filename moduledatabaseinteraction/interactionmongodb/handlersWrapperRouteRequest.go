@@ -42,7 +42,7 @@ func searchSTIXObject(
 	}
 
 	//получить только общее количество найденных документов
-	if (taskInfo.PaginateParameters.CurrentPartNumber <= 0) || (taskInfo.PaginateParameters.MaxPartNum <= 0) {
+	if (taskInfo.PaginateParameters.CurrentPartNumber <= 0) || (taskInfo.PaginateParameters.MaxPartSize <= 0) {
 		resSize, err := qp.CountDocuments(CreateSearchQueriesSTIXObject(&searchParameters))
 		if err != nil {
 			return fn, err
@@ -70,7 +70,7 @@ func searchSTIXObject(
 	//получить все найденные документы, с учетом лимита
 	cur, err := qp.FindAllWithLimit(CreateSearchQueriesSTIXObject(&searchParameters), &FindAllWithLimitOptions{
 		Offset:        int64(taskInfo.PaginateParameters.CurrentPartNumber),
-		LimitMaxSize:  int64(taskInfo.PaginateParameters.MaxPartNum),
+		LimitMaxSize:  int64(taskInfo.PaginateParameters.MaxPartSize),
 		SortField:     sortableField,
 		SortAscending: false,
 	})

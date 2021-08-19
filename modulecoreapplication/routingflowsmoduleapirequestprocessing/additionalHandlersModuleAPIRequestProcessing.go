@@ -449,6 +449,8 @@ func handlingStatisticalRequests(
 		return
 	}
 
+	fmt.Printf("func 'handlerAssignmentsModuleDataBaseInteraction', Section: '%s', appTaskID: '%s'\n", commonMsgReq.Section, appTaskID)
+
 	clim.ChannelsModuleDataBaseInteraction.ChannelsMongoDB.InputModule <- datamodels.ModuleDataBaseInteractionChannel{
 		CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
 			ModuleGeneratorMessage: "module core application",

@@ -239,7 +239,7 @@ func handlingSearchRequestsSTIXObject(
 		case "full_found_info":
 			//для ПОЛНОЙ информации по найденным STIX объектам
 
-			fmt.Printf("func 'handlingSearchRequestsSTIXObject', -=== result.Information: '%v'\n", result.Information)
+			fmt.Printf("func 'handlingSearchRequestsSTIXObject', data.AppTaskID: '%s', -=== result.Information: '%v'\n", data.AppTaskID, result.Information)
 
 			listElemSTIXObj, ok := result.Information.([]*datamodels.ElementSTIXObject)
 			if !ok {

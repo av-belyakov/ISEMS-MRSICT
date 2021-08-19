@@ -80,7 +80,7 @@ func searchSTIXObject(
 		return fn, err
 	}
 
-	fmt.Println("____ func 'searchSTIXObject' ListElementSTIXObject")
+	fmt.Printf("____ func 'searchSTIXObject' appTaskID: '%s', ListElementSTIXObject\n", appTaskID)
 	listelm := GetListElementSTIXObject(cur)
 	for k, v := range listelm {
 		fmt.Printf("%d. %s\n", k, v.Data.GetID())
@@ -92,7 +92,7 @@ func searchSTIXObject(
 		&memorytemporarystoragecommoninformation.TemporaryStorageFoundInformation{
 			Collection:  "stix_object_collection",
 			ResultType:  "full_found_info",
-			Information: GetListElementSTIXObject(cur),
+			Information: listelm,
 		})
 	if err != nil {
 		return fn, err

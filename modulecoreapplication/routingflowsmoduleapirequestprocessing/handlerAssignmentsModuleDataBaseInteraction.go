@@ -244,6 +244,8 @@ func handlingSearchRequestsSTIXObject(
 				return fmt.Errorf("type conversion error, line 234")
 			}
 
+			fmt.Printf("func 'handlingSearchRequestsSTIXObject', @@@@@@ listElemSTIXObj: '%v'\n", listElemSTIXObj)
+
 			sestixo := len(listElemSTIXObj)
 			listMsgRes := make([]interface{}, 0, sestixo)
 			for _, v := range listElemSTIXObj {
@@ -259,7 +261,7 @@ func handlingSearchRequestsSTIXObject(
 					TransmittedData:       listMsgRes,
 				}
 
-				fmt.Println("func 'handlingSearchRequestsSTIXObject', sestixo < maxChunkSize = TRUE")
+				fmt.Printf("func 'handlingSearchRequestsSTIXObject', sestixo < maxChunkSize = TRUE, sestixo: '%d'\n", sestixo)
 
 			} else {
 				num := commonlibs.GetCountChunk(int64(sestixo), maxChunkSize)

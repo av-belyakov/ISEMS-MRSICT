@@ -80,11 +80,11 @@ func searchSTIXObject(
 		return fn, err
 	}
 
-	fmt.Printf("____ func 'searchSTIXObject' appTaskID: '%s', ListElementSTIXObject\n", appTaskID)
 	listelm := GetListElementSTIXObject(cur)
-	for k, v := range listelm {
+	fmt.Printf("____ func 'searchSTIXObject' appTaskID: '%s', count ListElementSTIXObject: '%d'\n", appTaskID, len(listelm))
+	/*for k, v := range listelm {
 		fmt.Printf("%d. %s\n", k, v.Data.GetID())
-	}
+	}*/
 
 	//сохраняем найденные значения во временном хранилище
 	err = tst.AddNewFoundInformation(

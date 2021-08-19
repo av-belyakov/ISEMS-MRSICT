@@ -202,7 +202,7 @@ func handlingSearchRequestsSTIXObject(
 
 	tp, ok := ti.TaskParameters.(datamodels.ModAPIRequestProcessingResJSONSearchReqType)
 	if !ok {
-		return fmt.Errorf("type conversion error, line 195")
+		return fmt.Errorf("type conversion error, line 203")
 	}
 
 	//делаем запрос к временному хранилищу информации
@@ -227,7 +227,7 @@ func handlingSearchRequestsSTIXObject(
 
 			numFound, ok := result.Information.(int64)
 			if !ok {
-				return fmt.Errorf("type conversion error, line 220")
+				return fmt.Errorf("type conversion error, line 228")
 			}
 
 			msgRes.AdditionalParameters = struct {
@@ -241,7 +241,7 @@ func handlingSearchRequestsSTIXObject(
 
 			listElemSTIXObj, ok := result.Information.([]*datamodels.ElementSTIXObject)
 			if !ok {
-				return fmt.Errorf("type conversion error, line 234")
+				return fmt.Errorf("type conversion error, line 242")
 			}
 
 			sestixo := len(listElemSTIXObj)
@@ -259,7 +259,7 @@ func handlingSearchRequestsSTIXObject(
 					TransmittedData:       listMsgRes,
 				}
 
-				fmt.Printf("func 'handlingSearchRequestsSTIXObject', sestixo < maxChunkSize = TRUE, sestixo: '%d'\n", sestixo)
+				//fmt.Printf("func 'handlingSearchRequestsSTIXObject', sestixo < maxChunkSize = TRUE, sestixo: '%d'\n", sestixo)
 
 			} else {
 				num := commonlibs.GetCountChunk(int64(sestixo), maxChunkSize)

@@ -239,14 +239,10 @@ func handlingSearchRequestsSTIXObject(
 		case "full_found_info":
 			//для ПОЛНОЙ информации по найденным STIX объектам
 
-			fmt.Printf("func 'handlingSearchRequestsSTIXObject', data.AppTaskID: '%s', -=== result.Information: '%v'\n", data.AppTaskID, result.Information)
-
 			listElemSTIXObj, ok := result.Information.([]*datamodels.ElementSTIXObject)
 			if !ok {
 				return fmt.Errorf("type conversion error, line 234")
 			}
-
-			fmt.Printf("func 'handlingSearchRequestsSTIXObject', @@@@@@ listElemSTIXObj: '%v'\n", listElemSTIXObj)
 
 			sestixo := len(listElemSTIXObj)
 			listMsgRes := make([]interface{}, 0, sestixo)
@@ -290,9 +286,6 @@ func handlingSearchRequestsSTIXObject(
 				}
 			}
 		}
-
-		fmt.Printf("+++ func 'handlingSearchRequestsSTIXObject', AdditionalParameters: '%v'\n", msgRes.AdditionalParameters)
-
 	}
 
 	msg, err := json.Marshal(msgRes)

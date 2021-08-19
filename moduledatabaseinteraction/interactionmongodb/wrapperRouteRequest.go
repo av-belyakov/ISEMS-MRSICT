@@ -372,6 +372,8 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 		return
 	}
 
+	fmt.Printf("func 'wrapperFuncTypeHandlingSearchRequests', Section: 'handling search requests',\n appTaskID: '%s',\n CollectionName: '%s'\n", dataRequest.AppTaskID, psr.CollectionName)
+
 	//изменяем время модификации информации о задаче
 	_ = tst.ChangeDateTaskModification(dataRequest.AppTaskID)
 

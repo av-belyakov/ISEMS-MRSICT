@@ -912,8 +912,6 @@ func GetListGroupingComputerThreat(cur *mongo.Cursor) []datamodels.ShortDescript
 		})
 	}
 
-	list = make([]datamodels.GroupingDomainObjectsSTIX, 0, 0)
-
 	return listComputerThreat
 }
 

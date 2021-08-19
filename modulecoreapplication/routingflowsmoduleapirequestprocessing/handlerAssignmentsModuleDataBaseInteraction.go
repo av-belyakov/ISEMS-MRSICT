@@ -41,6 +41,8 @@ func HandlerAssignmentsModuleDataBaseInteraction(
 		taskType = "статистика по структурированным данным"
 	}
 
+	fmt.Printf("func 'HandlerAssignmentsModuleDataBaseInteraction', received appTaskID: '%s'\n", data.AppTaskID)
+
 	//получаем всю информацию о задаче
 	taskID, ti, err = tst.GetTaskByID(data.AppTaskID)
 	if err != nil {
@@ -73,7 +75,7 @@ func HandlerAssignmentsModuleDataBaseInteraction(
 		}
 
 		if err = auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{
-			ClientID:         ti.ClientID,
+			ClientID:         "",
 			TaskID:           taskID,
 			Section:          data.Section,
 			TypeNotification: "danger",

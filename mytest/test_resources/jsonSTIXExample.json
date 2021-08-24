@@ -278,6 +278,269 @@
             }
         },
         {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--67e4d90f-aaea-478d-ff43-ff56a560ac56",
+            "created_by_ref": "indicator--26ffb872-1dd9-446e-b6f5-ffr456fffa",
+            "created": "2015-03-22T11:53:22.000Z",
+            "modified": "2015-03-23T14:01:21.000Z",
+            "name": "The Information Ciber Observed",
+            "description": "попытка анализа компьютерного ицидента",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "threat-actor--5b1fdb52-bdab-4a05-8daa-08d6a68f10b1",
+                "campaign--83422c77-904c-4dc1-aff5-5c38f3a2c55c",
+                "tool--a80c07ac-45f7-4d16-ab17-406d3a50b726",
+                "relationship--f82356ae-fe6c-437c-9c24-6b64314ae68a"
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "false positive"
+            }
+        },
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--90e4d81f-56ab-ccfa-b345-ddc1ba2ffe1",
+            "created_by_ref": "identity--a463ffb3-1bd9-4d94-b02d-74e4f1658283",
+            "created": "2015-12-21T19:59:11.000Z",
+            "modified": "2015-12-21T19:59:11.000Z",
+            "name": "The Pink Cyberespionage Team",
+            "description": "Простое описание компьютерной угрозе",
+            "published": "2016-01-20T15:30:10.000Z",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "indicator--26ffb872-1dd9-446e-b6f5-d58527e5b5d2",
+                "campaign--83422c77-904c-4dc1-aff5-5c38f3a2c55c",
+                "relationship--f82356ae-fe6c-437c-9c24-6b64314ae68a"
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "successfully implemented computer threat",
+                "computer_threat_type": "Web-form HTTP BruteForce"
+            }
+        },
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--90e4d81f-56ab-ccfa-b4f1-ddc1c321ba12",
+            "created_by_ref": "identity--a463ffb3-1bd9-4d94-b02d-74e4f1658283",
+            "created": "2015-12-21T19:59:11.000Z",
+            "modified": "2015-12-21T21:03:45.000Z",
+            "name": "Attack on users",
+            "description": "Атака на простых пользователей",
+            "published": "2016-02-05T12:33:11.000Z",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "indicator--26ffb872-1dd9-446e-b6f5-d58527e5b5d2",
+                "campaign--83422c77-904c-4dc1-aff5-5c38f3a2c55c",
+                "relationship--f82356ae-fe6c-437c-9c24-6b64314ae68a"
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "successfully implemented computer threat",
+                "computer_threat_type": "PHP-injection"
+            }
+        },
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--90e4d82a-13dd-2cf1-b4da-ccc1c556ab13",
+            "created_by_ref": "identity--a463ffb3-1bd9-4d94-b02d-74e4f1658283",
+            "created": "2015-12-21T19:59:11.000Z",
+            "modified": "2015-12-21T21:13:15.000Z",
+            "name": "New report",
+            "description": "PHP инъекция на подсистему управления",
+            "published": "2016-02-05T12:33:11.000Z",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "tool--26ffb872-1dd9-446e-b6f5-fdfa455faa2",
+                "opinion-56ee12bd-6710-eff1-bb67-tt45266477a",
+                "indicator-67aab223b-7800-12fa-0234-eeab120bdf",
+                "campaign--83422c77-904c-4dc1-aff5-5c38f3a2c55c",
+                "relationship--f82356ae-fe6c-437c-9c24-6b64314ae68a"
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "successfully implemented computer threat",
+                "computer_threat_type": "PHP-injection"
+            }
+        },
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--a0e4d101-a3db-2bf2-b411-c45bad1230d1",
+            "created_by_ref": "identity--a463ffb3-1bd9-4d94-b02d-74e4f1658283",
+            "created": "2015-12-21T19:52:13.000Z",
+            "modified": "2015-12-21T21:03:25.000Z",
+            "name": "Information about computer threat",
+            "description": "Информация о компьютерной угрозе",
+            "published": "2016-12-15T02:03:31.000Z",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "tool--26ffb872-1dd9-446e-b6f5-fdfa455faa2",
+                "opinion--56ee12bd-6710-eff1-bb67-tt45266477a",
+                "indicator--67aab223b-7800-12fa-0234-eeab120bdf",
+                "intrusion-set--67123fab-3245-6afb-67a0-891baf9afb0334",
+                "identity--67ab1200-56bb-daf1-efa1-7874bbaf90122",
+                "campaign--83422c77-904c-4dc1-aff5-5c38f3a2c55c",
+                "relationship--f82356ae-fe6c-437c-9c24-6b64314ae68a"
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "successfully implemented computer threat",
+                "computer_threat_type": "PHP-injection"
+            }
+        },
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--a0e00101-a3ab-a1f2-b412-aabbad1660d2",
+            "created_by_ref": "identity--a463ffb3-1bd9-4d94-b02d-74e4f1658283",
+            "created": "2015-12-21T19:12:14.000Z",
+            "modified": "2015-12-21T20:05:15.000Z",
+            "name": "The Green Boot Theam",
+            "description": "Атака на подсистему энерго управления дома",
+            "published": "2016-12-15T02:03:31.000Z",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "tool--26ffb872-1dd9-446e-b6f5-fdfa455faa2",
+                "opinion--56ee12bd-6710-eff1-bb67-tt45266477a",
+                "domain-name--67aab223b-7800-12fa-0234-eeab120bdf",
+                "malware-set--67123fab-3245-6afb-67a0-891baf9afb0334",
+                "identity--67ab1200-56bb-daf1-efa1-7874bbaf90122",
+                "campaign--83422c77-904c-4dc1-aff5-5c38f3a2c55c",
+                "malware-analysis--56tuefgga-56rf-44ge-375t-hdbfuwbfueuy3y",
+                "relationship--f82356ae-fe6c-437c-9c24-6b64314ae68a"
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "successfully implemented computer threat",
+                "computer_threat_type": "Malware"
+            }
+        },
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--a0e00101-a30b-a1f0-b320-afdbad1980d1",
+            "created_by_ref": "identity--a463ffb3-1bd9-4d94-b02d-74e4f1658283",
+            "created": "2015-12-21T19:12:14.000Z",
+            "modified": "2015-12-21T20:05:15.000Z",
+            "name": "Sque group theam",
+            "description": "Громкая музыка",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "tool--26ffb872-1dd9-446e-b6f5-fdfa455faa2",
+                "opinion--56ee12bd-6710-eff1-bb67-tt45266477a",
+                "intrusion-set--67123fab-3245-6afb-67a0-891baf9afb0334",
+                "threat-actor--67ab1200-56bb-daf1-efa1-7874bbaf90122",
+                "relationship--f82356ae-fe6c-437c-9c24-6b64314ae68a"
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "successfully implemented computer threat",
+                "computer_threat_type": "PHP-injection"
+            }
+        },
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--a0e00aab1-a3ff-a1f1-ty21-eb4ccvd678113a",
+            "created_by_ref": "identity--a463ffb3-1bd9-4d94-b02d-74e4f1658283",
+            "created": "2015-12-21T19:11:36.000Z",
+            "modified": "2015-12-21T22:12:17.000Z",
+            "name": "The Group Two Orange",
+            "description": "Botnet, создание ботнета",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "tool--26ffb872-1dd9-446e-b6f5-fdfa455faa2",
+                "note--67123fab-3245-6afb-67a0-891baf9afb0334",
+                "infrastructure--67ab1200-56bb-daf1-efa1-7874bbaf90122",
+                "vulnerability--83422c77-904c-4dc1-aff5-5c38f3a2c55c",
+                "relationship--f82356ae-fe6c-437c-9c24-6b64314ae68a"
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "successfully implemented computer threat",
+                "computer_threat_type": "EternalBlue exploitation"
+            }
+        },
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--a0e00eeb2-a3db-abfa-4y17-eb4c03fb123a",
+            "created_by_ref": "identity--a463ffb3-1bd9-4d94-b02d-74e4f1658283",
+            "created": "2015-12-21T19:11:46.000Z",
+            "modified": "2015-12-21T21:13:57.000Z",
+            "name": "The Group Free Elements Net",
+            "description": "Угроза взлома компьютерного контента",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "ipv4-addr--26ffb872-1dd9-446e-b6f5-fdfa455faa2",
+                "course-of-action--67123fab-3245-6afb-67a0-891baf9afb0334",
+                "infrastructure--67ab1200-56bb-daf1-efa1-7874bbaf90122",
+                "vulnerability--83422c77-904c-4dc1-aff5-5c38f3a2c55c",
+                "attack-pattern--f82356ae-fe6c-437c-9c24-6b64314ae68a"
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "unsuccessfully computer threat",
+                "computer_threat_type": "HTTP BruteForce"
+            }
+        },
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--a0e00eeb2-a3da-abf2-0yay-eb4c055fa45",
+            "created_by_ref": "identity--a463ffb3-1bd9-4d94-b02d-aabef1658113",
+            "created": "2015-12-21T19:11:46.000Z",
+            "modified": "2015-12-21T21:13:57.000Z",
+            "name": "The Group Five Mouses",
+            "description": "Неопределенная угроза",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "ipv4-addr--26ffb872-1dd9-446e-b6f5-fdfa455faa2",
+                "email-addr--67123fab-3245-6afb-67a0-891baf9afb0334",
+                "email-message--67ab1200-56bb-daf1-efa1-7874bbaf90122",
+                "vulnerability--83422c77-904c-4dc1-aff5-5c38f3a2c55c",
+                "location--f82356ae-fe6c-437c-9c24-6b64314ae68a"
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "unsuccessfully computer threat",
+                "computer_threat_type": "Malware"
+            }
+        },
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--a0e00eeb2-a3dd-abf1-0y11-eb4c0a34efb",
+            "created_by_ref": "identity--a463ffdd-1bd8-1d94-b02a-aacef1621abb",
+            "created": "2015-12-21T19:11:46.000Z",
+            "modified": "2015-12-21T21:13:57.000Z",
+            "name": "The Hot D0g group",
+            "description": "Угроза раскрытия идентификационных данных пользователя",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "ipv4-addr--26ffb872-1dd9-446e-b6f5-fdfa455faa2",
+                "vulnerability--83422c77-904c-4dc1-aff5-5c38f3a2c55c",
+                "location--f82356ae-fe6c-437c-9c24-6b64314ae68a"
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "unsuccessfully computer threat",
+                "computer_threat_type": "Malware"
+            }
+        },
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--a0e00eab2-a3db-ab01-0y13-1b3c0aab11a",
+            "created_by_ref": "identity--a463ffdd-1ed2-1d91-b0a1-daebbf162222",
+            "created": "2015-12-21T19:17:16.000Z",
+            "modified": "2015-12-21T21:03:51.000Z",
+            "name": "The Hot Element",
+            "description": "Много разных компьютерных воздействий",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "vulnerability--83422c77-904c-4dc1-aff5-5c38f3a2c55c",
+                "location--f82356ae-fe6c-437c-9c24-6b64314ae68a"
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "unsuccessfully computer threat",
+                "computer_threat_type": "Vulnerability scan"
+            }
+        },
+        {
             "type": "threat-actor",
             "spec_version": "2.1",
             "id": "threat-actor--5b1fdb52-bdab-4a05-8daa-08d6a68f10b1",

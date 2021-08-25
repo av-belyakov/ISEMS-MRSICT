@@ -3,6 +3,8 @@ package memorytemporarystoragecommoninformation
 import (
 	"fmt"
 	"time"
+
+	"ISEMS-MRSICT/datamodels"
 )
 
 /*** ФУНКЦИИ ОТНОСЯЩИЕСЯ К ХРАНИЛИЩУ ЗАДАЧ ***/
@@ -137,3 +139,52 @@ func (tst *TemporaryStorageType) deletingFoundInformationByID(appTaskID string) 
 }
 
 /*** ФУНКЦИИ ОТНОСЯЩИЕСЯ К ХРАНИЛИЩУ ПАРАМЕТРОВ ПРИЛОЖЕНИЯ ***/
+
+//setListDecisionsMade добавление списка принимаемых решений по компьютерным угрозам
+func (tst *TemporaryStorageType) setListDecisionsMade(l interface{}) error {
+	list, ok := l.(map[string]datamodels.StorageApplicationCommonListType)
+	if !ok {
+		return fmt.Errorf("type conversion error")
+	}
+
+	tst.storageApplicationParameters.ListTypesDecisionsMadeComputerThreat = list
+
+	return nil
+}
+
+//getListDecisionsMade возвращение списка принимаемых решений по компьютерным угрозам
+func (tst *TemporaryStorageType) getListDecisionsMade() map[string]datamodels.StorageApplicationCommonListType {
+	return tst.storageApplicationParameters.ListTypesDecisionsMadeComputerThreat
+}
+
+//getIDDecisionsMadeSuccessfully возвращение ID решения 'successfully implemented computer threat' по компьютерным угрозам
+func (tst *TemporaryStorageType) getIDDecisionsMadeSuccessfully() datamodels.StorageApplicationCommonListType {
+	return tst.storageApplicationParameters.ListTypesDecisionsMadeComputerThreat["successfully implemented computer threat"]
+}
+
+//getIDDecisionsMadeUnsuccessfully возвращение ID решения 'unsuccessfully computer threat' по компьютерным угрозам
+func (tst *TemporaryStorageType) getIDDecisionsMadeUnsuccessfully() datamodels.StorageApplicationCommonListType {
+	return tst.storageApplicationParameters.ListTypesDecisionsMadeComputerThreat["unsuccessfully computer threat"]
+}
+
+//getIDDecisionsMadeFalsePositive возвращение ID решения 'false positive' по компьютерным угрозам
+func (tst *TemporaryStorageType) getIDDecisionsMadeFalsePositive() datamodels.StorageApplicationCommonListType {
+	return tst.storageApplicationParameters.ListTypesDecisionsMadeComputerThreat["false positive"]
+}
+
+//setListComputerThreat добавление списка типов компьютерных угроз
+func (tst *TemporaryStorageType) setListComputerThreat(l interface{}) error {
+	list, ok := l.(map[string]datamodels.StorageApplicationCommonListType)
+	if !ok {
+		return fmt.Errorf("type conversion error")
+	}
+
+	tst.storageApplicationParameters.ListTypesComputerThreat = list
+
+	return nil
+}
+
+//getListComputerThreat возвращение списка типов компьютерных угроз
+func (tst *TemporaryStorageType) getListComputerThreat() map[string]datamodels.StorageApplicationCommonListType {
+	return tst.storageApplicationParameters.ListTypesComputerThreat
+}

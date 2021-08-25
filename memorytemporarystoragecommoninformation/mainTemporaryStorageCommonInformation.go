@@ -1,9 +1,10 @@
 package memorytemporarystoragecommoninformation
 
 import (
-	"fmt"
 	"sync"
 	"time"
+
+	"ISEMS-MRSICT/datamodels"
 
 	"github.com/google/uuid"
 )
@@ -20,8 +21,8 @@ type TemporaryStorageType struct {
 	chanReqTaskStorage             chan channelRequestTaskStorage
 	foundInformationStorage        map[string]TemporaryStorageFoundInformation
 	chanReqFoundInformationStorage chan channelRequestFoundInformationStorage
-	storageApplicationParameters   storageApplicationParametersType
-	chanReqParameterStorage        chan channelRequestParameterStorage //(ЭТО всего лишь предположительный набросок)
+	storageApplicationParameters   StorageApplicationParametersType
+	chanReqParameterStorage        chan channelRequestStorageApplicationParameters
 }
 
 //TemporaryStorageTaskType описание задачи обрабатываемой приложением
@@ -99,6 +100,14 @@ type TemporaryStorageFoundInformation struct {
 	Information interface{}
 }
 
+//StorageApplicationParametersType хранилище параметров приложения
+// ListTypesDecisionsMadeComputerThreat - типы принимаемых решений по компьютерным угрозам
+// ListTypeComputerThreat - список типов компьютерных угроз
+type StorageApplicationParametersType struct {
+	ListTypesDecisionsMadeComputerThreat map[string]datamodels.StorageApplicationCommonListType
+	ListTypesComputerThreat              map[string]datamodels.StorageApplicationCommonListType
+}
+
 //channelRequestFoundInformationStorage канал через который передаются запросы к хранилищу найденной информации
 // appTaskID - идентификатор задачи
 // actionType - тип действия
@@ -121,24 +130,22 @@ type channelResponseFoundInformationStorage struct {
 	errMsg      error
 }
 
-//storageApplicationParametersType хранилище параметров приложения (ПОКА ЗАГЛУШКА)
-type storageApplicationParametersType struct{}
-
-//channelRequestParameterStorage канал через который выполняются запросы к внутреннему обработчику хранилища параметров
-//  приложения (ПОКА ЗАГЛУШКА)
+//channelRequestStorageApplicationParameters канал через который выполняются запросы к внутреннему обработчику хранилища параметров приложения
 // actionType - тип действия
-// parameterID - внутренний идентификатор параметра
+// parameterStorage - параметр
 // chanRes - канал через который будет получен ответ от хранилища
-type channelRequestParameterStorage struct {
-	actionType  string
-	parameterID string
-	chanRes     chan channelResponseParameterStorage
+type channelRequestStorageApplicationParameters struct {
+	actionType       string
+	parameterStorage interface{}
+	chanRes          chan channelResponseStorageApplicationParameters
 }
 
 //channelResponseParameterStorage канал через который передаются ответы с параметрами приложения (ПОКА ЗАГЛУШКА)
-type channelResponseParameterStorage struct {
-	parameterType string
-	actionType    string
+// dataParameterStorage - передаваемые параметры приложения
+// errMsg - сообщение об ошибке
+type channelResponseStorageApplicationParameters struct {
+	dataParameterStorage interface{}
+	errMsg               error
 }
 
 var once sync.Once
@@ -148,15 +155,15 @@ var stmc TemporaryStorageType
 func NewTemporaryStorage() *TemporaryStorageType {
 	once.Do(func() {
 		chanReqTask := make(chan channelRequestTaskStorage)
-		chanReqParameter := make(chan channelRequestParameterStorage)
 		chanReqFoundInfo := make(chan channelRequestFoundInformationStorage)
+		chanReqParameter := make(chan channelRequestStorageApplicationParameters)
 
 		stmc = TemporaryStorageType{
 			taskStorage:                    map[string]TemporaryStorageTaskInDetailType{},
 			chanReqTaskStorage:             chanReqTask,
 			foundInformationStorage:        map[string]TemporaryStorageFoundInformation{},
 			chanReqFoundInformationStorage: chanReqFoundInfo,
-			storageApplicationParameters:   storageApplicationParametersType{},
+			storageApplicationParameters:   StorageApplicationParametersType{},
 			chanReqParameterStorage:        chanReqParameter,
 		}
 
@@ -225,8 +232,43 @@ func NewTemporaryStorage() *TemporaryStorageType {
 					}
 
 				case msg := <-chanReqParameter:
-					fmt.Println(msg)
+					switch msg.actionType {
+					case "set list decisions made":
+						msg.chanRes <- channelResponseStorageApplicationParameters{
+							errMsg: stmc.setListDecisionsMade(msg.parameterStorage),
+						}
 
+					case "get list decisions made":
+						msg.chanRes <- channelResponseStorageApplicationParameters{
+							dataParameterStorage: stmc.getListDecisionsMade(),
+						}
+
+					case "get id decisions made type: successfully implemented computer threat":
+						msg.chanRes <- channelResponseStorageApplicationParameters{
+							dataParameterStorage: stmc.getIDDecisionsMadeSuccessfully(),
+						}
+
+					case "get id decisions made type: unsuccessfully computer threat":
+						msg.chanRes <- channelResponseStorageApplicationParameters{
+							dataParameterStorage: stmc.getIDDecisionsMadeUnsuccessfully(),
+						}
+
+					case "get id decisions made type: false positive":
+						msg.chanRes <- channelResponseStorageApplicationParameters{
+							dataParameterStorage: stmc.getIDDecisionsMadeFalsePositive(),
+						}
+
+					case "set type computer threat":
+						msg.chanRes <- channelResponseStorageApplicationParameters{
+							errMsg: stmc.setListComputerThreat(msg.parameterStorage),
+						}
+
+					case "get type computer threat":
+						msg.chanRes <- channelResponseStorageApplicationParameters{
+							dataParameterStorage: stmc.getListComputerThreat(),
+						}
+
+					}
 				}
 			}
 		}()

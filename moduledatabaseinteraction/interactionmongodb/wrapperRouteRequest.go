@@ -7,9 +7,21 @@ import (
 	"ISEMS-MRSICT/commonlibs"
 	"ISEMS-MRSICT/datamodels"
 	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
+
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
-//WrapperFuncTypeHandlingSTIXObject набор обработчиков для работы с запросами связанными со STIX объектами
+var errorMessage = datamodels.ModuleDataBaseInteractionChannel{
+	CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+		ModuleGeneratorMessage: "module database interaction",
+		ModuleReceiverMessage:  "module core application",
+		ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
+			ModuleAPIRequestProcessingSettingSendTo: true,
+		},
+	},
+}
+
+//wrapperFuncTypeHandlingSTIXObject набор обработчиков для работы с запросами связанными со STIX объектами
 func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 	chanOutput chan<- datamodels.ModuleDataBaseInteractionChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) {
@@ -24,23 +36,14 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 		}
 	)
 
-	errorMessage := datamodels.ModuleDataBaseInteractionChannel{
-		CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
-			ModuleGeneratorMessage: "module database interaction",
-			ModuleReceiverMessage:  "module core application",
-			ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
-				FuncName:                                fn,
-				ModuleAPIRequestProcessingSettingSendTo: true,
-			},
-		},
-		Section:   "handling stix object",
-		AppTaskID: ws.DataRequest.AppTaskID,
-	}
+	errorMessage.ErrorMessage.FuncName = fn
+	errorMessage.Section = "handling stix object"
+	errorMessage.AppTaskID = ws.DataRequest.AppTaskID
 
 	//получаем всю информацию о выполняемой задаче из временного хранилища задач
 	_, taskInfo, err := tst.GetTaskByID(ws.DataRequest.AppTaskID)
 	if err != nil {
-		errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = fmt.Errorf("no information about the task by its id was found in the temporary storage")
+		errorMessage.ErrorMessage.Error = fmt.Errorf("no information about the task by its id was found in the temporary storage")
 		chanOutput <- errorMessage
 
 		return
@@ -48,7 +51,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 
 	ti, ok := taskInfo.TaskParameters.([]*datamodels.ElementSTIXObject)
 	if !ok {
-		errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = fmt.Errorf("type conversion error")
+		errorMessage.ErrorMessage.Error = fmt.Errorf("type conversion error")
 		chanOutput <- errorMessage
 
 		return
@@ -60,7 +63,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 	//выполняем запрос к БД, для получения полной информации об STIX объектах по их ID
 	listElemetSTIXObject, err := FindSTIXObjectByID(qp, listID)
 	if err != nil {
-		errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = err
+		errorMessage.ErrorMessage.Error = err
 		chanOutput <- errorMessage
 
 		return
@@ -77,9 +80,9 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 	if len(listDifferentObject) > 0 {
 		qp.CollectionName = "accounting_differences_objects_collection"
 
-		_, err := qp.InsertData([]interface{}{listDifferentObject})
+		_, err := qp.InsertData([]interface{}{listDifferentObject}, []mongo.IndexModel{})
 		if err != nil {
-			errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = err
+			errorMessage.ErrorMessage.Error = err
 			chanOutput <- errorMessage
 
 			return
@@ -89,7 +92,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 	//добавляем или обновляем STIX объекты в БД
 	err = ReplacementElementsSTIXObject(qp, ti)
 	if err != nil {
-		errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = err
+		errorMessage.ErrorMessage.Error = err
 		chanOutput <- errorMessage
 
 		return
@@ -135,23 +138,14 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 		}
 	)
 
-	errorMessage := datamodels.ModuleDataBaseInteractionChannel{
-		CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
-			ModuleGeneratorMessage: "module database interaction",
-			ModuleReceiverMessage:  "module core application",
-			ErrorMessage: datamodels.ErrorDataTypePassedThroughChannels{
-				FuncName:                                fn,
-				ModuleAPIRequestProcessingSettingSendTo: true,
-			},
-		},
-		Section:   "handling search requests",
-		AppTaskID: ws.DataRequest.AppTaskID,
-	}
+	errorMessage.ErrorMessage.FuncName = fn
+	errorMessage.Section = "handling search requests"
+	errorMessage.AppTaskID = ws.DataRequest.AppTaskID
 
 	//получаем всю информацию о выполняемой задаче из временного хранилища задач
 	_, taskInfo, err := tst.GetTaskByID(ws.DataRequest.AppTaskID)
 	if err != nil {
-		errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = err
+		errorMessage.ErrorMessage.Error = err
 		chanOutput <- errorMessage
 
 		return
@@ -159,7 +153,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 
 	psr, ok := taskInfo.TaskParameters.(datamodels.ModAPIRequestProcessingResJSONSearchReqType)
 	if !ok {
-		errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = fmt.Errorf("type conversion error")
+		errorMessage.ErrorMessage.Error = fmt.Errorf("type conversion error")
 		chanOutput <- errorMessage
 
 		return
@@ -170,7 +164,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 
 	//изменяем статус выполняемой задачи на 'in progress'
 	if err := tst.ChangeTaskStatus(ws.DataRequest.AppTaskID, "in progress"); err != nil {
-		errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = err
+		errorMessage.ErrorMessage.Error = err
 		chanOutput <- errorMessage
 
 		return
@@ -180,7 +174,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 	case "stix object":
 		searchParameters, ok := psr.SearchParameters.(datamodels.SearchThroughCollectionSTIXObjectsType)
 		if !ok {
-			errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = fmt.Errorf("type conversion error")
+			errorMessage.ErrorMessage.Error = fmt.Errorf("type conversion error")
 			chanOutput <- errorMessage
 
 			return
@@ -190,7 +184,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 		if (psr.PaginateParameters.CurrentPartNumber <= 0) || (psr.PaginateParameters.MaxPartNum <= 0) {
 			resSize, err := qp.CountDocuments(CreateSearchQueriesSTIXObject(&searchParameters))
 			if err != nil {
-				errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = err
+				errorMessage.ErrorMessage.Error = err
 				chanOutput <- errorMessage
 
 				return
@@ -205,7 +199,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 					Information: resSize,
 				})
 			if err != nil {
-				errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = err
+				errorMessage.ErrorMessage.Error = err
 				chanOutput <- errorMessage
 
 				return
@@ -223,7 +217,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 				SortAscending: false,
 			})
 			if err != nil {
-				errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = err
+				errorMessage.ErrorMessage.Error = err
 				chanOutput <- errorMessage
 
 				return
@@ -238,7 +232,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 					Information: GetListElementSTIXObject(cur),
 				})
 			if err != nil {
-				errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = err
+				errorMessage.ErrorMessage.Error = err
 				chanOutput <- errorMessage
 
 				return
@@ -249,7 +243,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 
 		//изменяем состояние задачи на 'completed'
 		if err := tst.ChangeTaskStatus(ws.DataRequest.AppTaskID, "completed"); err != nil {
-			errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = err
+			errorMessage.ErrorMessage.Error = err
 			chanOutput <- errorMessage
 
 			return
@@ -265,7 +259,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 			AppTaskID: ws.DataRequest.AppTaskID,
 		}
 
-	case "":
+	case "stix object list type grouping":
 
 	default:
 		errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = fmt.Errorf("the name of the database collection is not defined")
@@ -381,7 +375,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingReferenceBook(
 		if len(listDifferentObject) > 0 {
 			qp.CollectionName = "accounting_differences_objects_collection"
 
-			_, err := qp.InsertData([]interface{}{listDifferentObject})
+			//_, err := qp.InsertData([]interface{}{listDifferentObject})
 			if err != nil {
 				errorMessage.Error = err
 				switchMSGType(&message, errorMessage)

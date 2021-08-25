@@ -37,7 +37,6 @@ func Routing(
 
 		case "handling reference book":
 			go ws.wrapperFuncTypeHandlingReferenceBook(chanOutput, tst)
-
 		}
 	}
 }

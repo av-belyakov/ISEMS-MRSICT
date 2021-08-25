@@ -13,6 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 //ComparasionListTypeSTIXObject содержит два списка STIX объектов, предназначенных для сравнения
@@ -673,7 +674,20 @@ func ReplacementElementsSTIXObject(qp QueryParameters, l []*datamodels.ElementST
 		return err
 	}
 
-	_, err = qp.InsertData(listObj)
+	_, err = qp.InsertData(listObj, []mongo.IndexModel{
+		{
+			Keys: bson.D{
+				{Key: "commonpropertiesobjectstix.type", Value: 1},
+				{Key: "commonpropertiesobjectstix.id", Value: 1},
+			},
+			Options: &options.IndexOptions{},
+		}, {
+			Keys: bson.D{
+				{Key: "source_ref", Value: 1},
+			},
+			Options: &options.IndexOptions{},
+		},
+	})
 	if err != nil {
 		return err
 	}

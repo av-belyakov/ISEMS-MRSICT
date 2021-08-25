@@ -260,6 +260,23 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 		}
 
 	case "stix object list type grouping":
+		if fn, err := searchSTIXObjectListTypeGrouping(ws.DataRequest.AppTaskID, qp, psr, tst); err != nil {
+			errorMessage.ErrorMessage.FuncName = fn
+			errorMessage.ErrorMessage.Error = err
+			chanOutput <- errorMessage
+
+			return
+		}
+
+		//отправляем в канал идентификатор задачи и специальные параметры которые информируют что задача была выполненна
+		chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
+			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+				ModuleGeneratorMessage: "module database interaction",
+				ModuleReceiverMessage:  "module core application",
+			},
+			Section:   "handling search requests",
+			AppTaskID: ws.DataRequest.AppTaskID,
+		}
 
 	default:
 		errorMessage.CommanDataTypePassedThroughChannels.ErrorMessage.Error = fmt.Errorf("the name of the database collection is not defined")
@@ -285,7 +302,82 @@ func switchMSGType(msg *datamodels.ModuleDataBaseInteractionChannel, m interface
 	}
 }
 
-//wrapperFuncTypeHandlingReferenceBook набор обработчиков для работы с запросами к справочникам
+//wrapperFuncTypeTechnicalPart набор обработчиков для осуществления задач, связанных с технической частью приложения: формирование документов БД
+// связанных с хранением технической информации или документов, учавствующих в посторении иерархии объектов типа STIX. Запись идентификаторов таких
+// объектов во временное хранилище и т.д.
+func (ws *wrappersSetting) wrapperFuncTypeTechnicalPart(
+	chanOutput chan<- datamodels.ModuleDataBaseInteractionChannel,
+	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) {
+
+	fmt.Println("func 'wrapperFuncTypeTechnicalPart', START...")
+
+	var (
+		fn string = "wrapperFuncTypeTechnicalPart"
+		qp        = QueryParameters{
+			NameDB:         ws.NameDB,
+			CollectionName: "stix_object_collection",
+			ConnectDB:      ws.ConnectionDB.Connection,
+		}
+	)
+
+	errorMessage.ErrorMessage.FuncName = fn
+	errorMessage.Section = "handling technical part"
+
+	switch ws.DataRequest.Command {
+	case "create STIX DO type 'grouping'":
+		/*
+			проверяем наличие объектов STIX DO типа 'grouping', содержащих списки 'подтвержденных' или 'отклоненных' объектов STIX DO типа 'report'
+			и при необходимости создаем новые STIX DO объекты типа 'grouping'
+		*/
+		go func() {
+			ldm, err := tst.GetListDecisionsMade()
+			if err != nil {
+				errorMessage.ErrorMessage.Error = err
+				chanOutput <- errorMessage
+
+				return
+			}
+
+			listID, err := GetIDGroupingObjectSTIX(qp, ldm)
+			if err != nil {
+				errorMessage.ErrorMessage.Error = err
+				chanOutput <- errorMessage
+
+				return
+			}
+
+			//добавляем список ID во временное хранилище
+			tst.SetListDecisionsMade(listID)
+		}()
+
+		/*
+			проверяем наличие объектов STIX DO типа 'grouping', содержащих списки объектов STIX DO типа 'report', относящихся к какому то определенному
+			виду компьютерного воздействия
+		*/
+		go func() {
+			lct, err := tst.GetListComputerThreat()
+			if err != nil {
+				errorMessage.ErrorMessage.Error = err
+				chanOutput <- errorMessage
+
+				return
+			}
+
+			listID, err := GetIDGroupingObjectSTIX(qp, lct)
+			if err != nil {
+				errorMessage.ErrorMessage.Error = err
+				chanOutput <- errorMessage
+
+				return
+			}
+
+			//добавляем список ID во временное хранилище
+			tst.SetListComputerThreat(listID)
+		}()
+	}
+}
+
+//wrapperFuncTypeHandlingReferenceBook набор обработчиков для работы с запросами к справочнику
 func (ws *wrappersSetting) wrapperFuncTypeHandlingReferenceBook(
 	chanOutput chan<- datamodels.ModuleDataBaseInteractionChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) {

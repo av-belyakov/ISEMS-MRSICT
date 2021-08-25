@@ -2,13 +2,16 @@ package interactionmongodb
 
 import (
 	"context"
+	"fmt"
 	"net"
 	"regexp"
+	"time"
 
 	"ISEMS-MRSICT/commonlibs"
 	"ISEMS-MRSICT/datamodels"
 
 	"github.com/asaskevich/govalidator"
+	"github.com/google/uuid"
 	ipv4conv "github.com/signalsciences/ipv4"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -725,6 +728,103 @@ func FilterEditabelRB(listRB datamodels.Vocabularys) (datamodels.Vocabularys, da
 
 // ComparasionListRBbject - функция поэлементного сравнения вдух списков RB-объектов
 func ComparasionListRBbject(compList1 datamodels.Vocabularys, compList2 datamodels.Vocabularys) []datamodels.DifferentObjectType {
-
 	return nil
+}
+
+//GetIDGroupingObjectSTIX проверяет наличие Grouping STIX DO объектов с заданными именами и при необходимости создает их. Возвращает список
+// идентификаторов STIX DO объектов типа Grouping и название объекта.
+func GetIDGroupingObjectSTIX(qp QueryParameters, listSearch map[string]datamodels.StorageApplicationCommonListType) (map[string]datamodels.StorageApplicationCommonListType, error) {
+	var (
+		isTrue     bool
+		ls         []string
+		listInsert []interface{}
+	)
+	listID := map[string]datamodels.StorageApplicationCommonListType{}
+
+	for k := range listSearch {
+		ls = append(ls, k)
+	}
+
+	//получить все найденные документы
+	cur, err := qp.Find(bson.D{{Key: "name", Value: bson.D{{Key: "$in", Value: ls}}}})
+	if err != nil {
+		return listID, err
+	}
+
+	listTypeStatus := GetListGroupingObjectSTIX(cur)
+
+	for ko, vo := range listSearch {
+		for _, vt := range listTypeStatus {
+			if ko == vt.Name {
+				listID[ko] = datamodels.StorageApplicationCommonListType{
+					ID:          vt.ID,
+					Description: vo.Description,
+				}
+
+				isTrue = true
+
+				continue
+			}
+		}
+
+		if !isTrue {
+			id := uuid.NewString()
+			listInsert = append(listInsert, datamodels.GroupingDomainObjectsSTIX{
+				CommonPropertiesObjectSTIX: datamodels.CommonPropertiesObjectSTIX{
+					Type: "grouping",
+					ID:   fmt.Sprintf("grouping--%s", id),
+				},
+				CommonPropertiesDomainObjectSTIX: datamodels.CommonPropertiesDomainObjectSTIX{
+					SpecVersion: "2.1",
+					Created:     time.Now(),
+				},
+				Name:        ko,
+				Description: vo.Description,
+			})
+
+			listID[ko] = datamodels.StorageApplicationCommonListType{
+				ID:          id,
+				Description: vo.Description,
+			}
+		}
+
+		isTrue = false
+	}
+
+	if len(listInsert) == 0 {
+		return listID, nil
+	}
+
+	_, err = qp.InsertData(listInsert, []mongo.IndexModel{
+		{
+			Keys: bson.D{
+				{Key: "commonpropertiesobjectstix.type", Value: 1},
+				{Key: "commonpropertiesobjectstix.id", Value: 1},
+			},
+			Options: &options.IndexOptions{},
+		}, {
+			Keys: bson.D{
+				{Key: "source_ref", Value: 1},
+			},
+			Options: &options.IndexOptions{},
+		},
+	})
+
+	return listID, err
+}
+
+//GetListGroupingObjectSTIX возвращает из БД список STIX DO объектов типа Grouping
+func GetListGroupingObjectSTIX(cur *mongo.Cursor) []datamodels.GroupingDomainObjectsSTIX {
+	var list []datamodels.GroupingDomainObjectsSTIX
+
+	for cur.Next(context.Background()) {
+		var gdostix datamodels.GroupingDomainObjectsSTIX
+		if err := cur.Decode(&gdostix); err != nil {
+			continue
+		}
+
+		list = append(list, gdostix)
+	}
+
+	return list
 }

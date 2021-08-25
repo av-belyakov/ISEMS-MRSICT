@@ -541,6 +541,348 @@
             }
         },
         {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--a0e00eab2-a3db-ab01-0y13-1b3c0aab11a",
+            "created_by_ref": "identity--a463ffdd-1ed2-1d91-b0a1-daebbf162222",
+            "created": "2015-12-21T19:17:16.000Z",
+            "modified": "2015-12-21T21:03:51.000Z",
+            "name": "The Special Test 1",
+            "description": "Доклад специальный тест №1",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "vulnerability--83422c77-904c-4dc1-aff5-5c38f3a2c55c",
+                "location--f82356ae-fe6c-437c-9c24-6b64314ae68a"
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "unsuccessfully computer threat",
+                "computer_threat_type": "Vulnerability scan"
+            }
+        },
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--a0e00eab2-a3db-ab01-0y13-1b3c0aab12a",
+            "created_by_ref": "identity--a463ffdd-1ed2-1d91-b0a1-daebbf162222",
+            "created": "2015-12-21T19:17:16.000Z",
+            "modified": "2015-12-21T21:03:51.000Z",
+            "name": "The Special Test 2",
+            "description": "Доклад специальный тест №2",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "vulnerability--83422c77-904c-4dc1-aff5-5c38f3a2c55c",
+                "location--f82356ae-fe6c-437c-9c24-6b64314ae68a"
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "unsuccessfully computer threat",
+                "computer_threat_type": "Vulnerability scan"
+            }
+        },
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--a0e00eab2-a3db-ab01-0y13-1b3c0aab13a",
+            "created_by_ref": "identity--a463ffdd-1ed2-1d91-b0a1-daebbf162222",
+            "created": "2015-12-21T19:17:16.000Z",
+            "modified": "2015-12-21T21:03:51.000Z",
+            "name": "The Special Test 3",
+            "description": "Доклад специальный тест №3",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "vulnerability--83422c77-904c-4dc1-aff5-5c38f3a2c55c",
+                "location--f82356ae-fe6c-437c-9c24-6b64314ae68a"
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "unsuccessfully computer threat",
+                "computer_threat_type": "Vulnerability scan"
+            }
+        },
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--a0e00eab2-a3db-ab01-0y13-1b3c0aab14a",
+            "created_by_ref": "identity--a463ffdd-1ed2-1d91-b0a1-daebbf162222",
+            "created": "2015-12-21T19:17:16.000Z",
+            "modified": "2015-12-21T21:03:51.000Z",
+            "name": "The Special Test 4",
+            "description": "Доклад специальный тест №4",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "vulnerability--83422c77-904c-4dc1-aff5-5c38f3a2c55c",
+                "location--f82356ae-fe6c-437c-9c24-6b64314ae68a"
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "unsuccessfully computer threat",
+                "computer_threat_type": "Vulnerability scan"
+            }
+        },
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--a0e00eab2-a3db-ab01-0y13-1b3c0aab15a",
+            "created_by_ref": "identity--a463ffdd-1ed2-1d91-b0a1-daebbf162222",
+            "created": "2015-12-21T19:17:16.000Z",
+            "modified": "2015-12-21T21:03:51.000Z",
+            "name": "The Special Test 5",
+            "description": "Доклад специальный тест №5",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "vulnerability--83422c77-904c-4dc1-aff5-5c38f3a2c55c",
+                "location--f82356ae-fe6c-437c-9c24-6b64314ae68a"
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "unsuccessfully computer threat",
+                "computer_threat_type": "Vulnerability scan"
+            }
+        },
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--a0e00eab2-a3db-ab01-0y13-1b3c0aab16a",
+            "created_by_ref": "identity--a463ffdd-1ed2-1d91-b0a1-daebbf162222",
+            "created": "2015-12-21T19:17:16.000Z",
+            "modified": "2015-12-21T21:03:51.000Z",
+            "name": "The Special Test 6",
+            "description": "Доклад специальный тест №6",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "vulnerability--83422c77-904c-4dc1-aff5-5c38f3a2c55c",
+                "location--f82356ae-fe6c-437c-9c24-6b64314ae68a"
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "unsuccessfully computer threat",
+                "computer_threat_type": "Vulnerability scan"
+            }
+        },
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--a0e00eab2-a3db-ab01-0y13-1b3c0aab17a",
+            "created_by_ref": "identity--a463ffdd-1ed2-1d91-b0a1-daebbf162222",
+            "created": "2015-12-21T19:17:16.000Z",
+            "modified": "2015-12-21T21:03:51.000Z",
+            "name": "The Special Test 7",
+            "description": "Доклад специальный тест №7",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "vulnerability--83422c77-904c-4dc1-aff5-5c38f3a2c55c",
+                "location--f82356ae-fe6c-437c-9c24-6b64314ae68a"
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "unsuccessfully computer threat",
+                "computer_threat_type": "Vulnerability scan"
+            }
+        },
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--a0e00eab2-a3db-ab01-0y13-1b3c0aab18a",
+            "created_by_ref": "identity--a463ffdd-1ed2-1d91-b0a1-daebbf162222",
+            "created": "2015-12-21T19:17:16.000Z",
+            "modified": "2015-12-21T21:03:51.000Z",
+            "name": "The Special Test 8",
+            "description": "Доклад специальный тест №8",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "vulnerability--83422c77-904c-4dc1-aff5-5c38f3a2c55c",
+                "location--f82356ae-fe6c-437c-9c24-6b64314ae68a"
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "unsuccessfully computer threat",
+                "computer_threat_type": "Vulnerability scan"
+            }
+        },
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--a0e00eab2-a3db-ab01-0y13-1b3c0aab19a",
+            "created_by_ref": "identity--a463ffdd-1ed2-1d91-b0a1-daebbf162222",
+            "created": "2015-12-21T19:17:16.000Z",
+            "modified": "2015-12-21T21:03:51.000Z",
+            "name": "The Special Test 9",
+            "description": "Доклад специальный тест №9",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "vulnerability--83422c77-904c-4dc1-aff5-5c38f3a2c55c",
+                "location--f82356ae-fe6c-437c-9c24-6b64314ae68a"
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "unsuccessfully computer threat",
+                "computer_threat_type": "Vulnerability scan"
+            }
+        },
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--a0e00eab2-a3db-ab01-0y13-1b3c0aab20a",
+            "created_by_ref": "identity--a463ffdd-1ed2-1d91-b0a1-daebbf162222",
+            "created": "2015-12-21T19:17:16.000Z",
+            "modified": "2015-12-21T21:03:51.000Z",
+            "name": "The Special Test 10",
+            "description": "Доклад специальный тест №10",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "vulnerability--83422c77-904c-4dc1-aff5-5c38f3a2c55c",
+                "location--f82356ae-fe6c-437c-9c24-6b64314ae68a"
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "unsuccessfully computer threat",
+                "computer_threat_type": "Vulnerability scan"
+            }
+        },
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--a0e00eab2-a3db-ab01-0y13-1b3c0aab21a",
+            "created_by_ref": "identity--a463ffdd-1ed2-1d91-b0a1-daebbf162222",
+            "created": "2015-12-21T19:17:16.000Z",
+            "modified": "2015-12-21T21:03:51.000Z",
+            "name": "The Special Test 11",
+            "description": "Доклад специальный тест №11",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "vulnerability--83422c77-904c-4dc1-aff5-5c38f3a2c55c",
+                "location--f82356ae-fe6c-437c-9c24-6b64314ae68a"
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "unsuccessfully computer threat",
+                "computer_threat_type": "Vulnerability scan"
+            }
+        },
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--a0e00eab2-a3db-ab01-0y13-1b3c0aab22a",
+            "created_by_ref": "identity--a463ffdd-1ed2-1d91-b0a1-daebbf162222",
+            "created": "2015-12-21T19:17:16.000Z",
+            "modified": "2015-12-21T21:03:51.000Z",
+            "name": "The Special Test 12",
+            "description": "Доклад специальный тест №12",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "vulnerability--83422c77-904c-4dc1-aff5-5c38f3a2c55c",
+                "location--f82356ae-fe6c-437c-9c24-6b64314ae68a"
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "unsuccessfully computer threat",
+                "computer_threat_type": "Vulnerability scan"
+            }
+        },
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--a0e00eab2-a3db-ab01-0y13-1b3c0aab23a",
+            "created_by_ref": "identity--a463ffdd-1ed2-1d91-b0a1-daebbf162222",
+            "created": "2015-12-21T19:17:16.000Z",
+            "modified": "2015-12-21T21:03:51.000Z",
+            "name": "The Special Test 13",
+            "description": "Доклад специальный тест №13",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "vulnerability--83422c77-904c-4dc1-aff5-5c38f3a2c55c",
+                "location--f82356ae-fe6c-437c-9c24-6b64314ae68a"
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "unsuccessfully computer threat",
+                "computer_threat_type": "Vulnerability scan"
+            }
+        },
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--a0e00eab2-a3db-ab01-0y13-1b3c0aab24a",
+            "created_by_ref": "identity--a463ffdd-1ed2-1d91-b0a1-daebbf162222",
+            "created": "2015-12-21T19:17:16.000Z",
+            "modified": "2015-12-21T21:03:51.000Z",
+            "name": "The Special Test 14",
+            "description": "Доклад специальный тест №14",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "vulnerability--83422c77-904c-4dc1-aff5-5c38f3a2c55c",
+                "location--f82356ae-fe6c-437c-9c24-6b64314ae68a"
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "unsuccessfully computer threat",
+                "computer_threat_type": "Vulnerability scan"
+            }
+        },
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--a0e00eab2-a3db-ab01-0y13-1b3c0aab25a",
+            "created_by_ref": "identity--a463ffdd-1ed2-1d91-b0a1-daebbf162222",
+            "created": "2015-12-21T19:17:16.000Z",
+            "modified": "2015-12-21T21:03:51.000Z",
+            "name": "The Special Test 15",
+            "description": "Доклад специальный тест №15",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "vulnerability--83422c77-904c-4dc1-aff5-5c38f3a2c55c",
+                "location--f82356ae-fe6c-437c-9c24-6b64314ae68a"
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "unsuccessfully computer threat",
+                "computer_threat_type": "Vulnerability scan"
+            }
+        },
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--a0e00eab2-a3db-ab01-0y13-1b3c0aab26a",
+            "created_by_ref": "identity--a463ffdd-1ed2-1d91-b0a1-daebbf162222",
+            "created": "2015-12-21T19:17:16.000Z",
+            "modified": "2015-12-21T21:03:51.000Z",
+            "name": "The Special Test 16",
+            "description": "Доклад специальный тест №16",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "vulnerability--83422c77-904c-4dc1-aff5-5c38f3a2c55c",
+                "location--f82356ae-fe6c-437c-9c24-6b64314ae68a"
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "unsuccessfully computer threat",
+                "computer_threat_type": "Vulnerability scan"
+            }
+        },
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--a0e00eab2-a3db-ab01-0y13-1b3c0aab27a",
+            "created_by_ref": "identity--a463ffdd-1ed2-1d91-b0a1-daebbf162222",
+            "created": "2015-12-21T19:17:16.000Z",
+            "modified": "2015-12-21T21:03:51.000Z",
+            "name": "The Special Test 17",
+            "description": "Доклад специальный тест №17",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "vulnerability--83422c77-904c-4dc1-aff5-5c38f3a2c55c",
+                "location--f82356ae-fe6c-437c-9c24-6b64314ae68a"
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "unsuccessfully computer threat",
+                "computer_threat_type": "Vulnerability scan"
+            }
+        },
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--a0e00eab2-a3db-ab01-0y13-1b3c0aab28a",
+            "created_by_ref": "identity--a463ffdd-1ed2-1d91-b0a1-daebbf162222",
+            "created": "2015-12-21T19:17:16.000Z",
+            "modified": "2015-12-21T21:03:51.000Z",
+            "name": "The Special Test 18",
+            "description": "Доклад специальный тест №18",
+            "report_types": ["campaign"],
+            "object_refs": [
+                "vulnerability--83422c77-904c-4dc1-aff5-5c38f3a2c55c",
+                "location--f82356ae-fe6c-437c-9c24-6b64314ae68a"
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "unsuccessfully computer threat",
+                "computer_threat_type": "Vulnerability scan"
+            }
+        },
+        {
             "type": "threat-actor",
             "spec_version": "2.1",
             "id": "threat-actor--5b1fdb52-bdab-4a05-8daa-08d6a68f10b1",

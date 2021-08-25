@@ -2,9 +2,7 @@ package interactionmongodb_test
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"time"
 
 	. "github.com/onsi/ginkgo"
@@ -14,7 +12,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"ISEMS-MRSICT/datamodels"
-	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
 	"ISEMS-MRSICT/moduledatabaseinteraction/interactionmongodb"
 )
 
@@ -22,7 +19,6 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 	var (
 		connectError error
 		cdmdb        interactionmongodb.ConnectionDescriptorMongoDB
-		tempStorage  *memorytemporarystoragecommoninformation.TemporaryStorageType
 		qp           interactionmongodb.QueryParameters = interactionmongodb.QueryParameters{
 			NameDB:         "isems-mrsict",
 			CollectionName: "stix_object_collection",
@@ -39,7 +35,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 		//подключаемся к базе данных MongoDB
 		connectError = cdmdb.CreateConnection(&datamodels.MongoDBSettings{
-			Host:     "192.168.13.200",
+			Host:     "127.0.0.1",
 			Port:     27017,
 			User:     "module-isems-mrsict",
 			Password: "vkL6Zn$jPmt1e1",
@@ -48,7 +44,6 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 		qp.ConnectDB = cdmdb.Connection
 
-		tempStorage = memorytemporarystoragecommoninformation.NewTemporaryStorage()
 	})
 
 	var _ = AfterSuite(func() {
@@ -84,10 +79,6 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 			Expect(err).ShouldNot(HaveOccurred())
 			Expect(sizeElem).Should(Equal(int64(46)))
-		})
-
-		It("Поиск ТОЛЬКО по времени создания STIX объекта, должно быть найдено определенное количество объектов", func() {
-			tcs, errsp := time.Parse(time.RFC3339, "2015-12-21T19:59:11.000Z")
 			Expect(errsp).ShouldNot(HaveOccurred())
 
 			tce, errep := time.Parse(time.RFC3339, "2016-08-21T21:34:10.000Z")
@@ -231,7 +222,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 			//			fmt.Printf("\tBSON document: '%v'\n", vr)
 
-			cur, err := qp.FindAllWithLimit(&bson.D{vr}, &interactionmongodb.FindAllWithLimitOptions{
+			cur, err := qp.FindAllWithLimit(&vr, &interactionmongodb.FindAllWithLimitOptions{
 				Offset:        1,
 				LimitMaxSize:  100,
 				SortField:     "",
@@ -245,13 +236,6 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 					Value: []string{
 						"https://talks.golang.org/2012/10things.slide#2",
 						"vdb76@yandex.ru",
-						"john@example.com",                        // есть в коллекции БД
-						"2001:0db8:85a3:0000:0000:8a2e:0370:7334", // есть в коллекции БД
-						"198.51.100.3",                            // есть в коллекции БД
-						"basd-89@bk.com",
-					},
-				}},
-			}), &interactionmongodb.FindAllWithLimitOptions{
 				Offset:        1,
 				LimitMaxSize:  100,
 				SortField:     "",
@@ -326,22 +310,12 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 			//			fmt.Printf("Found '%d' elements\n", len(elemSTIXObj))
 
-			//			for _, v := range elemSTIXObj {
-			//				fmt.Printf("Data type STIX: '%s', value: '%v'\n", v.DataType, v)
 			//			}
-
-			Expect(len(elemSTIXObj)).Should(Equal(3))
 		})
-	})
-
 	Context("Тест 4. Формируем поисковые запросы с сортировкой и с выборкой по определенным полям", func() {
-		It("В результате поиска по типу документов, отсортировка по полю 'commonpropertiesdomainobjectstix.created'", func() {
+=======
 			cur, err := qp.FindAllWithLimit(
-				interactionmongodb.CreateSearchQueriesSTIXObject(&datamodels.SearchThroughCollectionSTIXObjectsType{
-					DocumentsType: []string{"grouping", "location", "report", "malware", "attack-pattern"},
 				}), &interactionmongodb.FindAllWithLimitOptions{
-					Offset:        1,
-					LimitMaxSize:  100,
 					SortField:     "commonpropertiesdomainobjectstix.created",
 					SortAscending: false,
 				})
@@ -350,11 +324,11 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 			elemSTIXObj := interactionmongodb.GetListElementSTIXObject(cur)
 
-			/*fmt.Printf("Found '%d' elements and sorted\n", len(elemSTIXObj))
+			fmt.Printf("Found '%d' elements and sorted\n", len(elemSTIXObj))
 
 			for _, v := range elemSTIXObj {
 				fmt.Printf("Data type STIX: '%s', time created: '%v'\n", v.DataType, v.Data)
-			}*/
+			}
 
 			/*
 			   Сортировка работает, однако следует помнить что, сортировка может выполнятся только по одной из групп STIX DO,

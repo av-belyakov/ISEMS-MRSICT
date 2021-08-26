@@ -147,7 +147,7 @@ func (qp QueryParameters) FindAllWithLimit(elem interface{}, opt *FindAllWithLim
 		offset = (opt.Offset - 1) * opt.LimitMaxSize
 	}
 
-	options := options.Find().SetAllowDiskUse(true).SetSort(bson.D{{Key: sortField, Value: sortOrder}}).SetSkip(offset).SetLimit(opt.LimitMaxSize)
+	options := options.Find().SetAllowDiskUse(true).SetSort(bson.D{{Key: sortField, Value: sortOrder}, {Key: "commonpropertiesobjectstix.id", Value: sortOrder}}).SetSkip(offset).SetLimit(opt.LimitMaxSize)
 
 	return collection.Find(context.TODO(), elem, options)
 }

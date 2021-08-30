@@ -91,7 +91,7 @@ type channelResponseTaskStorage struct {
 }
 
 //TemporaryStorageFoundInformation подробное описание информации найденной в результате выполнения задачи поиска
-// Collection - коллекция в которой выполнялся поиск информации ('stix_object_collection' и т.д.)
+// Collection - коллекция в которой выполнялся поиск информации ('stix_object_collection', 'reference_book_collection' и т.д.)
 // ResultType - тип результата ('only_count', 'full_found_info')
 // Information interface{}
 type TemporaryStorageFoundInformation struct {

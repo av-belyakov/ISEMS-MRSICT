@@ -51,7 +51,7 @@ func (commandsList *VocOperations) Contains(op string) bool {
 	return false
 }
 
-//IsValid - Метод валидатор полей API-запроса к объекту стправичной информации ReferersBook
+//IsValid - Метод валидатор полей API-запроса к объекту справочной информации ReferersBook
 func (rbp *RBookReqParameter) IsValid() (bool, error) {
 	var (
 		ok  bool = true
@@ -60,7 +60,7 @@ func (rbp *RBookReqParameter) IsValid() (bool, error) {
 	val := reflect.ValueOf(rbp)
 	errMSG := fmt.Sprintf("The next fields of type %s:\n", val.Type().Name())
 
-	//проверка значения поля OP
+	//проверка значения поля OP - операции над объектом
 	ok = CommandSet.Contains(rbp.OP)
 	if !ok {
 		errMSG = fmt.Sprintf("%s %s contain not valid value %s\n", errMSG, val.FieldByName("OP"), rbp.OP)

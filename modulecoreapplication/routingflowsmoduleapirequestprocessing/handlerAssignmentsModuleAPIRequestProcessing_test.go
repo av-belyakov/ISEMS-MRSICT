@@ -2,22 +2,22 @@ package routingflowsmoduleapirequestprocessing_test
 
 import (
 	"ISEMS-MRSICT/datamodels"
-	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
-	moddatamodels "ISEMS-MRSICT/modulecoreapplication/datamodels"
 	"ISEMS-MRSICT/modulecoreapplication/routingflowsmoduleapirequestprocessing"
-	"ISEMS-MRSICT/moduledatabaseinteraction"
-	"ISEMS-MRSICT/moduledatabaseinteraction/interactionmongodb"
-	"ISEMS-MRSICT/modulelogginginformationerrors"
 	"fmt"
 	"io/ioutil"
-	"os"
 	"path/filepath"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
+//Набор поведенческийх тестов прохождения JSON сообщений содержащих объекты
+// ReferenceBook, SDO, Статистических запросов и запросов управления
+// через обработчик HandlerAssignmentsModuleAPIRequestProcessing
+
 //ReadTestJSONFile - чтение тестового набора данных из файла и первичное их преобразование
+// к виду данных циркулирующих между модулем обрабатывающем запросы с внешних источников
+// и ядром приложения
 func ReadTestJSONFile(path string) *datamodels.ModuleReguestProcessingChannel {
 	var (
 		TestModReq datamodels.ModuleReguestProcessingChannel
@@ -31,59 +31,38 @@ func ReadTestJSONFile(path string) *datamodels.ModuleReguestProcessingChannel {
 	return &TestModReq
 }
 
-var _ = Describe("Тестирование HandlerAssigmentsModuleAPIRequestProcessing", func() {
+var _ = Describe("Тесты объектов ReferenceBook, SDO, Статистических запросов и запросов управления через обработчик HandlerAssignmentsModuleAPIRequestProcessing", func() {
 
-	var (
-		//инициализируем необходимые каналы
-		tst         *memorytemporarystoragecommoninformation.TemporaryStorageType = memorytemporarystoragecommoninformation.NewTemporaryStorage()
-		clim        *moddatamodels.ChannelsListInteractingModules                 = &moddatamodels.ChannelsListInteractingModules{}
-		chanSaveLog chan modulelogginginformationerrors.LogMessageType            = make(chan modulelogginginformationerrors.LogMessageType)
-		chdbi       moduledatabaseinteraction.ChannelsModuleDataBaseInteraction   = moduledatabaseinteraction.ChannelsModuleDataBaseInteraction{
-			ChannelsMongoDB: interactionmongodb.ChannelsMongoDBInteraction{
-				InputModule:  make(chan datamodels.ModuleDataBaseInteractionChannel),
-				OutputModule: make(chan datamodels.ModuleDataBaseInteractionChannel),
-			},
-		}
-	)
-	clim.ChannelsModuleDataBaseInteraction = chdbi
 	TestData := make(map[string]datamodels.ModuleReguestProcessingChannel)
-	dir, _ := os.Getwd()
 
-	// Тестовые данные для STIXObjects
-	TestFilePath := filepath.Join(dir, "..", "..", "mytest/test_resources/jsonSTIXExample.json")
-	TestData["TestSTIXObject"] = *ReadTestJSONFile(TestFilePath)
+	// Загрузка из файла тестовых данных для STIXObjects
+	TestFilePath := filepath.Join(modulePath, "..", "..", "mytest/test_resources/jsonSTIXExample.json")
+	TestData["STIXObject"] = *ReadTestJSONFile(TestFilePath)
 
-	// Тестовые данные для RBook
-	TestFilePath = filepath.Join(dir, "..", "..", "mytest/test_resources/RBookAPIHNotationReq_good.json")
-	TestData["TestGoodRBook"] = *ReadTestJSONFile(TestFilePath)
-	TestFilePath = filepath.Join(dir, "..", "..", "mytest/test_resources/RBookAPIHNotationReq_bad.json")
-	TestData["TestBadRBook"] = *ReadTestJSONFile(TestFilePath)
+	// Загрузка из файла правильных тестовых данных для RBook
+	TestFilePath = filepath.Join(modulePath, "..", "..", "mytest/test_resources/RBookAPIHNotationReq_good.json")
+	TestData["GoodRBook"] = *ReadTestJSONFile(TestFilePath)
 
-	//assertionCheckChanel - Утверждения проверки создания каналов для тестирования
-	assertionCheckChanel := func() {
-		It("Проверка  каналов", func() {
-			Eventually(clim.ChannelsModuleDataBaseInteraction.ChannelsMongoDB.InputModule).ShouldNot(BeClosed())
-			Eventually(clim.ChannelsModuleDataBaseInteraction.ChannelsMongoDB.OutputModule).ShouldNot(BeClosed())
-			Eventually(chanSaveLog).ShouldNot(BeClosed())
-		})
-	}
+	// Загрузка из файла сломанных тестовых данных для RBook
+	TestFilePath = filepath.Join(modulePath, "..", "..", "mytest/test_resources/RBookAPIHNotationReq_bad.json")
+	TestData["BadRBook"] = *ReadTestJSONFile(TestFilePath)
 
-	//assertionGoodBehavior - Утверждения проверки обработки валидных запросов
-	assertionGoodBehavior := func() {
-		It("Сравнение по TaskByID сообщений во временном хранилище и отправленного в канал БД", func(done Done) {
+	//GoodRouteBehavior - Утверждения проверки обработки валидных запросов
+	GoodRouteBehavior := func() {
+
+		It("Сравнение по TaskByID сообщений во временном хранилище и отправленного в канал БД", func() {
 			DBMsg := <-clim.ChannelsModuleDataBaseInteraction.ChannelsMongoDB.InputModule
 			AppTaskID, _, err := tst.GetTaskByID(DBMsg.AppTaskID)
 			Expect(err).Should(BeNil())
 			Expect(DBMsg.AppTaskID).Should(Equal(AppTaskID))
-			close(done)
-		}, 5)
+			//close(done)
+		})
 	}
-	//assertionGoodBehavior - Утверждения проверки обработки валидных запросов
-	assertionCheckChanel()
+
 	Describe("Тестирование прохождения API запросов через секцию handling reference book", func() {
-		Context("Тест: обработка валидных запросов", func() {
-			go routingflowsmoduleapirequestprocessing.HandlerAssignmentsModuleAPIRequestProcessing(chanSaveLog, TestData["TestGoodRBook"], tst, clim)
-			assertionGoodBehavior()
+		Context("Прохождение валидных RB запросов", func() {
+			go routingflowsmoduleapirequestprocessing.HandlerAssignmentsModuleAPIRequestProcessing(chanSaveLog, TestData["GoodRBook"], tst, clim)
+			GoodRouteBehavior()
 		})
 		//Context("Тест: обработка не валидных запросов", func() {
 		//	go routingflowsmoduleapirequestprocessing.HandlerAssigmentsModuleAPIRequestProcessing(chanSaveLog, TestData["TestBadRBook"], tst, clim)

@@ -67,7 +67,7 @@ var _ = Describe("HandlerSTIXCollection", func() {
 
 		//подключаемся к базе данных MongoDB
 		connectError = cdmdb.CreateConnection(&datamodels.MongoDBSettings{
-			Host:     "192.168.13.200",
+			Host:     "192.168.13.201",
 			Port:     27017,
 			User:     "module-isems-mrsict",
 			Password: "vkL6Zn$jPmt1e1",

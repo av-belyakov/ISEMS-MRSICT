@@ -13,6 +13,8 @@ import (
 	"ISEMS-MRSICT/modulelogginginformationerrors"
 )
 
+//HandlerAssignmentsModuleDataBaseInteraction - обработчик ответов от модуля хранилища данных
+// (описывает общие для всех типов обрабатываемх запросов действия)
 func HandlerAssignmentsModuleDataBaseInteraction(
 	chanSaveLog chan<- modulelogginginformationerrors.LogMessageType,
 	data datamodels.ModuleDataBaseInteractionChannel,
@@ -65,7 +67,7 @@ func HandlerAssignmentsModuleDataBaseInteraction(
 		tst.DeletingTaskByID(data.AppTaskID)
 		tst.DeletingFoundInformationByID(data.AppTaskID)
 
-		//если сообщение об ошибки не надо отправлять клиенту модуля 'moduleapirequestprocessing'
+		//В случае если сообщение об ошибки не надо отправлять клиенту модуля 'moduleapirequestprocessing' просто завершаем обработчик
 		if !data.ErrorMessage.ModuleAPIRequestProcessingSettingSendTo {
 			return
 		}
@@ -131,6 +133,7 @@ func HandlerAssignmentsModuleDataBaseInteraction(
 		return
 	}
 
+	//непосредственно обработка ответа хранилища с учетом типа объектов
 	if err := handlerDataBaseResponse(clim.ChannelsModuleAPIRequestProcessing.InputModule, data, tst, ti); err != nil {
 		chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 			TypeMessage: "error",
@@ -160,6 +163,8 @@ func HandlerAssignmentsModuleDataBaseInteraction(
 	}
 }
 
+//handlerDataBaseResponse - непосредственно обработчик ответов на запросы к сущиностям различных типов находящихся в хранилище,
+// приходят от модуля хранилища
 func handlerDataBaseResponse(
 	chanResModAPI chan<- datamodels.ModuleReguestProcessingChannel,
 	data datamodels.ModuleDataBaseInteractionChannel,
@@ -170,13 +175,17 @@ func handlerDataBaseResponse(
 	const _maxChunkSize int = 100
 
 	switch data.Section {
-	case "handling search requests":
+	case "handling search requests": //обработка ответов на поисковый запрос
 		if err := handlingSearchRequestsSTIXObject(chanResModAPI, _maxChunkSize, data, tst, ti); err != nil {
 			return err
 		}
 
-	case "handling statistical requests":
+	case "handling statistical requests": //обработка ответов на запрос статистической информации
 		if err := handlingStatisticalRequestsSTIXObject(chanResModAPI, data, tst, ti); err != nil {
+			return err
+		}
+	case "handling reference book": //обработка ответов на операции со стправочниками
+		if err := handlingReferenceBookRequest(chanResModAPI, _maxChunkSize, data, tst, ti); err != nil {
 			return err
 		}
 
@@ -189,6 +198,7 @@ func handlerDataBaseResponse(
 	return nil
 }
 
+//handlingSearchRequestsSTIXObject - обработчик ответов на поисковые запросы
 func handlingSearchRequestsSTIXObject(
 	chanResModAPI chan<- datamodels.ModuleReguestProcessingChannel,
 	maxChunkSize int,
@@ -306,6 +316,7 @@ func handlingSearchRequestsSTIXObject(
 	return nil
 }
 
+//handlingStatisticalRequestsSTIXObject - обработчик ответов на запросы статистичеких данных
 func handlingStatisticalRequestsSTIXObject(
 	chanResModAPI chan<- datamodels.ModuleReguestProcessingChannel,
 	data datamodels.ModuleDataBaseInteractionChannel,
@@ -356,3 +367,34 @@ func handlingStatisticalRequestsSTIXObject(
 
 	return nil
 }
+
+//handlingReferenceBookRequest - обработчик запросов на оперыции с объектами стравочниками
+/*func handlingReferenceBookRequest(chanResModAPI chan<- datamodels.ModuleReguestProcessingChannel,
+maxChunkSize int,
+data datamodels.ModuleDataBaseInteractionChannel,
+tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
+ti *memorytemporarystoragecommoninformation.TemporaryStorageTaskInDetailType) error {
+
+if ti.TaskStatus != "completed" { //(думаю можно вынести это в handlerDataBaseResponse если не выше)
+	return nil
+}
+
+//делаем запрос к временному хранилищу информации (думаю можно вынести это в handlerDataBaseResponse если не выше)
+//result, err := tst.GetFoundInformationByID(data.AppTaskID)
+//if err != nil {
+//	return err
+//}
+
+// начинаем формировать ответ в виде пригодном для API (думаю можно вынести это в handlerDataBaseResponse если не выше)
+/*	msgRes := datamodels.ModAPIRequestProcessingResJSON{
+		ModAPIRequestProcessingCommonJSON: datamodels.ModAPIRequestProcessingCommonJSON{
+			TaskID:  ti.ClientTaskID,
+			Section: data.Section,
+		},
+		IsSuccessful: true,
+	}
+	rbookResps:=result.Information.([]datamodels.RBookRespParameters)
+	for i, resp := range rbookResps {
+
+	}*/
+//}

@@ -22,9 +22,11 @@ func RoutingCoreApp(
 	for {
 		select {
 		case data := <-clim.ChannelsModuleDataBaseInteraction.ChannelsMongoDB.OutputModule:
+			// Обработка запросов к хранилищу на MongoDB хранящему SDO,SOO-объектов, справочников, истиории изменений объектов
 			go routingflowsmoduleapirequestprocessing.HandlerAssignmentsModuleDataBaseInteraction(chanSaveLog, data, tst, clim)
 
 		case data := <-clim.ChannelsModuleAPIRequestProcessing.OutputModule:
+			// Обработка JSON сообщений приходящих от API
 			go routingflowsmoduleapirequestprocessing.HandlerAssignmentsModuleAPIRequestProcessing(chanSaveLog, data, tst, clim)
 		}
 	}

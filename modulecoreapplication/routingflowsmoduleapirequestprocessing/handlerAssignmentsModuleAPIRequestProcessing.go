@@ -396,7 +396,7 @@ func HandlerAssignmentsModuleAPIRequestProcessing(
 					Section:     section,
 					TaskType:    taskType,
 					FinalResult: "задача отклонена",
-					Message:     "получены невалидные параметры поискового запроса",
+					Message:     "ошибка при декодировании JSON документа",
 				}),
 				C: clim.ChannelsModuleAPIRequestProcessing.InputModule,
 			}); err != nil {
@@ -417,6 +417,7 @@ func HandlerAssignmentsModuleAPIRequestProcessing(
 				Description: fmt.Sprint(err),
 				FuncName:    "IsValid",
 			}
+
 		}
 
 		//добавляем информацию о запросе клиента в лог-файл
@@ -442,7 +443,7 @@ func HandlerAssignmentsModuleAPIRequestProcessing(
 			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 				TypeMessage: "error",
 				Description: fmt.Sprint(err),
-				FuncName:    "UnmarshalJSONReferenceBookReq",
+				FuncName:    "AddNewTask",
 			}
 
 			if err = auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{

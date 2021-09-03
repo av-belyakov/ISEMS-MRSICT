@@ -352,8 +352,8 @@
             "report_types": ["campaign"],
             "object_refs": [
                 "tool--26ffb872-1dd9-446e-b6f5-fdfa455faa2",
-                "opinion-56ee12bd-6710-eff1-bb67-tt45266477a",
-                "indicator-67aab223b-7800-12fa-0234-eeab120bdf",
+                "opinion--56ee12bd-6710-eff1-bb67-tt45266477a",
+                "indicator--67aab223b-7800-12fa-0234-eeab120bdf",
                 "campaign--83422c77-904c-4dc1-aff5-5c38f3a2c55c",
                 "relationship--f82356ae-fe6c-437c-9c24-6b64314ae68a"
             ],

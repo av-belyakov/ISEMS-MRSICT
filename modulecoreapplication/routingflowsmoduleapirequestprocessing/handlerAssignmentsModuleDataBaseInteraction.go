@@ -263,7 +263,7 @@ func handlingRBRequests(
 func handlingSearchRequestsSTIXObject(
 	chanResModAPI chan<- datamodels.ModuleReguestProcessingChannel,
 	maxChunkSize int,
-	data *datamodels.ModuleDataBaseInteractionChannel,
+	data datamodels.ModuleDataBaseInteractionChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
 	ti *memorytemporarystoragecommoninformation.TemporaryStorageTaskInDetailType) error {
 

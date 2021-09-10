@@ -173,20 +173,22 @@ func handlerDataBaseResponse(
 
 	//размер части сообщения
 	const _maxChunkSize int = 100
+	if ti.TaskStatus == "completed" {
+		switch data.Section {
+		case "handling search requests": //обработка ответов на поисковый запрос
+			if err := handlingSearchRequestsSTIXObject(chanResModAPI, _maxChunkSize, data, tst, ti); err != nil {
+				return err
+			}
 
-	switch data.Section {
-	case "handling search requests": //обработка ответов на поисковый запрос
-		if err := handlingSearchRequestsSTIXObject(chanResModAPI, _maxChunkSize, data, tst, ti); err != nil {
-			return err
-		}
+		case "handling statistical requests": //обработка ответов на запрос статистической информации
+			if err := handlingStatisticalRequestsSTIXObject(chanResModAPI, data, tst, ti); err != nil {
+				return err
+			}
+		case "handling reference book": //обработка ответов на операции со стправочниками
+			if err := handlingRBRequests(chanResModAPI, _maxChunkSize, data, tst, ti); err != nil {
+				return err
+			}
 
-	case "handling statistical requests": //обработка ответов на запрос статистической информации
-		if err := handlingStatisticalRequestsSTIXObject(chanResModAPI, data, tst, ti); err != nil {
-			return err
-		}
-	case "handling reference book": //обработка ответов на операции со стправочниками
-		if err := handlingReferenceBookRequest(chanResModAPI, _maxChunkSize, data, tst, ti); err != nil {
-			return err
 		}
 
 	}
@@ -356,6 +358,7 @@ func handlingSearchRequestsSTIXObject(
 	return nil
 }
 
+//На всякий случай оставляю тот код который был в func handlingSearchRequestsSTIXObject
 /*	listElemSTIXObj, ok := result.Information.([]*datamodels.ElementSTIXObject)
 	if !ok {
 		return fmt.Errorf("type conversion error, line 220")
@@ -444,10 +447,6 @@ func handlingStatisticalRequestsSTIXObject(
 	data datamodels.ModuleDataBaseInteractionChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
 	ti *memorytemporarystoragecommoninformation.TemporaryStorageTaskInDetailType) error {
-
-	if ti.TaskStatus != "completed" {
-		return nil
-	}
 
 	//делаем запрос к временному хранилищу информации
 	result, err := tst.GetFoundInformationByID(data.AppTaskID)

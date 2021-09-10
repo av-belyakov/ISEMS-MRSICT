@@ -270,3 +270,55 @@ func GetCountChunk(maxSize int64, chunkSize int) int {
 
 	return int(x)
 }
+
+//CallAction - тип данных описывающий сигнатуру функции которая применяется для выполнения действий над
+// над chank-ом.
+type ChunkAction func(list interface{}, totalNumber, partNumber, chunkSize int) error
+
+//СhunkSplitting  - функция рзбивающая переданный список на куски содержащие заданное колличество элементов
+// и выполняющая действия над ними посредством вызова функции передаваемой в аргументе call
+//Параметры функции:
+// list - передаваемый на разбиение список
+// chunkSize -число элементов содержащихся в частях списка после его разбиения
+// call -функция обработчик применяемая к части списка
+// СhunkSplitting  - функция рзбивающая переданный список на куски содержащие заданное колличество элементов
+// и выполняющая действия над ними посредством вызова функции передаваемой в аргументе call
+//Параметры функции:
+// list - передаваемый на разбиение список
+// chunkSize -число элементов содержащихся в частях списка после его разбиения
+// call -функция обработчик применяемая к части списка
+func СhunkSplitting(obj interface{}, call_ ChunkAction, chunkSize int) error {
+	var (
+		minInd, maxInd int = -1, -1                             // индексы указывают на  обрабатываемую часть в основном списке
+		l              int                                      // общая длинна списка
+		chunkCount     int = 0                                  // счетчик обработанных частей
+		totalNumber    int = GetCountChunk(int64(l), chunkSize) // общее кол-во частей размера chunkSize
+	)
+	list, ok := obj.([]interface{})
+	if !ok { //Проверка на то что obj есть список
+		fmt.Errorf(fmt.Sprintf("%s - arg \"not list\""))
+	}
+
+	if l = len(list); l == 0 { // Проверка на непустой список
+		return nil
+	}
+	lastInd := l - 1                      // номер последнего элемента списка
+	if chunkSize == 0 || chunkSize >= l { //если размер чанка нулевой или же он заведомо болше числа элементов в списке то принимаем его равным размеру списка
+		chunkSize = l
+	}
+
+	for maxInd <= lastInd {
+		minInd = maxInd + 1
+		if lastInd-minInd > chunkSize {
+			maxInd = minInd + chunkSize - 1
+		} else {
+			maxInd = lastInd
+		}
+		if minInd > maxInd {
+			break
+		}
+		chunkCount++
+		call_(list[minInd:maxInd], totalNumber, chunkCount, chunkSize)
+	}
+	return nil
+}

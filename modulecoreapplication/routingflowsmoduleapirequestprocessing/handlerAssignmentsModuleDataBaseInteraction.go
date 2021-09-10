@@ -198,17 +198,72 @@ func handlerDataBaseResponse(
 	return nil
 }
 
-//handlingSearchRequestsSTIXObject - обработчик ответов на поисковые запросы
-func handlingSearchRequestsSTIXObject(
+//handlingRBRequest - обработчик запросов на операции с объектами справочниками
+func handlingRBRequests(
 	chanResModAPI chan<- datamodels.ModuleReguestProcessingChannel,
 	maxChunkSize int,
 	data datamodels.ModuleDataBaseInteractionChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
 	ti *memorytemporarystoragecommoninformation.TemporaryStorageTaskInDetailType) error {
 
-	if ti.TaskStatus != "completed" {
+	result, err := tst.GetFoundInformationByID(data.AppTaskID)
+	if err != nil {
+		return err
+	}
+	msgRes := datamodels.ModAPIRequestProcessingResJSON{
+		ModAPIRequestProcessingCommonJSON: datamodels.ModAPIRequestProcessingCommonJSON{
+			TaskID:  data.AppTaskID,
+			Section: data.Section,
+		},
+		IsSuccessful: true,
+	}
+
+	//Непосредственное действие по отправке - используем замыкание для доступа в область видимости на уровень выше
+	ActionRBObjs := func(obj interface{}, chunkTotalNumbers, chunkNumber, chunkSize int) error {
+		//кастомизируем к нужному типу
+		RBObjects, ok := obj.([]*datamodels.RBookRespParameter)
+		if !ok {
+			return fmt.Errorf("type conversion error, line 206")
+		}
+		//формируем ответ
+		msgRes.AdditionalParameters = datamodels.ResJSONParts{
+			TotalNumberParts:      chunkTotalNumbers,
+			GivenSizePart:         chunkSize,
+			NumberTransmittedPart: chunkNumber,
+			TransmittedData:       RBObjects,
+		}
+		//преобразуем результат в байты
+		msg, err := json.Marshal(msgRes)
+		if err != nil {
+			return err
+		}
+		//отправляем результат в канал
+		chanResModAPI <- datamodels.ModuleReguestProcessingChannel{
+			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+				ModuleGeneratorMessage: "module core application",
+				ModuleReceiverMessage:  "module api request processing",
+			},
+			ClientID: ti.ClientID,
+			DataType: 1,
+			Data:     &msg,
+		}
 		return nil
 	}
+
+	//обрабатываем полученный список RB-объектов, в том числе если он превышает размер в maxChunkSize
+	//разбиваем его на части и отправляем в канал для дальнейшей обработки
+	commonlibs.СhunkSplitting(result.Information, ActionRBObjs, maxChunkSize)
+
+	return nil
+}
+
+//handlingSearchRequestsSTIXObject - обработчик ответов на поисковые запросы
+func handlingSearchRequestsSTIXObject(
+	chanResModAPI chan<- datamodels.ModuleReguestProcessingChannel,
+	maxChunkSize int,
+	data *datamodels.ModuleDataBaseInteractionChannel,
+	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
+	ti *memorytemporarystoragecommoninformation.TemporaryStorageTaskInDetailType) error {
 
 	tp, ok := ti.TaskParameters.(datamodels.ModAPIRequestProcessingResJSONSearchReqType)
 	if !ok {
@@ -248,73 +303,140 @@ func handlingSearchRequestsSTIXObject(
 
 		case "full_found_info":
 			//для ПОЛНОЙ информации по найденным STIX объектам
+			if result.Collection == "stix_object_collection" && result.ResultType == "full_found_info" {
 
-			listElemSTIXObj, ok := result.Information.([]*datamodels.ElementSTIXObject)
-			if !ok {
-				return fmt.Errorf("type conversion error, line 242")
-			}
+				//Непосредственное действие по отправке - используем замыкание для доступа в область видимости на уровень выше
+				ActionSTIXObjs := func(obj interface{}, chunkTotalNumbers, chunkNumber, chunkSize int) error {
 
-			sestixo := len(listElemSTIXObj)
-			listMsgRes := make([]interface{}, 0, sestixo)
-			for _, v := range listElemSTIXObj {
-				listMsgRes = append(listMsgRes, v.Data)
-			}
-
-			//обрабатываем полученный список STIX объектов, в том числе если он превышает размер в 100 объектов
-			if sestixo < maxChunkSize {
-				msgRes.AdditionalParameters = datamodels.ResJSONParts{
-					TotalNumberParts:      1,
-					GivenSizePart:         maxChunkSize,
-					NumberTransmittedPart: 1,
-					TransmittedData:       listMsgRes,
-				}
-
-				//fmt.Printf("func 'handlingSearchRequestsSTIXObject', sestixo < maxChunkSize = TRUE, sestixo: '%d'\n", sestixo)
-
-			} else {
-				num := commonlibs.GetCountChunk(int64(sestixo), maxChunkSize)
-				min := 0
-				max := maxChunkSize
-				for i := 0; i < num; i++ {
-					data := datamodels.ResJSONParts{
-						TotalNumberParts:      num,
-						GivenSizePart:         maxChunkSize,
-						NumberTransmittedPart: i + 1,
+					//Кастомизируем к нужному типу
+					listElemSTIXObj, ok := obj.([]*datamodels.ElementSTIXObject)
+					if !ok {
+						return fmt.Errorf("type conversion error, line 220")
 					}
 
-					if i == 0 {
-						data.TransmittedData = listMsgRes[:max]
-					} else if i == num-1 {
-						data.TransmittedData = listMsgRes[min:]
-					} else {
-						data.TransmittedData = listMsgRes[min:max]
+					//Извлекаем данные об объектах в отдельный срез
+					listMsgRes := make([]interface{}, 0, len(listElemSTIXObj))
+					for _, v := range listElemSTIXObj {
+						listMsgRes = append(listMsgRes, v.Data)
 					}
 
-					min = min + maxChunkSize
-					max = max + maxChunkSize
-					msgRes.AdditionalParameters = data
+					//формируем ответ
+					msgRes.AdditionalParameters = datamodels.ResJSONParts{
+						TotalNumberParts:      chunkTotalNumbers,
+						GivenSizePart:         chunkSize,
+						NumberTransmittedPart: chunkNumber,
+						TransmittedData:       listMsgRes,
+					}
+
+					//преобразуем результат в байты
+					msg, err := json.Marshal(msgRes)
+					if err != nil {
+						return err
+					}
+
+					//отправляем результат в канал
+					chanResModAPI <- datamodels.ModuleReguestProcessingChannel{
+						CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+							ModuleGeneratorMessage: "module core application",
+							ModuleReceiverMessage:  "module api request processing",
+						},
+						ClientID: ti.ClientID,
+						DataType: 1,
+						Data:     &msg,
+					}
+					return nil
 				}
+
+				//обрабатываем полученный список STIX-объектов, в том числе если он превышает размер в maxChunkSize
+				//разбиваем его на части и отправляем в канал для дальнейшей обработки
+				commonlibs.СhunkSplitting(result.Information, ActionSTIXObjs, maxChunkSize)
 			}
 		}
 	}
-
-	msg, err := json.Marshal(msgRes)
-	if err != nil {
-		return err
-	}
-
-	chanResModAPI <- datamodels.ModuleReguestProcessingChannel{
-		CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
-			ModuleGeneratorMessage: "module core application",
-			ModuleReceiverMessage:  "module api request processing",
-		},
-		ClientID: ti.ClientID,
-		DataType: 1,
-		Data:     &msg,
-	}
-
 	return nil
 }
+
+/*	listElemSTIXObj, ok := result.Information.([]*datamodels.ElementSTIXObject)
+	if !ok {
+		return fmt.Errorf("type conversion error, line 220")
+	}
+
+	sestixo := len(listElemSTIXObj)
+	listMsgRes := make([]interface{}, 0, sestixo)
+	for _, v := range listElemSTIXObj {
+		listMsgRes = append(listMsgRes, v.Data)
+	}*/
+
+//обрабатываем полученный список STIX объектов, в том числе если он превышает размер в 100 объектов
+/*	if sestixo < maxChunkSize {
+	msgRes.AdditionalParameters = datamodels.ResJSONParts{
+		TotalNumberParts:      1,
+		GivenSizePart:         maxChunkSize,
+		NumberTransmittedPart: 1,
+		TransmittedData:       listMsgRes,
+	}
+*/
+//преобразуем результат в байты
+/*			msg, err := json.Marshal(msgRes)
+			if err != nil {
+				return err
+			}
+
+			chanResModAPI <- datamodels.ModuleReguestProcessingChannel{
+				CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+					ModuleGeneratorMessage: "module core application",
+					ModuleReceiverMessage:  "module api request processing",
+				},
+				ClientID: ti.ClientID,
+				DataType: 1,
+				Data:     &msg,
+			}
+		} else {
+			num := commonlibs.GetCountChunk(int64(sestixo), maxChunkSize)
+
+			min := 0
+			max := maxChunkSize
+			for i := 0; i < num; i++ {
+				data := datamodels.ResJSONParts{
+					TotalNumberParts:      num,
+					GivenSizePart:         maxChunkSize,
+					NumberTransmittedPart: i + 1,
+				}
+
+				if i == 0 {
+					data.TransmittedData = listMsgRes[:max]
+				} else if i == num-1 {
+					data.TransmittedData = listMsgRes[min:]
+				} else {
+					data.TransmittedData = listMsgRes[min:max]
+				}
+
+				min = min + maxChunkSize
+				max = max + maxChunkSize
+
+				msgRes.AdditionalParameters = data
+				msg, err := json.Marshal(msgRes)
+				if err != nil {
+					return err
+				}
+
+				chanResModAPI <- datamodels.ModuleReguestProcessingChannel{
+					CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+						ModuleGeneratorMessage: "module core application",
+						ModuleReceiverMessage:  "module api request processing",
+					},
+					ClientID: ti.ClientID,
+					DataType: 1,
+					Data:     &msg,
+				}
+			}
+		}
+
+	}
+}*/
+
+//return nil
+//}
 
 //handlingStatisticalRequestsSTIXObject - обработчик ответов на запросы статистичеких данных
 func handlingStatisticalRequestsSTIXObject(
@@ -367,34 +489,3 @@ func handlingStatisticalRequestsSTIXObject(
 
 	return nil
 }
-
-//handlingReferenceBookRequest - обработчик запросов на оперыции с объектами стравочниками
-/*func handlingReferenceBookRequest(chanResModAPI chan<- datamodels.ModuleReguestProcessingChannel,
-maxChunkSize int,
-data datamodels.ModuleDataBaseInteractionChannel,
-tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
-ti *memorytemporarystoragecommoninformation.TemporaryStorageTaskInDetailType) error {
-
-if ti.TaskStatus != "completed" { //(думаю можно вынести это в handlerDataBaseResponse если не выше)
-	return nil
-}
-
-//делаем запрос к временному хранилищу информации (думаю можно вынести это в handlerDataBaseResponse если не выше)
-//result, err := tst.GetFoundInformationByID(data.AppTaskID)
-//if err != nil {
-//	return err
-//}
-
-// начинаем формировать ответ в виде пригодном для API (думаю можно вынести это в handlerDataBaseResponse если не выше)
-/*	msgRes := datamodels.ModAPIRequestProcessingResJSON{
-		ModAPIRequestProcessingCommonJSON: datamodels.ModAPIRequestProcessingCommonJSON{
-			TaskID:  ti.ClientTaskID,
-			Section: data.Section,
-		},
-		IsSuccessful: true,
-	}
-	rbookResps:=result.Information.([]datamodels.RBookRespParameters)
-	for i, resp := range rbookResps {
-
-	}*/
-//}

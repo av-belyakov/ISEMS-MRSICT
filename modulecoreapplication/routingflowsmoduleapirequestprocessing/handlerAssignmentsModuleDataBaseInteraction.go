@@ -184,6 +184,7 @@ func handlerDataBaseResponse(
 			if err := handlingStatisticalRequestsSTIXObject(chanResModAPI, data, tst, ti); err != nil {
 				return err
 			}
+
 		case "handling reference book": //обработка ответов на операции со стправочниками
 			if err := handlingRBRequests(chanResModAPI, _maxChunkSize, data, tst, ti); err != nil {
 				return err

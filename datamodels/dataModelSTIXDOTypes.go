@@ -32,7 +32,7 @@ type CommonPropertiesDomainObjectSTIX struct {
 	Lang               string                     `json:"lang" bson:"lang"`
 	ExternalReferences ExternalReferencesTypeSTIX `json:"external_references" bson:"external_references"`
 	ObjectMarkingRefs  []IdentifierTypeSTIX       `json:"object_marking_refs" bson:"object_marking_refs"`
-	GranularMarkings   GranularMarkingsTypeSTIX   `json:"granular_markings" bson:"granular_markings"`
+	GranularMarkings   []GranularMarkingsTypeSTIX `json:"granular_markings" bson:"granular_markings"`
 	Defanged           bool                       `json:"defanged" bson:"defanged"`
 	Extensions         map[string]string          `json:"extensions" bson:"extensions"`
 }

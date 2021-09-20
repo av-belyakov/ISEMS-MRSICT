@@ -312,7 +312,7 @@ func handlingSearchRequestsSTIXObject(
 				return fmt.Errorf("type conversion error, line 312")
 			}
 
-			fmt.Printf("==== __|func 'handlingSearchRequestsSTIXObject', collection name: '%s'\nlist elem STIX: '%v'\n", tp.CollectionName, listElemSTIXObj)
+			fmt.Printf("==full_found_info== __|func 'handlingSearchRequestsSTIXObject', collection name: '%s'\nlist elem STIX: '%v'\n", tp.CollectionName, listElemSTIXObj)
 
 			sestixo := len(listElemSTIXObj)
 			listMsgRes := make([]interface{}, 0, sestixo)

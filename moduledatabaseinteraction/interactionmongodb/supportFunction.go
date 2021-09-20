@@ -333,6 +333,9 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 			tmpObj := datamodels.ReportDomainObjectsSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
+
+				fmt.Printf("+++=== func 'GetListElementSTIXObject', model type: '%s', ERROR: '%v'\n", modelType.Type, err)
+
 				break
 			}
 

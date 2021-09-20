@@ -170,6 +170,8 @@ func statisticalInformationSTIXObject(
 		}
 	}
 
+	fmt.Printf("func 'statisticalInformationSTIXObject', \nlist 'decisions_made_computer_threat': %v\n", tmpResults)
+
 	//сохраняем найденные значения во временном хранилище
 	err = parameters.tst.AddNewFoundInformation(
 		parameters.appTaskID,

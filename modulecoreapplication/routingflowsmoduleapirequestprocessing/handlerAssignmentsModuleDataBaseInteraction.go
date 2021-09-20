@@ -295,7 +295,7 @@ func handlingSearchRequestsSTIXObject(
 
 			numFound, ok := result.Information.(int64)
 			if !ok {
-				return fmt.Errorf("type conversion error, line 228")
+				return fmt.Errorf("type conversion error, line 298")
 			}
 
 			msgRes.AdditionalParameters = struct {
@@ -309,8 +309,10 @@ func handlingSearchRequestsSTIXObject(
 
 			listElemSTIXObj, ok := result.Information.([]*datamodels.ElementSTIXObject)
 			if !ok {
-				return fmt.Errorf("type conversion error, line 242")
+				return fmt.Errorf("type conversion error, line 312")
 			}
+
+			fmt.Printf("==== __|func 'handlingSearchRequestsSTIXObject', collection name: '%s'\nlist elem STIX: '%v'\n", tp.CollectionName, listElemSTIXObj)
 
 			sestixo := len(listElemSTIXObj)
 			listMsgRes := make([]interface{}, 0, sestixo)
@@ -355,6 +357,8 @@ func handlingSearchRequestsSTIXObject(
 			}
 		}
 	}
+
+	fmt.Printf("==== __|func 'handlingSearchRequestsSTIXObject', msgRes: '%v'\n", msgRes)
 
 	msg, err := json.Marshal(msgRes)
 	if err != nil {

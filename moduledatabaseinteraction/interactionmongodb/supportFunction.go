@@ -158,6 +158,8 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 			continue
 		}
 
+		fmt.Printf("+++=== func 'GetListElementSTIXObject', model type: '%s'\n", modelType.Type)
+
 		switch modelType.Type {
 		/* *** Domain Objects STIX *** */
 		case "attack-pattern":

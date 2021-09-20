@@ -355,8 +355,6 @@ func HandlerAssignmentsModuleAPIRequestProcessing(
 			return
 		}
 
-		fmt.Printf("func 'handlerAssignmentsModuleAPIRequestProcessing',\nSection: '%s',\nappTaskID: '%s'\nCollectionName: '%s'\n", commonMsgReq.Section, appTaskID, l.CollectionName)
-
 		clim.ChannelsModuleDataBaseInteraction.ChannelsMongoDB.InputModule <- datamodels.ModuleDataBaseInteractionChannel{
 			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
 				ModuleGeneratorMessage: "module core application",

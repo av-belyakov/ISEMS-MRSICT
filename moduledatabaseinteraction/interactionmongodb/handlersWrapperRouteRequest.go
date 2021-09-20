@@ -67,7 +67,7 @@ func searchSTIXObject(
 		sortableField = field
 	}
 
-	fmt.Printf("____ func 'searchSTIXObject' searchParameters: '%v'\nCurrentPartNumber: '%d'\nMaxPartSize: '%d'\n", searchParameters, int64(taskInfo.PaginateParameters.CurrentPartNumber), int64(taskInfo.PaginateParameters.MaxPartSize))
+	//fmt.Printf("____ func 'searchSTIXObject' searchParameters: '%v'\nCurrentPartNumber: '%d'\nMaxPartSize: '%d'\n", searchParameters, int64(taskInfo.PaginateParameters.CurrentPartNumber), int64(taskInfo.PaginateParameters.MaxPartSize))
 
 	//получить все найденные документы, с учетом лимита
 	cur, err := qp.FindAllWithLimit(CreateSearchQueriesSTIXObject(&searchParameters), &FindAllWithLimitOptions{
@@ -81,7 +81,7 @@ func searchSTIXObject(
 	}
 
 	listelm := GetListElementSTIXObject(cur)
-	fmt.Printf("____ func 'searchSTIXObject' appTaskID: '%s', count ListElementSTIXObject: '%d'\n", appTaskID, len(listelm))
+	//fmt.Printf("____ func 'searchSTIXObject' appTaskID: '%s', count ListElementSTIXObject: '%d'\n", appTaskID, len(listelm))
 	/*for k, v := range listelm {
 		fmt.Printf("%d. %s\n", k, v.Data.GetID())
 	}*/

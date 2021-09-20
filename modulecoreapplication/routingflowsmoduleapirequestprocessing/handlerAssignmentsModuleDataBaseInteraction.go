@@ -312,8 +312,6 @@ func handlingSearchRequestsSTIXObject(
 				return fmt.Errorf("type conversion error, line 312")
 			}
 
-			fmt.Printf("==full_found_info== __|func 'handlingSearchRequestsSTIXObject', collection name: '%s'\nlist elem STIX: '%v'\n", tp.CollectionName, listElemSTIXObj)
-
 			sestixo := len(listElemSTIXObj)
 			listMsgRes := make([]interface{}, 0, sestixo)
 			for _, v := range listElemSTIXObj {
@@ -328,8 +326,6 @@ func handlingSearchRequestsSTIXObject(
 					NumberTransmittedPart: 1,
 					TransmittedData:       listMsgRes,
 				}
-
-				//fmt.Printf("func 'handlingSearchRequestsSTIXObject', sestixo < maxChunkSize = TRUE, sestixo: '%d'\n", sestixo)
 
 			} else {
 				num := commonlibs.GetCountChunk(int64(sestixo), maxChunkSize)
@@ -357,8 +353,6 @@ func handlingSearchRequestsSTIXObject(
 			}
 		}
 	}
-
-	fmt.Printf("==== __|func 'handlingSearchRequestsSTIXObject', msgRes: '%v'\n", msgRes)
 
 	msg, err := json.Marshal(msgRes)
 	if err != nil {

@@ -158,8 +158,6 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 			continue
 		}
 
-		fmt.Printf("+++=== func 'GetListElementSTIXObject', model type: '%s'\n", modelType.Type)
-
 		switch modelType.Type {
 		/* *** Domain Objects STIX *** */
 		case "attack-pattern":
@@ -333,9 +331,6 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 			tmpObj := datamodels.ReportDomainObjectsSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
-
-				fmt.Printf("+++=== func 'GetListElementSTIXObject', model type: '%s', ERROR: '%v'\n", modelType.Type, err)
-
 				break
 			}
 

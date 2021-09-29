@@ -2,7 +2,7 @@
     "connectionsDataBase": {
         "mongoDBSettings": {
             "isUseSocket": false,
-            "host": "192.168.13.201",
+            "host": "test-uchet-db.cloud.gcm",
             "port": 27017,
             "user": "module-isems-mrsict",
             "password": "vkL6Zn$jPmt1e1",

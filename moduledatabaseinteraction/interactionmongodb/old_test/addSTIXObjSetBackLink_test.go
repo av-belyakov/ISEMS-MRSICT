@@ -166,7 +166,7 @@ var _ = Describe("AddSTIXObjSetBackLink", func() {
 
 		//подключаемся к базе данных MongoDB
 		connectError = cdmdb.CreateConnection(&datamodels.MongoDBSettings{
-			Host:     "192.168.13.201",
+			Host:     "test-uchet-db.cloud.gcm",
 			Port:     27017,
 			User:     "module-isems-mrsict",
 			Password: "vkL6Zn$jPmt1e1",

@@ -2,7 +2,9 @@ package interactionmongodb_test
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"time"
 
 	. "github.com/onsi/ginkgo"
@@ -12,6 +14,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"ISEMS-MRSICT/datamodels"
+	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
 	"ISEMS-MRSICT/moduledatabaseinteraction/interactionmongodb"
 )
 
@@ -50,6 +53,8 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 		cdmdb.CtxCancel()
 	})
 
+	tempStorage := memorytemporarystoragecommoninformation.NewTemporaryStorage()
+
 	Context("Тест 1. Проверка наличия установленного соединения с БД", func() {
 		It("При установления соединения с БД ошибки быть не должно", func() {
 			Expect(connectError).ShouldNot(HaveOccurred())
@@ -79,8 +84,8 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 			Expect(err).ShouldNot(HaveOccurred())
 			Expect(sizeElem).Should(Equal(int64(46)))
-			Expect(errsp).ShouldNot(HaveOccurred())
 
+			tcs, errep := time.Parse(time.RFC3339, "2016-08-21T21:13:10.000Z")
 			tce, errep := time.Parse(time.RFC3339, "2016-08-21T21:34:10.000Z")
 			Expect(errep).ShouldNot(HaveOccurred())
 
@@ -94,7 +99,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 				},
 			}
 
-			sizeElem, err := qp.CountDocuments(interactionmongodb.CreateSearchQueriesSTIXObject(&qrotc))
+			sizeElem, err = qp.CountDocuments(interactionmongodb.CreateSearchQueriesSTIXObject(&qrotc))
 
 			Expect(err).ShouldNot(HaveOccurred())
 			Expect(sizeElem).Should(Equal(int64(22)))
@@ -295,7 +300,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 			//fmt.Printf("_________||||| %v |||||________\n", sr)
 
-			cur, err := qp.FindAllWithLimit(
+			_, err := qp.FindAllWithLimit(
 				sr,
 				&interactionmongodb.FindAllWithLimitOptions{
 					Offset:        1,
@@ -306,16 +311,15 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 			Expect(err).ShouldNot(HaveOccurred())
 
-			elemSTIXObj := interactionmongodb.GetListElementSTIXObject(cur)
+			//elemSTIXObj := interactionmongodb.GetListElementSTIXObject(cur)
 
 			//			fmt.Printf("Found '%d' elements\n", len(elemSTIXObj))
 
 			//			}
 		})
-	Context("Тест 4. Формируем поисковые запросы с сортировкой и с выборкой по определенным полям", func() {
-=======
+		Context("Тест 4. Формируем поисковые запросы с сортировкой и с выборкой по определенным полям", func() {
 			cur, err := qp.FindAllWithLimit(
-				}), &interactionmongodb.FindAllWithLimitOptions{
+				bson.D{}, &interactionmongodb.FindAllWithLimitOptions{
 					SortField:     "commonpropertiesdomainobjectstix.created",
 					SortAscending: false,
 				})
@@ -364,7 +368,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 				//fmt.Printf("Test 5. List ID grouping: '%v'\n", listID)
 
-				Expect(tempStorage.SetListDecisionsMade(listID)).ShouldNot(HaveOccurred())
+				//Expect(tempStorage.SetListDecisionsMade(listID)).ShouldNot(HaveOccurred())
 
 				//ldm, errldm := tempStorage.GetListDecisionsMade()
 				//fmt.Printf("-= ListDecisionsMade: (%v)=-", ldm)

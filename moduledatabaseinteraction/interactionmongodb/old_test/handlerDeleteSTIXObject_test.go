@@ -10,6 +10,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"ISEMS-MRSICT/datamodels"
 	"ISEMS-MRSICT/modulecoreapplication/routingflowsmoduleapirequestprocessing"
@@ -66,7 +67,7 @@ func delListTestSTIXObject(cdmdb interactionmongodb.ConnectionDescriptorMongoDB,
 		return err
 	}*/
 
-	if _, err := qp.DeleteManyData(bson.D{{Key: "commonpropertiesobjectstix.id", Value: bson.D{{Key: "$in", Value: listID}}}}); err != nil {
+	if _, err := qp.DeleteManyData(bson.D{{Key: "commonpropertiesobjectstix.id", Value: bson.D{{Key: "$in", Value: listID}}}}, options.Delete()); err != nil {
 		return err
 	}
 
@@ -202,7 +203,9 @@ func deleteObjTypeGrouping(cdmdb interactionmongodb.ConnectionDescriptorMongoDB,
 	//удаляем выбранные в списках объекты типа 'relationship' и 'grouping'
 	if _, err := qp.DeleteManyData(bson.D{{
 		Key:   "commonpropertiesobjectstix.id",
-		Value: bson.D{{Key: "$in", Value: append(listIDGroupingDel, listIDRelationshipDel...)}}}}); err != nil {
+		Value: bson.D{{Key: "$in", Value: append(listIDGroupingDel, listIDRelationshipDel...)}}}},
+		options.Delete()); err != nil {
+
 		return fmt.Errorf("Error 5: %v", err)
 	}
 

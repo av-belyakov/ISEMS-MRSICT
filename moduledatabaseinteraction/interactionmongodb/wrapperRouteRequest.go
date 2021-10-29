@@ -10,6 +10,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var errorMessage = datamodels.ModuleDataBaseInteractionChannel{
@@ -326,7 +327,8 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingManagingCollectionSTIXObjects(
 		//удаляем выбранные в списках объекты типа 'relationship' и 'grouping'
 		if _, err := qp.DeleteManyData(bson.D{{
 			Key:   "commonpropertiesobjectstix.id",
-			Value: bson.D{{Key: "$in", Value: append(listIDGroupingDel, listIDRelationshipDel...)}}}}); err != nil {
+			Value: bson.D{{Key: "$in", Value: append(listIDGroupingDel, listIDRelationshipDel...)}}}},
+			options.Delete()); err != nil {
 			errorMessage.ErrorMessage.Error = err
 			chanOutput <- errorMessage
 

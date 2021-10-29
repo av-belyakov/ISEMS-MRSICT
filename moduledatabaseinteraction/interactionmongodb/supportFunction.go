@@ -721,7 +721,7 @@ func ReplacementElementsSTIXObject(qp QueryParameters, l []*datamodels.ElementST
 		listObj = append(listObj, v.Data)
 	}
 
-	_, err := qp.DeleteManyData(bson.D{{Key: "commonpropertiesobjectstix.id", Value: bson.D{{Key: "$in", Value: reqDeleteID}}}})
+	_, err := qp.DeleteManyData(bson.D{{Key: "commonpropertiesobjectstix.id", Value: bson.D{{Key: "$in", Value: reqDeleteID}}}}, options.Delete())
 	if err != nil {
 		return err
 	}
@@ -1198,7 +1198,8 @@ func DeleteOldRelationshipSTIXObject(qp QueryParameters, l []*datamodels.Element
 
 	if _, err := qp.DeleteManyData(bson.D{
 		bson.E{Key: "commonpropertiesobjectstix.type", Value: "relationship"},
-		bson.E{Key: "$or", Value: listSearchParameters}}); err != nil {
+		bson.E{Key: "$or", Value: listSearchParameters}},
+		options.Delete()); err != nil {
 		return err
 	}
 

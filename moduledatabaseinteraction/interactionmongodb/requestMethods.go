@@ -44,7 +44,7 @@ func (qp *QueryParameters) InsertData(list []interface{}, indexList []mongo.Inde
 }
 
 //DeleteOneData удаляет элемент
-func (qp *QueryParameters) DeleteOneData(elem interface{}) error {
+func (qp *QueryParameters) DeleteOneData(elem interface{}, options *options.DeleteOptions) error {
 	collection := qp.ConnectDB.Database(qp.NameDB).Collection(qp.CollectionName)
 	if _, err := collection.DeleteOne(context.TODO(), elem); err != nil {
 		return err
@@ -54,16 +54,16 @@ func (qp *QueryParameters) DeleteOneData(elem interface{}) error {
 }
 
 //DeleteManyData удаляет группу элементов
-func (qp *QueryParameters) DeleteManyData(list interface{}) (*mongo.DeleteResult, error) {
+func (qp *QueryParameters) DeleteManyData(list interface{}, opts *options.DeleteOptions) (*mongo.DeleteResult, error) {
 	collection := qp.ConnectDB.Database(qp.NameDB).Collection(qp.CollectionName)
 
-	return collection.DeleteMany(context.TODO(), list)
+	return collection.DeleteMany(context.TODO(), list, opts)
 }
 
 //UpdateOne обновляет параметры в элементе
-func (qp *QueryParameters) UpdateOne(searchElem, update interface{}) error {
+func (qp *QueryParameters) UpdateOne(searchElem, update interface{}, opts *options.UpdateOptions) error {
 	collection := qp.ConnectDB.Database(qp.NameDB).Collection(qp.CollectionName)
-	if _, err := collection.UpdateOne(context.TODO(), searchElem, update); err != nil {
+	if _, err := collection.UpdateOne(context.TODO(), searchElem, update, opts); err != nil {
 		return err
 	}
 
@@ -71,9 +71,9 @@ func (qp *QueryParameters) UpdateOne(searchElem, update interface{}) error {
 }
 
 //UpdateMany обновляет множественные параметры в элементе
-func (qp *QueryParameters) UpdateMany(searchElem, update []interface{}) error {
+func (qp *QueryParameters) UpdateMany(searchElem, update []interface{}, opts *options.UpdateOptions) error {
 	collection := qp.ConnectDB.Database(qp.NameDB).Collection(qp.CollectionName)
-	if _, err := collection.UpdateMany(context.TODO(), searchElem, update); err != nil {
+	if _, err := collection.UpdateMany(context.TODO(), searchElem, update, opts); err != nil {
 		return err
 	}
 

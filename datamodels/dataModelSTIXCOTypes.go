@@ -442,7 +442,7 @@ type UNIXAccountExtensionSTIX struct {
 type OptionalCommonPropertiesCyberObservableObjectSTIX struct {
 	SpecVersion       string                        `json:"spec_version" bson:"spec_version"`
 	ObjectMarkingRefs []IdentifierTypeSTIX          `json:"object_marking_refs" bson:"object_marking_refs"`
-	GranularMarkings  GranularMarkingsTypeSTIX      `json:"granular_markings" bson:"granular_markings"`
+	GranularMarkings  []GranularMarkingsTypeSTIX    `json:"granular_markings" bson:"granular_markings"`
 	Defanged          bool                          `json:"defanged" bson:"defanged"`
 	Extensions        map[string]DictionaryTypeSTIX `json:"extensions" bson:"extensions"`
 }

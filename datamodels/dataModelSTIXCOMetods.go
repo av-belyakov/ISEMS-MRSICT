@@ -31,9 +31,13 @@ func (ocpcstix *OptionalCommonPropertiesCyberObservableObjectSTIX) validateStruc
 		}
 	}
 
-	//вызываем метод проверки полей типа GranularMarkingsTypeSTIX
-	if ok := ocpcstix.GranularMarkings.CheckGranularMarkingsTypeSTIX(); !ok {
-		return false
+	if len(ocpcstix.GranularMarkings) > 0 {
+		for _, value := range ocpcstix.GranularMarkings {
+			//вызываем метод проверки полей типа GranularMarkingsTypeSTIX
+			if !value.CheckGranularMarkingsTypeSTIX() {
+				return false
+			}
+		}
 	}
 
 	return true
@@ -67,9 +71,22 @@ func (ocpcstix OptionalCommonPropertiesCyberObservableObjectSTIX) ToStringBeauti
 		}
 		return str
 	}(ocpcstix.ObjectMarkingRefs))
-	str += fmt.Sprintln("granular_markings:")
-	str += fmt.Sprintf("\tlang: '%s'\n", ocpcstix.GranularMarkings.Lang)
-	str += fmt.Sprintf("\tmarking_ref: '%v'\n", ocpcstix.GranularMarkings.MarkingRef)
+	str += fmt.Sprintf("granular_markings: \n%v", func(l []GranularMarkingsTypeSTIX) string {
+		var str string
+		for k, v := range l {
+			str += fmt.Sprintf("\tgranular_markings number %d.", k)
+			str += fmt.Sprintf("\tlang: '%s'\n", v.Lang)
+			str += fmt.Sprintf("\tmarking_ref: '%v'\n", v.MarkingRef)
+			str += fmt.Sprintf("\tselectors: \n%v", func(l []string) string {
+				var str string
+				for k, v := range l {
+					str += fmt.Sprintf("\t\tselector '%d': '%s'\n", k, v)
+				}
+				return str
+			}(v.Selectors))
+		}
+		return str
+	}(ocpcstix.GranularMarkings))
 	str += fmt.Sprintf("defanged: '%v'\n", ocpcstix.Defanged)
 	str += fmt.Sprintf("extensions: \n%v", func(l map[string]DictionaryTypeSTIX) string {
 		var str string

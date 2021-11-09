@@ -108,6 +108,8 @@ func ComparasionListSTIXObject(clt ComparasionListTypeSTIXObject) []datamodels.D
 //SavingAdditionalNameListSTIXObject сохранение дополнительного наименования в некоторых STIX объектах, имеющих свойства не входящие
 // в основную спецификацию STIX 2.0
 func SavingAdditionalNameListSTIXObject(currentList, addedList []*datamodels.ElementSTIXObject) []*datamodels.ElementSTIXObject {
+	fmt.Println("func 'SavingAdditionalNameListSTIXObject', START...")
+
 	for k, vadd := range addedList {
 		if vadd.DataType != "report" {
 			continue

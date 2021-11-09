@@ -261,7 +261,7 @@ func VerifyOutsideSpecificationFields(
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
 	clientName string) {
 	verifyDecisionsMadeComputerThreat := func(valueBeChecked string) string {
-		result := "undefined"
+		result := ""
 
 		if valueBeChecked == "" {
 			return result
@@ -289,7 +289,7 @@ func VerifyOutsideSpecificationFields(
 	}
 
 	verifyComputerThreatType := func(valueBeChecked string) string {
-		result := "undefined"
+		result := ""
 
 		if valueBeChecked == "" {
 			return result

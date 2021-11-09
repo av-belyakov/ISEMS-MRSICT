@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"path"
 	"time"
 
 	. "github.com/onsi/ginkgo"
@@ -17,6 +18,28 @@ import (
 	"ISEMS-MRSICT/moduledatabaseinteraction/interactionmongodb"
 )
 
+func getListSettings(f string, appConfig *datamodels.AppConfig) (map[string]datamodels.StorageApplicationCommonListType, error) {
+	tmp := map[string]string{}
+	configFileSettings := map[string]datamodels.StorageApplicationCommonListType{}
+
+	//проверяем наличие файлов с дефолтными настройками приложения
+	row, err := ioutil.ReadFile(path.Join(appConfig.RootDir, f))
+	if err != nil {
+		return configFileSettings, fmt.Errorf("Error! The file '%s' with default settings not found.", f)
+	}
+
+	err = json.Unmarshal(row, &tmp)
+	if err != nil {
+		return configFileSettings, err
+	}
+
+	for k, v := range tmp {
+		configFileSettings[k] = datamodels.StorageApplicationCommonListType{Description: v}
+	}
+
+	return configFileSettings, err
+}
+
 var _ = Describe("AddSTIXObjSetBackLink", func() {
 	var (
 		docJSON                                                        []byte
@@ -26,6 +49,7 @@ var _ = Describe("AddSTIXObjSetBackLink", func() {
 		cdmdb                                                          interactionmongodb.ConnectionDescriptorMongoDB
 		modAPIRequestProcessingReqJSON                                 datamodels.ModAPIRequestProcessingReqJSON
 		tst                                                            *memorytemporarystoragecommoninformation.TemporaryStorageType
+		appConfig                                                      datamodels.AppConfig
 	)
 
 	var _ = BeforeSuite(func() {
@@ -55,7 +79,18 @@ var _ = Describe("AddSTIXObjSetBackLink", func() {
 			ConnectDB:      cdmdb.Connection,
 		}
 
+		appConfig.RootDir = "/Users/user/go/src/ISEMS-MRSICT"
 		tst = memorytemporarystoragecommoninformation.NewTemporaryStorage()
+
+		ssdmct, _ := getListSettings("defaultsettingsfiles/settingsStatusesDecisionsMadeComputerThreats.json", &appConfig)
+		tst.SetListDecisionsMade(ssdmct)
+
+		//fmt.Println(ssdmct)
+
+		sctt, _ := getListSettings("defaultsettingsfiles/settingsComputerThreatTypes.json", &appConfig)
+		tst.SetListComputerThreat(sctt)
+
+		//fmt.Println(sctt)
 	})
 
 	var _ = AfterSuite(func() {

@@ -100,10 +100,6 @@ func (tst *TemporaryStorageType) changeTaskStatus(appTaskID, taskStatus string) 
 
 //deletingTaskByID удаляет задачу по ее ID
 func (tst *TemporaryStorageType) deletingTaskByID(appTaskID string) {
-
-	fmt.Println("func 'deletingTaskByID', START...")
-	fmt.Printf("appTaskID: '%v'\n", appTaskID)
-
 	delete(tst.taskStorage, appTaskID)
 }
 
@@ -139,11 +135,6 @@ func (tst *TemporaryStorageType) getFoundInformationByID(appTaskID string) (*Tem
 
 //deletingFoundInformationByID удаляет найденную информацию по ее ID
 func (tst *TemporaryStorageType) deletingFoundInformationByID(appTaskID string) {
-
-	fmt.Println("func 'deletingFoundInformationByID', START...")
-	fmt.Printf("appTaskID: '%v'\n", appTaskID)
-	fmt.Printf("tst.foundInformationStorage: '%v'\n", tst.foundInformationStorage)
-
 	delete(tst.foundInformationStorage, appTaskID)
 }
 

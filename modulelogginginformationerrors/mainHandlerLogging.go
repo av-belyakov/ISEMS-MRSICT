@@ -90,6 +90,10 @@ func New(mhltp *MainHandlerLoggingParameters) (chan LogMessageType, error) {
 			cilf.writeMessage(&msg)
 
 			fi, _ := cilf.fileDescriptor[msg.TypeMessage].Stat()
+
+			fmt.Printf("func 'mainHandlerLogging', fileInfo: '%v'\n", fi)
+			fmt.Printf("func 'mainHandlerLogging', commonInformationLoggingFiles: '%v'\n", cilf)
+
 			if fi.Size() > cilf.maxSizeLogFile {
 				cilf.fileDescriptor[msg.TypeMessage].Close()
 

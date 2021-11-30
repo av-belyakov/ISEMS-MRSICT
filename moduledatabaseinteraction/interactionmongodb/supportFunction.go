@@ -1134,8 +1134,7 @@ func DeleteOldRelationshipSTIXObject(qp QueryParameters, l []*datamodels.Element
 	}
 
 	//поиск в БД объектов типа: 'grouping', 'report', 'note', 'observed-data', 'opinion'
-	cur, err := qp.Find(bson.D{
-		bson.E{Key: "commonpropertiesobjectstix.id", Value: bson.D{{Key: "$in", Value: listIDTargetRef}}}})
+	cur, err := qp.Find(bson.D{bson.E{Key: "commonpropertiesobjectstix.id", Value: bson.D{{Key: "$in", Value: listIDTargetRef}}}})
 	if err != nil {
 		return err
 	}
@@ -1206,6 +1205,8 @@ func DeleteOldRelationshipSTIXObject(qp QueryParameters, l []*datamodels.Element
 			bson.E{Key: "target_ref", Value: elem.TargetRef},
 		})
 	}
+
+	fmt.Printf("func 'DeleteOldRelationshipSTIXObject', listSearchParameters len: %d, value: %v\n", len(listSearchParameters), listSearchParameters)
 
 	if _, err := qp.DeleteManyData(bson.D{
 		bson.E{Key: "commonpropertiesobjectstix.type", Value: "relationship"},

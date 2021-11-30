@@ -65,6 +65,7 @@ func HandlerAssignmentsModuleDataBaseInteraction(
 
 		fmt.Println("func 'HandlerAssignmentsModuleDataBaseInteraction', received Error Message")
 		fmt.Println(data.ErrorMessage)
+		fmt.Printf("func 'HandlerAssignmentsModuleDataBaseInteraction', data.AppTaskID: '%v'\n", data.AppTaskID)
 
 		//удаляем задачу и результаты поиска информации, если они есть
 		tst.DeletingTaskByID(data.AppTaskID)

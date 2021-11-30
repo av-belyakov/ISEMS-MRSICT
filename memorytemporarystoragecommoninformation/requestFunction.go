@@ -139,6 +139,7 @@ func (tst *TemporaryStorageType) DeletingTaskByID(appTaskID string) {
 		commonChannelTaskStorage: commonChannelTaskStorage{appTaskID: appTaskID},
 		chanRes:                  chanRes,
 	}
+
 	<-chanRes
 }
 

@@ -110,10 +110,6 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 	// если в объекте, полученном от пользователя, в свойстве 'object_refs', идентификатор объекта отсутствует, а в свойстве 'object_refs' объекта
 	// полученного из БД, данный идентификатор присутствует
 	if err = DeleteOldRelationshipSTIXObject(qp, ti); err != nil {
-
-		fmt.Println("func 'DeleteOldRelationshipSTIXObject', START...")
-		fmt.Println(err)
-
 		errorMessage.ErrorMessage.Error = err
 		chanOutput <- errorMessage
 
@@ -123,10 +119,6 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 	//создаем дополнительные STIX объекты типа 'relationship', обеспечивающие обратные связи
 	ti, err = CreatingAdditionalRelationshipSTIXObject(qp, ti)
 	if err != nil {
-
-		fmt.Println("func 'CreatingAdditionalRelationshipSTIXObject', START...")
-		fmt.Println(err)
-
 		errorMessage.ErrorMessage.Error = err
 		chanOutput <- errorMessage
 
@@ -136,10 +128,6 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 	//добавляем или обновляем STIX объекты в БД
 	err = ReplacementElementsSTIXObject(qp, SavingAdditionalNameListSTIXObject(listElemetSTIXObject, ti))
 	if err != nil {
-
-		fmt.Println("func 'ReplacementElementsSTIXObject', START...")
-		fmt.Println(err)
-
 		errorMessage.ErrorMessage.Error = err
 		chanOutput <- errorMessage
 

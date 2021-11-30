@@ -1206,7 +1206,10 @@ func DeleteOldRelationshipSTIXObject(qp QueryParameters, l []*datamodels.Element
 		})
 	}
 
-	fmt.Printf("func 'DeleteOldRelationshipSTIXObject', listSearchParameters len: %d, value: %v\n", len(listSearchParameters), listSearchParameters)
+	/*
+		if len(listSearchParameters) == 0 {
+			return nil
+		}*/
 
 	if _, err := qp.DeleteManyData(bson.D{
 		bson.E{Key: "commonpropertiesobjectstix.type", Value: "relationship"},

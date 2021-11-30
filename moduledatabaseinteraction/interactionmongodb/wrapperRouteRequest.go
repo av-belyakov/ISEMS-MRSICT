@@ -117,7 +117,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 	}
 
 	/*____ Test ERROR ____*/
-	if err == nil {
+	/*if err == nil {
 		errorMessage.ErrorMessage.Error = fmt.Errorf("my created test ERROR")
 		chanOutput <- errorMessage
 

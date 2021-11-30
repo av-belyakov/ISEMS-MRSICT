@@ -10,6 +10,9 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"ISEMS-MRSICT/commonhandlers"
 	"ISEMS-MRSICT/datamodels"
@@ -45,6 +48,7 @@ var _ = Describe("AddSTIXObjSetBackLink", func() {
 		docJSON                                                        []byte
 		l                                                              []*datamodels.ElementSTIXObject
 		qp                                                             interactionmongodb.QueryParameters
+		qpdo                                                           interactionmongodb.QueryParameters
 		connectError, errReadFile, errUnmarchalReq, errUnmarchalToSTIX error
 		cdmdb                                                          interactionmongodb.ConnectionDescriptorMongoDB
 		modAPIRequestProcessingReqJSON                                 datamodels.ModAPIRequestProcessingReqJSON
@@ -76,6 +80,12 @@ var _ = Describe("AddSTIXObjSetBackLink", func() {
 		qp = interactionmongodb.QueryParameters{
 			NameDB:         "isems-mrsict",
 			CollectionName: "stix_object_collection",
+			ConnectDB:      cdmdb.Connection,
+		}
+
+		qpdo = interactionmongodb.QueryParameters{
+			NameDB:         "isems-mrsict",
+			CollectionName: "accounting_differences_objects_collection",
 			ConnectDB:      cdmdb.Connection,
 		}
 
@@ -137,6 +147,40 @@ var _ = Describe("AddSTIXObjSetBackLink", func() {
 
 			routingflowsmoduleapirequestprocessing.VerifyOutsideSpecificationFields(l, tst, "client-test")
 			l := interactionmongodb.SavingAdditionalNameListSTIXObject(listElemetSTIXObject, l)
+
+			//выполняем сравнение объекта из БД и полученного из файла
+			//выполняем сравнение объектов и ищем внесенные изменения для каждого из STIX объектов
+			listDifferentObject := interactionmongodb.ComparasionListSTIXObject(interactionmongodb.ComparasionListTypeSTIXObject{
+				CollectionType: qp.CollectionName,
+				OldList:        listElemetSTIXObject,
+				NewList:        l,
+			})
+
+			fmt.Println("only listDifferentObject")
+			fmt.Println(listDifferentObject)
+
+			if len(listDifferentObject) > 0 {
+				list := make([]interface{}, 0, len(listDifferentObject))
+
+				for _, v := range listDifferentObject {
+					list = append(list, v)
+				}
+
+				fmt.Println("______!!!!____")
+				fmt.Println(list)
+
+				//				_, err = qp.InsertData([]interface{}{listDifferentObject}, []mongo.IndexModel{})
+				//document_id
+				_, err = qpdo.InsertData(list, []mongo.IndexModel{
+					{
+						Keys: bson.D{
+							{Key: "document_id", Value: 1},
+						},
+						Options: &options.IndexOptions{},
+					},
+				})
+				Expect(err).ShouldNot(HaveOccurred())
+			}
 
 			countAfter := len(l)
 

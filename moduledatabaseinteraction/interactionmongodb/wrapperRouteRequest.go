@@ -81,9 +81,23 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 
 	//логируем изменения в STIX объектах в отдельную коллекцию 'accounting_differences_objects_collection'
 	if len(listDifferentObject) > 0 {
-		qp.CollectionName = "accounting_differences_objects_collection"
+		qpdo := QueryParameters{
+			NameDB:         qp.NameDB,
+			CollectionName: "accounting_differences_objects_collection",
+			ConnectDB:      qp.ConnectDB,
+		}
+		list := make([]interface{}, 0, len(listDifferentObject))
 
-		_, err := qp.InsertData([]interface{}{listDifferentObject}, []mongo.IndexModel{})
+		for _, v := range listDifferentObject {
+			list = append(list, v)
+		}
+
+		_, err := qpdo.InsertData(list, []mongo.IndexModel{
+			{
+				Keys:    bson.D{{Key: "document_id", Value: 1}},
+				Options: &options.IndexOptions{},
+			},
+		})
 		if err != nil {
 			errorMessage.ErrorMessage.Error = err
 			chanOutput <- errorMessage

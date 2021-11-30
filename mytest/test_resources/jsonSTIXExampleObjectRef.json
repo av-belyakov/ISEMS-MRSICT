@@ -81,9 +81,9 @@
             "id": "attack-pattern--3cd10f23-dc4a-4db0-82d7-cc345743d481",
             "created": "2021-05-13T08:34:27.000Z",
             "modified": "2021-05-13T08:57:11.000Z",
-            "name": "Шаблон атаки для тестовых КА",
-            "description": "A particular form of spear phishing where the attacker claims that the target had won a contest, including personal details, to get them to click on a link.",
-            "external_references": [{ "source_name": "capec", "external_id": "CAPEC-163" }]
+            "name": "Шаблон атаки для тестовых - КА!",
+            "description": "A particular form of spear phishing BBBAS where the attacker claims that the target had won a contest, including personal details, to get them to click on a link.",
+            "external_references": [{ "source_name": "capec", "external_id": "CAPEC-163" }, { "source_name": "capec", "external_id": "CAPEC-001" }]
         },
         {
             "type": "campaign",

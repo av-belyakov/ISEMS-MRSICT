@@ -116,6 +116,15 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 		return
 	}
 
+	/*____ Test ERROR ____*/
+	if err == nil {
+		errorMessage.ErrorMessage.Error = fmt.Errorf("my created test ERROR")
+		chanOutput <- errorMessage
+
+		return
+	}
+	/*--------------------*/
+
 	//создаем дополнительные STIX объекты типа 'relationship', обеспечивающие обратные связи
 	ti, err = CreatingAdditionalRelationshipSTIXObject(qp, ti)
 	if err != nil {

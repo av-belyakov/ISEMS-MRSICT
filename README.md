@@ -1,4 +1,4 @@
-Application ISEMS-MRSICT, v1.2.2
+Application ISEMS-MRSICT, v1.3.0
 Information Security Event Management Managing Records of Structured Information About Computer Threats (ISEMS-MRSICT)
 
 Программное средство, обеспечивающее управление записями структурированной информации о компьютерных угрозах.

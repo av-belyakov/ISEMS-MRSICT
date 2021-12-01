@@ -271,14 +271,6 @@ func (apstix AttackPatternDomainObjectsSTIX) ComparisonTypeCommonFields(newObj i
 		}
 	)
 
-	/*
-		fmt.Println("func 'ComparisonTypeCommonFields' AttackPatternDomainObjectsSTIX")
-		fmt.Println("---+++ Current apstix ===---")
-		fmt.Println(apstix)
-		fmt.Println("---+++ New apstix ===---")
-		fmt.Println(newObj)
-	*/
-
 	apNew, ok := newObj.(*AttackPatternDomainObjectsSTIX)
 	if !ok {
 		return isEqual, cot, fmt.Errorf("type conversion error")

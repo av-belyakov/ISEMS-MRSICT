@@ -202,7 +202,6 @@ func HandlerAssignmentsModuleAPIRequestProcessing(
 
 		switch l.CollectionName {
 		case "stix object":
-
 			/* *** обработчик JSON сообщений с общими запросами поиска по коллекции STIX объектов *** */
 
 			l, err = CheckSearchSTIXObject(&l)
@@ -275,6 +274,23 @@ func HandlerAssignmentsModuleAPIRequestProcessing(
 			}
 
 			return
+
+		case "differences objects collection":
+			/* ***
+				обработчик JSON сообщений с запросами поиска информации о предыдущем состоянии STIX объектов,
+				находящейся в коллекции "accounting_differences_objects_collection"
+			*** */
+
+			fmt.Println("func 'HandlerAssignmentsModuleAPIRequestProcessing', START...")
+			fmt.Printf("commonMsgReq.Section: '%s', l.CollectionName: '%s'\n", commonMsgReq.Section, l.CollectionName)
+			fmt.Println(l.SearchParameters)
+
+			/*
+							search_parameters: {
+				            	document_id: STRING // идентификатор документа в котором выполнялись модификации
+				            	collection_name: STRING // наименование коллекции в которой выполнялись модификации
+				        	}
+			*/
 
 		default:
 			chanSaveLog <- modulelogginginformationerrors.LogMessageType{

@@ -296,6 +296,8 @@ func HandlerAssignmentsModuleAPIRequestProcessing(
 				        	}
 			*/
 
+			return
+
 		default:
 			chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 				TypeMessage: "error",

@@ -84,6 +84,9 @@ func (cpdostix CommonPropertiesDomainObjectSTIX) sanitizeStruct() CommonProperti
 		cpdostix.Extensions = newExtension
 	}
 
+	//время модификации объекта
+	cpdostix.Modified = time.Now()
+
 	return cpdostix
 }
 

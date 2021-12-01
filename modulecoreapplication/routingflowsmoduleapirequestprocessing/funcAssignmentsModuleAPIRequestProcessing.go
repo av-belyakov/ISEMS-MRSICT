@@ -71,6 +71,21 @@ func UnmarshalJSONObjectReqSearchParameters(msgReq *json.RawMessage) (datamodels
 		result.PaginateParameters = resultTmp.PaginateParameters
 		result.SortableField = resultTmp.SortableField
 		result.SearchParameters = msgSearch
+
+	case "differences objects collection":
+		var msgSearch struct {
+			DocumentID     string `json:"document_id"`
+			CollectionName string `json:"collection_name"`
+		}
+
+		if err := json.Unmarshal(*resultTmp.SearchParameters, &msgSearch); err != nil {
+			return result, err
+		}
+
+		result.CollectionName = resultTmp.CollectionName
+		result.PaginateParameters = resultTmp.PaginateParameters
+		result.SortableField = resultTmp.SortableField
+		result.SearchParameters = msgSearch
 	}
 
 	return result, nil

@@ -200,6 +200,10 @@ func HandlerAssignmentsModuleAPIRequestProcessing(
 			return
 		}
 
+		fmt.Println("--- START ---")
+		fmt.Println("func 'HandlerAssignmentsModuleAPIRequestProcessing'")
+		fmt.Println(l)
+
 		switch l.CollectionName {
 		case "stix object":
 			/* *** обработчик JSON сообщений с общими запросами поиска по коллекции STIX объектов *** */
@@ -281,7 +285,7 @@ func HandlerAssignmentsModuleAPIRequestProcessing(
 				находящейся в коллекции "accounting_differences_objects_collection"
 			*** */
 
-			fmt.Println("func 'HandlerAssignmentsModuleAPIRequestProcessing', START...")
+			fmt.Println("func 'HandlerAssignmentsModuleAPIRequestProcessing'")
 			fmt.Printf("commonMsgReq.Section: '%s', l.CollectionName: '%s'\n", commonMsgReq.Section, l.CollectionName)
 			fmt.Println(l.SearchParameters)
 
@@ -308,8 +312,7 @@ func HandlerAssignmentsModuleAPIRequestProcessing(
 					Section:     section,
 					TaskType:    taskType,
 					FinalResult: "задача отклонена",
-					//Message:     "получено невалидное название коллекции в которой должен был быть выполнен поиск",
-					Message: fmt.Sprintf("получено невалидное название коллекции в которой должен был быть выполнен поиск, collection name: (%s)", l.CollectionName),
+					Message:     fmt.Sprintf("получено невалидное название коллекции в которой должен был быть выполнен поиск, collection name: (%s)", l.CollectionName),
 				}),
 				C: clim.ChannelsModuleAPIRequestProcessing.InputModule,
 			}); err != nil {

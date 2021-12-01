@@ -290,11 +290,44 @@ func HandlerAssignmentsModuleAPIRequestProcessing(
 			fmt.Println(l.SearchParameters)
 
 			/*
-							search_parameters: {
-				            	document_id: STRING // идентификатор документа в котором выполнялись модификации
-				            	collection_name: STRING // наименование коллекции в которой выполнялись модификации
-				        	}
+				search_parameters: {
+					document_id: STRING // идентификатор документа в котором выполнялись модификации
+					collection_name: STRING // наименование коллекции в которой выполнялись модификации
+				}
+
+				var msgSearch struct {
+					DocumentID     string `json:"document_id"`
+					CollectionName string `json:"collection_name"`
+				}
 			*/
+
+			if funcName, err := handlingManagingDifferencesObjectsCollection(l, data, tst, clim.ChannelsModuleDataBaseInteraction.ChannelsMongoDB.InputModule); err != nil {
+				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+					TypeMessage: "error",
+					Description: fmt.Sprintln(err),
+					FuncName:    funcName,
+				}
+
+				if err = auxiliaryfunctions.SendNotificationModuleAPI(&auxiliaryfunctions.SendNotificationTypeModuleAPI{
+					ClientID:         data.ClientID,
+					TaskID:           commonMsgReq.TaskID,
+					Section:          commonMsgReq.Section,
+					TypeNotification: "danger",
+					Notification: commonlibs.PatternUserMessage(&commonlibs.PatternUserMessageType{
+						Section:     section,
+						TaskType:    taskType,
+						FinalResult: "задача отклонена",
+						Message:     "получены некорректные параметры запроса",
+					}),
+					C: clim.ChannelsModuleAPIRequestProcessing.InputModule,
+				}); err != nil {
+					chanSaveLog <- modulelogginginformationerrors.LogMessageType{
+						TypeMessage: "error",
+						Description: fmt.Sprint(err),
+						FuncName:    "SendNotificationModuleAPI",
+					}
+				}
+			}
 
 			return
 

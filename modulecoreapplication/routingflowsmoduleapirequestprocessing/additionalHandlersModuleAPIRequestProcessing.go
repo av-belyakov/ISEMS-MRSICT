@@ -356,6 +356,63 @@ func getListComputerThreat(
 	return fn, nil
 }
 
+//handlingManagingDifferencesObjectsCollection обработчик JSON сообщений с запросами поиска информации о предыдущем состоянии STIX объектов,
+// находящейся в коллекции "accounting_differences_objects_collection"
+func handlingManagingDifferencesObjectsCollection(
+	reqSearch datamodels.ModAPIRequestProcessingResJSONSearchReqType,
+	data datamodels.ModuleReguestProcessingChannel,
+	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
+	cdbi chan<- datamodels.ModuleDataBaseInteractionChannel) (string, error) {
+
+	fmt.Println("func 'handlingManagingDifferencesObjectsCollection', START...")
+
+	var (
+		fn = commonlibs.GetFuncName()
+	)
+
+	sp, ok := reqSearch.SearchParameters.(struct {
+		DocumentID     string `json:"document_id"`
+		CollectionName string `json:"collection_name"`
+	})
+	if !ok {
+		return fn, fmt.Errorf("type conversion error, line 379")
+	}
+
+	sp.DocumentID = commonlibs.StringSanitize(sp.DocumentID)
+	sp.CollectionName = commonlibs.StringSanitize(sp.CollectionName)
+
+	//валидация DocumentID
+
+	//санитаризация CollectionName
+
+	//добавляем информацию о задаче в хранилище задач
+	/*appTaskID, err := tst.AddNewTask(&memorytemporarystoragecommoninformation.TemporaryStorageTaskType{
+	  	TaskGenerator:        data.ModuleGeneratorMessage,
+	  	ClientID:             data.ClientID,
+	  	ClientName:           data.ClientName,
+	  	ClientTaskID:         commonMsgReq.TaskID,
+	  	AdditionalClientName: commonMsgReq.UserNameGeneratedTask,
+	  	Section:              commonMsgReq.Section,
+	  	Command:              managementType.ActionType,
+	  	TaskParameters:       managementType.ListElements,
+	  })
+	  if err != nil {
+	  	return fn, err
+	  }*/
+
+	//отправка задачи модулю БД
+	/* clim.ChannelsModuleDataBaseInteraction.ChannelsMongoDB.InputModule <- datamodels.ModuleDataBaseInteractionChannel{
+		CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+			ModuleGeneratorMessage: "module core application",
+			ModuleReceiverMessage:  "module database interaction",
+		},
+		Section:   "handling managing collection stix objects",
+		AppTaskID: appTaskID,
+	} */
+
+	return fn, nil
+}
+
 //handlingStatisticalRequests обработчик JSON сообщений со статистическими запросами
 func handlingStatisticalRequests(
 	chanSaveLog chan<- modulelogginginformationerrors.LogMessageType,

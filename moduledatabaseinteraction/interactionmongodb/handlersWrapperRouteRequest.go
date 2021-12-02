@@ -155,7 +155,7 @@ func searchDifferencesObjectsCollection(
 		return fn, err
 	}
 
-	documents := []*datamodels.DifferentObjectType{}
+	documents := []datamodels.DifferentObjectType{}
 
 	for cur.Next(context.Background()) {
 		var document datamodels.DifferentObjectType
@@ -163,7 +163,7 @@ func searchDifferencesObjectsCollection(
 			continue
 		}
 
-		documents = append(documents, &document)
+		documents = append(documents, document)
 	}
 
 	fmt.Printf("func '%s', count document found: '%d'\nfound result ==== \n'%v'\n", fn, len(documents), documents)

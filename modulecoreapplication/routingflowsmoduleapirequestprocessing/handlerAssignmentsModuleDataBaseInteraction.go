@@ -392,7 +392,7 @@ func handlingSearchDifferencesObjectsCollection(
 		IsSuccessful: true,
 	}
 
-	listDifferentObject, ok := result.Information.([]*datamodels.DifferentObjectType)
+	listDifferentObject, ok := result.Information.([]datamodels.DifferentObjectType)
 	if !ok {
 		return fmt.Errorf("type conversion error, line 398")
 	}
@@ -428,9 +428,18 @@ func handlingSearchDifferencesObjectsCollection(
 			max = max + maxChunkSize
 			msgRes.AdditionalParameters = data
 		}
+
+		/*
+			Тут надо посмотреть внимательнее, отправки похоже нет!!!
+		*/
 	}
 
 	fmt.Printf("func 'handlingSearchDifferencesObjectsCollection', MsgRes: '%v'\n", msgRes)
+
+	/*
+	   по тестам msgRes содержит всю необходимую информацию
+	   надо дальше смотреть
+	*/
 
 	msg, err := json.Marshal(msgRes)
 	if err != nil {

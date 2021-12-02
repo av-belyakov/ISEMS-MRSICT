@@ -64,12 +64,14 @@ type ElementSTIXObject struct {
 //DifferentObjectType содержит перечисление полей и их значения, которые были изменены в произвольном типе
 // SourceReceivingChanges - источник от которого были получены изменения
 // ModifiedTime - время выполнения модификации
+// UserNameModifiedObject - пользователь выполнивший модификацию
 // CollectionName - наименование коллекции в которой выполнялись модификации
 // DocumentID - идентификатор документа в котором выполнялись модификации
 // FieldList - перечень полей подвергшихся изменениям
 type DifferentObjectType struct {
 	SourceReceivingChanges string                    `bson:"source_receiving_changes"`
 	ModifiedTime           time.Time                 `bson:"modified_time"`
+	UserNameModifiedObject string                    `bson:"user_name_modified_object"`
 	CollectionName         string                    `bson:"collection_name"`
 	DocumentID             string                    `bson:"document_id"`
 	FieldList              []OldFieldValueObjectType `bson:"field_list"`

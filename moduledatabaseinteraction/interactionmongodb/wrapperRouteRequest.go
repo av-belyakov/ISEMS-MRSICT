@@ -79,6 +79,10 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 		NewList:        ti,
 	})
 
+	for k, _ := range listDifferentObject {
+		listDifferentObject[k].UserNameModifiedObject = taskInfo.AdditionalClientName
+	}
+
 	//логируем изменения в STIX объектах в отдельную коллекцию 'accounting_differences_objects_collection'
 	if len(listDifferentObject) > 0 {
 		qpdo := QueryParameters{

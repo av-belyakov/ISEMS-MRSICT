@@ -381,8 +381,9 @@ func handlingManagingDifferencesObjectsCollection(
 	sp.DocumentID = commonlibs.StringSanitize(sp.DocumentID)
 	sp.CollectionName = commonlibs.StringSanitize(sp.CollectionName)
 
-	//валидация DocumentID
+	fmt.Printf("sanitized parameters request search parameters: '%v'\n", sp)
 
+	//валидация DocumentID
 	//санитаризация CollectionName
 
 	//добавляем информацию о задаче в хранилище задач
@@ -406,7 +407,7 @@ func handlingManagingDifferencesObjectsCollection(
 			ModuleGeneratorMessage: "module core application",
 			ModuleReceiverMessage:  "module database interaction",
 		},
-		Section:   "handling managing collection stix objects",
+		Section:   "handling managing collection stix objects", //здесь надо изменить наименование секции
 		AppTaskID: appTaskID,
 	} */
 

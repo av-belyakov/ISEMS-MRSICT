@@ -200,10 +200,6 @@ func HandlerAssignmentsModuleAPIRequestProcessing(
 			return
 		}
 
-		fmt.Println("--- START ---")
-		fmt.Println("func 'HandlerAssignmentsModuleAPIRequestProcessing'")
-		fmt.Println(l)
-
 		switch l.CollectionName {
 		case "stix object":
 			/* *** обработчик JSON сообщений с общими запросами поиска по коллекции STIX объектов *** */
@@ -285,6 +281,7 @@ func HandlerAssignmentsModuleAPIRequestProcessing(
 				находящейся в коллекции "accounting_differences_objects_collection"
 			*** */
 
+			fmt.Println("--- START ---")
 			fmt.Println("func 'HandlerAssignmentsModuleAPIRequestProcessing'")
 			fmt.Printf("commonMsgReq.Section: '%s', l.CollectionName: '%s'\n", commonMsgReq.Section, l.CollectionName)
 			fmt.Println(l.SearchParameters)

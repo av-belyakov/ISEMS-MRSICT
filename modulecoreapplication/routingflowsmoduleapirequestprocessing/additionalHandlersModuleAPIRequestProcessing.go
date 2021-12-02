@@ -371,7 +371,7 @@ func handlingManagingDifferencesObjectsCollection(
 		CollectionName string `json:"collection_name"`
 	})
 	if !ok {
-		return fn, fmt.Errorf("type conversion error, line 379")
+		return fn, fmt.Errorf("type conversion error, line 374")
 	}
 
 	sp.DocumentID = commonlibs.StringSanitize(sp.DocumentID)

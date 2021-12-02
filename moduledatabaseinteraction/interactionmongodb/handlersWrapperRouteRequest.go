@@ -95,25 +95,90 @@ func searchSTIXObject(
 	return fn, nil
 }
 
-func searchDifferencesObjectsCollection(appTaskID string,
+func searchDifferencesObjectsCollection(
+	appTaskID string,
 	qp QueryParameters,
 	taskInfo datamodels.ModAPIRequestProcessingResJSONSearchReqType,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) (string, error) {
 
 	var (
-		err error
-		fn  string = commonlibs.GetFuncName()
+		err                  error
+		searchDocumentId     bson.E
+		searchCollectionName bson.E
+		fn                   string = commonlibs.GetFuncName()
+		currentPartNumber    int64  = 1
+		maxPartSize          int64  = 350
+		sortableField        string = "modified_time"
 	)
 
-	//здесь надо учитывать сортировку найденных значений по умолчанию
-	/*
-	   При этом при поиске по коллекции типа "accounting_differences_objects_collection" сортировка возможна только по
-	                                  // полям "modified_time" и "user_name_modified_object". Если параметр поля не задан или задан отличный от этих двух
-	                                  // значений параметров, то "по умолчанию" сортировка выполняется по полю "modified_time" от болле новых значений к
-	                                  // более старым.
-	*/
-
 	fmt.Printf("func '%s', START...\n", fn)
+
+	if taskInfo.PaginateParameters.CurrentPartNumber != 0 {
+		currentPartNumber = int64(taskInfo.PaginateParameters.CurrentPartNumber)
+	}
+
+	if taskInfo.PaginateParameters.MaxPartSize > 15 {
+		maxPartSize = int64(taskInfo.PaginateParameters.MaxPartSize)
+	}
+
+	if taskInfo.SortableField == "user_name_modified_object" {
+		sortableField = taskInfo.SortableField
+	}
+
+	sp, ok := taskInfo.SearchParameters.(struct {
+		DocumentID     string `json:"document_id"`
+		CollectionName string `json:"collection_name"`
+	})
+	if !ok {
+		return fn, fmt.Errorf("type conversion error")
+	}
+
+	if len(sp.DocumentID) > 0 {
+		searchDocumentId = bson.E{Key: "document_id", Value: sp.DocumentID}
+	}
+
+	if len(sp.CollectionName) > 0 {
+		searchCollectionName = bson.E{Key: "collection_name", Value: sp.CollectionName}
+	}
+
+	//получить все найденные документы, с учетом лимита
+	cur, err := qp.FindAllWithLimit(bson.D{
+		searchDocumentId,
+		searchCollectionName,
+	}, &FindAllWithLimitOptions{
+		Offset:        currentPartNumber,
+		LimitMaxSize:  maxPartSize,
+		SortField:     sortableField,
+		SortAscending: false,
+	})
+	if err != nil {
+		return fn, err
+	}
+
+	documents := []*datamodels.DifferentObjectType{}
+
+	for cur.Next(context.Background()) {
+		var document datamodels.DifferentObjectType
+		if err := cur.Decode(&document); err != nil {
+			continue
+		}
+
+		documents = append(documents, &document)
+	}
+
+	fmt.Printf("func '%s', count document found: '%d'\nfound result ==== \n'%v'\n", fn, len(documents), documents)
+
+	//сохраняем найденные значения во временном хранилище
+	err = tst.AddNewFoundInformation(
+		appTaskID,
+		&memorytemporarystoragecommoninformation.TemporaryStorageFoundInformation{
+			Collection:  "accounting_differences_objects_collection",
+			ResultType:  "full_found_info",
+			Information: documents,
+		})
+	if err != nil {
+		return fn, err
+	}
 
 	return fn, err
 }

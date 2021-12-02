@@ -524,7 +524,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingManagingDifferencesObjectsColl
 			ModuleGeneratorMessage: "module database interaction",
 			ModuleReceiverMessage:  "module core application",
 		},
-		Section:   "handling search requests", //?????
+		Section:   "handling search requests",
 		AppTaskID: dataRequest.AppTaskID,
 	}
 }

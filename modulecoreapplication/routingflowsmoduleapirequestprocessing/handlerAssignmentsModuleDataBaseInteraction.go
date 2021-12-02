@@ -180,8 +180,22 @@ func handlerDataBaseResponse(
 	if ti.TaskStatus == "completed" {
 		switch data.Section {
 		case "handling search requests": //обработка ответов на поисковый запрос
-			if err := handlingSearchRequestsSTIXObject(chanResModAPI, _maxChunkSize, data, tst, ti); err != nil {
+			//делаем запрос к временному хранилищу информации
+			result, err := tst.GetFoundInformationByID(data.AppTaskID)
+			if err != nil {
 				return err
+			}
+
+			if result.Collection == "stix_object_collection" {
+				if err := handlingSearchRequestsSTIXObject(chanResModAPI, _maxChunkSize, data, result, ti); err != nil {
+					return err
+				}
+			}
+
+			if result.Collection == "accounting_differences_objects_collection" {
+				if err := handlingSearchDifferencesObjectsCollection(chanResModAPI, _maxChunkSize, data, result, ti); err != nil {
+					return err
+				}
 			}
 
 		case "handling statistical requests": //обработка ответов на запрос статистической информации
@@ -195,7 +209,6 @@ func handlerDataBaseResponse(
 			}
 
 		}
-
 	}
 
 	//удаляем задачу и результаты поиска информации, если они есть
@@ -264,24 +277,13 @@ func handlingRBRequests(
 	return nil
 }
 
-//handlingSearchRequestsSTIXObject - обработчик ответов на поисковые запросы
+//handlingSearchRequestsSTIXObject - обработчик ответов на запросы поиска по STIX объектам
 func handlingSearchRequestsSTIXObject(
 	chanResModAPI chan<- datamodels.ModuleReguestProcessingChannel,
 	maxChunkSize int,
 	data datamodels.ModuleDataBaseInteractionChannel,
-	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
+	result *memorytemporarystoragecommoninformation.TemporaryStorageFoundInformation,
 	ti *memorytemporarystoragecommoninformation.TemporaryStorageTaskInDetailType) error {
-
-	tp, ok := ti.TaskParameters.(datamodels.ModAPIRequestProcessingResJSONSearchReqType)
-	if !ok {
-		return fmt.Errorf("type conversion error, line 203")
-	}
-
-	//делаем запрос к временному хранилищу информации
-	result, err := tst.GetFoundInformationByID(data.AppTaskID)
-	if err != nil {
-		return err
-	}
 
 	msgRes := datamodels.ModAPIRequestProcessingResJSON{
 		ModAPIRequestProcessingCommonJSON: datamodels.ModAPIRequestProcessingCommonJSON{
@@ -291,72 +293,144 @@ func handlingSearchRequestsSTIXObject(
 		IsSuccessful: true,
 	}
 
-	//обрабатываем результаты опираясь на типы коллекций
-	if tp.CollectionName == "stix object" && result.Collection == "stix_object_collection" {
-		switch result.ResultType {
-		case "only_count":
-			//для КРАТКОЙ информации, только количество, по найденным STIX объектам
+	switch result.ResultType {
+	case "only_count":
+		//для КРАТКОЙ информации, только количество, по найденным STIX объектам
 
-			numFound, ok := result.Information.(int64)
-			if !ok {
-				return fmt.Errorf("type conversion error, line 298")
+		numFound, ok := result.Information.(int64)
+		if !ok {
+			return fmt.Errorf("type conversion error, line 298")
+		}
+
+		msgRes.AdditionalParameters = struct {
+			NumberDocumentsFound int64 `json:"number_documents_found"`
+		}{
+			NumberDocumentsFound: numFound,
+		}
+
+	case "full_found_info":
+		//для ПОЛНОЙ информации по найденным STIX объектам
+
+		listElemSTIXObj, ok := result.Information.([]*datamodels.ElementSTIXObject)
+		if !ok {
+			return fmt.Errorf("type conversion error, line 316")
+		}
+
+		sestixo := len(listElemSTIXObj)
+		listMsgRes := make([]interface{}, 0, sestixo)
+		for _, v := range listElemSTIXObj {
+			listMsgRes = append(listMsgRes, v.Data)
+		}
+
+		//обрабатываем полученный список STIX объектов, в том числе если он превышает размер в 100 объектов
+		if sestixo < maxChunkSize {
+			msgRes.AdditionalParameters = datamodels.ResJSONParts{
+				TotalNumberParts:      1,
+				GivenSizePart:         maxChunkSize,
+				NumberTransmittedPart: 1,
+				TransmittedData:       listMsgRes,
 			}
-
-			msgRes.AdditionalParameters = struct {
-				NumberDocumentsFound int64 `json:"number_documents_found"`
-			}{
-				NumberDocumentsFound: numFound,
-			}
-
-		case "full_found_info":
-			//для ПОЛНОЙ информации по найденным STIX объектам
-
-			listElemSTIXObj, ok := result.Information.([]*datamodels.ElementSTIXObject)
-			if !ok {
-				return fmt.Errorf("type conversion error, line 312")
-			}
-
-			sestixo := len(listElemSTIXObj)
-			listMsgRes := make([]interface{}, 0, sestixo)
-			for _, v := range listElemSTIXObj {
-				listMsgRes = append(listMsgRes, v.Data)
-			}
-
-			//обрабатываем полученный список STIX объектов, в том числе если он превышает размер в 100 объектов
-			if sestixo < maxChunkSize {
-				msgRes.AdditionalParameters = datamodels.ResJSONParts{
-					TotalNumberParts:      1,
+		} else {
+			num := commonlibs.GetCountChunk(int64(sestixo), maxChunkSize)
+			min := 0
+			max := maxChunkSize
+			for i := 0; i < num; i++ {
+				data := datamodels.ResJSONParts{
+					TotalNumberParts:      num,
 					GivenSizePart:         maxChunkSize,
-					NumberTransmittedPart: 1,
-					TransmittedData:       listMsgRes,
+					NumberTransmittedPart: i + 1,
 				}
 
-			} else {
-				num := commonlibs.GetCountChunk(int64(sestixo), maxChunkSize)
-				min := 0
-				max := maxChunkSize
-				for i := 0; i < num; i++ {
-					data := datamodels.ResJSONParts{
-						TotalNumberParts:      num,
-						GivenSizePart:         maxChunkSize,
-						NumberTransmittedPart: i + 1,
-					}
-
-					if i == 0 {
-						data.TransmittedData = listMsgRes[:max]
-					} else if i == num-1 {
-						data.TransmittedData = listMsgRes[min:]
-					} else {
-						data.TransmittedData = listMsgRes[min:max]
-					}
-
-					min = min + maxChunkSize
-					max = max + maxChunkSize
-					msgRes.AdditionalParameters = data
+				if i == 0 {
+					data.TransmittedData = listMsgRes[:max]
+				} else if i == num-1 {
+					data.TransmittedData = listMsgRes[min:]
+				} else {
+					data.TransmittedData = listMsgRes[min:max]
 				}
+
+				min = min + maxChunkSize
+				max = max + maxChunkSize
+				msgRes.AdditionalParameters = data
 			}
 		}
 	}
+
+	msg, err := json.Marshal(msgRes)
+	if err != nil {
+		return err
+	}
+
+	chanResModAPI <- datamodels.ModuleReguestProcessingChannel{
+		CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+			ModuleGeneratorMessage: "module core application",
+			ModuleReceiverMessage:  "module api request processing",
+		},
+		ClientID: ti.ClientID,
+		DataType: 1,
+		Data:     &msg,
+	}
+
+	return nil
+}
+
+//handlingSearchDifferencesObjectsCollection - обработчик ответов на запросы поиска по коллекции отслеживающей изменение объектов
+func handlingSearchDifferencesObjectsCollection(
+	chanResModAPI chan<- datamodels.ModuleReguestProcessingChannel,
+	maxChunkSize int,
+	data datamodels.ModuleDataBaseInteractionChannel,
+	result *memorytemporarystoragecommoninformation.TemporaryStorageFoundInformation,
+	ti *memorytemporarystoragecommoninformation.TemporaryStorageTaskInDetailType) error {
+
+	fmt.Println("func 'handlingSearchDifferencesObjectsCollection', START...")
+
+	msgRes := datamodels.ModAPIRequestProcessingResJSON{
+		ModAPIRequestProcessingCommonJSON: datamodels.ModAPIRequestProcessingCommonJSON{
+			TaskID:  ti.ClientTaskID,
+			Section: data.Section,
+		},
+		IsSuccessful: true,
+	}
+
+	listDifferentObject, ok := result.Information.([]*datamodels.DifferentObjectType)
+	if !ok {
+		return fmt.Errorf("type conversion error, line 398")
+	}
+
+	numldo := len(listDifferentObject)
+	if numldo < maxChunkSize {
+		msgRes.AdditionalParameters = datamodels.ResJSONParts{
+			TotalNumberParts:      1,
+			GivenSizePart:         maxChunkSize,
+			NumberTransmittedPart: 1,
+			TransmittedData:       listDifferentObject,
+		}
+	} else {
+		num := commonlibs.GetCountChunk(int64(numldo), maxChunkSize)
+		min := 0
+		max := maxChunkSize
+		for i := 0; i < num; i++ {
+			data := datamodels.ResJSONParts{
+				TotalNumberParts:      num,
+				GivenSizePart:         maxChunkSize,
+				NumberTransmittedPart: i + 1,
+			}
+
+			if i == 0 {
+				data.TransmittedData = listDifferentObject[:max]
+			} else if i == num-1 {
+				data.TransmittedData = listDifferentObject[min:]
+			} else {
+				data.TransmittedData = listDifferentObject[min:max]
+			}
+
+			min = min + maxChunkSize
+			max = max + maxChunkSize
+			msgRes.AdditionalParameters = data
+		}
+	}
+
+	fmt.Printf("func 'handlingSearchDifferencesObjectsCollection', MsgRes: '%v'\n", msgRes)
 
 	msg, err := json.Marshal(msgRes)
 	if err != nil {

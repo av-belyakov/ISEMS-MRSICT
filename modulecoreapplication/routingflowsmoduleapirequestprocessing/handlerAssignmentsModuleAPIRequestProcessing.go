@@ -281,23 +281,6 @@ func HandlerAssignmentsModuleAPIRequestProcessing(
 				находящейся в коллекции "accounting_differences_objects_collection"
 			*** */
 
-			fmt.Println("--- START ---")
-			fmt.Println("func 'HandlerAssignmentsModuleAPIRequestProcessing'")
-			fmt.Printf("commonMsgReq.Section: '%s', l.CollectionName: '%s'\n", commonMsgReq.Section, l.CollectionName)
-			fmt.Println(l.SearchParameters)
-
-			/*
-				search_parameters: {
-					document_id: STRING // идентификатор документа в котором выполнялись модификации
-					collection_name: STRING // наименование коллекции в которой выполнялись модификации
-				}
-
-				var msgSearch struct {
-					DocumentID     string `json:"document_id"`
-					CollectionName string `json:"collection_name"`
-				}
-			*/
-
 			if funcName, err := handlingManagingDifferencesObjectsCollection(l, data, commonMsgReq, tst, clim.ChannelsModuleDataBaseInteraction.ChannelsMongoDB.InputModule); err != nil {
 				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 					TypeMessage: "error",

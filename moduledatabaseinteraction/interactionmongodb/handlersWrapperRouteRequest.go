@@ -13,7 +13,7 @@ import (
 	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
 )
 
-//searchSTIXObject обработчик поисковых запросов, связанных с поиском, по заданным параметрам, STIX объектов
+//searchSTIXObject обработчик поисковых запросов, связанных с поиском STIX объектов, по заданным пользователем параметрам
 func searchSTIXObject(
 	appTaskID string,
 	qp QueryParameters,
@@ -67,8 +67,6 @@ func searchSTIXObject(
 		sortableField = field
 	}
 
-	//fmt.Printf("____ func 'searchSTIXObject' searchParameters: '%v'\nCurrentPartNumber: '%d'\nMaxPartSize: '%d'\n", searchParameters, int64(taskInfo.PaginateParameters.CurrentPartNumber), int64(taskInfo.PaginateParameters.MaxPartSize))
-
 	//получить все найденные документы, с учетом лимита
 	cur, err := qp.FindAllWithLimit(CreateSearchQueriesSTIXObject(&searchParameters), &FindAllWithLimitOptions{
 		Offset:        int64(taskInfo.PaginateParameters.CurrentPartNumber),
@@ -81,10 +79,6 @@ func searchSTIXObject(
 	}
 
 	listelm := GetListElementSTIXObject(cur)
-	//fmt.Printf("____ func 'searchSTIXObject' appTaskID: '%s', count ListElementSTIXObject: '%d'\n", appTaskID, len(listelm))
-	/*for k, v := range listelm {
-		fmt.Printf("%d. %s\n", k, v.Data.GetID())
-	}*/
 
 	//сохраняем найденные значения во временном хранилище
 	err = tst.AddNewFoundInformation(
@@ -99,6 +93,29 @@ func searchSTIXObject(
 	}
 
 	return fn, nil
+}
+
+func searchDifferencesObjectsCollection(appTaskID string,
+	qp QueryParameters,
+	taskInfo datamodels.ModAPIRequestProcessingResJSONSearchReqType,
+	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) (string, error) {
+
+	var (
+		err error
+		fn  string = commonlibs.GetFuncName()
+	)
+
+	//здесь надо учитывать сортировку найденных значений по умолчанию
+	/*
+	   При этом при поиске по коллекции типа "accounting_differences_objects_collection" сортировка возможна только по
+	                                  // полям "modified_time" и "user_name_modified_object". Если параметр поля не задан или задан отличный от этих двух
+	                                  // значений параметров, то "по умолчанию" сортировка выполняется по полю "modified_time" от болле новых значений к
+	                                  // более старым.
+	*/
+
+	fmt.Printf("func '%s', START...\n", fn)
+
+	return fn, err
 }
 
 //ResultStatisticalInformationSTIXObject содержит результат поиска статистической информации по STIX объектам

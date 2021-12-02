@@ -69,12 +69,12 @@ type ElementSTIXObject struct {
 // DocumentID - идентификатор документа в котором выполнялись модификации
 // FieldList - перечень полей подвергшихся изменениям
 type DifferentObjectType struct {
-	SourceReceivingChanges string                    `bson:"source_receiving_changes"`
-	ModifiedTime           time.Time                 `bson:"modified_time"`
-	UserNameModifiedObject string                    `bson:"user_name_modified_object"`
-	CollectionName         string                    `bson:"collection_name"`
-	DocumentID             string                    `bson:"document_id"`
-	FieldList              []OldFieldValueObjectType `bson:"field_list"`
+	SourceReceivingChanges string                    `json:"source_receiving_changes" bson:"source_receiving_changes"`
+	ModifiedTime           time.Time                 `json:"modified_time" bson:"modified_time"`
+	UserNameModifiedObject string                    `json:"user_name_modified_object" bson:"user_name_modified_object"`
+	CollectionName         string                    `json:"collection_name" bson:"collection_name"`
+	DocumentID             string                    `json:"document_id" bson:"document_id"`
+	FieldList              []OldFieldValueObjectType `json:"field_list" bson:"field_list"`
 }
 
 //OldFieldValueObjectType содержит старое значение полей, до их модификации
@@ -82,9 +82,9 @@ type DifferentObjectType struct {
 // Path - полный путь к объекту подвергшемуся модификации
 // Value - предыдущее значение поля, которое подверглось модификации
 type OldFieldValueObjectType struct {
-	FeildType string      `bson:"feild_type"`
-	Path      string      `bson:"path"`
-	Value     interface{} `bson:"value"`
+	FeildType string      `json:"feild_type" bson:"feild_type"`
+	Path      string      `json:"path" bson:"path"`
+	Value     interface{} `json:"value" bson:"value"`
 }
 
 //ShortDescriptionElementComputerThreat содержит краткое описание элемента 'grouping' содержащего списки STIX объектов типа 'report' компьютерных

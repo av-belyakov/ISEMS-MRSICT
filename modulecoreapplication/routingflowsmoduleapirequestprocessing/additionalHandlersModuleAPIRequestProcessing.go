@@ -361,14 +361,10 @@ func getListComputerThreat(
 func handlingManagingDifferencesObjectsCollection(
 	reqSearch datamodels.ModAPIRequestProcessingResJSONSearchReqType,
 	data datamodels.ModuleReguestProcessingChannel,
+	commonMsgReq *datamodels.ModAPIRequestProcessingReqJSON,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
 	cdbi chan<- datamodels.ModuleDataBaseInteractionChannel) (string, error) {
-
-	fmt.Println("func 'handlingManagingDifferencesObjectsCollection', START...")
-
-	var (
-		fn = commonlibs.GetFuncName()
-	)
+	fn := commonlibs.GetFuncName()
 
 	sp, ok := reqSearch.SearchParameters.(struct {
 		DocumentID     string `json:"document_id"`
@@ -381,35 +377,30 @@ func handlingManagingDifferencesObjectsCollection(
 	sp.DocumentID = commonlibs.StringSanitize(sp.DocumentID)
 	sp.CollectionName = commonlibs.StringSanitize(sp.CollectionName)
 
-	fmt.Printf("sanitized parameters request search parameters: '%v'\n", sp)
-
-	//валидация DocumentID
-	//санитаризация CollectionName
-
 	//добавляем информацию о задаче в хранилище задач
-	/*appTaskID, err := tst.AddNewTask(&memorytemporarystoragecommoninformation.TemporaryStorageTaskType{
-	  	TaskGenerator:        data.ModuleGeneratorMessage,
-	  	ClientID:             data.ClientID,
-	  	ClientName:           data.ClientName,
-	  	ClientTaskID:         commonMsgReq.TaskID,
-	  	AdditionalClientName: commonMsgReq.UserNameGeneratedTask,
-	  	Section:              commonMsgReq.Section,
-	  	Command:              managementType.ActionType,
-	  	TaskParameters:       managementType.ListElements,
-	  })
-	  if err != nil {
-	  	return fn, err
-	  }*/
+	appTaskID, err := tst.AddNewTask(&memorytemporarystoragecommoninformation.TemporaryStorageTaskType{
+		TaskGenerator:        data.ModuleGeneratorMessage,
+		ClientID:             data.ClientID,
+		ClientName:           data.ClientName,
+		ClientTaskID:         commonMsgReq.TaskID,
+		AdditionalClientName: commonMsgReq.UserNameGeneratedTask,
+		Section:              commonMsgReq.Section,
+		Command:              "",
+		TaskParameters:       reqSearch,
+	})
+	if err != nil {
+		return fn, err
+	}
 
 	//отправка задачи модулю БД
-	/* clim.ChannelsModuleDataBaseInteraction.ChannelsMongoDB.InputModule <- datamodels.ModuleDataBaseInteractionChannel{
+	cdbi <- datamodels.ModuleDataBaseInteractionChannel{
 		CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
 			ModuleGeneratorMessage: "module core application",
 			ModuleReceiverMessage:  "module database interaction",
 		},
-		Section:   "handling managing collection stix objects", //здесь надо изменить наименование секции
+		Section:   "handling managing differences objects collection",
 		AppTaskID: appTaskID,
-	} */
+	}
 
 	return fn, nil
 }

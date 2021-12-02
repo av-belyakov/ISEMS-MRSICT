@@ -372,7 +372,6 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 
 	var (
 		err error
-		fn  = commonlibs.GetFuncName()
 		qp  = QueryParameters{
 			NameDB:         ws.NameDB,
 			CollectionName: "stix_object_collection",
@@ -380,7 +379,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 		}
 	)
 
-	errorMessage.ErrorMessage.FuncName = fn
+	errorMessage.ErrorMessage.FuncName = commonlibs.GetFuncName()
 	errorMessage.Section = "handling search requests"
 	errorMessage.AppTaskID = dataRequest.AppTaskID
 
@@ -452,6 +451,84 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 	}
 }
 
+func (ws *wrappersSetting) wrapperFuncTypeHandlingManagingDifferencesObjectsCollection(
+	chanOutput chan<- datamodels.ModuleDataBaseInteractionChannel,
+	dataRequest datamodels.ModuleDataBaseInteractionChannel,
+	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) {
+
+	fmt.Println("func 'wrapperFuncTypeHandlingManagingDifferencesObjectsCollection', START...")
+
+	qp := QueryParameters{
+		NameDB:         ws.NameDB,
+		CollectionName: "accounting_differences_objects_collection",
+		ConnectDB:      ws.ConnectionDB.Connection,
+	}
+
+	errorMessage.ErrorMessage.FuncName = commonlibs.GetFuncName()
+	errorMessage.Section = "handling managing differences objects collection"
+	errorMessage.AppTaskID = dataRequest.AppTaskID
+
+	//получаем всю информацию о выполняемой задаче из временного хранилища задач
+	_, taskInfo, err := tst.GetTaskByID(dataRequest.AppTaskID)
+	if err != nil {
+		errorMessage.ErrorMessage.Error = err
+		chanOutput <- errorMessage
+
+		return
+	}
+
+	psr, ok := taskInfo.TaskParameters.(datamodels.ModAPIRequestProcessingResJSONSearchReqType)
+	if !ok {
+		errorMessage.ErrorMessage.Error = fmt.Errorf("type conversion error")
+		chanOutput <- errorMessage
+
+		return
+	}
+
+	fmt.Printf("func 'wrapperFuncTypeHandlingManagingDifferencesObjectsCollection', Section: 'handling managing differences objects collection',\n appTaskID: '%s',\n CollectionName: '%s'\n", dataRequest.AppTaskID, psr.CollectionName)
+
+	//изменяем время модификации информации о задаче
+	_ = tst.ChangeDateTaskModification(dataRequest.AppTaskID)
+
+	//изменяем статус выполняемой задачи на 'in progress'
+	if err := tst.ChangeTaskStatus(dataRequest.AppTaskID, "in progress"); err != nil {
+		errorMessage.ErrorMessage.Error = err
+		chanOutput <- errorMessage
+
+		return
+	}
+
+	if fn, err := searchDifferencesObjectsCollection(dataRequest.AppTaskID, qp, psr, tst); err != nil {
+		errorMessage.ErrorMessage.FuncName = fn
+		errorMessage.ErrorMessage.Error = err
+		chanOutput <- errorMessage
+
+		return
+	}
+
+	_ = tst.ChangeDateTaskModification(dataRequest.AppTaskID)
+
+	//изменяем состояние задачи на 'completed'
+	if err := tst.ChangeTaskStatus(dataRequest.AppTaskID, "completed"); err != nil {
+		errorMessage.ErrorMessage.Error = err
+		chanOutput <- errorMessage
+
+		return
+	}
+
+	fmt.Printf("func '%s', is COMPLETE\n", errorMessage.ErrorMessage.FuncName)
+
+	//отправляем в канал идентификатор задачи и специальные параметры которые информируют что задача была выполненна
+	chanOutput <- datamodels.ModuleDataBaseInteractionChannel{
+		CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+			ModuleGeneratorMessage: "module database interaction",
+			ModuleReceiverMessage:  "module core application",
+		},
+		Section:   "handling search requests", //?????
+		AppTaskID: dataRequest.AppTaskID,
+	}
+}
+
 //wrapperFuncTypeTechnicalPart набор обработчиков для осуществления задач, связанных с технической частью приложения: формирование документов БД
 // связанных с хранением технической информации или документов, учавствующих в посторении иерархии объектов типа STIX. Запись идентификаторов таких
 // объектов во временное хранилище и т.д.
@@ -460,16 +537,13 @@ func (ws *wrappersSetting) wrapperFuncTypeTechnicalPart(
 	dataRequest datamodels.ModuleDataBaseInteractionChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) {
 
-	var (
-		fn string = "wrapperFuncTypeTechnicalPart"
-		qp        = QueryParameters{
-			NameDB:         ws.NameDB,
-			CollectionName: "stix_object_collection",
-			ConnectDB:      ws.ConnectionDB.Connection,
-		}
-	)
+	qp := QueryParameters{
+		NameDB:         ws.NameDB,
+		CollectionName: "stix_object_collection",
+		ConnectDB:      ws.ConnectionDB.Connection,
+	}
 
-	errorMessage.ErrorMessage.FuncName = fn
+	errorMessage.ErrorMessage.FuncName = commonlibs.GetFuncName()
 	errorMessage.Section = "handling technical part"
 
 	switch dataRequest.Command {

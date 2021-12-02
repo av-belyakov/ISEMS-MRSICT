@@ -298,7 +298,7 @@ func HandlerAssignmentsModuleAPIRequestProcessing(
 				}
 			*/
 
-			if funcName, err := handlingManagingDifferencesObjectsCollection(l, data, tst, clim.ChannelsModuleDataBaseInteraction.ChannelsMongoDB.InputModule); err != nil {
+			if funcName, err := handlingManagingDifferencesObjectsCollection(l, data, commonMsgReq, tst, clim.ChannelsModuleDataBaseInteraction.ChannelsMongoDB.InputModule); err != nil {
 				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 					TypeMessage: "error",
 					Description: fmt.Sprintln(err),

@@ -32,6 +32,9 @@ func Routing(
 		case "handling managing collection stix objects":
 			go ws.wrapperFuncTypeHandlingManagingCollectionSTIXObjects(chanOutput, data, tst)
 
+		case "handling managing differences objects collection":
+			go ws.wrapperFuncTypeHandlingManagingDifferencesObjectsCollection(chanOutput, data, tst)
+
 		case "handling search requests":
 			go ws.wrapperFuncTypeHandlingSearchRequests(chanOutput, data, tst)
 

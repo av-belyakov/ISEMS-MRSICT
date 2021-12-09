@@ -106,20 +106,10 @@ func searchDifferencesObjectsCollection(
 		searchDocumentId     bson.E
 		searchCollectionName bson.E
 		fn                   string = commonlibs.GetFuncName()
-		currentPartNumber    int64  = 1
-		maxPartSize          int64  = 350
 		sortableField        string = "modified_time"
 	)
 
 	fmt.Printf("func '%s', START...\n", fn)
-
-	if taskInfo.PaginateParameters.CurrentPartNumber != 0 {
-		currentPartNumber = int64(taskInfo.PaginateParameters.CurrentPartNumber)
-	}
-
-	if taskInfo.PaginateParameters.MaxPartSize > 15 {
-		maxPartSize = int64(taskInfo.PaginateParameters.MaxPartSize)
-	}
 
 	if taskInfo.SortableField == "user_name_modified_object" {
 		sortableField = taskInfo.SortableField
@@ -148,8 +138,8 @@ func searchDifferencesObjectsCollection(
 		searchDocumentId,
 		searchCollectionName,
 	}, &FindAllWithLimitOptions{
-		Offset:        currentPartNumber,
-		LimitMaxSize:  maxPartSize,
+		Offset:        int64(taskInfo.PaginateParameters.CurrentPartNumber),
+		LimitMaxSize:  int64(taskInfo.PaginateParameters.MaxPartSize),
 		SortField:     sortableField,
 		SortAscending: false,
 	})

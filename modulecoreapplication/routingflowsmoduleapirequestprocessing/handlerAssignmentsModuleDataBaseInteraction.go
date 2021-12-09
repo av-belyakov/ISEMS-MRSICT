@@ -434,7 +434,7 @@ func handlingSearchDifferencesObjectsCollection(
 		*/
 	}
 
-	fmt.Printf("func 'handlingSearchDifferencesObjectsCollection', MsgRes: '%v'\n", msgRes)
+	//	fmt.Printf("func 'handlingSearchDifferencesObjectsCollection', MsgRes: '%v'\n", msgRes)
 
 	/*
 	   по тестам msgRes содержит всю необходимую информацию

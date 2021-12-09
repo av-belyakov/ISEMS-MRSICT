@@ -141,6 +141,8 @@ func searchDifferencesObjectsCollection(
 		searchCollectionName = bson.E{Key: "collection_name", Value: sp.CollectionName}
 	}
 
+	fmt.Printf("func '%s', taskInfo.PaginateParameters.CurrentPartNumber: '%d', taskInfo.PaginateParameters.MaxPartSize: '%d'\n", fn, taskInfo.PaginateParameters.CurrentPartNumber, taskInfo.PaginateParameters.MaxPartSize)
+
 	//получить все найденные документы, с учетом лимита
 	cur, err := qp.FindAllWithLimit(bson.D{
 		searchDocumentId,

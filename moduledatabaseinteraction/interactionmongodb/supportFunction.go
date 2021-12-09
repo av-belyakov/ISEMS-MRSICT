@@ -655,8 +655,6 @@ func ReplacementElementsSTIXObject(qp QueryParameters, l []*datamodels.ElementST
 	listObj := make([]interface{}, 0, listSize)
 	reqDeleteID := primitive.A{}
 
-	fmt.Println("func 'ReplacementElementsSTIXObject', START...")
-
 	for _, v := range l {
 		var hmax, hmin uint32
 		reqDeleteID = append(reqDeleteID, v.Data.GetID())
@@ -725,12 +723,8 @@ func ReplacementElementsSTIXObject(qp QueryParameters, l []*datamodels.ElementST
 		listObj = append(listObj, v.Data)
 	}
 
-	fmt.Printf("func 'ReplacementElementsSTIXObject', list reqDeleteID: %v\n", reqDeleteID...)
-
 	_, err := qp.DeleteManyData(bson.D{{Key: "commonpropertiesobjectstix.id", Value: bson.D{{Key: "$in", Value: reqDeleteID}}}}, options.Delete())
 	if err != nil {
-		fmt.Println("func 'ReplacementElementsSTIXObject', ERROR DELETE")
-
 		return err
 	}
 
@@ -749,9 +743,6 @@ func ReplacementElementsSTIXObject(qp QueryParameters, l []*datamodels.ElementST
 		},
 	})
 	if err != nil {
-		fmt.Println("func 'ReplacementElementsSTIXObject', ERROR INSERT type")
-		fmt.Println(listObj...)
-
 		return err
 	}
 

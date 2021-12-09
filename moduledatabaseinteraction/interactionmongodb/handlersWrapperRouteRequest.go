@@ -168,7 +168,7 @@ func searchDifferencesObjectsCollection(
 		documents = append(documents, document)
 	}
 
-	fmt.Printf("func '%s', count document found: '%d'\nfound result ==== \n'%v'\n", fn, len(documents), documents)
+	fmt.Printf("func '%s', count document found: '%d'\nfound result ==== \n\n", fn, len(documents))
 
 	//сохраняем найденные значения во временном хранилище
 	err = tst.AddNewFoundInformation(

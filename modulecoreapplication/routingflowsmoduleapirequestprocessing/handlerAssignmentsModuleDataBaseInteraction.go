@@ -299,7 +299,7 @@ func handlingSearchRequestsSTIXObject(
 
 		numFound, ok := result.Information.(int64)
 		if !ok {
-			return fmt.Errorf("type conversion error, line 298")
+			return fmt.Errorf("type conversion error, line 302")
 		}
 
 		msgRes.AdditionalParameters = struct {
@@ -392,54 +392,59 @@ func handlingSearchDifferencesObjectsCollection(
 		IsSuccessful: true,
 	}
 
-	listDifferentObject, ok := result.Information.([]datamodels.DifferentObjectType)
-	if !ok {
-		return fmt.Errorf("type conversion error, line 398")
-	}
-
-	numldo := len(listDifferentObject)
-	if numldo < maxChunkSize {
-		msgRes.AdditionalParameters = datamodels.ResJSONParts{
-			TotalNumberParts:      1,
-			GivenSizePart:         maxChunkSize,
-			NumberTransmittedPart: 1,
-			TransmittedData:       listDifferentObject,
+	switch result.ResultType {
+	case "only_count":
+		//для КРАТКОЙ информации, только количество, по найденным документам
+		numFound, ok := result.Information.(int64)
+		if !ok {
+			return fmt.Errorf("type conversion error, line 400")
 		}
-	} else {
-		num := commonlibs.GetCountChunk(int64(numldo), maxChunkSize)
-		min := 0
-		max := maxChunkSize
-		for i := 0; i < num; i++ {
-			data := datamodels.ResJSONParts{
-				TotalNumberParts:      num,
+
+		msgRes.AdditionalParameters = struct {
+			NumberDocumentsFound int64 `json:"number_documents_found"`
+		}{
+			NumberDocumentsFound: numFound,
+		}
+
+	case "full_found_info":
+		listDifferentObject, ok := result.Information.([]datamodels.DifferentObjectType)
+		if !ok {
+			return fmt.Errorf("type conversion error, line 412")
+		}
+
+		numldo := len(listDifferentObject)
+		if numldo < maxChunkSize {
+			msgRes.AdditionalParameters = datamodels.ResJSONParts{
+				TotalNumberParts:      1,
 				GivenSizePart:         maxChunkSize,
-				NumberTransmittedPart: i + 1,
+				NumberTransmittedPart: 1,
+				TransmittedData:       listDifferentObject,
 			}
+		} else {
+			num := commonlibs.GetCountChunk(int64(numldo), maxChunkSize)
+			min := 0
+			max := maxChunkSize
+			for i := 0; i < num; i++ {
+				data := datamodels.ResJSONParts{
+					TotalNumberParts:      num,
+					GivenSizePart:         maxChunkSize,
+					NumberTransmittedPart: i + 1,
+				}
 
-			if i == 0 {
-				data.TransmittedData = listDifferentObject[:max]
-			} else if i == num-1 {
-				data.TransmittedData = listDifferentObject[min:]
-			} else {
-				data.TransmittedData = listDifferentObject[min:max]
+				if i == 0 {
+					data.TransmittedData = listDifferentObject[:max]
+				} else if i == num-1 {
+					data.TransmittedData = listDifferentObject[min:]
+				} else {
+					data.TransmittedData = listDifferentObject[min:max]
+				}
+
+				min = min + maxChunkSize
+				max = max + maxChunkSize
+				msgRes.AdditionalParameters = data
 			}
-
-			min = min + maxChunkSize
-			max = max + maxChunkSize
-			msgRes.AdditionalParameters = data
 		}
-
-		/*
-			Тут надо посмотреть внимательнее, отправки похоже нет!!!
-		*/
 	}
-
-	//	fmt.Printf("func 'handlingSearchDifferencesObjectsCollection', MsgRes: '%v'\n", msgRes)
-
-	/*
-	   по тестам msgRes содержит всю необходимую информацию
-	   надо дальше смотреть
-	*/
 
 	msg, err := json.Marshal(msgRes)
 	if err != nil {

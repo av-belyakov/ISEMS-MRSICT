@@ -95,6 +95,7 @@ func searchSTIXObject(
 	return fn, nil
 }
 
+//searchDifferencesObjectsCollection обработчик поисковых запросов, связанных с поиском информации в коллекции истории предыдущих состояний STIX объектов
 func searchDifferencesObjectsCollection(
 	appTaskID string,
 	qp QueryParameters,
@@ -108,8 +109,6 @@ func searchDifferencesObjectsCollection(
 		fn                   string = commonlibs.GetFuncName()
 		sortableField        string = "modified_time"
 	)
-
-	fmt.Printf("func '%s', START...\n", fn)
 
 	if taskInfo.SortableField == "user_name_modified_object" {
 		sortableField = taskInfo.SortableField
@@ -131,7 +130,30 @@ func searchDifferencesObjectsCollection(
 		searchCollectionName = bson.E{Key: "collection_name", Value: sp.CollectionName}
 	}
 
-	fmt.Printf("func '%s', taskInfo.PaginateParameters.CurrentPartNumber: '%d', taskInfo.PaginateParameters.MaxPartSize: '%d'\n", fn, taskInfo.PaginateParameters.CurrentPartNumber, taskInfo.PaginateParameters.MaxPartSize)
+	//получить только общее количество найденных документов
+	if (taskInfo.PaginateParameters.CurrentPartNumber <= 0) || (taskInfo.PaginateParameters.MaxPartSize <= 0) {
+		resSize, err := qp.CountDocuments(bson.D{
+			searchDocumentId,
+			searchCollectionName,
+		})
+		if err != nil {
+			return fn, err
+		}
+
+		//сохраняем общее количество найденных значений во временном хранилище
+		err = tst.AddNewFoundInformation(
+			appTaskID,
+			&memorytemporarystoragecommoninformation.TemporaryStorageFoundInformation{
+				Collection:  "accounting_differences_objects_collection",
+				ResultType:  "only_count",
+				Information: resSize,
+			})
+		if err != nil {
+			return fn, err
+		}
+
+		return fn, nil
+	}
 
 	//получить все найденные документы, с учетом лимита
 	cur, err := qp.FindAllWithLimit(bson.D{
@@ -157,8 +179,6 @@ func searchDifferencesObjectsCollection(
 
 		documents = append(documents, document)
 	}
-
-	fmt.Printf("func '%s', count document found: '%d'\nfound result ==== \n\n", fn, len(documents))
 
 	//сохраняем найденные значения во временном хранилище
 	err = tst.AddNewFoundInformation(

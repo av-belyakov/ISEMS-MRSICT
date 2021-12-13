@@ -178,6 +178,7 @@ STIX объектов. Все дополнительные, нестандарт
         msg: STRING // информационное сообщение
     }
 	additional_parameters: {
+        document_id: STRING // STIX ID ТОЛЬКО ДЛЯ запросов типа "accounting_differences_objects_collection"
         number_documents_found: INT // общее количество найденных документов
     }
 }

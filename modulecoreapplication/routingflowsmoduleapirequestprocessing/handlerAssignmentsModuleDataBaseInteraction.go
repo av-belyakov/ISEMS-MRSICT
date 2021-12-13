@@ -395,16 +395,15 @@ func handlingSearchDifferencesObjectsCollection(
 	switch result.ResultType {
 	case "only_count":
 		//для КРАТКОЙ информации, только количество, по найденным документам
-		numFound, ok := result.Information.(int64)
+		numFoundInfo, ok := result.Information.(struct {
+			DocumentID           string `json:"document_id"`
+			NumberDocumentsFound int64  `json:"number_documents_found"`
+		})
 		if !ok {
-			return fmt.Errorf("type conversion error, line 400")
+			return fmt.Errorf("type conversion error, line 403")
 		}
 
-		msgRes.AdditionalParameters = struct {
-			NumberDocumentsFound int64 `json:"number_documents_found"`
-		}{
-			NumberDocumentsFound: numFound,
-		}
+		msgRes.AdditionalParameters = numFoundInfo
 
 	case "full_found_info":
 		listDifferentObject, ok := result.Information.([]datamodels.DifferentObjectType)

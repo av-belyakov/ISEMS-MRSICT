@@ -144,9 +144,15 @@ func searchDifferencesObjectsCollection(
 		err = tst.AddNewFoundInformation(
 			appTaskID,
 			&memorytemporarystoragecommoninformation.TemporaryStorageFoundInformation{
-				Collection:  "accounting_differences_objects_collection",
-				ResultType:  "only_count",
-				Information: resSize,
+				Collection: "accounting_differences_objects_collection",
+				ResultType: "only_count",
+				Information: struct {
+					DocumentID           string `json:"document_id"`
+					NumberDocumentsFound int64  `json:"number_documents_found"`
+				}{
+					DocumentID:           sp.DocumentID,
+					NumberDocumentsFound: resSize,
+				},
 			})
 		if err != nil {
 			return fn, err

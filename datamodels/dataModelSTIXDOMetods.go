@@ -2711,11 +2711,9 @@ func (rstix ReportDomainObjectsSTIX) ValidateStruct() bool {
 		return false
 	}
 
-	/*
-		if rstix.Published.Unix() <= 0 {
-			return false
-		}
-	*/
+	if rstix.Published.Unix() <= 0 {
+		return false
+	}
 
 	//обязательное поле
 	if len(rstix.ObjectRefs) == 0 {

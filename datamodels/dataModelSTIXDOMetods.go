@@ -18,12 +18,18 @@ import (
 func (cpdostix *CommonPropertiesDomainObjectSTIX) validateStructCommonFields() bool {
 	//валидация содержимого поля SpecVersion
 	if !(regexp.MustCompile(`^[0-9a-z.]+$`).MatchString(cpdostix.SpecVersion)) {
+
+		fmt.Println("validateStructCommonFields, ERROR 001 ")
+
 		return false
 	}
 
 	//валидация содержимого поля CreatedByRef
 	if len(fmt.Sprint(cpdostix.CreatedByRef)) > 0 {
 		if !(regexp.MustCompile(`^[0-9a-zA-Z-_]+(--)[0-9a-f|-]+$`).MatchString(fmt.Sprint(cpdostix.CreatedByRef))) {
+
+			fmt.Println("validateStructCommonFields, ERROR 002 ")
+
 			return false
 		}
 	}
@@ -31,11 +37,17 @@ func (cpdostix *CommonPropertiesDomainObjectSTIX) validateStructCommonFields() b
 	//для поля Lang
 	if len(cpdostix.Lang) > 0 {
 		if !(regexp.MustCompile(`^[a-zA-Z]+$`)).MatchString(cpdostix.Lang) {
+
+			fmt.Println("validateStructCommonFields, ERROR 003 ")
+
 			return false
 		}
 	}
 	//вызываем метод проверки полей типа ExternalReferences
 	if ok := cpdostix.ExternalReferences.CheckExternalReferencesTypeSTIX(); !ok {
+
+		fmt.Println("validateStructCommonFields, ERROR 004 ")
+
 		return false
 	}
 
@@ -43,6 +55,9 @@ func (cpdostix *CommonPropertiesDomainObjectSTIX) validateStructCommonFields() b
 	if len(cpdostix.ObjectMarkingRefs) > 0 {
 		for _, value := range cpdostix.ObjectMarkingRefs {
 			if !value.CheckIdentifierTypeSTIX() {
+
+				fmt.Println("validateStructCommonFields, ERROR 005 ")
+
 				return false
 			}
 		}
@@ -52,6 +67,9 @@ func (cpdostix *CommonPropertiesDomainObjectSTIX) validateStructCommonFields() b
 		for _, value := range cpdostix.GranularMarkings {
 			//вызываем метод проверки полей типа GranularMarkingsTypeSTIX
 			if !value.CheckGranularMarkingsTypeSTIX() {
+
+				fmt.Println("validateStructCommonFields, ERROR 006 ")
+
 				return false
 			}
 		}

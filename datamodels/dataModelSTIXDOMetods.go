@@ -2699,29 +2699,47 @@ func (rstix ReportDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 //ValidateStruct является валидатором параметров содержащихся в типе ReportDomainObjectsSTIX
 func (rstix ReportDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(report--)[0-9a-f|-]+$`).MatchString(rstix.ID)) {
+
+		fmt.Println("Report ValidateStruct, ERROR 111")
+
 		return false
 	}
 
 	if !rstix.validateStructCommonFields() {
+
+		fmt.Println("Report ValidateStruct, ERROR 222")
+
 		return false
 	}
 
 	//обязательное поле
 	if rstix.Name == "" {
+
+		fmt.Println("Report ValidateStruct, ERROR 333")
+
 		return false
 	}
 
 	if rstix.Published.Unix() <= 0 {
+
+		fmt.Println("Report ValidateStruct, ERROR 444")
+
 		return false
 	}
 
 	//обязательное поле
 	if len(rstix.ObjectRefs) == 0 {
+
+		fmt.Println("Report ValidateStruct, ERROR 555")
+
 		return false
 	}
 
 	for _, v := range rstix.ObjectRefs {
 		if !v.CheckIdentifierTypeSTIX() {
+
+			fmt.Println("Report ValidateStruct, ERROR 666")
+
 			return false
 		}
 	}

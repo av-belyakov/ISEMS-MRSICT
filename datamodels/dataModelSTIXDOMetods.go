@@ -26,6 +26,9 @@ func (cpdostix *CommonPropertiesDomainObjectSTIX) validateStructCommonFields() b
 
 	//валидация содержимого поля CreatedByRef
 	if len(fmt.Sprint(cpdostix.CreatedByRef)) > 0 {
+
+		fmt.Printf("___ field 'CreatedByRef': '%v'\n", fmt.Sprint(cpdostix.CreatedByRef))
+
 		if !(regexp.MustCompile(`^[0-9a-zA-Z-_]+(--)[0-9a-f|-]+$`).MatchString(fmt.Sprint(cpdostix.CreatedByRef))) {
 
 			fmt.Println("validateStructCommonFields, ERROR 002 ")

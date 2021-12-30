@@ -2744,6 +2744,7 @@ func (rstix ReportDomainObjectsSTIX) ValidateStruct() bool {
 	if rstix.Published.Unix() <= 0 {
 
 		fmt.Println("Report ValidateStruct, ERROR 444")
+		fmt.Printf("rstix.Published = '%v', rstix.Published.Unix(): '%v'\n", rstix.Published, rstix.Published.Unix())
 
 		return false
 	}

@@ -154,7 +154,7 @@ func HandlerSpecificSearchFields(ldt []string, ssf *datamodels.SpecificSearchFie
 		Поиск по полю 'published' будет выполнятся только если поле 'documents_type' содержит один элемент, а тип STIX DO будет равен "report".
 		В остальных случаях поиск по полю 'published' будет игнорироватся
 	*/
-	if len(ldt) == 1 && ldt[0] == "report" {
+	if len(ldt) == 1 && ldt[0] == "report" && ssf.Published.Unix() != 0 {
 		if ssf.Published.Unix() > 0 {
 			published = bson.E{Key: "published", Value: bson.D{{Key: "$gt", Value: ssf.Published}}}
 		} else {

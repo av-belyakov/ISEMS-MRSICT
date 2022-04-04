@@ -27,8 +27,11 @@ type AppConfig struct {
 }
 
 //ConnectionsDataBase хранит настройки доступа к системам управления базами данных
+// MongoDBSettings - насторйки доступа к СУБД MongoDB
+// RedisearchDBSettings - настройки доступа к СУБД RedisearchDB
 type ConnectionsDataBase struct {
-	MongoDBSettings MongoDBSettings
+	MongoDBSettings      MongoDBSettings
+	RedisearchDBSettings RedisearchDBSettings
 }
 
 //MongoDBSettings хранит настройки доступа к системе управления базами данных MongoDB
@@ -47,6 +50,14 @@ type MongoDBSettings struct {
 	Password       string
 	NameDB         string
 	UnixSocketPath string
+}
+
+//RedisearchDBSettings хранит настройки доступа к системе управления базами данных RedisearchDB
+// Host - ip адрес сервера СУБД
+// Port - порт сервера СУБД
+type RedisearchDBSettings struct {
+	Host string
+	Port string
 }
 
 //ModuleAPIRequestProcessingSetting хранит настройки сетевых соеденений обеспечивающие доступ к подсистеме isems-mrsict из внешнего программного обеспечения

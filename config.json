@@ -9,7 +9,12 @@
             "nameDB": "isems-mrsict",
             "unixSocketPath": "../../../../tmp/mongodb.sock"
         },
-        "mongoDBSettings_comments": "настройки доступа к системе управления базами данных MongoDB"
+        "mongoDBSettings_comments": "настройки доступа к системе управления базами данных MongoDB",
+        "redisearchDBSettings": {
+            "host": "test-uchet-db.cloud.gcm",
+            "port": 6379
+        },
+        "redisearchDBSettings_comments": "настройки доступа к системе управления базами данных RedisearchDB"
     },
     "connectionsDataBase_comments": "настройки доступа к системам управления базами данных",
     "moduleAPIRequestProcessingSettings": {

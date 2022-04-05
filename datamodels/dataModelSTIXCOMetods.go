@@ -204,6 +204,14 @@ func (astix ArtifactCyberObservableObjectSTIX) ToStringBeautiful() string {
 	return str
 }
 
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (astix ArtifactCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
+	return map[string]string{
+		"id":   astix.ID,
+		"type": astix.Type,
+	}
+}
+
 /* --- AutonomousSystemCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
@@ -291,6 +299,20 @@ func (asstix AutonomousSystemCyberObservableObjectSTIX) ToStringBeautiful() stri
 	str += fmt.Sprintf("rir: '%s'\n", asstix.RIR)
 
 	return str
+}
+
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (asstix AutonomousSystemCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
+	dataForIndex := map[string]string{
+		"id":   asstix.ID,
+		"type": asstix.Type,
+	}
+
+	if asstix.Name != "" {
+		dataForIndex["name"] = asstix.Name
+	}
+
+	return dataForIndex
 }
 
 /* --- DirectoryCyberObservableObjectSTIX --- */
@@ -404,6 +426,14 @@ func (dstix DirectoryCyberObservableObjectSTIX) ToStringBeautiful() string {
 	return str
 }
 
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (dstix DirectoryCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
+	return map[string]string{
+		"id":   dstix.ID,
+		"type": dstix.Type,
+	}
+}
+
 /* --- DomainNameCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
@@ -503,6 +533,20 @@ func (dnstix DomainNameCyberObservableObjectSTIX) ToStringBeautiful() string {
 	return str
 }
 
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (dnstix DomainNameCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
+	dataForIndex := map[string]string{
+		"id":   dnstix.ID,
+		"type": dnstix.Type,
+	}
+
+	if dnstix.Value != "" {
+		dataForIndex["value"] = dnstix.Value
+	}
+
+	return dataForIndex
+}
+
 /* --- EmailAddressCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
@@ -593,6 +637,20 @@ func (eastix EmailAddressCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str += fmt.Sprintf("belongs_to_ref: '%v'\n", eastix.BelongsToRef)
 
 	return str
+}
+
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (eastix EmailAddressCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
+	dataForIndex := map[string]string{
+		"id":   eastix.ID,
+		"type": eastix.Type,
+	}
+
+	if eastix.Value != "" {
+		dataForIndex["value"] = eastix.Value
+	}
+
+	return dataForIndex
 }
 
 /* --- EmailMessageCyberObservableObjectSTIX --- */
@@ -813,6 +871,14 @@ func (emstix EmailMessageCyberObservableObjectSTIX) ToStringBeautiful() string {
 	return str
 }
 
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (emstix EmailMessageCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
+	return map[string]string{
+		"id":   emstix.ID,
+		"type": emstix.Type,
+	}
+}
+
 /* --- FileCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
@@ -996,6 +1062,20 @@ func (fstix FileCyberObservableObjectSTIX) ToStringBeautiful() string {
 	return str
 }
 
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (fstix FileCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
+	dataForIndex := map[string]string{
+		"id":   fstix.ID,
+		"type": fstix.Type,
+	}
+
+	if fstix.Name != "" {
+		dataForIndex["name"] = fstix.Name
+	}
+
+	return dataForIndex
+}
+
 /* --- IPv4AddressCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
@@ -1121,6 +1201,20 @@ func (ip4stix IPv4AddressCyberObservableObjectSTIX) ToStringBeautiful() string {
 	return str
 }
 
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (ip4stix IPv4AddressCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
+	dataForIndex := map[string]string{
+		"id":   ip4stix.ID,
+		"type": ip4stix.Type,
+	}
+
+	if ip4stix.Value != "" {
+		dataForIndex["value"] = ip4stix.Value
+	}
+
+	return dataForIndex
+}
+
 /* --- IPv6AddressCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
@@ -1244,6 +1338,20 @@ func (ip6stix IPv6AddressCyberObservableObjectSTIX) ToStringBeautiful() string {
 	return str
 }
 
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (ip6stix IPv6AddressCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
+	dataForIndex := map[string]string{
+		"id":   ip6stix.ID,
+		"type": ip6stix.Type,
+	}
+
+	if ip6stix.Value != "" {
+		dataForIndex["value"] = ip6stix.Value
+	}
+
+	return dataForIndex
+}
+
 /* --- MACAddressCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
@@ -1326,6 +1434,14 @@ func (macstix MACAddressCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str += fmt.Sprintf("value: '%s'\n", macstix.Value)
 
 	return str
+}
+
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (macstix MACAddressCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
+	return map[string]string{
+		"id":   macstix.ID,
+		"type": macstix.Type,
+	}
 }
 
 /* --- MutexCyberObservableObjectSTIX --- */
@@ -1411,6 +1527,20 @@ func (mstix MutexCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str += fmt.Sprintf("name: '%s'\n", mstix.Name)
 
 	return str
+}
+
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (mstix MutexCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
+	dataForIndex := map[string]string{
+		"id":   mstix.ID,
+		"type": mstix.Type,
+	}
+
+	if mstix.Name != "" {
+		dataForIndex["name"] = mstix.Name
+	}
+
+	return dataForIndex
 }
 
 /* --- NetworkTrafficCyberObservableObjectSTIX --- */
@@ -1638,6 +1768,14 @@ func (ntstix NetworkTrafficCyberObservableObjectSTIX) ToStringBeautiful() string
 	return str
 }
 
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (ntstix NetworkTrafficCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
+	return map[string]string{
+		"id":   ntstix.ID,
+		"type": ntstix.Type,
+	}
+}
+
 /* --- ProcessCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
@@ -1841,6 +1979,14 @@ func (pstix ProcessCyberObservableObjectSTIX) ToStringBeautiful() string {
 	return str
 }
 
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (pstix ProcessCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
+	return map[string]string{
+		"id":   pstix.ID,
+		"type": pstix.Type,
+	}
+}
+
 /* --- SoftwareCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
@@ -1952,6 +2098,20 @@ func (sstix SoftwareCyberObservableObjectSTIX) ToStringBeautiful() string {
 	return str
 }
 
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (sstix SoftwareCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
+	dataForIndex := map[string]string{
+		"id":   sstix.ID,
+		"type": sstix.Type,
+	}
+
+	if sstix.Name != "" {
+		dataForIndex["name"] = sstix.Name
+	}
+
+	return dataForIndex
+}
+
 /* --- URLCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
@@ -2034,6 +2194,20 @@ func (urlstix URLCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str += fmt.Sprintf("value: '%s'\n", urlstix.Value)
 
 	return str
+}
+
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (urlstix URLCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
+	dataForIndex := map[string]string{
+		"id":   urlstix.ID,
+		"type": urlstix.Type,
+	}
+
+	if urlstix.Value != "" {
+		dataForIndex["value"] = urlstix.Value
+	}
+
+	return dataForIndex
 }
 
 /* --- UserAccountCyberObservableObjectSTIX --- */
@@ -2149,6 +2323,14 @@ func (uastix UserAccountCyberObservableObjectSTIX) ToStringBeautiful() string {
 	return str
 }
 
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (uastix UserAccountCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
+	return map[string]string{
+		"id":   uastix.ID,
+		"type": uastix.Type,
+	}
+}
+
 /* --- WindowsRegistryKeyCyberObservableObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
@@ -2257,6 +2439,14 @@ func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) ToStringBeautiful() s
 	str += fmt.Sprintf("number_of_subkeys: '%d'\n", wrkstix.NumberOfSubkeys)
 
 	return str
+}
+
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
+	return map[string]string{
+		"id":   wrkstix.ID,
+		"type": wrkstix.Type,
+	}
 }
 
 /* --- X509CertificateCyberObservableObjectSTIX --- */
@@ -2385,4 +2575,12 @@ func (x509sstix X509CertificateCyberObservableObjectSTIX) ToStringBeautiful() st
 	str += fmt.Sprintf("\tpolicy_mappings: '%s'\n", x509sstix.X509V3Extensions.PolicyMappings)
 
 	return str
+}
+
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (x509sstix X509CertificateCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
+	return map[string]string{
+		"id":   x509sstix.ID,
+		"type": x509sstix.Type,
+	}
 }

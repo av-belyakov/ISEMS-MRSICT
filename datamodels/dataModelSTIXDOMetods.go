@@ -358,6 +358,24 @@ func (apstix AttackPatternDomainObjectsSTIX) ToStringBeautiful() string {
 	return str
 }
 
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (apstix AttackPatternDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
+	dataForIndex := map[string]string{
+		"id":   apstix.ID,
+		"type": apstix.Type,
+	}
+
+	if apstix.Name != "" {
+		dataForIndex["name"] = apstix.Name
+	}
+
+	if apstix.Description != "" {
+		dataForIndex["description"] = apstix.Description
+	}
+
+	return dataForIndex
+}
+
 /* --- CampaignDomainObjectsSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
@@ -509,6 +527,24 @@ func (cstix CampaignDomainObjectsSTIX) ToStringBeautiful() string {
 	return str
 }
 
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (cstix CampaignDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
+	dataForIndex := map[string]string{
+		"id":   cstix.ID,
+		"type": cstix.Type,
+	}
+
+	if cstix.Name != "" {
+		dataForIndex["name"] = cstix.Name
+	}
+
+	if cstix.Description != "" {
+		dataForIndex["description"] = cstix.Description
+	}
+
+	return dataForIndex
+}
+
 /* --- CourseOfActionDomainObjectsSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
@@ -645,6 +681,24 @@ func (castix CourseOfActionDomainObjectsSTIX) ToStringBeautiful() string {
 	str += fmt.Sprintf("action: '%v'\n", castix.Action)
 
 	return str
+}
+
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (castix CourseOfActionDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
+	dataForIndex := map[string]string{
+		"id":   castix.ID,
+		"type": castix.Type,
+	}
+
+	if castix.Name != "" {
+		dataForIndex["name"] = castix.Name
+	}
+
+	if castix.Description != "" {
+		dataForIndex["description"] = castix.Description
+	}
+
+	return dataForIndex
 }
 
 /* --- GroupingDomainObjectsSTIX --- */
@@ -805,6 +859,24 @@ func (gstix GroupingDomainObjectsSTIX) ToStringBeautiful() string {
 	}(gstix.ObjectRefs))
 
 	return str
+}
+
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (gstix GroupingDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
+	dataForIndex := map[string]string{
+		"id":   gstix.ID,
+		"type": gstix.Type,
+	}
+
+	if gstix.Name != "" {
+		dataForIndex["name"] = gstix.Name
+	}
+
+	if gstix.Description != "" {
+		dataForIndex["description"] = gstix.Description
+	}
+
+	return dataForIndex
 }
 
 /* --- IdentityDomainObjectsSTIX --- */
@@ -979,6 +1051,24 @@ func (istix IdentityDomainObjectsSTIX) ToStringBeautiful() string {
 	str += fmt.Sprintf("contact_information: '%s'\n", istix.ContactInformation)
 
 	return str
+}
+
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (istix IdentityDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
+	dataForIndex := map[string]string{
+		"id":   istix.ID,
+		"type": istix.Type,
+	}
+
+	if istix.Name != "" {
+		dataForIndex["name"] = istix.Name
+	}
+
+	if istix.Description != "" {
+		dataForIndex["description"] = istix.Description
+	}
+
+	return dataForIndex
 }
 
 /* --- IndicatorDomainObjectsSTIX --- */
@@ -1165,6 +1255,24 @@ func (istix IndicatorDomainObjectsSTIX) ToStringBeautiful() string {
 	return str
 }
 
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (istix IndicatorDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
+	dataForIndex := map[string]string{
+		"id":   istix.ID,
+		"type": istix.Type,
+	}
+
+	if istix.Name != "" {
+		dataForIndex["name"] = istix.Name
+	}
+
+	if istix.Description != "" {
+		dataForIndex["description"] = istix.Description
+	}
+
+	return dataForIndex
+}
+
 /* --- InfrastructureDomainObjectsSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
@@ -1346,6 +1454,24 @@ func (istix InfrastructureDomainObjectsSTIX) ToStringBeautiful() string {
 	str += fmt.Sprintf("last_seen: '%v'\n", istix.LastSeen)
 
 	return str
+}
+
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (istix InfrastructureDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
+	dataForIndex := map[string]string{
+		"id":   istix.ID,
+		"type": istix.Type,
+	}
+
+	if istix.Name != "" {
+		dataForIndex["name"] = istix.Name
+	}
+
+	if istix.Description != "" {
+		dataForIndex["description"] = istix.Description
+	}
+
+	return dataForIndex
 }
 
 /* --- IntrusionSetDomainObjectsSTIX --- */
@@ -1542,6 +1668,24 @@ func (istix IntrusionSetDomainObjectsSTIX) ToStringBeautiful() string {
 	return str
 }
 
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (istix IntrusionSetDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
+	dataForIndex := map[string]string{
+		"id":   istix.ID,
+		"type": istix.Type,
+	}
+
+	if istix.Name != "" {
+		dataForIndex["name"] = istix.Name
+	}
+
+	if istix.Description != "" {
+		dataForIndex["description"] = istix.Description
+	}
+
+	return dataForIndex
+}
+
 /* --- LocationDomainObjectsSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
@@ -1703,6 +1847,28 @@ func (lstix LocationDomainObjectsSTIX) ToStringBeautiful() string {
 	str += fmt.Sprintf("postal_code: '%s'\n", lstix.PostalCode)
 
 	return str
+}
+
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (lstix LocationDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
+	dataForIndex := map[string]string{
+		"id":   lstix.ID,
+		"type": lstix.Type,
+	}
+
+	if lstix.Name != "" {
+		dataForIndex["name"] = lstix.Name
+	}
+
+	if lstix.Description != "" {
+		dataForIndex["description"] = lstix.Description
+	}
+
+	if lstix.StreetAddress != "" {
+		dataForIndex["street_address"] = lstix.StreetAddress
+	}
+
+	return dataForIndex
 }
 
 /* --- MalwareDomainObjectsSTIX --- */
@@ -1966,6 +2132,24 @@ func (mstix MalwareDomainObjectsSTIX) ToStringBeautiful() string {
 	return str
 }
 
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (mstix MalwareDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
+	dataForIndex := map[string]string{
+		"id":   mstix.ID,
+		"type": mstix.Type,
+	}
+
+	if mstix.Name != "" {
+		dataForIndex["name"] = mstix.Name
+	}
+
+	if mstix.Description != "" {
+		dataForIndex["description"] = mstix.Description
+	}
+
+	return dataForIndex
+}
+
 /* --- MalwareAnalysisDomainObjectsSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
@@ -2183,6 +2367,14 @@ func (mastix MalwareAnalysisDomainObjectsSTIX) ToStringBeautiful() string {
 	return str
 }
 
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (mastix MalwareAnalysisDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
+	return map[string]string{
+		"id":   mastix.ID,
+		"type": mastix.Type,
+	}
+}
+
 /* --- NoteDomainObjectsSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
@@ -2350,6 +2542,24 @@ func (nstix NoteDomainObjectsSTIX) ToStringBeautiful() string {
 	return str
 }
 
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (nstix NoteDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
+	dataForIndex := map[string]string{
+		"id":   nstix.ID,
+		"type": nstix.Type,
+	}
+
+	if nstix.Abstract != "" {
+		dataForIndex["abstract"] = nstix.Abstract
+	}
+
+	if nstix.Content != "" {
+		dataForIndex["content"] = nstix.Content
+	}
+
+	return dataForIndex
+}
+
 /* --- ObservedDataDomainObjectsSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
@@ -2504,6 +2714,14 @@ func (odstix ObservedDataDomainObjectsSTIX) ToStringBeautiful() string {
 	}(odstix.ObjectRefs))
 
 	return str
+}
+
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (odstix ObservedDataDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
+	return map[string]string{
+		"id":   odstix.ID,
+		"type": odstix.Type,
+	}
 }
 
 /* --- OpinionDomainObjectsSTIX --- */
@@ -2676,6 +2894,14 @@ func (ostix OpinionDomainObjectsSTIX) ToStringBeautiful() string {
 	}(ostix.ObjectRefs))
 
 	return str
+}
+
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (ostix OpinionDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
+	return map[string]string{
+		"id":   ostix.ID,
+		"type": ostix.Type,
+	}
 }
 
 /* --- ReportDomainObjectsSTIX --- */
@@ -2851,6 +3077,24 @@ func (rstix ReportDomainObjectsSTIX) ToStringBeautiful() string {
 	}(rstix.ObjectRefs))
 
 	return str
+}
+
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (rstix ReportDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
+	dataForIndex := map[string]string{
+		"id":   rstix.ID,
+		"type": rstix.Type,
+	}
+
+	if rstix.Name != "" {
+		dataForIndex["name"] = rstix.Name
+	}
+
+	if rstix.Description != "" {
+		dataForIndex["description"] = rstix.Description
+	}
+
+	return dataForIndex
 }
 
 /* --- ThreatActorDomainObjectsSTIX --- */
@@ -3099,6 +3343,24 @@ func (tastix ThreatActorDomainObjectsSTIX) ToStringBeautiful() string {
 	return str
 }
 
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (tastix ThreatActorDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
+	dataForIndex := map[string]string{
+		"id":   tastix.ID,
+		"type": tastix.Type,
+	}
+
+	if tastix.Name != "" {
+		dataForIndex["name"] = tastix.Name
+	}
+
+	if tastix.Description != "" {
+		dataForIndex["description"] = tastix.Description
+	}
+
+	return dataForIndex
+}
+
 /* --- ToolDomainObjectsSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
@@ -3282,6 +3544,24 @@ func (tstix ToolDomainObjectsSTIX) ToStringBeautiful() string {
 	return str
 }
 
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (tstix ToolDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
+	dataForIndex := map[string]string{
+		"id":   tstix.ID,
+		"type": tstix.Type,
+	}
+
+	if tstix.Name != "" {
+		dataForIndex["name"] = tstix.Name
+	}
+
+	if tstix.Description != "" {
+		dataForIndex["description"] = tstix.Description
+	}
+
+	return dataForIndex
+}
+
 /* --- VulnerabilityDomainObjectsSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
@@ -3419,4 +3699,22 @@ func (vstix VulnerabilityDomainObjectsSTIX) ToStringBeautiful() string {
 	str += fmt.Sprintf("description: '%s'\n", vstix.Description)
 
 	return str
+}
+
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (vstix VulnerabilityDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
+	dataForIndex := map[string]string{
+		"id":   vstix.ID,
+		"type": vstix.Type,
+	}
+
+	if vstix.Name != "" {
+		dataForIndex["name"] = vstix.Name
+	}
+
+	if vstix.Description != "" {
+		dataForIndex["description"] = vstix.Description
+	}
+
+	return dataForIndex
 }

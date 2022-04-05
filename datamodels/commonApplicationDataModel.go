@@ -12,6 +12,7 @@ type HandlerSTIXObject interface {
 	ValidatorJSONObject
 	GetterParametersSTIXObject
 	ComparatorSTIXObject
+	IndexingSTIXObject
 }
 
 //DecoderJSONObject интерфейс реализующий обработчик для декодирования JSON объекта в STIX объект
@@ -51,6 +52,10 @@ type GetIPv4AddressCyberObservableObjectSTIX interface {
 
 type GetFileCyberObservableObjectSTIX interface {
 	GetFileCyberObservableObjectSTIX() *FileCyberObservableObjectSTIX
+}
+
+type IndexingSTIXObject interface {
+	GeneratingDataForIndexing() map[string]string
 }
 
 //ElementSTIXObject может содержать любой из STIX объектов с указанием его типа

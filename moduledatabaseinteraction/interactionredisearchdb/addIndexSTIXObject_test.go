@@ -65,7 +65,50 @@ var _ = Describe("AddIndexSTIXObject", func() {
 		})
 	})
 
-	Context("Test 3. Поиск индексов по различным полям", func() {
+	Context("Test 3. Проверяем добавление ГРУППЫ новых документов или обнавления старых", func() {
+		It("Должна быть добавлена новая группа документов состоящая из 3 документов", func() {
+			var newDocumentList = make([]redisearch.Document, 0, 3)
+
+			newDocumentList = append(newDocumentList,
+				redisearch.NewDocument("indicator--d38a99ae-c5ee-4542-bc12-dfe68b48cc08", 1.0).
+					Set("type", "indicator").
+					Set("name", "Poison Ivy Malware").
+					Set("description", "This file is part of Poison Ivy"))
+
+			newDocumentList = append(newDocumentList,
+				redisearch.NewDocument("location--a6e9345f-5a15-4c29-8bb3-7dcc5d234d64", 1.0).
+					Set("type", "location").
+					Set("street_address", "г. Пермь, ул. Старославянская, д.46, к.2"))
+
+			newDocumentList = append(newDocumentList,
+				redisearch.NewDocument("malware--e82e93f6-7911-40d9-8b4a-5abc9dfc1efa", 1.0).
+					Set("type", "malware").
+					Set("name", "Cryptolocker").
+					Set("description", "A variant of the cryptolocker family"))
+
+			errAddDoc := cdrdb.Connection.IndexOptions(
+				redisearch.IndexingOptions{
+					Replace: true,
+					Partial: true,
+				}, newDocumentList...)
+			Expect(errAddDoc).ShouldNot(HaveOccurred())
+
+			docList, docNum, err := cdrdb.Connection.Search(redisearch.NewQuery("*").
+				AddFilter(
+					redisearch.Filter{
+						Field: "name",
+					},
+				).
+				SetReturnFields("id"))
+
+			fmt.Printf("______FULL SEARCH DOCUMENTS docNum: %d\n docList: %v\n", docNum, docList)
+
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(docNum).Should(Equal(5))
+		})
+	})
+
+	Context("Test 4. Поиск индексов по различным полям", func() {
 		It("Должен быть найден индекс по полю name и значению 'Attacks Against'", func() {
 			docList, docNum, err := cdrdb.Connection.Search(redisearch.NewQuery("Attacks Against").
 				AddFilter(
@@ -93,10 +136,10 @@ var _ = Describe("AddIndexSTIXObject", func() {
 		})
 
 		It("Должен быть найден индекс по полю description и значению 'исание'", func() {
-			docList, docNum, err := cdrdb.Connection.Search(redisearch.NewQuery("*исание*").
+			docList, docNum, err := cdrdb.Connection.Search(redisearch.NewQuery("%anov%").
 				AddFilter(
 					redisearch.Filter{
-						Field: "description",
+						Field: "name",
 					},
 				))
 

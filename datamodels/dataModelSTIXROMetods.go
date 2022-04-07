@@ -136,6 +136,14 @@ func (rstix RelationshipObjectSTIX) ToStringBeautiful() string {
 	return str
 }
 
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (rstix RelationshipObjectSTIX) GeneratingDataForIndexing() map[string]string {
+	return map[string]string{
+		"id":   rstix.ID,
+		"type": rstix.Type,
+	}
+}
+
 /* --- SightingObjectSTIX --- */
 
 //DecoderJSON выполняет декодирование JSON объекта
@@ -253,4 +261,12 @@ func (sstix SightingObjectSTIX) ToStringBeautiful() string {
 	str += fmt.Sprintf("summary: '%v'\n", sstix.Summary)
 
 	return str
+}
+
+//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+func (sstix SightingObjectSTIX) GeneratingDataForIndexing() map[string]string {
+	return map[string]string{
+		"id":   sstix.ID,
+		"type": sstix.Type,
+	}
 }

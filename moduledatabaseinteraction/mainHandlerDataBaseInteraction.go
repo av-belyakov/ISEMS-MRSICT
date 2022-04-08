@@ -4,12 +4,14 @@ import (
 	"ISEMS-MRSICT/datamodels"
 	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
 	"ISEMS-MRSICT/moduledatabaseinteraction/interactionmongodb"
+	"ISEMS-MRSICT/moduledatabaseinteraction/interactionredisearchdb"
 	"ISEMS-MRSICT/modulelogginginformationerrors"
 )
 
 //ChannelsModuleDataBaseInteraction описание каналов передачи данных между ядром приложения и модулем взаимодействия с базами данных
 type ChannelsModuleDataBaseInteraction struct {
-	ChannelsMongoDB interactionmongodb.ChannelsMongoDBInteraction
+	ChannelsMongoDB      interactionmongodb.ChannelsMongoDBInteraction
+	ChannelsRedisearchDB interactionredisearchdb.ChannelsRedisearchInteraction
 }
 
 var cmdbi ChannelsModuleDataBaseInteraction
@@ -30,6 +32,13 @@ func MainHandlerDataBaseInteraction(
 		return cmdbi, err
 	}
 	cmdbi.ChannelsMongoDB = chanMongoDB
+
+	//инициализируем модуль для взаимодействия с БД Redisearch
+	chanRedisearchDB, err := interactionredisearchdb.InteractionRedisearchDB(chanSaveLog, &cdb.RedisearchDBSettings, tst)
+	if err != nil {
+		return cmdbi, err
+	}
+	cmdbi.ChannelsRedisearchDB = chanRedisearchDB
 
 	return cmdbi, nil
 }

@@ -32,7 +32,7 @@ var _ = Describe("AddIndexSTIXObject", func() {
 			Host: "test-uchet-db.cloud.gcm",
 			Port: "6379",
 		})
-		cdrdb.Connection.Drop()
+		//cdrdb.Connection.Drop()
 
 		docJSON, errReadFile = ioutil.ReadFile("../../mytest/test_resources/jsonSTIXExample.json")
 		if errUnmarchalReq = json.Unmarshal(docJSON, &modAPIRequestProcessingReqJSON); errUnmarchalReq != nil {
@@ -60,7 +60,7 @@ var _ = Describe("AddIndexSTIXObject", func() {
 		})
 	})
 
-	Context("Test 333. Проверяем добавление новых документов для создания индексов", func() {
+	/*Context("Test 333. Проверяем добавление новых документов для создания индексов", func() {
 		It("Должно быть добавленно СКОЛЬКО ТО новых документа и по ним построенны индексы", func() {
 			doc_1 := redisearch.NewDocument("campaign--0bd1475b-02df-4f51-99db-e061b16a6956", 1.0).
 				Set("type", "campaign").
@@ -93,23 +93,12 @@ var _ = Describe("AddIndexSTIXObject", func() {
 			Expect(len(list)).Should(Equal(1))
 			Expect(err).ShouldNot(HaveOccurred())
 		})
-	})
+	})*/
 
 	Context("Test 4. Проверяем добавление новых документов для создания индексов", func() {
 		It("Должно быть добавленно () новых документа и по ним построенны индексы", func() {
-
-			fmt.Println("--------------------------------------")
-			fmt.Printf("==== COUNT listElementSTIX: %d\n", len(listElementSTIX))
-			fmt.Println("--------------------------------------")
-
-			num := 0
-
 			var newDocumentList = make([]redisearch.Document, 0, len(listElementSTIX))
 			for _, v := range listElementSTIX {
-				if num == 1 {
-					break
-				}
-
 				if v.DataType == "relationship" || v.DataType == "sighting" {
 					continue
 				}
@@ -130,24 +119,23 @@ var _ = Describe("AddIndexSTIXObject", func() {
 				}
 
 				newDocumentList = append(newDocumentList, tmp)
-
-				num++
 			}
 
-			fmt.Printf("newDocumentList = %v\n", newDocumentList)
-			Expect(true).Should(BeTrue())
+			fmt.Println("--------------------------------------")
+			fmt.Printf("==== COUNT newDocumentList: %d\n", len(newDocumentList))
+			fmt.Println("--------------------------------------")
 
-			/*err := cdrdb.Connection.IndexOptions(
+			err := cdrdb.Connection.IndexOptions(
 				redisearch.IndexingOptions{
 					Replace: true,
 					Partial: true,
 				}, newDocumentList...)
-			Expect(err).ShouldNot(HaveOccurred())*/
+			Expect(err).ShouldNot(HaveOccurred())
 		})
 	})
 
 	Context("Test 5. Проверяем наличие новых индексов", func() {
-		It("Должно быть добавленно () новых индексов", func() {
+		It("Должно быть добавленно (91) новых индексов", func() {
 			docList, docNum, err := cdrdb.Connection.Search(redisearch.NewQuery("*").
 				AddFilter(
 					redisearch.Filter{
@@ -158,6 +146,7 @@ var _ = Describe("AddIndexSTIXObject", func() {
 
 			fmt.Printf("______FULL SEARCH DOCUMENTS docNum: %d\n docList: %v\n", docNum, docList)
 
+			Expect(docNum).Should(Equal(91))
 			Expect(err).ShouldNot(HaveOccurred())
 		})
 	})

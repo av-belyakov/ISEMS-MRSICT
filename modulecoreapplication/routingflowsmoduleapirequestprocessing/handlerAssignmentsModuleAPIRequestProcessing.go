@@ -147,6 +147,17 @@ func HandlerAssignmentsModuleAPIRequestProcessing(
 			return
 		}
 
+		//отправляем запрос в БД Redisearch
+		clim.ChannelsModuleDataBaseInteraction.ChannelsRedisearchDB.InputModule <- datamodels.ModuleDataBaseInteractionChannel{
+			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
+				ModuleGeneratorMessage: "module core application",
+				ModuleReceiverMessage:  "module database interaction",
+			},
+			Section:   "handling insert index",
+			AppTaskID: appTaskID,
+		}
+
+		//отправляем запрос в БД MongoDB
 		clim.ChannelsModuleDataBaseInteraction.ChannelsMongoDB.InputModule <- datamodels.ModuleDataBaseInteractionChannel{
 			CommanDataTypePassedThroughChannels: datamodels.CommanDataTypePassedThroughChannels{
 				ModuleGeneratorMessage: "module core application",

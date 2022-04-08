@@ -7,13 +7,11 @@ import (
 	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
 )
 
-/*type wrappersSetting struct {
-	AdditionalRequestParameters interface{}
-	NameDB                      string
-	ConnectionDB                ConnectionDescriptorMongoDB
-}*/
-
 //Routing обеспечивает маршрутизацию информации между базой данных RedisearchDB и ядром приложения
+// chanOutput - канал для ПЕРЕДАЧИ данных ядру приложения
+// cdrdb - дескриптор соединения с БД Redishearch
+// tst - общее хранилище временной информации
+// chanInput - канал для ПРИЕМА данных, приходящих от ядра приложения
 func Routing(
 	chanOutput chan<- datamodels.ModuleDataBaseInteractionChannel,
 	cdrdb ConnectionDescriptorRedisearchDB,
@@ -22,36 +20,12 @@ func Routing(
 
 	fmt.Printf("func 'Routing' Redisearch DB")
 
-	/*
-		ws := wrappersSetting{
-			NameDB:       nameDb,
-			ConnectionDB: cdmdb,
+	for data := range chanInput {
+		switch data.Section {
+		case "handling insert index":
+			go wrapperFuncHandlingInsertIndex(chanOutput, data, tst, cdrdb)
+		case "handling select index":
+			go wrapperFuncHandlingSelectIndex(chanOutput, data, tst, cdrdb)
 		}
-
-		for data := range chanInput {
-			switch data.Section {
-			case "handling stix object":
-				go ws.wrapperFuncTypeHandlingSTIXObject(chanOutput, data, tst)
-
-			case "handling managing collection stix objects":
-				go ws.wrapperFuncTypeHandlingManagingCollectionSTIXObjects(chanOutput, data, tst)
-
-			case "handling managing differences objects collection":
-				go ws.wrapperFuncTypeHandlingManagingDifferencesObjectsCollection(chanOutput, data, tst)
-
-			case "handling search requests":
-				go ws.wrapperFuncTypeHandlingSearchRequests(chanOutput, data, tst)
-
-			case "handling reference book":
-				go ws.wrapperFuncTypeHandlingReferenceBook(chanOutput, data, tst)
-
-			case "handling technical part":
-				go ws.wrapperFuncTypeTechnicalPart(chanOutput, data, tst)
-
-			case "handling statistical requests":
-				go ws.wrapperFuncTypeHandlingStatisticalRequests(chanOutput, data, tst)
-
-			}
-		}
-	*/
+	}
 }

@@ -40,12 +40,12 @@ func init() {
 
 func InteractionRedisearchDB(
 	chanSaveLog chan<- modulelogginginformationerrors.LogMessageType,
-	mdbs *datamodels.RedisearchDBSettings,
+	rdbs *datamodels.RedisearchDBSettings,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) (ChannelsRedisearchInteraction, error) {
 
 	fmt.Println("func 'InteractionRedisearchDB', START...")
 
-	if err := cdrdb.CreateConnection(mdbs); err != nil {
+	if err := cdrdb.CreateConnection(rdbs); err != nil {
 		chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 			TypeMessage: "error",
 			Description: fmt.Sprint(err),
@@ -56,28 +56,30 @@ func InteractionRedisearchDB(
 	}
 
 	/*
-	   1. Добавить функцию handlerDataBaseInteraction в
-	   mailHandlerModuleScheduler
-	   2. Дописать функцию Routing
-	   3. Написать метод для каждого STIX объекта который соответствовал бы
-	   определенному интерфейсу и обеспечивал индексацию данных из STIX
-	   объекта для их последующего сохранения в БД Redisearch. Кстати,
-	   надо обращать внимание на пустые поля STIX объекта или поля
-	   содержащие значение null. Если все индексируемые поля для
-	   данного объекта остаются пустыми или содержат значение null
-	   то такой объект не должен индексироватся. А также не должны
-	   индексироватся поля содержащие такие значения.
-	   4. Продумать очередность обработки данных по STIX объектам при
-	   их сохранении в БД MongoDB и Redisearch
-	   5. Продумать и написать методы поиска индексов по заданным параметрам
-	   в БД Redisearch, а также методы и алгоритмы передачи информации в
-	   модуль который работает с БД Redisearch и приема из него
+		Сделал:
+		1. добавил в HandlerAssignmentsModuleAPIRequestProcessing Section "handling stix object" на
+		 ряду с отправкой на добавление списка STIX объектов к БД MongoDB еще и отправку запроса
+		 на создание индексов в БД RedisearchDB. При чем отправка запроса к RedisearchDB будет
+		 выполнятся первой, а обработка запросов в обоих БД будет вестись параллельно. Но я думаю
+		 что RedisearchDB отработает быстрее так как ей не надо выполнят допонительные запросы из
+		 БД и сравнение изменений в объектах. Так что за очередность обработки не стоит беспокоится.
+		2. Добавил функцию handlerDataBaseInteraction в mailHandlerModuleScheduler.
+		3. Написал функцию Routing состоящую из двух оберток wrapperFuncHandlingInsertIndex и написал
+		функцию wrapperFuncHandlingInsertIndex в wrapperRouteRequest. Там выполняется полная обработка
+		списка ElementSTIXObject и добавление индексов а БД RedisearchDB. Добавление индексов в БД
+		RedisearchDB проверялось в тестах (успешно), однако в совокупности вся сепочка обработки STIX
+		объектов не проверялась.
+		4. Изменил версию приложения так как добавился новый функционал.
 
-	   Все STIX объекты соответствуют интерфейсу IndexingSTIXObject то есть
-	   имеют метод GeneratingDataForIndexing, теперь нужно сделать сначало
-	   тестовую функцию для перебора среза типа ElementSTIXObject в котором
-	   свойство Data соответствует интерфейсу HandlerSTIXObject в составе которого
-	   есть и интерфейс IndexingSTIXObject
+		Что нужно сделать*:
+		1. Обновить версию MRSICa но не в ДОКЕРАХ, а просто на хостовой тестовой системе и проверить
+		всю цепочку обнавления хотя бы одного STIX объекта
+		2. Продумать и написать методы поиска индексов по заданным параметрам
+		в БД Redisearch, а также методы и алгоритмы передачи информации в
+		модуль который работает с БД Redisearch и приема из него
+		3. Продумать и написать метод индексации тех STIX объектов которые,
+		возможно ранее не были проиндексированны или аказались не проиндексированны
+		по причине перезапуска БД Rediserch
 	*/
 
 	go Routing(crdbi.OutputModule, cdrdb, tst, crdbi.InputModule)

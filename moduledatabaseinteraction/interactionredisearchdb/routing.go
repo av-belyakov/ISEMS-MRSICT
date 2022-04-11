@@ -26,6 +26,8 @@ func Routing(
 			go wrapperFuncHandlingInsertIndex(chanOutput, data, tst, cdrdb)
 		case "handling select index":
 			go wrapperFuncHandlingSelectIndex(chanOutput, data, tst, cdrdb)
+		case "handling auto complete suggestions":
+			go wrapperAutoCompleteSuggestions(chanOutput, data, tst, cdrdb)
 		}
 	}
 }

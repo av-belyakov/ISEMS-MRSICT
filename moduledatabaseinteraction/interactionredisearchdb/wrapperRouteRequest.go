@@ -108,3 +108,12 @@ func wrapperFuncHandlingSelectIndex(
 
 	fmt.Println("func 'wrapperFuncHandlingSelectIndex', START")
 }
+
+func wrapperAutoCompleteSuggestions(
+	chanOutput chan<- datamodels.ModuleDataBaseInteractionChannel,
+	data datamodels.ModuleDataBaseInteractionChannel,
+	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
+	cdrdb ConnectionDescriptorRedisearchDB) {
+
+	fmt.Println("func 'wrapperAutoCompleteSuggestions', START")
+}

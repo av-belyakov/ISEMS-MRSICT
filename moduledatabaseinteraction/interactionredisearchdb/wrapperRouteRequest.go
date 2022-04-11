@@ -31,8 +31,6 @@ func wrapperFuncHandlingInsertIndex(
 		fn  = commonlibs.GetFuncName()
 	)
 
-	fmt.Printf("func '%v', START...\n", fn)
-
 	errorMessage.ErrorMessage.FuncName = fn
 	errorMessage.Section = "handling insert index"
 	errorMessage.AppTaskID = dataRequest.AppTaskID
@@ -43,24 +41,16 @@ func wrapperFuncHandlingInsertIndex(
 		errorMessage.ErrorMessage.Error = fmt.Errorf("no information about the task by its id was found in the temporary storage")
 		chanOutput <- errorMessage
 
-		fmt.Printf("func '%v', ERROR: '%v'\n", fn, errorMessage.ErrorMessage.Error)
-
 		return
 	}
-
-	fmt.Printf("func '%v', GET TaskInfo '%v'\n", fn, taskInfo)
 
 	listElementSTIX, ok := taskInfo.TaskParameters.([]*datamodels.ElementSTIXObject)
 	if !ok {
 		errorMessage.ErrorMessage.Error = fmt.Errorf("type conversion error")
 		chanOutput <- errorMessage
 
-		fmt.Printf("func '%v', ERROR: '%v'\n", fn, errorMessage.ErrorMessage.Error)
-
 		return
 	}
-
-	fmt.Printf("func '%v', GET listElementSTIX, COUNT = '%d'\n", fn, len(listElementSTIX))
 
 	var newDocumentList = make([]redisearch.Document, 0, len(listElementSTIX))
 	for _, v := range listElementSTIX {
@@ -82,8 +72,6 @@ func wrapperFuncHandlingInsertIndex(
 		newDocumentList = append(newDocumentList, tmp)
 	}
 
-	fmt.Printf("func '%v', GET newDocumentList, COUNT = '%d'\n", fn, len(newDocumentList))
-
 	if err := cdrdb.Connection.IndexOptions(
 		redisearch.IndexingOptions{
 			Replace: true,
@@ -92,12 +80,8 @@ func wrapperFuncHandlingInsertIndex(
 		errorMessage.ErrorMessage.Error = err
 		chanOutput <- errorMessage
 
-		fmt.Printf("func '%v', ERROR: '%v'\n", fn, errorMessage.ErrorMessage.Error)
-
 		return
 	}
-
-	fmt.Printf("func '%v', END\n", fn)
 }
 
 func wrapperFuncHandlingSelectIndex(

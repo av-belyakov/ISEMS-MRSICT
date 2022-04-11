@@ -136,7 +136,7 @@ var _ = Describe("AddIndexSTIXObject", func() {
 				vdata := v.Data.GeneratingDataForIndexing()
 				tmp := redisearch.NewDocument(vdata["id"], 1.0)
 
-				fmt.Printf("(((((( ID: %v )))))))\n", vdata["id"])
+				//fmt.Printf("(((((( ID: %v )))))))\n", vdata["id"])
 
 				for key, value := range vdata {
 					if key == "id" {
@@ -257,9 +257,9 @@ var _ = Describe("AddIndexSTIXObject", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 			Expect(docNum).Should(Equal(5))
 		})
-	})
+	})*/
 
-	Context("Test 4. Поиск индексов по различным полям", func() {
+	Context("Test 6. Поиск индексов по различным полям", func() {
 		It("Должен быть найден индекс по полю name и значению 'Attacks Against'", func() {
 			docList, docNum, err := cdrdb.Connection.Search(redisearch.NewQuery("Attacks Against").
 				AddFilter(
@@ -287,7 +287,7 @@ var _ = Describe("AddIndexSTIXObject", func() {
 		})
 
 		It("Должен быть найден индекс по полю description и значению 'исание'", func() {
-			docList, docNum, err := cdrdb.Connection.Search(redisearch.NewQuery("%anov%").
+			docList, docNum, err := cdrdb.Connection.Search(redisearch.NewQuery("Agai*").
 				AddFilter(
 					redisearch.Filter{
 						Field: "name",
@@ -298,5 +298,5 @@ var _ = Describe("AddIndexSTIXObject", func() {
 
 			Expect(err).ShouldNot(HaveOccurred())
 		})
-	})*/
+	})
 })

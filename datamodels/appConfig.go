@@ -57,7 +57,7 @@ type MongoDBSettings struct {
 // Port - порт сервера СУБД
 type RedisearchDBSettings struct {
 	Host string
-	Port string
+	Port int
 }
 
 //ModuleAPIRequestProcessingSetting хранит настройки сетевых соеденений обеспечивающие доступ к подсистеме isems-mrsict из внешнего программного обеспечения

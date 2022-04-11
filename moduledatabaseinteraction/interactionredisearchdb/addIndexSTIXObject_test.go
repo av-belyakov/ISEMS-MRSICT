@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"path"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -15,8 +16,25 @@ import (
 	"ISEMS-MRSICT/moduledatabaseinteraction/interactionredisearchdb"
 )
 
+func readConfigApp(fileName string, appc *datamodels.AppConfig) error {
+	var err error
+	row, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(row, &appc)
+	if err != nil {
+		return err
+	}
+
+	return err
+}
+
 var _ = Describe("AddIndexSTIXObject", func() {
 	var (
+		appConfig datamodels.AppConfig
+
 		errConnect                     error
 		errReadFile                    error
 		errUnmarchalReq                error
@@ -30,7 +48,7 @@ var _ = Describe("AddIndexSTIXObject", func() {
 	var _ = BeforeSuite(func() {
 		errConnect = cdrdb.CreateConnection(&datamodels.RedisearchDBSettings{
 			Host: "test-uchet-db.cloud.gcm",
-			Port: "6379",
+			Port: 6379,
 		})
 		//cdrdb.Connection.Drop()
 
@@ -40,6 +58,18 @@ var _ = Describe("AddIndexSTIXObject", func() {
 		}
 
 		listElementSTIX, errUnmarchalToSTIX = routingflowsmoduleapirequestprocessing.UnmarshalJSONObjectSTIXReq(modAPIRequestProcessingReqJSON)
+	})
+
+	Context("Test 0. Read config file", func() {
+		It("Должен быть успешно прочитан конфинурационный файл", func() {
+			//dir, errOne := filepath.Abs(filepath.Dir(os.Args[0]))
+			//Expect(errOne).ShouldNot(HaveOccurred())
+			dir := ""
+
+			//читаем конфигурационный файл приложения
+			errTwo := readConfigApp(path.Join(dir, "/Users/user/go/src/ISEMS-MRSICT/config.json"), &appConfig)
+			Expect(errTwo).ShouldNot(HaveOccurred())
+		})
 	})
 
 	Context("Test 1. Проверка успешного соединения с БД через функцию CreateConnection", func() {

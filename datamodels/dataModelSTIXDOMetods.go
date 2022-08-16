@@ -3186,7 +3186,7 @@ func (tastix ThreatActorDomainObjectsSTIX) SanitizeStruct() ThreatActorDomainObj
 			ta = append(ta, tmp)
 		}
 
-		tastix.Roles = ta
+		tastix.SecondaryMotivations = ta
 	}
 
 	if len(tastix.PersonalMotivations) > 0 {
@@ -3196,7 +3196,7 @@ func (tastix ThreatActorDomainObjectsSTIX) SanitizeStruct() ThreatActorDomainObj
 			ta = append(ta, tmp)
 		}
 
-		tastix.Roles = ta
+		tastix.PersonalMotivations = ta
 	}
 
 	return tastix

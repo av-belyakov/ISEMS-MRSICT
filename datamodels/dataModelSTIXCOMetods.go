@@ -101,7 +101,7 @@ func (ocpcstix OptionalCommonPropertiesCyberObservableObjectSTIX) ToStringBeauti
 
 /* --- ArtifactCyberObservableObjectSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (astix ArtifactCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &astix); err != nil {
 		return nil, err
@@ -110,14 +110,14 @@ func (astix ArtifactCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage)
 	return astix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (astix ArtifactCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(astix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе ArtifactCyberObservableObjectSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе ArtifactCyberObservableObjectSTIX
 func (astix ArtifactCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(artifact--)[0-9a-f|-]+$`).MatchString(astix.ID)) {
 		return false
@@ -146,7 +146,7 @@ func (astix ArtifactCyberObservableObjectSTIX) ValidateStruct() bool {
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (astix ArtifactCyberObservableObjectSTIX) SanitizeStruct() ArtifactCyberObservableObjectSTIX {
 	astix.OptionalCommonPropertiesCyberObservableObjectSTIX = astix.sanitizeStruct()
 
@@ -157,17 +157,17 @@ func (astix ArtifactCyberObservableObjectSTIX) SanitizeStruct() ArtifactCyberObs
 	return astix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (astix ArtifactCyberObservableObjectSTIX) GetID() string {
 	return astix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (astix ArtifactCyberObservableObjectSTIX) GetType() string {
 	return astix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа ArtifactCyberObservableObjectSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа ArtifactCyberObservableObjectSTIX
 func (astix ArtifactCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -190,7 +190,7 @@ func (astix ArtifactCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (astix ArtifactCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := astix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += astix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
@@ -204,7 +204,7 @@ func (astix ArtifactCyberObservableObjectSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (astix ArtifactCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
 	return map[string]string{
 		"id":   astix.ID,
@@ -214,7 +214,7 @@ func (astix ArtifactCyberObservableObjectSTIX) GeneratingDataForIndexing() map[s
 
 /* --- AutonomousSystemCyberObservableObjectSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (asstix AutonomousSystemCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &asstix); err != nil {
 		return nil, err
@@ -223,14 +223,14 @@ func (asstix AutonomousSystemCyberObservableObjectSTIX) DecoderJSON(raw *json.Ra
 	return asstix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (asstix AutonomousSystemCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(asstix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе AutonomousSystemCyberObservableObjectSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе AutonomousSystemCyberObservableObjectSTIX
 func (asstix AutonomousSystemCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(autonomous-system--)[0-9a-f|-]+$`).MatchString(asstix.ID)) {
 		return false
@@ -247,7 +247,7 @@ func (asstix AutonomousSystemCyberObservableObjectSTIX) ValidateStruct() bool {
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (asstix AutonomousSystemCyberObservableObjectSTIX) SanitizeStruct() AutonomousSystemCyberObservableObjectSTIX {
 	asstix.OptionalCommonPropertiesCyberObservableObjectSTIX = asstix.sanitizeStruct()
 
@@ -257,17 +257,17 @@ func (asstix AutonomousSystemCyberObservableObjectSTIX) SanitizeStruct() Autonom
 	return asstix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (asstix AutonomousSystemCyberObservableObjectSTIX) GetID() string {
 	return asstix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (asstix AutonomousSystemCyberObservableObjectSTIX) GetType() string {
 	return asstix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа AutonomousSystemCyberObservableObjectSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа AutonomousSystemCyberObservableObjectSTIX
 func (asstix AutonomousSystemCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -290,7 +290,7 @@ func (asstix AutonomousSystemCyberObservableObjectSTIX) ComparisonTypeCommonFiel
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (asstix AutonomousSystemCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := asstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += asstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
@@ -301,7 +301,7 @@ func (asstix AutonomousSystemCyberObservableObjectSTIX) ToStringBeautiful() stri
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (asstix AutonomousSystemCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
 	dataForIndex := map[string]string{
 		"id":   asstix.ID,
@@ -317,7 +317,7 @@ func (asstix AutonomousSystemCyberObservableObjectSTIX) GeneratingDataForIndexin
 
 /* --- DirectoryCyberObservableObjectSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (dstix DirectoryCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &dstix); err != nil {
 		return nil, err
@@ -326,14 +326,14 @@ func (dstix DirectoryCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage
 	return dstix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (dstix DirectoryCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(dstix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе DirectoryCyberObservableObjectSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе DirectoryCyberObservableObjectSTIX
 func (dstix DirectoryCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(directory--)[0-9a-f|-]+$`).MatchString(dstix.ID)) {
 		return false
@@ -364,7 +364,7 @@ func (dstix DirectoryCyberObservableObjectSTIX) ValidateStruct() bool {
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (dstix DirectoryCyberObservableObjectSTIX) SanitizeStruct() DirectoryCyberObservableObjectSTIX {
 	dstix.OptionalCommonPropertiesCyberObservableObjectSTIX = dstix.sanitizeStruct()
 
@@ -373,17 +373,17 @@ func (dstix DirectoryCyberObservableObjectSTIX) SanitizeStruct() DirectoryCyberO
 	return dstix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (dstix DirectoryCyberObservableObjectSTIX) GetID() string {
 	return dstix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (dstix DirectoryCyberObservableObjectSTIX) GetType() string {
 	return dstix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа DirectoryCyberObservableObjectSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа DirectoryCyberObservableObjectSTIX
 func (dstix DirectoryCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -406,7 +406,7 @@ func (dstix DirectoryCyberObservableObjectSTIX) ComparisonTypeCommonFields(newOb
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (dstix DirectoryCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := dstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += dstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
@@ -426,7 +426,7 @@ func (dstix DirectoryCyberObservableObjectSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (dstix DirectoryCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
 	return map[string]string{
 		"id":   dstix.ID,
@@ -436,7 +436,7 @@ func (dstix DirectoryCyberObservableObjectSTIX) GeneratingDataForIndexing() map[
 
 /* --- DomainNameCyberObservableObjectSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (dnstix DomainNameCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &dnstix); err != nil {
 		return nil, err
@@ -445,14 +445,14 @@ func (dnstix DomainNameCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessa
 	return dnstix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (dnstix DomainNameCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(dnstix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе DomainNameCyberObservableObjectSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе DomainNameCyberObservableObjectSTIX
 func (dnstix DomainNameCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(domain-name--)[0-9a-f|-]+$`).MatchString(dnstix.ID)) {
 		return false
@@ -477,24 +477,24 @@ func (dnstix DomainNameCyberObservableObjectSTIX) ValidateStruct() bool {
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (dnstix DomainNameCyberObservableObjectSTIX) SanitizeStruct() DomainNameCyberObservableObjectSTIX {
 	dnstix.OptionalCommonPropertiesCyberObservableObjectSTIX = dnstix.sanitizeStruct()
 
 	return dnstix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (dnstix DomainNameCyberObservableObjectSTIX) GetID() string {
 	return dnstix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (dnstix DomainNameCyberObservableObjectSTIX) GetType() string {
 	return dnstix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа DomainNameCyberObservableObjectSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа DomainNameCyberObservableObjectSTIX
 func (dnstix DomainNameCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -517,7 +517,7 @@ func (dnstix DomainNameCyberObservableObjectSTIX) ComparisonTypeCommonFields(new
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (dnstix DomainNameCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := dnstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += dnstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
@@ -533,7 +533,7 @@ func (dnstix DomainNameCyberObservableObjectSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (dnstix DomainNameCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
 	dataForIndex := map[string]string{
 		"id":   dnstix.ID,
@@ -549,7 +549,7 @@ func (dnstix DomainNameCyberObservableObjectSTIX) GeneratingDataForIndexing() ma
 
 /* --- EmailAddressCyberObservableObjectSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (eastix EmailAddressCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &eastix); err != nil {
 		return nil, err
@@ -558,14 +558,14 @@ func (eastix EmailAddressCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMes
 	return eastix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (eastix EmailAddressCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(eastix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе EmailAddressCyberObservableObjectSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе EmailAddressCyberObservableObjectSTIX
 func (eastix EmailAddressCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(email-addr--)[0-9a-f|-]+$`).MatchString(eastix.ID)) {
 		return false
@@ -586,7 +586,7 @@ func (eastix EmailAddressCyberObservableObjectSTIX) ValidateStruct() bool {
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (eastix EmailAddressCyberObservableObjectSTIX) SanitizeStruct() EmailAddressCyberObservableObjectSTIX {
 	eastix.OptionalCommonPropertiesCyberObservableObjectSTIX = eastix.sanitizeStruct()
 
@@ -595,17 +595,17 @@ func (eastix EmailAddressCyberObservableObjectSTIX) SanitizeStruct() EmailAddres
 	return eastix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (eastix EmailAddressCyberObservableObjectSTIX) GetID() string {
 	return eastix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (eastix EmailAddressCyberObservableObjectSTIX) GetType() string {
 	return eastix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа EmailAddressCyberObservableObjectSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа EmailAddressCyberObservableObjectSTIX
 func (eastix EmailAddressCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -628,7 +628,7 @@ func (eastix EmailAddressCyberObservableObjectSTIX) ComparisonTypeCommonFields(n
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (eastix EmailAddressCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := eastix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += eastix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
@@ -639,7 +639,7 @@ func (eastix EmailAddressCyberObservableObjectSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (eastix EmailAddressCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
 	dataForIndex := map[string]string{
 		"id":   eastix.ID,
@@ -655,7 +655,7 @@ func (eastix EmailAddressCyberObservableObjectSTIX) GeneratingDataForIndexing() 
 
 /* --- EmailMessageCyberObservableObjectSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (emstix EmailMessageCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &emstix); err != nil {
 		return nil, err
@@ -664,14 +664,14 @@ func (emstix EmailMessageCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMes
 	return emstix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (emstix EmailMessageCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(emstix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе EmailMessageCyberObservableObjectSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе EmailMessageCyberObservableObjectSTIX
 func (emstix EmailMessageCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(email-message--)[0-9a-f|-]+$`).MatchString(emstix.ID)) {
 		return false
@@ -728,7 +728,7 @@ func (emstix EmailMessageCyberObservableObjectSTIX) ValidateStruct() bool {
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (emstix EmailMessageCyberObservableObjectSTIX) SanitizeStruct() EmailMessageCyberObservableObjectSTIX {
 	emstix.OptionalCommonPropertiesCyberObservableObjectSTIX = emstix.sanitizeStruct()
 
@@ -775,17 +775,17 @@ func (emstix EmailMessageCyberObservableObjectSTIX) SanitizeStruct() EmailMessag
 	return emstix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (emstix EmailMessageCyberObservableObjectSTIX) GetID() string {
 	return emstix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (emstix EmailMessageCyberObservableObjectSTIX) GetType() string {
 	return emstix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа EmailMessageCyberObservableObjectSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа EmailMessageCyberObservableObjectSTIX
 func (emstix EmailMessageCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -808,7 +808,7 @@ func (emstix EmailMessageCyberObservableObjectSTIX) ComparisonTypeCommonFields(n
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (emstix EmailMessageCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := emstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += emstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
@@ -871,7 +871,7 @@ func (emstix EmailMessageCyberObservableObjectSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (emstix EmailMessageCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
 	return map[string]string{
 		"id":   emstix.ID,
@@ -881,7 +881,7 @@ func (emstix EmailMessageCyberObservableObjectSTIX) GeneratingDataForIndexing() 
 
 /* --- FileCyberObservableObjectSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (fstix FileCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	var commonObject CommonFileCyberObservableObjectSTIX
 	if err := json.Unmarshal(*raw, &commonObject); err != nil {
@@ -901,6 +901,11 @@ func (fstix FileCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (in
 		Mtime:              commonObject.Mtime,
 		Atime:              commonObject.Atime,
 		ParentDirectoryRef: commonObject.ParentDirectoryRef,
+		//При формировании типа FileCyberObservableObjectSTIX свойство
+		// ContainsRefs игнорируется из-за ошибки реализации (я просто забыл про нее)
+		// нужно сделать что бы свойство ContainsRefs было в данном типе
+		//ContainsRefs:       commonObject.ContainsRefs,
+		ContentRef: commonObject.ContentRef,
 	}
 
 	if len(commonObject.Extensions) == 0 {
@@ -922,19 +927,19 @@ func (fstix FileCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (in
 	return fstix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (fstix FileCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(fstix)
 
 	return &result, err
 }
 
-//GetFileCyberObservableObjectSTIX возвращает объект типа FileCyberObservableObjectSTIX
+// GetFileCyberObservableObjectSTIX возвращает объект типа FileCyberObservableObjectSTIX
 func (fstix *FileCyberObservableObjectSTIX) GetFileCyberObservableObjectSTIX() *FileCyberObservableObjectSTIX {
 	return fstix
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе FileCyberObservableObjectSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе FileCyberObservableObjectSTIX
 func (fstix FileCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(file--)[0-9a-f|-]+$`).MatchString(fstix.ID)) {
 		return false
@@ -975,7 +980,7 @@ func (fstix FileCyberObservableObjectSTIX) ValidateStruct() bool {
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (fstix FileCyberObservableObjectSTIX) SanitizeStruct() FileCyberObservableObjectSTIX {
 	fstix.OptionalCommonPropertiesCyberObservableObjectSTIX = fstix.sanitizeStruct()
 
@@ -999,17 +1004,17 @@ func (fstix FileCyberObservableObjectSTIX) SanitizeStruct() FileCyberObservableO
 	return fstix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (fstix FileCyberObservableObjectSTIX) GetID() string {
 	return fstix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (fstix FileCyberObservableObjectSTIX) GetType() string {
 	return fstix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа FileCyberObservableObjectSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа FileCyberObservableObjectSTIX
 func (fstix FileCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -1032,7 +1037,7 @@ func (fstix FileCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj int
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (fstix FileCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := fstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += fstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
@@ -1062,7 +1067,7 @@ func (fstix FileCyberObservableObjectSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (fstix FileCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
 	dataForIndex := map[string]string{
 		"id":   fstix.ID,
@@ -1078,7 +1083,7 @@ func (fstix FileCyberObservableObjectSTIX) GeneratingDataForIndexing() map[strin
 
 /* --- IPv4AddressCyberObservableObjectSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (ip4stix IPv4AddressCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &ip4stix); err != nil {
 		return nil, err
@@ -1087,19 +1092,19 @@ func (ip4stix IPv4AddressCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMes
 	return ip4stix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (ip4stix IPv4AddressCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(ip4stix)
 
 	return &result, err
 }
 
-//GetIPv4AddressCyberObservableObjectSTIX выполняет объект типа IPv4AddressCyberObservableObjectSTIX
+// GetIPv4AddressCyberObservableObjectSTIX выполняет объект типа IPv4AddressCyberObservableObjectSTIX
 func (fstix *IPv4AddressCyberObservableObjectSTIX) GetIPv4AddressCyberObservableObjectSTIX() *IPv4AddressCyberObservableObjectSTIX {
 	return fstix
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе IPv4AddressCyberObservableObjectSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе IPv4AddressCyberObservableObjectSTIX
 func (ip4stix IPv4AddressCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(ipv4-addr--)[0-9a-f|-]+$`).MatchString(ip4stix.ID)) {
 		return false
@@ -1138,24 +1143,24 @@ func (ip4stix IPv4AddressCyberObservableObjectSTIX) ValidateStruct() bool {
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (ip4stix IPv4AddressCyberObservableObjectSTIX) SanitizeStruct() IPv4AddressCyberObservableObjectSTIX {
 	ip4stix.OptionalCommonPropertiesCyberObservableObjectSTIX = ip4stix.sanitizeStruct()
 
 	return ip4stix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (ip4stix IPv4AddressCyberObservableObjectSTIX) GetID() string {
 	return ip4stix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (ip4stix IPv4AddressCyberObservableObjectSTIX) GetType() string {
 	return ip4stix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа IPv4AddressCyberObservableObjectSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа IPv4AddressCyberObservableObjectSTIX
 func (ipv4stix IPv4AddressCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -1178,7 +1183,7 @@ func (ipv4stix IPv4AddressCyberObservableObjectSTIX) ComparisonTypeCommonFields(
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (ip4stix IPv4AddressCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := ip4stix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += ip4stix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
@@ -1201,7 +1206,7 @@ func (ip4stix IPv4AddressCyberObservableObjectSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (ip4stix IPv4AddressCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
 	dataForIndex := map[string]string{
 		"id":   ip4stix.ID,
@@ -1217,7 +1222,7 @@ func (ip4stix IPv4AddressCyberObservableObjectSTIX) GeneratingDataForIndexing() 
 
 /* --- IPv6AddressCyberObservableObjectSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (ip6stix IPv6AddressCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &ip6stix); err != nil {
 		return nil, err
@@ -1226,14 +1231,14 @@ func (ip6stix IPv6AddressCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMes
 	return ip6stix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (ip6stix IPv6AddressCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(ip6stix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе IPv6AddressCyberObservableObjectSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе IPv6AddressCyberObservableObjectSTIX
 func (ip6stix IPv6AddressCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(ipv6-addr--)[0-9a-f|-]+$`).MatchString(ip6stix.ID)) {
 		return false
@@ -1276,24 +1281,24 @@ func (ip6stix IPv6AddressCyberObservableObjectSTIX) ValidateStruct() bool {
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (ip6stix IPv6AddressCyberObservableObjectSTIX) SanitizeStruct() IPv6AddressCyberObservableObjectSTIX {
 	ip6stix.OptionalCommonPropertiesCyberObservableObjectSTIX = ip6stix.sanitizeStruct()
 
 	return ip6stix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (ip6stix IPv6AddressCyberObservableObjectSTIX) GetID() string {
 	return ip6stix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (ip6stix IPv6AddressCyberObservableObjectSTIX) GetType() string {
 	return ip6stix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа IPv6AddressCyberObservableObjectSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа IPv6AddressCyberObservableObjectSTIX
 func (ipv6stix IPv6AddressCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -1316,7 +1321,7 @@ func (ipv6stix IPv6AddressCyberObservableObjectSTIX) ComparisonTypeCommonFields(
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (ip6stix IPv6AddressCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := ip6stix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += ip6stix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
@@ -1338,7 +1343,7 @@ func (ip6stix IPv6AddressCyberObservableObjectSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (ip6stix IPv6AddressCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
 	dataForIndex := map[string]string{
 		"id":   ip6stix.ID,
@@ -1354,7 +1359,7 @@ func (ip6stix IPv6AddressCyberObservableObjectSTIX) GeneratingDataForIndexing() 
 
 /* --- MACAddressCyberObservableObjectSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (macstix MACAddressCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &macstix); err != nil {
 		return nil, err
@@ -1363,14 +1368,14 @@ func (macstix MACAddressCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMess
 	return macstix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (macstix MACAddressCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(macstix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе MACAddressCyberObservableObjectSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе MACAddressCyberObservableObjectSTIX
 func (macstix MACAddressCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(mac-addr--)[0-9a-f|-]+$`).MatchString(macstix.ID)) {
 		return false
@@ -1387,24 +1392,24 @@ func (macstix MACAddressCyberObservableObjectSTIX) ValidateStruct() bool {
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (macstix MACAddressCyberObservableObjectSTIX) SanitizeStruct() MACAddressCyberObservableObjectSTIX {
 	macstix.OptionalCommonPropertiesCyberObservableObjectSTIX = macstix.sanitizeStruct()
 
 	return macstix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (macstix MACAddressCyberObservableObjectSTIX) GetID() string {
 	return macstix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (macstix MACAddressCyberObservableObjectSTIX) GetType() string {
 	return macstix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа MACAddressCyberObservableObjectSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа MACAddressCyberObservableObjectSTIX
 func (macstix MACAddressCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -1427,7 +1432,7 @@ func (macstix MACAddressCyberObservableObjectSTIX) ComparisonTypeCommonFields(ne
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (macstix MACAddressCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := macstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += macstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
@@ -1436,7 +1441,7 @@ func (macstix MACAddressCyberObservableObjectSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (macstix MACAddressCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
 	return map[string]string{
 		"id":   macstix.ID,
@@ -1446,7 +1451,7 @@ func (macstix MACAddressCyberObservableObjectSTIX) GeneratingDataForIndexing() m
 
 /* --- MutexCyberObservableObjectSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (mstix MutexCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &mstix); err != nil {
 		return nil, err
@@ -1455,14 +1460,14 @@ func (mstix MutexCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (i
 	return mstix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (mstix MutexCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(mstix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе MutexCyberObservableObjectSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе MutexCyberObservableObjectSTIX
 func (mstix MutexCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(mutex--)[0-9a-f|-]+$`).MatchString(mstix.ID)) {
 		return false
@@ -1479,7 +1484,7 @@ func (mstix MutexCyberObservableObjectSTIX) ValidateStruct() bool {
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (mstix MutexCyberObservableObjectSTIX) SanitizeStruct() MutexCyberObservableObjectSTIX {
 	mstix.OptionalCommonPropertiesCyberObservableObjectSTIX = mstix.sanitizeStruct()
 	mstix.Name = commonlibs.StringSanitize(mstix.Name)
@@ -1487,17 +1492,17 @@ func (mstix MutexCyberObservableObjectSTIX) SanitizeStruct() MutexCyberObservabl
 	return mstix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (mstix MutexCyberObservableObjectSTIX) GetID() string {
 	return mstix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (mstix MutexCyberObservableObjectSTIX) GetType() string {
 	return mstix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа MutexCyberObservableObjectSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа MutexCyberObservableObjectSTIX
 func (mstix MutexCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -1520,7 +1525,7 @@ func (mstix MutexCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj in
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (mstix MutexCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := mstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += mstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
@@ -1529,7 +1534,7 @@ func (mstix MutexCyberObservableObjectSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (mstix MutexCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
 	dataForIndex := map[string]string{
 		"id":   mstix.ID,
@@ -1545,7 +1550,7 @@ func (mstix MutexCyberObservableObjectSTIX) GeneratingDataForIndexing() map[stri
 
 /* --- NetworkTrafficCyberObservableObjectSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (ntstix NetworkTrafficCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	var commonObject CommonNetworkTrafficCyberObservableObjectSTIX
 	if err := json.Unmarshal(*raw, &commonObject); err != nil {
@@ -1586,14 +1591,14 @@ func (ntstix NetworkTrafficCyberObservableObjectSTIX) DecoderJSON(raw *json.RawM
 	return ntstix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (ntstix NetworkTrafficCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(ntstix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе NetworkTrafficCyberObservableObjectSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе NetworkTrafficCyberObservableObjectSTIX
 func (ntstix NetworkTrafficCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(network-traffic--)[0-9a-f|-]+$`).MatchString(ntstix.ID)) {
 		return false
@@ -1646,7 +1651,7 @@ func (ntstix NetworkTrafficCyberObservableObjectSTIX) ValidateStruct() bool {
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (ntstix NetworkTrafficCyberObservableObjectSTIX) SanitizeStruct() NetworkTrafficCyberObservableObjectSTIX {
 	ntstix.OptionalCommonPropertiesCyberObservableObjectSTIX = ntstix.sanitizeStruct()
 
@@ -1688,17 +1693,17 @@ func (ntstix NetworkTrafficCyberObservableObjectSTIX) SanitizeStruct() NetworkTr
 	return ntstix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (ntstix NetworkTrafficCyberObservableObjectSTIX) GetID() string {
 	return ntstix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (ntstix NetworkTrafficCyberObservableObjectSTIX) GetType() string {
 	return ntstix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа NetworkTrafficCyberObservableObjectSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа NetworkTrafficCyberObservableObjectSTIX
 func (ntstix NetworkTrafficCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -1721,7 +1726,7 @@ func (ntstix NetworkTrafficCyberObservableObjectSTIX) ComparisonTypeCommonFields
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (ntstix NetworkTrafficCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := ntstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += ntstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
@@ -1768,7 +1773,7 @@ func (ntstix NetworkTrafficCyberObservableObjectSTIX) ToStringBeautiful() string
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (ntstix NetworkTrafficCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
 	return map[string]string{
 		"id":   ntstix.ID,
@@ -1778,7 +1783,7 @@ func (ntstix NetworkTrafficCyberObservableObjectSTIX) GeneratingDataForIndexing(
 
 /* --- ProcessCyberObservableObjectSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (pstix ProcessCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	var commonObject CommonProcessCyberObservableObjectSTIX
 	if err := json.Unmarshal(*raw, &commonObject); err != nil {
@@ -1817,14 +1822,14 @@ func (pstix ProcessCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) 
 	return pstix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (pstix ProcessCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(pstix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе ProcessCyberObservableObjectSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе ProcessCyberObservableObjectSTIX
 func (pstix ProcessCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(process--)[0-9a-f|-]+$`).MatchString(pstix.ID)) {
 		return false
@@ -1873,7 +1878,7 @@ func (pstix ProcessCyberObservableObjectSTIX) ValidateStruct() bool {
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (pstix ProcessCyberObservableObjectSTIX) SanitizeStruct() ProcessCyberObservableObjectSTIX {
 	pstix.OptionalCommonPropertiesCyberObservableObjectSTIX = pstix.sanitizeStruct()
 
@@ -1905,17 +1910,17 @@ func (pstix ProcessCyberObservableObjectSTIX) SanitizeStruct() ProcessCyberObser
 	return pstix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (pstix ProcessCyberObservableObjectSTIX) GetID() string {
 	return pstix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (pstix ProcessCyberObservableObjectSTIX) GetType() string {
 	return pstix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа ProcessCyberObservableObjectSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа ProcessCyberObservableObjectSTIX
 func (pstix ProcessCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -1938,7 +1943,7 @@ func (pstix ProcessCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj 
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (pstix ProcessCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := pstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += pstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
@@ -1979,7 +1984,7 @@ func (pstix ProcessCyberObservableObjectSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (pstix ProcessCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
 	return map[string]string{
 		"id":   pstix.ID,
@@ -1989,7 +1994,7 @@ func (pstix ProcessCyberObservableObjectSTIX) GeneratingDataForIndexing() map[st
 
 /* --- SoftwareCyberObservableObjectSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (sstix SoftwareCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &sstix); err != nil {
 		return nil, err
@@ -1998,14 +2003,14 @@ func (sstix SoftwareCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage)
 	return sstix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (sstix SoftwareCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(sstix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе SoftwareCyberObservableObjectSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе SoftwareCyberObservableObjectSTIX
 func (sstix SoftwareCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(software--)[0-9a-f|-]+$`).MatchString(sstix.ID)) {
 		return false
@@ -2022,7 +2027,7 @@ func (sstix SoftwareCyberObservableObjectSTIX) ValidateStruct() bool {
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (sstix SoftwareCyberObservableObjectSTIX) SanitizeStruct() SoftwareCyberObservableObjectSTIX {
 	sstix.OptionalCommonPropertiesCyberObservableObjectSTIX = sstix.sanitizeStruct()
 
@@ -2045,17 +2050,17 @@ func (sstix SoftwareCyberObservableObjectSTIX) SanitizeStruct() SoftwareCyberObs
 	return sstix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (sstix SoftwareCyberObservableObjectSTIX) GetID() string {
 	return sstix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (sstix SoftwareCyberObservableObjectSTIX) GetType() string {
 	return sstix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа SoftwareCyberObservableObjectSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа SoftwareCyberObservableObjectSTIX
 func (sstix SoftwareCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -2078,7 +2083,7 @@ func (sstix SoftwareCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (sstix SoftwareCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := sstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += sstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
@@ -2098,7 +2103,7 @@ func (sstix SoftwareCyberObservableObjectSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (sstix SoftwareCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
 	dataForIndex := map[string]string{
 		"id":   sstix.ID,
@@ -2114,7 +2119,7 @@ func (sstix SoftwareCyberObservableObjectSTIX) GeneratingDataForIndexing() map[s
 
 /* --- URLCyberObservableObjectSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (urlstix URLCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &urlstix); err != nil {
 		return nil, err
@@ -2123,14 +2128,14 @@ func (urlstix URLCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (i
 	return urlstix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (urlstix URLCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(urlstix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе URLCyberObservableObjectSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе URLCyberObservableObjectSTIX
 func (urlstix URLCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(url--)[0-9a-f|-]+$`).MatchString(urlstix.ID)) {
 		return false
@@ -2147,24 +2152,24 @@ func (urlstix URLCyberObservableObjectSTIX) ValidateStruct() bool {
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (urlstix URLCyberObservableObjectSTIX) SanitizeStruct() URLCyberObservableObjectSTIX {
 	urlstix.OptionalCommonPropertiesCyberObservableObjectSTIX = urlstix.sanitizeStruct()
 
 	return urlstix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (urlstix URLCyberObservableObjectSTIX) GetID() string {
 	return urlstix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (urlstix URLCyberObservableObjectSTIX) GetType() string {
 	return urlstix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа URLCyberObservableObjectSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа URLCyberObservableObjectSTIX
 func (urlstix URLCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -2187,7 +2192,7 @@ func (urlstix URLCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj in
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (urlstix URLCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := urlstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += urlstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
@@ -2196,7 +2201,7 @@ func (urlstix URLCyberObservableObjectSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (urlstix URLCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
 	dataForIndex := map[string]string{
 		"id":   urlstix.ID,
@@ -2212,7 +2217,7 @@ func (urlstix URLCyberObservableObjectSTIX) GeneratingDataForIndexing() map[stri
 
 /* --- UserAccountCyberObservableObjectSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (uastix UserAccountCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &uastix); err != nil {
 		return nil, err
@@ -2221,14 +2226,14 @@ func (uastix UserAccountCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMess
 	return uastix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (uastix UserAccountCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(uastix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе UserAccountCyberObservableObjectSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе UserAccountCyberObservableObjectSTIX
 func (uastix UserAccountCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(user-account--)[0-9a-f|-]+$`).MatchString(uastix.ID)) {
 		return false
@@ -2241,7 +2246,7 @@ func (uastix UserAccountCyberObservableObjectSTIX) ValidateStruct() bool {
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (uastix UserAccountCyberObservableObjectSTIX) SanitizeStruct() UserAccountCyberObservableObjectSTIX {
 	uastix.OptionalCommonPropertiesCyberObservableObjectSTIX = uastix.sanitizeStruct()
 
@@ -2264,17 +2269,17 @@ func (uastix UserAccountCyberObservableObjectSTIX) SanitizeStruct() UserAccountC
 	return uastix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (uastix UserAccountCyberObservableObjectSTIX) GetID() string {
 	return uastix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (uastix UserAccountCyberObservableObjectSTIX) GetType() string {
 	return uastix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа UserAccountCyberObservableObjectSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа UserAccountCyberObservableObjectSTIX
 func (uastix UserAccountCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -2297,7 +2302,7 @@ func (uastix UserAccountCyberObservableObjectSTIX) ComparisonTypeCommonFields(ne
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (uastix UserAccountCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := uastix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += uastix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
@@ -2323,7 +2328,7 @@ func (uastix UserAccountCyberObservableObjectSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (uastix UserAccountCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
 	return map[string]string{
 		"id":   uastix.ID,
@@ -2333,7 +2338,7 @@ func (uastix UserAccountCyberObservableObjectSTIX) GeneratingDataForIndexing() m
 
 /* --- WindowsRegistryKeyCyberObservableObjectSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &wrkstix); err != nil {
 		return nil, err
@@ -2342,14 +2347,14 @@ func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) DecoderJSON(raw *json
 	return wrkstix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(wrkstix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе WindowsRegistryKeyCyberObservableObjectSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе WindowsRegistryKeyCyberObservableObjectSTIX
 func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(windows-registry-key--)[0-9a-f|-]+$`).MatchString(wrkstix.ID)) {
 		return false
@@ -2366,7 +2371,7 @@ func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) ValidateStruct() bool
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) SanitizeStruct() WindowsRegistryKeyCyberObservableObjectSTIX {
 	wrkstix.OptionalCommonPropertiesCyberObservableObjectSTIX = wrkstix.sanitizeStruct()
 
@@ -2386,17 +2391,17 @@ func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) SanitizeStruct() Wind
 	return wrkstix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) GetID() string {
 	return wrkstix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) GetType() string {
 	return wrkstix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа WindowsRegistryKeyCyberObservableObjectSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа WindowsRegistryKeyCyberObservableObjectSTIX
 func (wrstix WindowsRegistryKeyCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -2419,7 +2424,7 @@ func (wrstix WindowsRegistryKeyCyberObservableObjectSTIX) ComparisonTypeCommonFi
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := wrkstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += wrkstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
@@ -2441,7 +2446,7 @@ func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) ToStringBeautiful() s
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
 	return map[string]string{
 		"id":   wrkstix.ID,
@@ -2451,7 +2456,7 @@ func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) GeneratingDataForInde
 
 /* --- X509CertificateCyberObservableObjectSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (x509sstix X509CertificateCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &x509sstix); err != nil {
 		return nil, err
@@ -2460,14 +2465,14 @@ func (x509sstix X509CertificateCyberObservableObjectSTIX) DecoderJSON(raw *json.
 	return x509sstix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (x509sstix X509CertificateCyberObservableObjectSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(x509sstix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе X509CertificateCyberObservableObjectSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе X509CertificateCyberObservableObjectSTIX
 func (x509sstix X509CertificateCyberObservableObjectSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(x509-certificate--)[0-9a-f|-]+$`).MatchString(x509sstix.ID)) {
 		return false
@@ -2484,7 +2489,7 @@ func (x509sstix X509CertificateCyberObservableObjectSTIX) ValidateStruct() bool 
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (x509sstix X509CertificateCyberObservableObjectSTIX) SanitizeStruct() X509CertificateCyberObservableObjectSTIX {
 	x509sstix.OptionalCommonPropertiesCyberObservableObjectSTIX = x509sstix.sanitizeStruct()
 
@@ -2501,17 +2506,17 @@ func (x509sstix X509CertificateCyberObservableObjectSTIX) SanitizeStruct() X509C
 	return x509sstix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (x509sstix X509CertificateCyberObservableObjectSTIX) GetID() string {
 	return x509sstix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (x509sstix X509CertificateCyberObservableObjectSTIX) GetType() string {
 	return x509sstix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа X509CertificateCyberObservableObjectSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа X509CertificateCyberObservableObjectSTIX
 func (x509sstix X509CertificateCyberObservableObjectSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -2534,7 +2539,7 @@ func (x509sstix X509CertificateCyberObservableObjectSTIX) ComparisonTypeCommonFi
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (x509sstix X509CertificateCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str := x509sstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += x509sstix.OptionalCommonPropertiesCyberObservableObjectSTIX.ToStringBeautiful()
@@ -2577,7 +2582,7 @@ func (x509sstix X509CertificateCyberObservableObjectSTIX) ToStringBeautiful() st
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (x509sstix X509CertificateCyberObservableObjectSTIX) GeneratingDataForIndexing() map[string]string {
 	return map[string]string{
 		"id":   x509sstix.ID,

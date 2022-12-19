@@ -13,7 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-//CreateSearchQueriesSTIXObject обработчик формирующий поисковые запросы для осуществления поиска по коллекции содержащей документы в формате STIX
+// CreateSearchQueriesSTIXObject обработчик формирующий поисковые запросы для осуществления поиска по коллекции содержащей документы в формате STIX
 func CreateSearchQueriesSTIXObject(sp *datamodels.SearchThroughCollectionSTIXObjectsType) bson.D {
 	var (
 		documentsType                        bson.E
@@ -108,7 +108,7 @@ func CreateSearchQueriesSTIXObject(sp *datamodels.SearchThroughCollectionSTIXObj
 	}
 }
 
-//HandlerSpecificSearchFields обработчик поля "specific_search_fields"
+// HandlerSpecificSearchFields обработчик поля "specific_search_fields"
 func HandlerSpecificSearchFields(ldt []string, ssf *datamodels.SpecificSearchFieldsSTIXObjectType) bson.D {
 	var (
 		name      bson.E
@@ -203,7 +203,7 @@ func HandlerSpecificSearchFields(ldt []string, ssf *datamodels.SpecificSearchFie
 	}
 }
 
-//HandlerValueField обработка поля "value" которое может содержать любые из следующих типов значений: "domain-name", "email-addr", "ipv4-addr",
+// HandlerValueField обработка поля "value" которое может содержать любые из следующих типов значений: "domain-name", "email-addr", "ipv4-addr",
 // "ipv6-addr" или "url"
 func HandlerValueField(listValue []string) bson.E {
 	var (
@@ -256,7 +256,8 @@ func HandlerValueField(listValue []string) bson.E {
 	//обработка только URL
 	if sizeListURL > 0 {
 		for _, v := range listURL {
-			tl = append(tl, bson.A{bson.D{{Key: "url", Value: v}}, bson.D{{Key: "value", Value: v}}}...)
+			//tl = append(tl, bson.A{bson.D{{Key: "url", Value: v}}, bson.D{{Key: "value", Value: v}}}...)
+			tl = append(tl, bson.D{{Key: "$or", Value: bson.A{bson.D{{Key: "url", Value: v}}, bson.D{{Key: "value", Value: v}}}}})
 		}
 	}
 

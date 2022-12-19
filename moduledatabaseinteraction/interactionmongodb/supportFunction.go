@@ -29,13 +29,13 @@ var (
 	}
 )
 
-//ComparasionListTypeSTIXObject содержит два списка STIX объектов, предназначенных для сравнения
+// ComparasionListTypeSTIXObject содержит два списка STIX объектов, предназначенных для сравнения
 type ComparasionListTypeSTIXObject struct {
 	CollectionType   string
 	OldList, NewList []*datamodels.ElementSTIXObject
 }
 
-//ComparasionListSTIXObject выполняет сравнение двух списков STIX объектов, cписка STIX объектов, полученных из БД и принятых от клиента API
+// ComparasionListSTIXObject выполняет сравнение двух списков STIX объектов, cписка STIX объектов, полученных из БД и принятых от клиента API
 func ComparasionListSTIXObject(clt ComparasionListTypeSTIXObject) []datamodels.DifferentObjectType {
 	var (
 		listDifferentResult []datamodels.DifferentObjectType
@@ -105,7 +105,7 @@ func ComparasionListSTIXObject(clt ComparasionListTypeSTIXObject) []datamodels.D
 	return listDifferentResult
 }
 
-//SavingAdditionalNameListSTIXObject сохранение дополнительного наименования в некоторых STIX объектах, имеющих свойства не входящие
+// SavingAdditionalNameListSTIXObject сохранение дополнительного наименования в некоторых STIX объектах, имеющих свойства не входящие
 // в основную спецификацию STIX 2.0
 func SavingAdditionalNameListSTIXObject(currentList, addedList []*datamodels.ElementSTIXObject) []*datamodels.ElementSTIXObject {
 	fmt.Println("func 'SavingAdditionalNameListSTIXObject', START...")
@@ -150,7 +150,7 @@ type definingTypeSTIXObject struct {
 	datamodels.CommonPropertiesObjectSTIX
 }
 
-//GetListElementSTIXObject возвращает, из БД, список STIX объектов
+// GetListElementSTIXObject возвращает, из БД, список STIX объектов
 func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject {
 	elements := []*datamodels.ElementSTIXObject{}
 
@@ -631,7 +631,7 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 	return elements
 }
 
-//FindSTIXObjectByID выполняет поиск в БД, STIX объектов по их ID и возвращает список STIX объектов типа datamodels.ElementSTIXObject
+// FindSTIXObjectByID выполняет поиск в БД, STIX объектов по их ID и возвращает список STIX объектов типа datamodels.ElementSTIXObject
 func FindSTIXObjectByID(qp QueryParameters, listID []string) ([]*datamodels.ElementSTIXObject, error) {
 	var objID primitive.A
 
@@ -649,7 +649,7 @@ func FindSTIXObjectByID(qp QueryParameters, listID []string) ([]*datamodels.Elem
 	return lr, nil
 }
 
-//ReplacementElementsSTIXObject выполняет замену в БД, списка STIX объектов или добовляет новые объекты если их нет в БД
+// ReplacementElementsSTIXObject выполняет замену в БД, списка STIX объектов или добовляет новые объекты если их нет в БД
 func ReplacementElementsSTIXObject(qp QueryParameters, l []*datamodels.ElementSTIXObject) error {
 	listSize := len(l)
 	listObj := make([]interface{}, 0, listSize)
@@ -749,7 +749,7 @@ func ReplacementElementsSTIXObject(qp QueryParameters, l []*datamodels.ElementST
 	return nil
 }
 
-//FindRBObjectByName выполняет поиск в БД, Reference Book объектов по их ID и возвращает список объектов типа datamodels.Vocabulary - справочник
+// FindRBObjectByName выполняет поиск в БД, Reference Book объектов по их ID и возвращает список объектов типа datamodels.Vocabulary - справочник
 func FindRBObjectsByNames(qp QueryParameters, listNames []string) (datamodels.Vocabularys, error) {
 	//var objID primitive.A
 	//for _, v := range listNames {
@@ -758,7 +758,7 @@ func FindRBObjectsByNames(qp QueryParameters, listNames []string) (datamodels.Vo
 	return nil, nil
 }
 
-//FilterEditabelRB - функция проверки и фильтрации объектов RB на то что они являются редактируемыми
+// FilterEditabelRB - функция проверки и фильтрации объектов RB на то что они являются редактируемыми
 func FilterEditabelRB(listRB datamodels.Vocabularys) (datamodels.Vocabularys, datamodels.Vocabularys) {
 	var (
 		listNotEditable datamodels.Vocabularys
@@ -782,7 +782,7 @@ func ComparasionListRBbject(compList1 datamodels.Vocabularys, compList2 datamode
 	return nil
 }
 
-//GetIDGroupingObjectSTIX проверяет наличие Grouping STIX DO объектов с заданными именами и при необходимости создает их. Возвращает список
+// GetIDGroupingObjectSTIX проверяет наличие Grouping STIX DO объектов с заданными именами и при необходимости создает их. Возвращает список
 // идентификаторов STIX DO объектов типа Grouping и название объекта.
 func GetIDGroupingObjectSTIX(qp QueryParameters, listSearch map[string]datamodels.StorageApplicationCommonListType) (map[string]datamodels.StorageApplicationCommonListType, error) {
 	var (
@@ -871,11 +871,14 @@ func GetIDGroupingObjectSTIX(qp QueryParameters, listSearch map[string]datamodel
 	return listID, err
 }
 
-//GetListGroupingObjectSTIX возвращает из БД список STIX DO объектов типа Grouping
+// GetListGroupingObjectSTIX возвращает из БД список STIX DO объектов типа Grouping
 func GetListGroupingObjectSTIX(cur *mongo.Cursor) []datamodels.GroupingDomainObjectsSTIX {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
 	var list []datamodels.GroupingDomainObjectsSTIX
 
-	for cur.Next(context.Background()) {
+	for cur.Next(ctx) {
 		var gdostix datamodels.GroupingDomainObjectsSTIX
 		if err := cur.Decode(&gdostix); err != nil {
 			continue
@@ -887,7 +890,7 @@ func GetListGroupingObjectSTIX(cur *mongo.Cursor) []datamodels.GroupingDomainObj
 	return list
 }
 
-//GetListGroupingComputerThreat обрабатывает список STIX DO объектов типа Grouping и возвращает набор элементов содержащий лишь некоторые поля
+// GetListGroupingComputerThreat обрабатывает список STIX DO объектов типа Grouping и возвращает набор элементов содержащий лишь некоторые поля
 // из данного объекта, а также подсчитывает количество элементов в поле object_ref
 func GetListGroupingComputerThreat(cur *mongo.Cursor) []datamodels.ShortDescriptionElementGroupingComputerThreat {
 	var (
@@ -895,7 +898,10 @@ func GetListGroupingComputerThreat(cur *mongo.Cursor) []datamodels.ShortDescript
 		listComputerThreat []datamodels.ShortDescriptionElementGroupingComputerThreat
 	)
 
-	for cur.Next(context.Background()) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	for cur.Next(ctx) {
 		var gdostix datamodels.GroupingDomainObjectsSTIX
 		if err := cur.Decode(&gdostix); err != nil {
 			continue
@@ -917,7 +923,7 @@ func GetListGroupingComputerThreat(cur *mongo.Cursor) []datamodels.ShortDescript
 	return listComputerThreat
 }
 
-//getPropertyObjectRefs вспомогоательная функция для получения списка идентификаторов объектов STIX содержащихся с свойстве 'object_refs' некоторых
+// getPropertyObjectRefs вспомогоательная функция для получения списка идентификаторов объектов STIX содержащихся с свойстве 'object_refs' некоторых
 // объектов STIX
 func getPropertyObjectRefs(element *datamodels.ElementSTIXObject) ([]datamodels.IdentifierTypeSTIX, error) {
 	var or []datamodels.IdentifierTypeSTIX
@@ -968,7 +974,7 @@ func getPropertyObjectRefs(element *datamodels.ElementSTIXObject) ([]datamodels.
 	return or, nil
 }
 
-//CreatingAdditionalRelationshipSTIXObject создает дополнительные STIX объекты типа 'relationship', обеспечивающие обратные связи для STIX объектов
+// CreatingAdditionalRelationshipSTIXObject создает дополнительные STIX объекты типа 'relationship', обеспечивающие обратные связи для STIX объектов
 // перечисленных в свойстве 'object_refs' и содержащемся в таких STIX объектах, как 'grouping', 'note', 'observed-data', 'opinion', 'report'
 func CreatingAdditionalRelationshipSTIXObject(qp QueryParameters, l []*datamodels.ElementSTIXObject) ([]*datamodels.ElementSTIXObject, error) {
 	var (
@@ -1090,7 +1096,7 @@ func CreatingAdditionalRelationshipSTIXObject(qp QueryParameters, l []*datamodel
 	return l, nil
 }
 
-//DeleteOldRelationshipSTIXObject удаляет дополнительные STIX объекты типа 'relationship', обеспечивающие обратные связи для STIX объектов
+// DeleteOldRelationshipSTIXObject удаляет дополнительные STIX объекты типа 'relationship', обеспечивающие обратные связи для STIX объектов
 // идентификаторы которых содержатся в свойстве 'object_ref'
 func DeleteOldRelationshipSTIXObject(qp QueryParameters, l []*datamodels.ElementSTIXObject) error {
 	var (
@@ -1211,7 +1217,7 @@ func DeleteOldRelationshipSTIXObject(qp QueryParameters, l []*datamodels.Element
 	return nil
 }
 
-//switchMSGType - функция заполняющая одно из информационных полей cообщения
+// switchMSGType - функция заполняющая одно из информационных полей cообщения
 // распознавая тип объекта передаваемого в нее
 func switchMSGType(msg *datamodels.ModuleDataBaseInteractionChannel, m interface{}) bool {
 	msg.ErrorMessage = datamodels.ErrorDataTypePassedThroughChannels{}

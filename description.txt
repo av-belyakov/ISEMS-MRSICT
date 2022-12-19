@@ -467,7 +467,10 @@ STIX объектами. Пример сообщения:
         openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 1024 -out rootCA.pem
 
     3. Создаём приватный ключ сертификата
-        openssl genpkey -algorithm RSA -out isems_mrsict_private_key.pem
+        openssl genpkey -algorithm RSA -out isems_mrsict_private_key.pem -subj "/C=RU/ST=Moscow/L=Moscow/O=My Company/CN=example.org"
+
+    3.1 Можно сразу создать закрытый ключ и подписанный сертификат:
+	sudo openssl req -newkey rsa:2048 -nodes -keyout isems_mrsict_private_key.pem -subj "/C=RU/ST=Moscow/L=Moscow/O=My Company/CN=example.org"
 
     4. Создаём файл с запросом на подпись сертификата (csr). Нужен ТОЛЬКО для создания сертификата сервера, потом его можно удалить
         openssl req -new -key isems_mrsict_private_key.pem -out mydomain.com.csr

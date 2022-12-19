@@ -38,10 +38,11 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 		//подключаемся к базе данных MongoDB
 		connectError = cdmdb.CreateConnection(&datamodels.MongoDBSettings{
-			Host:     "test-uchet-db.cloud.gcm",
+			//Host:     "test-uchet-db.cloud.gcm",
+			Host:     "localhost",
 			Port:     27017,
 			User:     "module-isems-mrsict",
-			Password: "vkL6Zn$jPmt1e1",
+			Password: "vkL6Znj$Pmt1e1",
 			NameDB:   "isems-mrsict",
 		})
 
@@ -83,10 +84,10 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 			}))
 
 			Expect(err).ShouldNot(HaveOccurred())
-			Expect(sizeElem).Should(Equal(int64(46)))
+			Expect(sizeElem).Should(Equal(int64(82)))
 
-			tcs, errep := time.Parse(time.RFC3339, "2016-08-21T21:13:10.000Z")
-			tce, errep := time.Parse(time.RFC3339, "2016-08-21T21:34:10.000Z")
+			tcs, errep := time.Parse(time.RFC3339, "2021-09-28T09:00:00.000Z")
+			tce, errep := time.Parse(time.RFC3339, "2021-09-28T21:00:00.000Z")
 			Expect(errep).ShouldNot(HaveOccurred())
 
 			qrotc := datamodels.SearchThroughCollectionSTIXObjectsType{
@@ -102,7 +103,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 			sizeElem, err = qp.CountDocuments(interactionmongodb.CreateSearchQueriesSTIXObject(&qrotc))
 
 			Expect(err).ShouldNot(HaveOccurred())
-			Expect(sizeElem).Should(Equal(int64(22)))
+			Expect(sizeElem).Should(Equal(int64(38)))
 
 			cur, errfl := qp.FindAllWithLimit(interactionmongodb.CreateSearchQueriesSTIXObject(&qrotc), &interactionmongodb.FindAllWithLimitOptions{
 				Offset:        1,
@@ -112,13 +113,16 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 			elemSTIXObj := interactionmongodb.GetListElementSTIXObject(cur)
 
-			/*fmt.Println("____ last 19 elements ___")
-			for _, v := range elemSTIXObj {
-				fmt.Printf("\tid: '%s'\n", v.Data.GetID())
-			}*/
+			//
+			//fmt.Println("SEARCH ELEMENTS = ", len(elemSTIXObj))
+			//fmt.Println("____ should be 38 elements ___")
+			//for k, v := range elemSTIXObj {
+			//	fmt.Printf("\t%d. id: '%s'\n", k+1, v.Data.GetID())
+			//}
+			//
 
 			Expect(errfl).ShouldNot(HaveOccurred())
-			Expect(int64(len(elemSTIXObj))).Should(Equal(int64(22)))
+			Expect(int64(len(elemSTIXObj))).Should(Equal(int64(38)))
 		})
 
 		It("Поиск ТОЛЬКО по времени модификации STIX объекта, должно быть найдено определенное количество объектов", func() {
@@ -140,7 +144,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 			sizeElem, err := qp.CountDocuments(interactionmongodb.CreateSearchQueriesSTIXObject(&qrotc))
 
 			Expect(err).ShouldNot(HaveOccurred())
-			Expect(sizeElem).Should(Equal(int64(8)))
+			Expect(sizeElem).Should(Equal(int64(7)))
 		})
 
 		It("Поиск ТОЛЬКО по времени создания или модификации STIX объекта, должно быть найдено определенное количество объектов", func() {
@@ -176,7 +180,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 			sizeElem, err := qp.CountDocuments(interactionmongodb.CreateSearchQueriesSTIXObject(&qrotc))
 
 			Expect(err).ShouldNot(HaveOccurred())
-			Expect(sizeElem).Should(Equal(int64(23)))
+			Expect(sizeElem).Should(Equal(int64(49)))
 		})
 
 		It("Поиск по времени модификации STIX объекта и его типу, должно быть найдено определенное количество объектов", func() {
@@ -205,16 +209,17 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 	Context("Тест 3. Тестируем обработчики формирующие поисковые запросы, в формате BSON, направленные к БД MongoDB", func() {
 		It("Должен быть успешно сформирован BSON запрос для обработки поля 'value'. При передачи запроса на обработку в БД ошибок быть не должно", func() {
-			/*vr := interactionmongodb.HandlerValueField([]string{
-				"67.45.2.1/32",
-				"89.0.213.4",
-				"89.0.67",
-				"2001:0db8:85a3:0000:0000:8a2e:0370:7334",
-				"vdb76@yandex.ru",
-				"basd-89@bk.com",
-				"https://talks.golang.org/2012/10things.slide#2",
-				"john@example.com",
-			})*/
+			//
+			//vr := interactionmongodb.HandlerValueField([]string{
+			//	"67.45.2.1/32",
+			//	"89.0.213.4",
+			//	"89.0.67",
+			//	"2001:0db8:85a3:0000:0000:8a2e:0370:7334",
+			//	"vdb76@yandex.ru",
+			//	"basd-89@bk.com",
+			//	"https://talks.golang.org/2012/10things.slide#2",
+			//	"john@example.com",
+			//})
 
 			vr := interactionmongodb.HandlerValueField([]string{
 				"https://talks.golang.org/2012/10things.slide#2",
@@ -225,7 +230,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 				"basd-89@bk.com",
 			})
 
-			//			fmt.Printf("\tBSON document: '%v'\n", vr)
+			fmt.Printf("\tBSON document: '%v'\n", vr)
 
 			cur, err := qp.FindAllWithLimit(&vr, &interactionmongodb.FindAllWithLimitOptions{
 				Offset:        1,
@@ -234,28 +239,32 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 				SortAscending: false,
 			})
 
-			/*cur, err := qp.FindAllWithLimit(interactionmongodb.CreateSearchQueriesSTIXObject(&datamodels.SearchThroughCollectionSTIXObjectsType{
-				DocumentsType: []string{"grouping", "location", "report", "malware", "attack-pattern"},
-				SpecificSearchFields: []datamodels.SpecificSearchFieldsSTIXObjectType{{
-					Name: "sss",
-					Value: []string{
-						"https://talks.golang.org/2012/10things.slide#2",
-						"vdb76@yandex.ru",
-				Offset:        1,
-				LimitMaxSize:  100,
-				SortField:     "",
-				SortAscending: false,
-			})*/
+			//
+			//cur, err := qp.FindAllWithLimit(interactionmongodb.CreateSearchQueriesSTIXObject(&datamodels.SearchThroughCollectionSTIXObjectsType{
+			//	DocumentsType: []string{"grouping", "location", "report", "malware", "attack-pattern"},
+			//	SpecificSearchFields: []datamodels.SpecificSearchFieldsSTIXObjectType{{
+			//		Name: "sss",
+			//		Value: []string{
+			//			"https://talks.golang.org/2012/10things.slide#2",
+			//			"vdb76@yandex.ru",
+			//	Offset:        1,
+			//	LimitMaxSize:  100,
+			//	SortField:     "",
+			//	SortAscending: false,
+			//})
+			//
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			elemSTIXObj := interactionmongodb.GetListElementSTIXObject(cur)
 
-			//			fmt.Printf("Found '%d' elements\n", len(elemSTIXObj))
+			fmt.Printf("Found '%d' elements\n", len(elemSTIXObj))
 
-			//			for _, v := range elemSTIXObj {
-			//				fmt.Printf("Data type STIX: '%s', value: '%v'\n", v.DataType, v)
-			//			}
+			for _, v := range elemSTIXObj {
+
+				fmt.Printf("Data type STIX: '%s', value: '%v'\n", v.DataType, v)
+
+			}
 
 			Expect(len(elemSTIXObj)).Should(Equal(3))
 		})
@@ -264,16 +273,16 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 	Context("Тест 3.1. Тестируем обработчики формирующие поисковые запросы, в формате BSON, направленные к БД MongoDB", func() {
 		It("Должен быть успешно сформирован BSON запрос для обработки поля 'value'. При передачи запроса на обработку в БД ошибок быть не должно", func() {
 			sr := interactionmongodb.HandlerSpecificSearchFields([]string{""}, &datamodels.SpecificSearchFieldsSTIXObjectType{
-				/*Name:    "sss",
-				Aliases: []string{"df", "fe"},
-				FirstSeen: struct {
-					Start time.Time "json:\"start\""
-					End   time.Time "json:\"end\""
-				}{},
-				LastSeen: struct {
-					Start time.Time "json:\"start\""
-					End   time.Time "json:\"end\""
-				}{},*/
+				//Name:    "sss",
+				//Aliases: []string{"df", "fe"},
+				//FirstSeen: struct {
+				//	Start time.Time "json:\"start\""
+				//	End   time.Time "json:\"end\""
+				//}{},
+				//LastSeen: struct {
+				//	Start time.Time "json:\"start\""
+				//	End   time.Time "json:\"end\""
+				//}{},
 				Value: []string{
 					"https://talks.golang.org/2012/10things.slide#2",
 					"vdb76@yandex.ru",
@@ -284,19 +293,19 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 				},
 			})
 
-			/*sr := interactionmongodb.CreateSearchQueriesSTIXObject(&datamodels.SearchThroughCollectionSTIXObjectsType{
-				DocumentsType: []string{"report"},
-				SpecificSearchFields: []datamodels.SpecificSearchFieldsSTIXObjectType{{
-					Value: []string{
-						"https://talks.golang.org/2012/10things.slide#2",
-						"vdb76@yandex.ru",
-						"john@example.com",                        // есть в коллекции БД
-						"2001:0db8:85a3:0000:0000:8a2e:0370:7334", // есть в коллекции БД
-						"198.51.100.3",                            // есть в коллекции БД
-						"basd-89@bk.com",
-					},
-				}},
-			})*/
+			//sr := interactionmongodb.CreateSearchQueriesSTIXObject(&datamodels.SearchThroughCollectionSTIXObjectsType{
+			//	DocumentsType: []string{"report"},
+			//	SpecificSearchFields: []datamodels.SpecificSearchFieldsSTIXObjectType{{
+			//		Value: []string{
+			//			"https://talks.golang.org/2012/10things.slide#2",
+			//			"vdb76@yandex.ru",
+			//			"john@example.com",                        // есть в коллекции БД
+			//			"2001:0db8:85a3:0000:0000:8a2e:0370:7334", // есть в коллекции БД
+			//			"198.51.100.3",                            // есть в коллекции БД
+			//			"basd-89@bk.com",
+			//		},
+			//	}},
+			//})
 
 			//fmt.Printf("_________||||| %v |||||________\n", sr)
 
@@ -317,7 +326,10 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 			//			}
 		})
-		Context("Тест 4. Формируем поисковые запросы с сортировкой и с выборкой по определенным полям", func() {
+	})
+
+	Context("Тест 4. Формируем поисковые запросы с сортировкой и с выборкой по определенным полям", func() {
+		It("Должен быть успешно выполнен запрос информации из БД и отсортирован по полю время создания (commonpropertiesdomainobjectstix.created)", func() {
 			cur, err := qp.FindAllWithLimit(
 				bson.D{}, &interactionmongodb.FindAllWithLimitOptions{
 					SortField:     "commonpropertiesdomainobjectstix.created",
@@ -328,20 +340,19 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 			elemSTIXObj := interactionmongodb.GetListElementSTIXObject(cur)
 
-			fmt.Printf("Found '%d' elements and sorted\n", len(elemSTIXObj))
+			//fmt.Printf("Found '%d' elements and sorted\n", len(elemSTIXObj))
+			//for _, v := range elemSTIXObj {
+			//	fmt.Printf("Data type STIX: '%s', time created: '%v'\n", v.DataType, v.Data)
+			//}
 
-			for _, v := range elemSTIXObj {
-				fmt.Printf("Data type STIX: '%s', time created: '%v'\n", v.DataType, v.Data)
-			}
+			//
+			//   Сортировка работает, однако следует помнить что, сортировка может выполнятся только по одной из групп STIX DO,
+			//   STIX CO или STIX RO или по всем сразу. Данный факт зафисит от типа сортируемого поля, для разных STIX объектов
+			//   может быть использованно разное поле. Например, для STIX DO 'malware' поле 'commonpropertiesdomainobjectstix',
+			//   а для STIX CO 'file' поле 'optionalcommonpropertiescyberobservableobjectstix'
+			//
 
-			/*
-			   Сортировка работает, однако следует помнить что, сортировка может выполнятся только по одной из групп STIX DO,
-			   STIX CO или STIX RO или по всем сразу. Данный факт зафисит от типа сортируемого поля, для разных STIX объектов
-			   может быть использованно разное поле. Например, для STIX DO 'malware' поле 'commonpropertiesdomainobjectstix',
-			   а для STIX CO 'file' поле 'optionalcommonpropertiescyberobservableobjectstix'
-			*/
-
-			Expect(len(elemSTIXObj)).Should(Equal(49))
+			Expect(len(elemSTIXObj)).Should(Equal(250))
 		})
 	})
 
@@ -460,7 +471,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 			//fmt.Printf("Должен быть получен список из 1 элемента типа 'report', поле 'published' которого содержит пустое значение: '%v'\n", *elemSTIXObj[0])
 
-			Expect(len(elemSTIXObj)).Should(Equal(1))
+			Expect(len(elemSTIXObj)).Should(Equal(31))
 		})
 
 		It("Должен быть получен список из 2 элемента типа 'report', с заполненным полем 'published'", func() {
@@ -483,7 +494,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 			//fmt.Printf("Должен быть получен список из 1 элемента типа 'report', с заполненным полем 'published': '%v'\n", *elemSTIXObj[0])
 
-			Expect(len(elemSTIXObj)).Should(Equal(2))
+			Expect(len(elemSTIXObj)).Should(Equal(7))
 		})
 
 		It("Должен быть получен список из определенного количества элементов типа 'report', 'grouping', 'location', с заполненным полем 'published'", func() {
@@ -514,12 +525,12 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 				}
 			}
 
-			/*fmt.Println("____ COUNT ELEMENT TYPES____")
-			for k, v := range listType {
-				fmt.Printf("Element type: '%s' = %d\n", k, v)
-			}*/
+			//fmt.Println("____ COUNT ELEMENT TYPES____")
+			//for k, v := range listType {
+			//	fmt.Printf("Element type: '%s' = %d\n", k, v)
+			//}
 
-			Expect(len(elemSTIXObj)).Should(Equal(46))
+			Expect(len(elemSTIXObj)).Should(Equal(82))
 		})
 
 		It("Должен быть получен STIX объект типа 'grouping' с заданным именем в поле Name", func() {
@@ -563,12 +574,12 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 			elemSTIXObj := interactionmongodb.GetListElementSTIXObject(cur)
 
-			/*
-				fmt.Println("Test 9.1:")
-				for k, v := range elemSTIXObj {
-					fmt.Printf("%d. STIX object type: '%s', value: '%v'\n", k, v.DataType, v.Data.GetID())
-				}
-			*/
+			//
+			//	fmt.Println("Test 9.1:")
+			//	for k, v := range elemSTIXObj {
+			//		fmt.Printf("%d. STIX object type: '%s', value: '%v'\n", k, v.DataType, v.Data.GetID())
+			//	}
+			//
 
 			Expect(len(elemSTIXObj)).Should(Equal(1))
 		})
@@ -591,14 +602,14 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 			elemSTIXObj := interactionmongodb.GetListElementSTIXObject(cur)
 
-			/*
-				fmt.Println("Test 9.2:")
-				for k, v := range elemSTIXObj {
-					fmt.Printf("%d. STIX object type: '%s', value: '%v'\n", k, v.DataType, v.Data.GetID())
-				}
-			*/
+			//
+			//	fmt.Println("Test 9.2:")
+			//	for k, v := range elemSTIXObj {
+			//		fmt.Printf("%d. STIX object type: '%s', value: '%v'\n", k, v.DataType, v.Data.GetID())
+			//	}
+			//
 
-			Expect(len(elemSTIXObj)).Should(Equal(1))
+			Expect(len(elemSTIXObj)).Should(Equal(9))
 		})
 
 		It("Должен быть найден STIX объект с заданным содержимым нестандартного поля outside_specification.decisions_made_computer_threat и outside_specification.decisions_made_computer_threat", func() {
@@ -619,14 +630,14 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 
 			elemSTIXObj := interactionmongodb.GetListElementSTIXObject(cur)
 
-			/*
-				fmt.Println("Test 9.3:")
-				for k, v := range elemSTIXObj {
-					fmt.Printf("%d. STIX object type: '%s', value: '%v'\n", k, v.DataType, v.Data.GetID())
-				}
-			*/
+			//
+			//	fmt.Println("Test 9.3:")
+			//	for k, v := range elemSTIXObj {
+			//		fmt.Printf("%d. STIX object type: '%s', value: '%v'\n", k, v.DataType, v.Data.GetID())
+			//	}
+			//
 
-			Expect(len(elemSTIXObj)).Should(Equal(1))
+			Expect(len(elemSTIXObj)).Should(Equal(9))
 		})
 	})
 
@@ -667,11 +678,11 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 					fmt.Println("Convert 'Count' ERROR")
 				}
 
-				/*count := v["count"]
-
-				newValue := reflect.ValueOf(count)
-				typeOfNewValue := newValue.Type()
-				fmt.Println(typeOfNewValue)*/
+				//
+				//count := v["count"]
+				//newValue := reflect.ValueOf(count)
+				//typeOfNewValue := newValue.Type()
+				//fmt.Println(typeOfNewValue)
 
 				fmt.Printf("%d. Name:%s, Count:%s\n", k+1, name, fmt.Sprintln(count))
 			}

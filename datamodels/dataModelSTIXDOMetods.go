@@ -90,7 +90,7 @@ func (cpdostix CommonPropertiesDomainObjectSTIX) sanitizeStruct() CommonProperti
 	return cpdostix
 }
 
-//comparisonTypeCommonFields выполняет сравнение двух объектов типа CommonPropertiesDomainObjectSTIX
+// comparisonTypeCommonFields выполняет сравнение двух объектов типа CommonPropertiesDomainObjectSTIX
 func (cpdostix *CommonPropertiesDomainObjectSTIX) comparisonTypeCommonFields(coNew *CommonPropertiesDomainObjectSTIX) (bool, []OldFieldValueObjectType) {
 	var (
 		isEqual bool = true
@@ -131,7 +131,7 @@ func (cpdostix *CommonPropertiesDomainObjectSTIX) comparisonTypeCommonFields(coN
 	return isEqual, result
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (cp CommonPropertiesDomainObjectSTIX) ToStringBeautiful() string {
 	var str string
 	str += fmt.Sprintf("spec_version: '%s'\n", cp.SpecVersion)
@@ -195,7 +195,7 @@ func (cp CommonPropertiesDomainObjectSTIX) ToStringBeautiful() string {
 
 /* --- AttackPatternDomainObjectsSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (apstix AttackPatternDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &apstix); err != nil {
 		return apstix, err
@@ -204,14 +204,14 @@ func (apstix AttackPatternDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (
 	return apstix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (apstix AttackPatternDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(apstix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе AttackPatternDomainObjectsSTIX
 // возвращает ВАЛИДНЫЙ объект AttackPatternDomainObjectsSTIX (к сожалению нельзя править существующий объект
 // из-за ошибки 'cannot use e (variable of type datamodels.AttackPatternDomainObjectsSTIX) as datamodels.HandlerSTIXObject
 // value in struct literal: missing method ValidateStruct (ValidateStruct has pointer receiver)' возникающей в
@@ -229,7 +229,7 @@ func (apstix AttackPatternDomainObjectsSTIX) ValidateStruct() bool {
 	return apstix.validateStructCommonFields()
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (apstix AttackPatternDomainObjectsSTIX) SanitizeStruct() AttackPatternDomainObjectsSTIX {
 	apstix.CommonPropertiesDomainObjectSTIX = apstix.sanitizeStruct()
 
@@ -249,17 +249,17 @@ func (apstix AttackPatternDomainObjectsSTIX) SanitizeStruct() AttackPatternDomai
 	return apstix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (apstix AttackPatternDomainObjectsSTIX) GetID() string {
 	return apstix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (apstix AttackPatternDomainObjectsSTIX) GetType() string {
 	return apstix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа AttackPatternDomainObjectsSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа AttackPatternDomainObjectsSTIX
 func (apstix AttackPatternDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -333,7 +333,7 @@ func (apstix AttackPatternDomainObjectsSTIX) ComparisonTypeCommonFields(newObj i
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (apstix AttackPatternDomainObjectsSTIX) ToStringBeautiful() string {
 	str := apstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += apstix.CommonPropertiesDomainObjectSTIX.ToStringBeautiful()
@@ -358,7 +358,7 @@ func (apstix AttackPatternDomainObjectsSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (apstix AttackPatternDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
 	dataForIndex := map[string]string{
 		"id":   apstix.ID,
@@ -378,7 +378,7 @@ func (apstix AttackPatternDomainObjectsSTIX) GeneratingDataForIndexing() map[str
 
 /* --- CampaignDomainObjectsSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (cstix CampaignDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &cstix); err != nil {
 		return nil, err
@@ -387,14 +387,14 @@ func (cstix CampaignDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interf
 	return cstix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (cstix CampaignDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(cstix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе CampaignDomainObjectsSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе CampaignDomainObjectsSTIX
 func (cstix CampaignDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(campaign--)[0-9a-f|-]+$`).MatchString(cstix.ID)) {
 		return false
@@ -403,7 +403,7 @@ func (cstix CampaignDomainObjectsSTIX) ValidateStruct() bool {
 	return cstix.validateStructCommonFields()
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (cstix CampaignDomainObjectsSTIX) SanitizeStruct() CampaignDomainObjectsSTIX {
 	cstix.CommonPropertiesDomainObjectSTIX = cstix.sanitizeStruct()
 
@@ -423,17 +423,17 @@ func (cstix CampaignDomainObjectsSTIX) SanitizeStruct() CampaignDomainObjectsSTI
 	return cstix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (cstix CampaignDomainObjectsSTIX) GetID() string {
 	return cstix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (cstix CampaignDomainObjectsSTIX) GetType() string {
 	return cstix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа CampaignDomainObjectsSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа CampaignDomainObjectsSTIX
 func (cstix CampaignDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -507,7 +507,7 @@ func (cstix CampaignDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interfa
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (cstix CampaignDomainObjectsSTIX) ToStringBeautiful() string {
 	str := cstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += cstix.CommonPropertiesDomainObjectSTIX.ToStringBeautiful()
@@ -527,7 +527,7 @@ func (cstix CampaignDomainObjectsSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (cstix CampaignDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
 	dataForIndex := map[string]string{
 		"id":   cstix.ID,
@@ -547,7 +547,7 @@ func (cstix CampaignDomainObjectsSTIX) GeneratingDataForIndexing() map[string]st
 
 /* --- CourseOfActionDomainObjectsSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (castix CourseOfActionDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &castix); err != nil {
 		return nil, err
@@ -556,14 +556,14 @@ func (castix CourseOfActionDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) 
 	return castix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (castix CourseOfActionDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(castix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе CourseOfActionDomainObjectsSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе CourseOfActionDomainObjectsSTIX
 func (castix CourseOfActionDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(course-of-action--)[0-9a-f|-]+$`).MatchString(castix.ID)) {
 		return false
@@ -577,7 +577,7 @@ func (castix CourseOfActionDomainObjectsSTIX) ValidateStruct() bool {
 	return castix.validateStructCommonFields()
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (castix CourseOfActionDomainObjectsSTIX) SanitizeStruct() CourseOfActionDomainObjectsSTIX {
 	castix.CommonPropertiesDomainObjectSTIX = castix.sanitizeStruct()
 
@@ -588,17 +588,17 @@ func (castix CourseOfActionDomainObjectsSTIX) SanitizeStruct() CourseOfActionDom
 	return castix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (castix CourseOfActionDomainObjectsSTIX) GetID() string {
 	return castix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (castix CourseOfActionDomainObjectsSTIX) GetType() string {
 	return castix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа CourseOfActionDomainObjectsSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа CourseOfActionDomainObjectsSTIX
 func (cofastix CourseOfActionDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -672,7 +672,7 @@ func (cofastix CourseOfActionDomainObjectsSTIX) ComparisonTypeCommonFields(newOb
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (castix CourseOfActionDomainObjectsSTIX) ToStringBeautiful() string {
 	str := castix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += castix.CommonPropertiesDomainObjectSTIX.ToStringBeautiful()
@@ -683,7 +683,7 @@ func (castix CourseOfActionDomainObjectsSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (castix CourseOfActionDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
 	dataForIndex := map[string]string{
 		"id":   castix.ID,
@@ -703,7 +703,7 @@ func (castix CourseOfActionDomainObjectsSTIX) GeneratingDataForIndexing() map[st
 
 /* --- GroupingDomainObjectsSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (gstix GroupingDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &gstix); err != nil {
 		return nil, err
@@ -712,14 +712,14 @@ func (gstix GroupingDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interf
 	return gstix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (gstix GroupingDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(gstix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе GroupingDomainObjectsSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе GroupingDomainObjectsSTIX
 func (gstix GroupingDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(grouping--)[0-9a-f|-]+$`).MatchString(gstix.ID)) {
 		return false
@@ -734,11 +734,6 @@ func (gstix GroupingDomainObjectsSTIX) ValidateStruct() bool {
 		return false
 	}
 
-	//обязательное поле
-	if len(gstix.ObjectRefs) == 0 {
-		return false
-	}
-
 	for _, v := range gstix.ObjectRefs {
 		if !v.CheckIdentifierTypeSTIX() {
 			return false
@@ -748,7 +743,7 @@ func (gstix GroupingDomainObjectsSTIX) ValidateStruct() bool {
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (gstix GroupingDomainObjectsSTIX) SanitizeStruct() GroupingDomainObjectsSTIX {
 	gstix.CommonPropertiesDomainObjectSTIX = gstix.sanitizeStruct()
 
@@ -759,17 +754,17 @@ func (gstix GroupingDomainObjectsSTIX) SanitizeStruct() GroupingDomainObjectsSTI
 	return gstix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (gstix GroupingDomainObjectsSTIX) GetID() string {
 	return gstix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (gstix GroupingDomainObjectsSTIX) GetType() string {
 	return gstix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа GroupingDomainObjectsSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа GroupingDomainObjectsSTIX
 func (gstix GroupingDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -843,7 +838,7 @@ func (gstix GroupingDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interfa
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (gstix GroupingDomainObjectsSTIX) ToStringBeautiful() string {
 	str := gstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += gstix.CommonPropertiesDomainObjectSTIX.ToStringBeautiful()
@@ -861,7 +856,7 @@ func (gstix GroupingDomainObjectsSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (gstix GroupingDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
 	dataForIndex := map[string]string{
 		"id":   gstix.ID,
@@ -881,7 +876,7 @@ func (gstix GroupingDomainObjectsSTIX) GeneratingDataForIndexing() map[string]st
 
 /* --- IdentityDomainObjectsSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (istix IdentityDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &istix); err != nil {
 		return nil, err
@@ -890,14 +885,14 @@ func (istix IdentityDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interf
 	return istix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (istix IdentityDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(istix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе IdentityDomainObjectsSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе IdentityDomainObjectsSTIX
 func (istix IdentityDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(identity--)[0-9a-f|-]+$`).MatchString(istix.ID)) {
 		return false
@@ -911,7 +906,7 @@ func (istix IdentityDomainObjectsSTIX) ValidateStruct() bool {
 	return istix.validateStructCommonFields()
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (istix IdentityDomainObjectsSTIX) SanitizeStruct() IdentityDomainObjectsSTIX {
 	istix.CommonPropertiesDomainObjectSTIX = istix.sanitizeStruct()
 
@@ -943,17 +938,17 @@ func (istix IdentityDomainObjectsSTIX) SanitizeStruct() IdentityDomainObjectsSTI
 	return istix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (istix IdentityDomainObjectsSTIX) GetID() string {
 	return istix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (istix IdentityDomainObjectsSTIX) GetType() string {
 	return istix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа IdentityDomainObjectsSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа IdentityDomainObjectsSTIX
 func (istix IdentityDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -1027,7 +1022,7 @@ func (istix IdentityDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interfa
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (istix IdentityDomainObjectsSTIX) ToStringBeautiful() string {
 	str := istix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += istix.CommonPropertiesDomainObjectSTIX.ToStringBeautiful()
@@ -1053,7 +1048,7 @@ func (istix IdentityDomainObjectsSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (istix IdentityDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
 	dataForIndex := map[string]string{
 		"id":   istix.ID,
@@ -1073,7 +1068,7 @@ func (istix IdentityDomainObjectsSTIX) GeneratingDataForIndexing() map[string]st
 
 /* --- IndicatorDomainObjectsSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (istix IndicatorDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &istix); err != nil {
 		return nil, err
@@ -1082,14 +1077,14 @@ func (istix IndicatorDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (inter
 	return istix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (istix IndicatorDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(istix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе IndicatorDomainObjectsSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе IndicatorDomainObjectsSTIX
 func (istix IndicatorDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(indicator--)[0-9a-f|-]+$`).MatchString(istix.ID)) {
 		return false
@@ -1117,7 +1112,7 @@ func (istix IndicatorDomainObjectsSTIX) ValidateStruct() bool {
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (istix IndicatorDomainObjectsSTIX) SanitizeStruct() IndicatorDomainObjectsSTIX {
 	istix.CommonPropertiesDomainObjectSTIX = istix.sanitizeStruct()
 
@@ -1142,17 +1137,17 @@ func (istix IndicatorDomainObjectsSTIX) SanitizeStruct() IndicatorDomainObjectsS
 	return istix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (istix IndicatorDomainObjectsSTIX) GetID() string {
 	return istix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (istix IndicatorDomainObjectsSTIX) GetType() string {
 	return istix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа IndicatorDomainObjectsSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа IndicatorDomainObjectsSTIX
 func (istix IndicatorDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -1226,7 +1221,7 @@ func (istix IndicatorDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interf
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (istix IndicatorDomainObjectsSTIX) ToStringBeautiful() string {
 	str := istix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += istix.CommonPropertiesDomainObjectSTIX.ToStringBeautiful()
@@ -1255,7 +1250,7 @@ func (istix IndicatorDomainObjectsSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (istix IndicatorDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
 	dataForIndex := map[string]string{
 		"id":   istix.ID,
@@ -1275,7 +1270,7 @@ func (istix IndicatorDomainObjectsSTIX) GeneratingDataForIndexing() map[string]s
 
 /* --- InfrastructureDomainObjectsSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (istix InfrastructureDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &istix); err != nil {
 		return nil, err
@@ -1284,14 +1279,14 @@ func (istix InfrastructureDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (
 	return istix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (istix InfrastructureDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(istix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе InfrastructureDomainObjectsSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе InfrastructureDomainObjectsSTIX
 func (istix InfrastructureDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(infrastructure--)[0-9a-f|-]+$`).MatchString(istix.ID)) {
 		return false
@@ -1309,7 +1304,7 @@ func (istix InfrastructureDomainObjectsSTIX) ValidateStruct() bool {
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (istix InfrastructureDomainObjectsSTIX) SanitizeStruct() InfrastructureDomainObjectsSTIX {
 	istix.CommonPropertiesDomainObjectSTIX = istix.sanitizeStruct()
 
@@ -1339,17 +1334,17 @@ func (istix InfrastructureDomainObjectsSTIX) SanitizeStruct() InfrastructureDoma
 	return istix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (istix InfrastructureDomainObjectsSTIX) GetID() string {
 	return istix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (istix InfrastructureDomainObjectsSTIX) GetType() string {
 	return istix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа InfrastructureDomainObjectsSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа InfrastructureDomainObjectsSTIX
 func (istix InfrastructureDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -1423,7 +1418,7 @@ func (istix InfrastructureDomainObjectsSTIX) ComparisonTypeCommonFields(newObj i
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (istix InfrastructureDomainObjectsSTIX) ToStringBeautiful() string {
 	str := istix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += istix.CommonPropertiesDomainObjectSTIX.ToStringBeautiful()
@@ -1456,7 +1451,7 @@ func (istix InfrastructureDomainObjectsSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (istix InfrastructureDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
 	dataForIndex := map[string]string{
 		"id":   istix.ID,
@@ -1476,7 +1471,7 @@ func (istix InfrastructureDomainObjectsSTIX) GeneratingDataForIndexing() map[str
 
 /* --- IntrusionSetDomainObjectsSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (istix IntrusionSetDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &istix); err != nil {
 		return nil, err
@@ -1485,14 +1480,14 @@ func (istix IntrusionSetDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (in
 	return istix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (istix IntrusionSetDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(istix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе IntrusionSetDomainObjectsSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе IntrusionSetDomainObjectsSTIX
 func (istix IntrusionSetDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(intrusion-set--)[0-9a-f|-]+$`).MatchString(istix.ID)) {
 		return false
@@ -1510,7 +1505,7 @@ func (istix IntrusionSetDomainObjectsSTIX) ValidateStruct() bool {
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (istix IntrusionSetDomainObjectsSTIX) SanitizeStruct() IntrusionSetDomainObjectsSTIX {
 	istix.CommonPropertiesDomainObjectSTIX = istix.sanitizeStruct()
 
@@ -1549,17 +1544,17 @@ func (istix IntrusionSetDomainObjectsSTIX) SanitizeStruct() IntrusionSetDomainOb
 	return istix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (istix IntrusionSetDomainObjectsSTIX) GetID() string {
 	return istix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (istix IntrusionSetDomainObjectsSTIX) GetType() string {
 	return istix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа IntrusionSetDomainObjectsSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа IntrusionSetDomainObjectsSTIX
 func (istix IntrusionSetDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -1633,7 +1628,7 @@ func (istix IntrusionSetDomainObjectsSTIX) ComparisonTypeCommonFields(newObj int
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (istix IntrusionSetDomainObjectsSTIX) ToStringBeautiful() string {
 	str := istix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += istix.CommonPropertiesDomainObjectSTIX.ToStringBeautiful()
@@ -1668,7 +1663,7 @@ func (istix IntrusionSetDomainObjectsSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (istix IntrusionSetDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
 	dataForIndex := map[string]string{
 		"id":   istix.ID,
@@ -1688,7 +1683,7 @@ func (istix IntrusionSetDomainObjectsSTIX) GeneratingDataForIndexing() map[strin
 
 /* --- LocationDomainObjectsSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (lstix LocationDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &lstix); err != nil {
 		return nil, err
@@ -1697,14 +1692,14 @@ func (lstix LocationDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interf
 	return lstix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (lstix LocationDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(lstix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе LocationDomainObjectsSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе LocationDomainObjectsSTIX
 func (lstix LocationDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(location--)[0-9a-f|-]+$`).MatchString(lstix.ID)) {
 		return false
@@ -1731,7 +1726,7 @@ func (lstix LocationDomainObjectsSTIX) ValidateStruct() bool {
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (lstix LocationDomainObjectsSTIX) SanitizeStruct() LocationDomainObjectsSTIX {
 	lstix.CommonPropertiesDomainObjectSTIX = lstix.sanitizeStruct()
 
@@ -1746,17 +1741,17 @@ func (lstix LocationDomainObjectsSTIX) SanitizeStruct() LocationDomainObjectsSTI
 	return lstix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (lstix LocationDomainObjectsSTIX) GetID() string {
 	return lstix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (lstix LocationDomainObjectsSTIX) GetType() string {
 	return lstix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа LocationDomainObjectsSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа LocationDomainObjectsSTIX
 func (lstix LocationDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -1830,7 +1825,7 @@ func (lstix LocationDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interfa
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (lstix LocationDomainObjectsSTIX) ToStringBeautiful() string {
 	str := lstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += lstix.CommonPropertiesDomainObjectSTIX.ToStringBeautiful()
@@ -1849,7 +1844,7 @@ func (lstix LocationDomainObjectsSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (lstix LocationDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
 	dataForIndex := map[string]string{
 		"id":   lstix.ID,
@@ -1873,7 +1868,7 @@ func (lstix LocationDomainObjectsSTIX) GeneratingDataForIndexing() map[string]st
 
 /* --- MalwareDomainObjectsSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (mstix MalwareDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &mstix); err != nil {
 		return nil, err
@@ -1882,14 +1877,14 @@ func (mstix MalwareDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interfa
 	return mstix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (mstix MalwareDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(mstix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе MalwareDomainObjectsSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе MalwareDomainObjectsSTIX
 func (mstix MalwareDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(malware--)[0-9a-f|-]+$`).MatchString(mstix.ID)) {
 		return false
@@ -1918,7 +1913,7 @@ func (mstix MalwareDomainObjectsSTIX) ValidateStruct() bool {
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (mstix MalwareDomainObjectsSTIX) SanitizeStruct() MalwareDomainObjectsSTIX {
 	mstix.CommonPropertiesDomainObjectSTIX = mstix.sanitizeStruct()
 
@@ -1978,17 +1973,17 @@ func (mstix MalwareDomainObjectsSTIX) SanitizeStruct() MalwareDomainObjectsSTIX 
 	return mstix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (mstix MalwareDomainObjectsSTIX) GetID() string {
 	return mstix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (mstix MalwareDomainObjectsSTIX) GetType() string {
 	return mstix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа MalwareDomainObjectsSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа MalwareDomainObjectsSTIX
 func (mstix MalwareDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -2062,7 +2057,7 @@ func (mstix MalwareDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interfac
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (mstix MalwareDomainObjectsSTIX) ToStringBeautiful() string {
 	str := mstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += mstix.CommonPropertiesDomainObjectSTIX.ToStringBeautiful()
@@ -2132,7 +2127,7 @@ func (mstix MalwareDomainObjectsSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (mstix MalwareDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
 	dataForIndex := map[string]string{
 		"id":   mstix.ID,
@@ -2152,7 +2147,7 @@ func (mstix MalwareDomainObjectsSTIX) GeneratingDataForIndexing() map[string]str
 
 /* --- MalwareAnalysisDomainObjectsSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (mastix MalwareAnalysisDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &mastix); err != nil {
 		return nil, err
@@ -2161,14 +2156,14 @@ func (mastix MalwareAnalysisDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage)
 	return mastix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (mastix MalwareAnalysisDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(mastix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе MalwareAnalysisDomainObjectsSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе MalwareAnalysisDomainObjectsSTIX
 func (mastix MalwareAnalysisDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(malware-analysis--)[0-9a-f|-]+$`).MatchString(mastix.ID)) {
 		return false
@@ -2218,7 +2213,7 @@ func (mastix MalwareAnalysisDomainObjectsSTIX) ValidateStruct() bool {
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (mastix MalwareAnalysisDomainObjectsSTIX) SanitizeStruct() MalwareAnalysisDomainObjectsSTIX {
 	mastix.CommonPropertiesDomainObjectSTIX = mastix.sanitizeStruct()
 
@@ -2240,17 +2235,17 @@ func (mastix MalwareAnalysisDomainObjectsSTIX) SanitizeStruct() MalwareAnalysisD
 	return mastix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (mastix MalwareAnalysisDomainObjectsSTIX) GetID() string {
 	return mastix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (mastix MalwareAnalysisDomainObjectsSTIX) GetType() string {
 	return mastix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа MalwareAnalysisDomainObjectsSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа MalwareAnalysisDomainObjectsSTIX
 func (mstix MalwareAnalysisDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -2324,7 +2319,7 @@ func (mstix MalwareAnalysisDomainObjectsSTIX) ComparisonTypeCommonFields(newObj 
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (mastix MalwareAnalysisDomainObjectsSTIX) ToStringBeautiful() string {
 	str := mastix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += mastix.CommonPropertiesDomainObjectSTIX.ToStringBeautiful()
@@ -2367,7 +2362,7 @@ func (mastix MalwareAnalysisDomainObjectsSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (mastix MalwareAnalysisDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
 	return map[string]string{
 		"id":   mastix.ID,
@@ -2377,7 +2372,7 @@ func (mastix MalwareAnalysisDomainObjectsSTIX) GeneratingDataForIndexing() map[s
 
 /* --- NoteDomainObjectsSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (nstix NoteDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &nstix); err != nil {
 		return nil, err
@@ -2386,14 +2381,14 @@ func (nstix NoteDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{
 	return nstix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (nstix NoteDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(nstix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе NoteDomainObjectsSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе NoteDomainObjectsSTIX
 func (nstix NoteDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(note--)[0-9a-f|-]+$`).MatchString(nstix.ID)) {
 		return false
@@ -2403,7 +2398,7 @@ func (nstix NoteDomainObjectsSTIX) ValidateStruct() bool {
 		return false
 	}
 
-	if nstix.Content == "" || len(nstix.ObjectRefs) == 0 {
+	if nstix.Content == "" {
 		return false
 	}
 
@@ -2416,7 +2411,7 @@ func (nstix NoteDomainObjectsSTIX) ValidateStruct() bool {
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (nstix NoteDomainObjectsSTIX) SanitizeStruct() NoteDomainObjectsSTIX {
 	nstix.CommonPropertiesDomainObjectSTIX = nstix.sanitizeStruct()
 
@@ -2434,17 +2429,17 @@ func (nstix NoteDomainObjectsSTIX) SanitizeStruct() NoteDomainObjectsSTIX {
 	return nstix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (nstix NoteDomainObjectsSTIX) GetID() string {
 	return nstix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (nstix NoteDomainObjectsSTIX) GetType() string {
 	return nstix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа NoteDomainObjectsSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа NoteDomainObjectsSTIX
 func (nstix NoteDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -2518,7 +2513,7 @@ func (nstix NoteDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (nstix NoteDomainObjectsSTIX) ToStringBeautiful() string {
 	str := nstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += nstix.CommonPropertiesDomainObjectSTIX.ToStringBeautiful()
@@ -2542,7 +2537,7 @@ func (nstix NoteDomainObjectsSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (nstix NoteDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
 	dataForIndex := map[string]string{
 		"id":   nstix.ID,
@@ -2562,7 +2557,7 @@ func (nstix NoteDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string
 
 /* --- ObservedDataDomainObjectsSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (odstix ObservedDataDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &odstix); err != nil {
 		return nil, err
@@ -2571,14 +2566,14 @@ func (odstix ObservedDataDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (i
 	return odstix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (odstix ObservedDataDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(odstix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе ObservedDataDomainObjectsSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе ObservedDataDomainObjectsSTIX
 func (odstix ObservedDataDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(observed-data--)[0-9a-f|-]+$`).MatchString(odstix.ID)) {
 		return false
@@ -2596,35 +2591,35 @@ func (odstix ObservedDataDomainObjectsSTIX) ValidateStruct() bool {
 		return false
 	}
 
-	if len(odstix.ObjectRefs) > 0 {
-		for _, v := range odstix.ObjectRefs {
-			if !v.CheckIdentifierTypeSTIX() {
-				return false
-			}
+	//if len(odstix.ObjectRefs) > 0 {
+	for _, v := range odstix.ObjectRefs {
+		if !v.CheckIdentifierTypeSTIX() {
+			return false
 		}
 	}
+	//}
 
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (odstix ObservedDataDomainObjectsSTIX) SanitizeStruct() ObservedDataDomainObjectsSTIX {
 	odstix.CommonPropertiesDomainObjectSTIX = odstix.sanitizeStruct()
 
 	return odstix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (odstix ObservedDataDomainObjectsSTIX) GetID() string {
 	return odstix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (odstix ObservedDataDomainObjectsSTIX) GetType() string {
 	return odstix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа ObservedDataDomainObjectsSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа ObservedDataDomainObjectsSTIX
 func (ostix ObservedDataDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -2698,7 +2693,7 @@ func (ostix ObservedDataDomainObjectsSTIX) ComparisonTypeCommonFields(newObj int
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (odstix ObservedDataDomainObjectsSTIX) ToStringBeautiful() string {
 	str := odstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += odstix.CommonPropertiesDomainObjectSTIX.ToStringBeautiful()
@@ -2716,7 +2711,7 @@ func (odstix ObservedDataDomainObjectsSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (odstix ObservedDataDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
 	return map[string]string{
 		"id":   odstix.ID,
@@ -2726,7 +2721,7 @@ func (odstix ObservedDataDomainObjectsSTIX) GeneratingDataForIndexing() map[stri
 
 /* --- OpinionDomainObjectsSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (ostix OpinionDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &ostix); err != nil {
 		return nil, err
@@ -2735,14 +2730,14 @@ func (ostix OpinionDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interfa
 	return ostix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (ostix OpinionDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(ostix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе OpinionDomainObjectsSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе OpinionDomainObjectsSTIX
 func (ostix OpinionDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(opinion--)[0-9a-f|-]+$`).MatchString(ostix.ID)) {
 		return false
@@ -2756,10 +2751,6 @@ func (ostix OpinionDomainObjectsSTIX) ValidateStruct() bool {
 		return false
 	}
 
-	if len(ostix.ObjectRefs) == 0 {
-		return false
-	}
-
 	for _, v := range ostix.ObjectRefs {
 		if !v.CheckIdentifierTypeSTIX() {
 			return false
@@ -2769,7 +2760,7 @@ func (ostix OpinionDomainObjectsSTIX) ValidateStruct() bool {
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (ostix OpinionDomainObjectsSTIX) SanitizeStruct() OpinionDomainObjectsSTIX {
 	ostix.CommonPropertiesDomainObjectSTIX = ostix.sanitizeStruct()
 
@@ -2788,17 +2779,17 @@ func (ostix OpinionDomainObjectsSTIX) SanitizeStruct() OpinionDomainObjectsSTIX 
 	return ostix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (ostix OpinionDomainObjectsSTIX) GetID() string {
 	return ostix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (ostix OpinionDomainObjectsSTIX) GetType() string {
 	return ostix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа OpinionDomainObjectsSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа OpinionDomainObjectsSTIX
 func (ostix OpinionDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -2872,7 +2863,7 @@ func (ostix OpinionDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interfac
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (ostix OpinionDomainObjectsSTIX) ToStringBeautiful() string {
 	str := ostix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += ostix.CommonPropertiesDomainObjectSTIX.ToStringBeautiful()
@@ -2896,7 +2887,7 @@ func (ostix OpinionDomainObjectsSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (ostix OpinionDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
 	return map[string]string{
 		"id":   ostix.ID,
@@ -2906,7 +2897,7 @@ func (ostix OpinionDomainObjectsSTIX) GeneratingDataForIndexing() map[string]str
 
 /* --- ReportDomainObjectsSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (rstix ReportDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &rstix); err != nil {
 		return nil, err
@@ -2915,14 +2906,14 @@ func (rstix ReportDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interfac
 	return rstix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (rstix ReportDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(rstix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе ReportDomainObjectsSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе ReportDomainObjectsSTIX
 func (rstix ReportDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(report--)[0-9a-f|-]+$`).MatchString(rstix.ID)) {
 		return false
@@ -2951,7 +2942,7 @@ func (rstix ReportDomainObjectsSTIX) ValidateStruct() bool {
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (rstix ReportDomainObjectsSTIX) SanitizeStruct() ReportDomainObjectsSTIX {
 	rstix.CommonPropertiesDomainObjectSTIX = rstix.sanitizeStruct()
 
@@ -2970,17 +2961,17 @@ func (rstix ReportDomainObjectsSTIX) SanitizeStruct() ReportDomainObjectsSTIX {
 	return rstix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (rstix ReportDomainObjectsSTIX) GetID() string {
 	return rstix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (rstix ReportDomainObjectsSTIX) GetType() string {
 	return rstix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа ReportDomainObjectsSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа ReportDomainObjectsSTIX
 func (rstix ReportDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -3054,7 +3045,7 @@ func (rstix ReportDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (rstix ReportDomainObjectsSTIX) ToStringBeautiful() string {
 	str := rstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += rstix.CommonPropertiesDomainObjectSTIX.ToStringBeautiful()
@@ -3079,7 +3070,7 @@ func (rstix ReportDomainObjectsSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (rstix ReportDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
 	dataForIndex := map[string]string{
 		"id":   rstix.ID,
@@ -3099,7 +3090,7 @@ func (rstix ReportDomainObjectsSTIX) GeneratingDataForIndexing() map[string]stri
 
 /* --- ThreatActorDomainObjectsSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (tastix ThreatActorDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &tastix); err != nil {
 		return nil, err
@@ -3108,14 +3099,14 @@ func (tastix ThreatActorDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (in
 	return tastix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (tastix ThreatActorDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(tastix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе ThreatActorDomainObjectsSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе ThreatActorDomainObjectsSTIX
 func (tastix ThreatActorDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(threat-actor--)[0-9a-f|-]+$`).MatchString(tastix.ID)) {
 		return false
@@ -3132,7 +3123,7 @@ func (tastix ThreatActorDomainObjectsSTIX) ValidateStruct() bool {
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (tastix ThreatActorDomainObjectsSTIX) SanitizeStruct() ThreatActorDomainObjectsSTIX {
 	tastix.CommonPropertiesDomainObjectSTIX = tastix.sanitizeStruct()
 
@@ -3202,17 +3193,17 @@ func (tastix ThreatActorDomainObjectsSTIX) SanitizeStruct() ThreatActorDomainObj
 	return tastix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (tastix ThreatActorDomainObjectsSTIX) GetID() string {
 	return tastix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (tastix ThreatActorDomainObjectsSTIX) GetType() string {
 	return tastix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа ThreatActorDomainObjectsSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа ThreatActorDomainObjectsSTIX
 func (tastix ThreatActorDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -3286,7 +3277,7 @@ func (tastix ThreatActorDomainObjectsSTIX) ComparisonTypeCommonFields(newObj int
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (tastix ThreatActorDomainObjectsSTIX) ToStringBeautiful() string {
 	str := tastix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += tastix.CommonPropertiesDomainObjectSTIX.ToStringBeautiful()
@@ -3343,7 +3334,7 @@ func (tastix ThreatActorDomainObjectsSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (tastix ThreatActorDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
 	dataForIndex := map[string]string{
 		"id":   tastix.ID,
@@ -3363,7 +3354,7 @@ func (tastix ThreatActorDomainObjectsSTIX) GeneratingDataForIndexing() map[strin
 
 /* --- ToolDomainObjectsSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (tstix ToolDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &tstix); err != nil {
 		return nil, err
@@ -3372,14 +3363,14 @@ func (tstix ToolDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{
 	return tstix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (tstix ToolDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(tstix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе ToolDomainObjectsSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе ToolDomainObjectsSTIX
 func (tstix ToolDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(tool--)[0-9a-f|-]+$`).MatchString(tstix.ID)) {
 		return false
@@ -3396,7 +3387,7 @@ func (tstix ToolDomainObjectsSTIX) ValidateStruct() bool {
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (tstix ToolDomainObjectsSTIX) SanitizeStruct() ToolDomainObjectsSTIX {
 	tstix.CommonPropertiesDomainObjectSTIX = tstix.sanitizeStruct()
 
@@ -3427,17 +3418,17 @@ func (tstix ToolDomainObjectsSTIX) SanitizeStruct() ToolDomainObjectsSTIX {
 	return tstix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (tstix ToolDomainObjectsSTIX) GetID() string {
 	return tstix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (tstix ToolDomainObjectsSTIX) GetType() string {
 	return tstix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа ToolDomainObjectsSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа ToolDomainObjectsSTIX
 func (tstix ToolDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -3511,7 +3502,7 @@ func (tstix ToolDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (tstix ToolDomainObjectsSTIX) ToStringBeautiful() string {
 	str := tstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += tstix.CommonPropertiesDomainObjectSTIX.ToStringBeautiful()
@@ -3544,7 +3535,7 @@ func (tstix ToolDomainObjectsSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (tstix ToolDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
 	dataForIndex := map[string]string{
 		"id":   tstix.ID,
@@ -3564,7 +3555,7 @@ func (tstix ToolDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string
 
 /* --- VulnerabilityDomainObjectsSTIX --- */
 
-//DecoderJSON выполняет декодирование JSON объекта
+// DecoderJSON выполняет декодирование JSON объекта
 func (vstix VulnerabilityDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (interface{}, error) {
 	if err := json.Unmarshal(*raw, &vstix); err != nil {
 		return nil, err
@@ -3573,14 +3564,14 @@ func (vstix VulnerabilityDomainObjectsSTIX) DecoderJSON(raw *json.RawMessage) (i
 	return vstix, nil
 }
 
-//EncoderJSON выполняет кодирование в JSON объект
+// EncoderJSON выполняет кодирование в JSON объект
 func (vstix VulnerabilityDomainObjectsSTIX) EncoderJSON(interface{}) (*[]byte, error) {
 	result, err := json.Marshal(vstix)
 
 	return &result, err
 }
 
-//ValidateStruct является валидатором параметров содержащихся в типе VulnerabilityDomainObjectsSTIX
+// ValidateStruct является валидатором параметров содержащихся в типе VulnerabilityDomainObjectsSTIX
 func (vstix VulnerabilityDomainObjectsSTIX) ValidateStruct() bool {
 	if !(regexp.MustCompile(`^(vulnerability--)[0-9a-f|-]+$`).MatchString(vstix.ID)) {
 		return false
@@ -3597,7 +3588,7 @@ func (vstix VulnerabilityDomainObjectsSTIX) ValidateStruct() bool {
 	return true
 }
 
-//SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (vstix VulnerabilityDomainObjectsSTIX) SanitizeStruct() VulnerabilityDomainObjectsSTIX {
 	vstix.CommonPropertiesDomainObjectSTIX = vstix.sanitizeStruct()
 
@@ -3607,17 +3598,17 @@ func (vstix VulnerabilityDomainObjectsSTIX) SanitizeStruct() VulnerabilityDomain
 	return vstix
 }
 
-//GetID возвращает ID STIX объекта
+// GetID возвращает ID STIX объекта
 func (vstix VulnerabilityDomainObjectsSTIX) GetID() string {
 	return vstix.ID
 }
 
-//GetType возвращает Type STIX объекта
+// GetType возвращает Type STIX объекта
 func (vstix VulnerabilityDomainObjectsSTIX) GetType() string {
 	return vstix.Type
 }
 
-//ComparisonTypeCommonFields выполняет сравнение двух объектов типа VulnerabilityDomainObjectsSTIX
+// ComparisonTypeCommonFields выполняет сравнение двух объектов типа VulnerabilityDomainObjectsSTIX
 func (vstix VulnerabilityDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
 	var (
 		isEqual bool = true
@@ -3691,7 +3682,7 @@ func (vstix VulnerabilityDomainObjectsSTIX) ComparisonTypeCommonFields(newObj in
 	return isEqual, cot, nil
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (vstix VulnerabilityDomainObjectsSTIX) ToStringBeautiful() string {
 	str := vstix.CommonPropertiesObjectSTIX.ToStringBeautiful()
 	str += vstix.CommonPropertiesDomainObjectSTIX.ToStringBeautiful()
@@ -3701,7 +3692,7 @@ func (vstix VulnerabilityDomainObjectsSTIX) ToStringBeautiful() string {
 	return str
 }
 
-//GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
+// GeneratingDataForIndexing выполняет генерацию данных для их последующей индексации
 func (vstix VulnerabilityDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string {
 	dataForIndex := map[string]string{
 		"id":   vstix.ID,

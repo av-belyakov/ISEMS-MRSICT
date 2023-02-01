@@ -904,8 +904,8 @@ func (fstix FileCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (in
 		//При формировании типа FileCyberObservableObjectSTIX свойство
 		// ContainsRefs игнорируется из-за ошибки реализации (я просто забыл про нее)
 		// нужно сделать что бы свойство ContainsRefs было в данном типе
-		//ContainsRefs:       commonObject.ContainsRefs,
-		ContentRef: commonObject.ContentRef,
+		ContainsRefs: commonObject.ContainsRefs,
+		ContentRef:   commonObject.ContentRef,
 	}
 
 	if len(commonObject.Extensions) == 0 {

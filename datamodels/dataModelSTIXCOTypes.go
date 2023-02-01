@@ -9,7 +9,7 @@ import (
 
 /********** 			Некоторые 'сложные' типы относящиеся к Cyber-observable Objects STIX 			**********/
 
-//AlternateDataStreamTypeSTIX тип "alternate-data-stream-type", по терминалогии STIX, содержит альтернативные потоки данных для NTFS
+// AlternateDataStreamTypeSTIX тип "alternate-data-stream-type", по терминалогии STIX, содержит альтернативные потоки данных для NTFS
 // Name - определяет имя альтернативного потока данных (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // Hashes - задает словарь хэшей для данных, содержащихся в альтернативном потоке данных. Ключи для данного свойства ДОЛЖНЫ братся из открытого словоря hash-algorithm-ov.
 // Size - определяет размер альтернативного потока данных, в байтах
@@ -19,7 +19,7 @@ type AlternateDataStreamTypeSTIX struct {
 	Size   uint64         `json:"size" bson:"size"`
 }
 
-//WindowsPEOptionalHeaderTypeSTIX тип "windows-pe-optional-header-type", по терминалогии STIX, содержит свойства опциональные для PE файла
+// WindowsPEOptionalHeaderTypeSTIX тип "windows-pe-optional-header-type", по терминалогии STIX, содержит свойства опциональные для PE файла
 // MagicHex - хеш значение информирующее о типе PE файла
 // MajorLinkerVersion - указывает основной номер версии компоновщика.
 // MinorLinkerVersion - указывает номер младшей версии компоновщика.
@@ -85,7 +85,7 @@ type WindowsPEOptionalHeaderTypeSTIX struct {
 	Hashes                  []HashesTypeSTIX `json:"hashes" bson:"hashes"`
 }
 
-//SanitizeStructWindowsPEOptionalHeaderTypeSTIX выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStructWindowsPEOptionalHeaderTypeSTIX выполняет замену некоторых специальных символов на их HTML код
 func (wpeoh WindowsPEOptionalHeaderTypeSTIX) SanitizeStructWindowsPEOptionalHeaderTypeSTIX() WindowsPEOptionalHeaderTypeSTIX {
 	wpeoh.MagicHex = commonlibs.StringSanitize(wpeoh.MagicHex)
 	wpeoh.Win32VersionValueHex = commonlibs.StringSanitize(wpeoh.Win32VersionValueHex)
@@ -111,7 +111,7 @@ func (wpeoh WindowsPEOptionalHeaderTypeSTIX) SanitizeStructWindowsPEOptionalHead
 	return wpeoh
 }
 
-//WindowsPESectionTypeSTIX тип "windows-pe-section-type", по терминалогии STIX, определяет методанные PE-секции файла
+// WindowsPESectionTypeSTIX тип "windows-pe-section-type", по терминалогии STIX, определяет методанные PE-секции файла
 // Name - определяет имя секции (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // Size - размер секции в байтах.
 // Entropy - задает вычисленную энтропию для сечения, рассчитанную с использованием алгоритма Шеннона.
@@ -123,7 +123,7 @@ type WindowsPESectionTypeSTIX struct {
 	Hashes  HashesTypeSTIX `json:"hashes" bson:"hashes"`
 }
 
-//SanitizeStructWindowsPESectionTypeSTIX выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStructWindowsPESectionTypeSTIX выполняет замену некоторых специальных символов на их HTML код
 func (wpes WindowsPESectionTypeSTIX) SanitizeStructWindowsPESectionTypeSTIX() WindowsPESectionTypeSTIX {
 	wpes.Name = commonlibs.StringSanitize(wpes.Name)
 
@@ -141,10 +141,12 @@ func (wpes WindowsPESectionTypeSTIX) SanitizeStructWindowsPESectionTypeSTIX() Wi
 	return wpes
 }
 
-//EmailMIMEPartTypeSTIX тип "email-mime-part-type", по терминалогии STIX, содержит один компонент тела email из нескольких частей
+// EmailMIMEPartTypeSTIX тип "email-mime-part-type", по терминалогии STIX, содержит один компонент тела email из нескольких частей
 // Body - содержит содержимое части MIME, если content_type не указан или начинается с text/ (например, в случае обычного текста или HTML-письма)
 // BodyRawRef - содержит содержимое нетекстовых частей MIME, то есть тех, чей content_type не начинается с text, в качестве
-//  ссылки на объект артефакта или Файловый объект
+//
+//	ссылки на объект артефакта или Файловый объект
+//
 // ContentType - содержимое поля 'Content-Type' заголовка MIME части email
 // ContentDisposition - содержимое поля 'Content-Disposition' заголовка MIME части email
 type EmailMIMEPartTypeSTIX struct {
@@ -154,8 +156,10 @@ type EmailMIMEPartTypeSTIX struct {
 	ContentDisposition string             `json:"content_disposition" bson:"content_disposition"`
 }
 
-//WindowsRegistryValueTypeSTIX объект "Windows Registry Value Type", по терминалогии STIX. Данный тип фиксирует
-//  значения свойств находящихся в разделе реестра Windows. Поскольку все свойства этого типа являются необязательными,
+// WindowsRegistryValueTypeSTIX объект "Windows Registry Value Type", по терминалогии STIX. Данный тип фиксирует
+//
+//	значения свойств находящихся в разделе реестра Windows. Поскольку все свойства этого типа являются необязательными,
+//
 // по крайней мере одно из свойств, определенных ниже, должно быть инициализировано при использовании этого типа.
 // Name - содержит название параметра реестра. Для указания значения ключа реестра по умолчанию необходимо использовать пустую строку.
 // Data - содержит данные, содержащиеся в значении реестра.
@@ -166,7 +170,7 @@ type WindowsRegistryValueTypeSTIX struct {
 	DataType EnumTypeSTIX `json:"data_type" bson:"data_type"`
 }
 
-//SanitizeStructWindowsRegistryValueTypeSTIX выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStructWindowsRegistryValueTypeSTIX выполняет замену некоторых специальных символов на их HTML код
 func (wrv WindowsRegistryValueTypeSTIX) SanitizeStructWindowsRegistryValueTypeSTIX() WindowsRegistryValueTypeSTIX {
 	wrv.Name = commonlibs.StringSanitize(wrv.Name)
 	wrv.Data = commonlibs.StringSanitize(wrv.Data)
@@ -175,38 +179,63 @@ func (wrv WindowsRegistryValueTypeSTIX) SanitizeStructWindowsRegistryValueTypeST
 	return wrv
 }
 
-//X509V3ExtensionsTypeSTIX тип "X.509 v3 Extensions Type", по терминалогии STIX. Описывает поля расширения X.509 v3, фиксрует дополнительную информацию,
-//  такую как альтернативные имена субъектов. Объект, использующий тип "x509-v3-extensions-type", должен определить хотя бы одно из этих полей в нем.
-//  Данный тип расширяет только объекты "X.509 Certificate Object".
+// X509V3ExtensionsTypeSTIX тип "X.509 v3 Extensions Type", по терминалогии STIX. Описывает поля расширения X.509 v3, фиксрует дополнительную информацию,
+//
+//	такую как альтернативные имена субъектов. Объект, использующий тип "x509-v3-extensions-type", должен определить хотя бы одно из этих полей в нем.
+//	Данный тип расширяет только объекты "X.509 Certificate Object".
+//
 // BasicConstraints - задает многозначное расширение, которое указывает, является ли сертификат сертификатом Удостоверяющего центра (CA). Первое (обязательное)
-//  название CA сопровождается истинным или ложным. Если CA имеет значение TRUE, то может быть включено необязательное имя pathlen, за которым следует
-//  неотрицательное значение. Также эквивалентно значению идентификатора объекта (OID) 2.5.29.19.
+//
+//	название CA сопровождается истинным или ложным. Если CA имеет значение TRUE, то может быть включено необязательное имя pathlen, за которым следует
+//	неотрицательное значение. Также эквивалентно значению идентификатора объекта (OID) 2.5.29.19.
+//
 // NameConstraints - указывает пространство имен, в котором должны располагаться все имена  применяемые в сертификатах указанных в пути сертификации. Также
-//  эквивалентно значению идентификатора объекта (OID) 2.5.29.30.
+//
+//	эквивалентно значению идентификатора объекта (OID) 2.5.29.30.
+//
 // PolicyConstraints - содержит любые ограничения на проверку сертификатов, выданных Удостоверяющим центром.  Также эквивалентно значению идентификатора
-//  объекта (OID) 2.5.29.36.
+//
+//	объекта (OID) 2.5.29.36.
+//
 // KeyUsage - задает многозначное расширение, состоящее из списка имен разрешенных для использования ключей. Также эквивалентно значению идентификатора
-//  объекта (OID) 2.5.29.15.
+//
+//	объекта (OID) 2.5.29.15.
+//
 // ExtendedKeyUsage - содержит список целей, для которых может использоваться открытый ключ сертификата. Также эквивалентно значению идентификатора объекта
-//  (OID) 2.5.29.37.
+//
+//	(OID) 2.5.29.37.
+//
 // SubjectKeyIdentifier - указывает идентификатор, который обеспечивает средство идентификации сертификатов, содержащих определенный открытый ключ. Также эквивалентно значению идентификатора объекта (OID) 2.5.29.14.
 // AuthorityKeyIdentifier - содержит идентификатор, который обеспечивает средство идентификации открытого ключа, соответствующего закрытому ключу, используемому
-//  для подписи сертификата. Также эквивалентно значению идентификатора объекта (OID) 2.5.29.35.
+//
+//	для подписи сертификата. Также эквивалентно значению идентификатора объекта (OID) 2.5.29.35.
+//
 // SubjectAlternativeName - указывает дополнительные идентификаторы, которые должны быть привязаны к субъекту сертификата. Также эквивалентно значению
-//  идентификатора объекта (OID) 2.5.29.17.
+//
+//	идентификатора объекта (OID) 2.5.29.17.
+//
 // IssuerAlternativeName - указывает дополнительные идентификаторы, которые должны быть привязаны к эмитенту сертификата. Также эквивалентно значению
-//  идентификатора объекта (OID) 2.5.29.18.
+//
+//	идентификатора объекта (OID) 2.5.29.18.
+//
 // SubjectDirectoryAttributes - указывает идентификационные признаки (например, национальность) субъекта. Также эквивалентно значению идентификатора
-//  объекта (OID) 2.5.29.9.
+//
+//	объекта (OID) 2.5.29.9.
+//
 // CrlDistributionPoints - указывает способ получения информации CRL. Также эквивалентно значению идентификатора объекта (OID) 2.5.29.31.
 // InhibitAnyPolicy - содержит количество дополнительных сертификатов, которые могут появиться в пути до того, как любая Политика больше не будет разрешена.
-//  Также эквивалентно значению идентификатора объекта (OID) 2.5.29.54.
+//
+//	Также эквивалентно значению идентификатора объекта (OID) 2.5.29.54.
+//
 // PrivateKeyUsagePeriodNotBefore - время, в формате "2016-05-12T08:17:27.000Z", начала срока действия закрытого ключа, если он отличается от срока действия сертификата.
 // PrivateKeyUsagePeriodNotAfter -  время, в формате "2016-05-12T08:17:27.000Z", окончания срока действия закрытого ключа, если он отличается от срока действия сертификата.
 // CertificatePolicies - содержит последовательность из одного или нескольких терминов информации о политике, каждый из которых состоит из идентификатора
-//  объекта (OID) и необязательных квалификаторов. Также эквивалентно значению идентификатора объекта (OID) 2.5.29.32.
+//
+//	объекта (OID) и необязательных квалификаторов. Также эквивалентно значению идентификатора объекта (OID) 2.5.29.32.
+//
 // PolicyMappings - содержит одну или несколько пар OID; каждая пара включает issuerDomainPolicy и subjectDomainPolicy. Пары индикаторов указывают на то,
-//  считает ли выдающий УЦ свою issuerDomainPolicy эквивалентной subjectDomainPolicy субъекта УЦ. Также эквивалентно значению идентификатора объекта (OID) 2.5.29.33.
+//
+//	считает ли выдающий УЦ свою issuerDomainPolicy эквивалентной subjectDomainPolicy субъекта УЦ. Также эквивалентно значению идентификатора объекта (OID) 2.5.29.33.
 type X509V3ExtensionsTypeSTIX struct {
 	BasicConstraints               string    `json:"basic_constraints" bson:"basic_constraints"`
 	NameConstraints                string    `json:"name_constraints" bson:"name_constraints"`
@@ -226,7 +255,7 @@ type X509V3ExtensionsTypeSTIX struct {
 	PolicyMappings                 string    `json:"policy_mappings" bson:"policy_mappings"`
 }
 
-//SanitizeStructX509V3ExtensionsTypeSTIX выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStructX509V3ExtensionsTypeSTIX выполняет замену некоторых специальных символов на их HTML код
 func (x509v3e X509V3ExtensionsTypeSTIX) SanitizeStructX509V3ExtensionsTypeSTIX() X509V3ExtensionsTypeSTIX {
 	x509v3e.BasicConstraints = commonlibs.StringSanitize(x509v3e.BasicConstraints)
 	x509v3e.NameConstraints = commonlibs.StringSanitize(x509v3e.NameConstraints)
@@ -248,8 +277,10 @@ func (x509v3e X509V3ExtensionsTypeSTIX) SanitizeStructX509V3ExtensionsTypeSTIX()
 
 /********** 			Некоторые расширения, относящиеся к Cyber-observable Objects STIX 			**********/
 
-//ArchiveFileExtensionSTIX тип "archive-ext", по терминалогии STIX, содержит рассширение архивного файла. В ней задается расширение по умолчанию для захвата свойств,
-//  специфичных для архивных файлов
+// ArchiveFileExtensionSTIX тип "archive-ext", по терминалогии STIX, содержит рассширение архивного файла. В ней задается расширение по умолчанию для захвата свойств,
+//
+//	специфичных для архивных файлов
+//
 // ContainsRefs - данное свойство определяет файлы содержащиеся в архиве. ДОЛЖНО содержать список типа file или directory (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // Comment - определяет комментарий включенный как часть архивного файла
 type ArchiveFileExtensionSTIX struct {
@@ -257,7 +288,7 @@ type ArchiveFileExtensionSTIX struct {
 	Comment      string               `json:"comment" bson:"comment"`
 }
 
-//NTFSFileExtensionSTIX  тип "ntfs-ext", по терминалогии STIX, содержит расширение определяющее значения свойств, характерные для файловой системы NTFS
+// NTFSFileExtensionSTIX  тип "ntfs-ext", по терминалогии STIX, содержит расширение определяющее значения свойств, характерные для файловой системы NTFS
 // SID - опреляет безопасный идентификатор, связанный с файлом
 // AlternateDataStreams - определяет список альтернативных NTFS потоков данных связанных с файлом
 type NTFSFileExtensionSTIX struct {
@@ -265,7 +296,7 @@ type NTFSFileExtensionSTIX struct {
 	AlternateDataStreams []AlternateDataStreamTypeSTIX `json:"alternate_data_streams" bson:"alternate_data_streams"`
 }
 
-//PDFFileExtensionSTIX тип "pdf-ext", по терминалогии STIX, содержит свойства специфичные для файлов в формате PDF
+// PDFFileExtensionSTIX тип "pdf-ext", по терминалогии STIX, содержит свойства специфичные для файлов в формате PDF
 // Version - номер версии, берется из заголовка PDF документа
 // IsOptimized - определяетс был ли PDF файл оптимизирован
 // DocumentInfoDict - содержит информацию полученную из document information dictionary (DID) PDF документа
@@ -279,13 +310,14 @@ type PDFFileExtensionSTIX struct {
 	Pdfid1           string                        `json:"pdfid1" bson:"pdfid1"`
 }
 
-//RasterImageFileExtensionSTIX тип "raster-image-ext", по терминалогии STIX, определяет специфичные расширения для растровых, графических файлов
+// RasterImageFileExtensionSTIX тип "raster-image-ext", по терминалогии STIX, определяет специфичные расширения для растровых, графических файлов
 // ImageHeight - определяет высоту изображения в файле, в пикселях
 // ImageWidth - определяет ширину изображения в файле, в пикселях
 // BitsPerPixel - определяет сумму бит для каждого цветового туннеля в файлес изображением, а также общее количество пикселей, используемых для выражения глубины цвета изображения.
 // ExifTags - задает набор тегов EXIF, найденных в файле изображения, в виде словаря. Каждая пара ключ/значение в словаре представляет имя/значение одного тега EXIF.
-//  Соответственно, каждый ключ словаря ДОЛЖЕН быть сохраненной в регистре версией имени тега EXIF, например . Каждое значение словаря ДОЛЖНО быть либо (для типов данных int* EXIF),
-//  либо строкой (для всех других типов данных EXIF).
+//
+//	Соответственно, каждый ключ словаря ДОЛЖЕН быть сохраненной в регистре версией имени тега EXIF, например . Каждое значение словаря ДОЛЖНО быть либо (для типов данных int* EXIF),
+//	либо строкой (для всех других типов данных EXIF).
 type RasterImageFileExtensionSTIX struct {
 	ImageHeight  int                           `json:"image_height" bson:"image_height"`
 	ImageWidth   int                           `json:"image_width" bson:"image_width"`
@@ -293,8 +325,10 @@ type RasterImageFileExtensionSTIX struct {
 	ExifTags     map[string]DictionaryTypeSTIX `json:"exif_tags" bson:"exif_tags"`
 }
 
-//HTTPRequestExtensionSTIX тип "http-request-ext", по терминалогии STIX, определяет специфичное расширение HTTP-запроса, задает расширение по умолчанию для захвата свойств
-//  сетевого трафика, специфичных для HTTP-запросов. Ключ для этого расширения при использовании в словаре расширений ДОЛЖЕН быть http-request-ext.
+// HTTPRequestExtensionSTIX тип "http-request-ext", по терминалогии STIX, определяет специфичное расширение HTTP-запроса, задает расширение по умолчанию для захвата свойств
+//
+//	сетевого трафика, специфичных для HTTP-запросов. Ключ для этого расширения при использовании в словаре расширений ДОЛЖЕН быть http-request-ext.
+//
 // RequestMethod - указывает часть HTTP-метода строки HTTP - запроса в виде строчной строки. (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ).
 // RequestValue - указывает часть значения (обычно путь к ресурсу) строки HTTP-запроса. (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ).
 // RequestVersion - указывает часть HTTP-версии строки HTTP - запроса в виде строчной строки.
@@ -310,8 +344,10 @@ type HTTPRequestExtensionSTIX struct {
 	MessageBodyDataRef IdentifierTypeSTIX            `json:"message_body_data_ref" bson:"message_body_data_ref"`
 }
 
-//ICMPExtensionSTIX тип "icmp-ext", по терминалогии STIX, определяет специфичное расширение по умолчанию для захвата свойств сетевого трафика, специфичных для ICMP. Ключ для этого
-//  расширения при использовании в словаре расширений ДОЛЖЕН быть icmp-ext.
+// ICMPExtensionSTIX тип "icmp-ext", по терминалогии STIX, определяет специфичное расширение по умолчанию для захвата свойств сетевого трафика, специфичных для ICMP. Ключ для этого
+//
+//	расширения при использовании в словаре расширений ДОЛЖЕН быть icmp-ext.
+//
 // ICMPTypeHex - указывает тип ICMP байт.
 // ICMPCodeHex - задает байт кода ICMP.
 type ICMPExtensionSTIX struct {
@@ -319,13 +355,17 @@ type ICMPExtensionSTIX struct {
 	ICMPCodeHex string `json:"icmp_code_hex" bson:"icmp_code_hex"`
 }
 
-//NetworkSocketExtensionSTIX тип "socket-ext", по терминалогии STIX, определяет специфичное расширение по умолчанию для захвата свойств сетевого трафика, связанных с сетевыми сокетами.
-//  Ключ для этого расширения при использовании в словаре расширений ДОЛЖЕН быть socket-ext.
+// NetworkSocketExtensionSTIX тип "socket-ext", по терминалогии STIX, определяет специфичное расширение по умолчанию для захвата свойств сетевого трафика, связанных с сетевыми сокетами.
+//
+//	Ключ для этого расширения при использовании в словаре расширений ДОЛЖЕН быть socket-ext.
+//
 // AddressFamily -  указывает семейство адресов (AF_*), для которого настроен сокет. Значения этого свойства ДОЛЖНЫ быть получены из network-socket-address-family-enum. (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ).
 // IsBlocking - указывает, находится ли сокет в режиме блокировки.
 // IsListening - указывает, находится ли сокет в режиме прослушивания.
 // Options - указывает любые параметры (например, SO_*), которые могут использоваться сокетом в качестве словаря. Каждый ключ в словаре ДОЛЖЕН быть сохраненной в регистре версией имени
-//  параметра, например SO_ACCEPTCONN. Каждое значение ключа в словаре ДОЛЖНО быть значением для соответствующего ключа опций. Каждое значение словаря ДОЛЖНО быть целым числом.
+//
+//	параметра, например SO_ACCEPTCONN. Каждое значение ключа в словаре ДОЛЖНО быть значением для соответствующего ключа опций. Каждое значение словаря ДОЛЖНО быть целым числом.
+//
 // SocketType - указывает тип сокета. Значения этого свойства ДОЛЖНЫ быть получены из network-socket-type-enum.
 // SocketDescriptor - указывается значение дескриптора файла сокета, связанное с сокетом, как неотрицательное целое число.
 // SocketHandle - указывает значение дескриптора или индекса, связанное с сокетом.
@@ -339,8 +379,10 @@ type NetworkSocketExtensionSTIX struct {
 	SocketHandle     int                           `json:"socket_handle" bson:"socket_handle"`
 }
 
-//TCPExtensionSTIX тип "tcp-ext", по терминалогии STIX, определяет специфичное расширение задает расширение по умолчанию для захвата свойств сетевого трафика, специфичных для TCP.
-//  Ключ для этого расширения при использовании в словаре расширений ДОЛЖЕН быть tcp-ext.
+// TCPExtensionSTIX тип "tcp-ext", по терминалогии STIX, определяет специфичное расширение задает расширение по умолчанию для захвата свойств сетевого трафика, специфичных для TCP.
+//
+//	Ключ для этого расширения при использовании в словаре расширений ДОЛЖЕН быть tcp-ext.
+//
 // SrcFlagsHex - указывает исходные флаги TCP как объединение всех флагов TCP, наблюдаемых между началом трафика (как определено свойством start) и концом трафика (как определено свойством end).
 // DstFlagsHex - указывает флаги TCP назначения как объединение всех флагов TCP, наблюдаемых между началом трафика (как определено свойством start) и концом трафика (как определено свойством end).
 type TCPExtensionSTIX struct {
@@ -348,7 +390,7 @@ type TCPExtensionSTIX struct {
 	DstFlagsHex string `json:"dst_flags_hex" bson:"dst_flags_hex"`
 }
 
-//WindowsPEBinaryFileExtensionSTIX тип "windows-pebinary-ext", по терминалогии STIX, определяет специфичные свойства для Windows portable executable (PE) файлов
+// WindowsPEBinaryFileExtensionSTIX тип "windows-pebinary-ext", по терминалогии STIX, определяет специфичные свойства для Windows portable executable (PE) файлов
 // PeType - определяет тип PE binary, в данном поле СЛЕДУЕТ использовать значение из открытого словаря windows-pebinary-type-ov (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ).
 // Imphash - определяет специальный 'импортируемый' хеш или imphash подсчитываемый для основанных на PE Binary импортируемых библиотек и функций.
 // MachineHex - определяет специфичный, машинный хеш.
@@ -376,8 +418,10 @@ type WindowsPEBinaryFileExtensionSTIX struct {
 	Sections                []WindowsPESectionTypeSTIX      `json:"sections" bson:"sections"`
 }
 
-//WindowsProcessExtensionSTIX тип "windows-process-ext", по терминалогии STIX, содержит рассширения расширение по умолчанию для захвата свойств,
-//  специфичных для процессов Windows. Ключ для этого расширения при использовании в словаре расширений ДОЛЖЕН быть windows-process-ext.
+// WindowsProcessExtensionSTIX тип "windows-process-ext", по терминалогии STIX, содержит рассширения расширение по умолчанию для захвата свойств,
+//
+//	специфичных для процессов Windows. Ключ для этого расширения при использовании в словаре расширений ДОЛЖЕН быть windows-process-ext.
+//
 // ASLREnabled - указывает, включена ли для процесса рандомизация компоновки адресного пространства (ASLR).
 // DEPEnabled - указывает, включено ли для процесса Предотвращение выполнения данных (DEP).
 // Priority - задает текущий приоритет процесса в Windows. Это значение ДОЛЖНО быть строкой, которая заканчивается на _CLASS.
@@ -395,15 +439,19 @@ type WindowsProcessExtensionSTIX struct {
 	IntegrityLevel EnumTypeSTIX                  `json:"integrity_level" bson:"integrity_level"`
 }
 
-//WindowsServiceExtensionSTIX тип "windows-service-ext", по терминалогии STIX, содержит рассширения службы Windows задает расширение по умолчанию для
-//  захвата свойств, специфичных для служб Windows. Ключ для этого расширения при использовании в словаре расширений ДОЛЖЕН быть windows-service-ext.
+// WindowsServiceExtensionSTIX тип "windows-service-ext", по терминалогии STIX, содержит рассширения службы Windows задает расширение по умолчанию для
+//
+//	захвата свойств, специфичных для служб Windows. Ключ для этого расширения при использовании в словаре расширений ДОЛЖЕН быть windows-service-ext.
+//
 // ServiceName - определяет название сервиса.
 // Descriptions - определяет детальное описание сервиса.
 // DisplayName - указывает отображаемое имя службы в элементах управления графическим интерфейсом Windows.
 // GroupName - указывает имя группы заказа загрузки, членом которой является служба.
 // StartType - указывает параметры запуска, определенные для службы. Значения этого свойства ДОЛЖНЫ быть получены из перечисления windows-service-start-type-enum.
 // ServiceDllRefs - указывает библиотеки DLL, загруженные службой, в качестве ссылки на один или несколько файловых объектов. Объекты, на которые ссылается
-//  это свойство, ДОЛЖНЫ иметь тип file.
+//
+//	это свойство, ДОЛЖНЫ иметь тип file.
+//
 // ServiceType - определяет тип сервиса. Значение данного поля ДОЛЖНО иметь тип windows-service-type-enum.
 // ServiceStatus - определяет статус сервиса. Значение данного поля ДОЛЖНО иметь тип windows-service-status-enum.
 type WindowsServiceExtensionSTIX struct {
@@ -417,7 +465,7 @@ type WindowsServiceExtensionSTIX struct {
 	ServiceStatus  EnumTypeSTIX         `json:"service_status" bson:"service_status"`
 }
 
-//UNIXAccountExtensionSTIX тип "unix-account-ext", по терминалогии STIX, содержит рассширения 'по умолчанию' захваченной дополнительной информации
+// UNIXAccountExtensionSTIX тип "unix-account-ext", по терминалогии STIX, содержит рассширения 'по умолчанию' захваченной дополнительной информации
 // предназначенной для аккаунтов UNIX систем.
 // GID - содержит первичный групповой ID аккаунта
 // Groups - содержит список имен групп которые являются членами аккаунта
@@ -432,7 +480,7 @@ type UNIXAccountExtensionSTIX struct {
 
 /********** 			Cyber-observable Objects STIX (ТИПЫ)			**********/
 
-//OptionalCommonPropertiesCyberObservableObjectSTIX содержит опциональные общие свойства для Cyber-observable Objects STIX
+// OptionalCommonPropertiesCyberObservableObjectSTIX содержит опциональные общие свойства для Cyber-observable Objects STIX
 // SpecVersion - версия STIX спецификации.
 // ObjectMarkingRefs - определяет список ID ссылающиеся на объект "marking-definition", по терминалогии STIX, в котором содержатся
 // значения применяющиеся к этому объекту
@@ -447,10 +495,14 @@ type OptionalCommonPropertiesCyberObservableObjectSTIX struct {
 	Extensions        map[string]DictionaryTypeSTIX `json:"extensions" bson:"extensions"`
 }
 
-//ArtifactCyberObservableObjectSTIX объект "Artifact", по терминалогии STIX, позволяет захватывать массив байтов (8 бит) в виде строки в кодировке base64
-//  или связывать его с полезной нагрузкой, подобной файлу. Обязательно должен быть заполнено одно из полей PayloadBin или URL
+// ArtifactCyberObservableObjectSTIX объект "Artifact", по терминалогии STIX, позволяет захватывать массив байтов (8 бит) в виде строки в кодировке base64
+//
+//	или связывать его с полезной нагрузкой, подобной файлу. Обязательно должен быть заполнено одно из полей PayloadBin или URL
+//
 // MimeType - по возможности это значение ДОЛЖНО быть одним из значений, определенных в реестре типов носителей IANA. В универсальном каталоге
-//  всех существующих типов файлов.
+//
+//	всех существующих типов файлов.
+//
 // PayloadBin - бинарные данные в base64
 // URL - унифицированный указатель ресурса (URL)
 // Hashes - словарь хешей для URL или PayloadBin
@@ -467,7 +519,7 @@ type ArtifactCyberObservableObjectSTIX struct {
 	DecryptionKey       string         `json:"decryption_key" bson:"decryption_key"`
 }
 
-//AutonomousSystemCyberObservableObjectSTIX объект "Autonomous System", по терминалогии STIX, содержит параметры Автономной системы
+// AutonomousSystemCyberObservableObjectSTIX объект "Autonomous System", по терминалогии STIX, содержит параметры Автономной системы
 // Number - содержит номер присвоенный Автономной системе (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // Name - название Автономной системы
 // RIR - содержит название регионального Интернет-реестра (Regional Internet Registry) которым было дано имя Автономной системы
@@ -479,7 +531,7 @@ type AutonomousSystemCyberObservableObjectSTIX struct {
 	RIR    string `json:"rir" bson:"rir"`
 }
 
-//DirectoryCyberObservableObjectSTIX объект "Directory", по терминалогии STIX, содержит свойства, общие для каталога файловой системы
+// DirectoryCyberObservableObjectSTIX объект "Directory", по терминалогии STIX, содержит свойства, общие для каталога файловой системы
 // Path - указывает путь, как было первоначально замечено, к каталогу в файловой системе (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // PathEnc - указывает наблюдаемую кодировку для пути. Значение ДОЛЖНО быть указано, если путь хранится в кодировке, отличной от Unicode.
 // Ctime - время, в формате "2016-05-12T08:17:27.000Z", создания директории
@@ -497,7 +549,7 @@ type DirectoryCyberObservableObjectSTIX struct {
 	ContainsRefs []IdentifierTypeSTIX `json:"contains_refs" bson:"contains_refs"`
 }
 
-//DomainNameCyberObservableObjectSTIX объект "Domain Name", по терминалогии STIX, содержит сетевое доменное имя
+// DomainNameCyberObservableObjectSTIX объект "Domain Name", по терминалогии STIX, содержит сетевое доменное имя
 // Value - сетевое доменное имя (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // ResolvesToRefs - список ссылок на один или несколько IP-адресов или доменных имен, на которые разрешается доменное имя
 type DomainNameCyberObservableObjectSTIX struct {
@@ -507,7 +559,7 @@ type DomainNameCyberObservableObjectSTIX struct {
 	ResolvesToRefs []IdentifierTypeSTIX `json:"resolves_to_refs" bson:"resolves_to_refs"`
 }
 
-//EmailAddressCyberObservableObjectSTIX объект "Email Address", по терминалогии STIX, содержит представление единственного email адреса
+// EmailAddressCyberObservableObjectSTIX объект "Email Address", по терминалогии STIX, содержит представление единственного email адреса
 // Value - email адрес (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // DisplayName - содержит единственное почтовое имя которое видит человек при просмотре письма
 // BelongsToRef - учетная запись пользователя, которой принадлежит адрес электронной почты, в качестве ссылки на объект учетной записи пользователя
@@ -519,7 +571,7 @@ type EmailAddressCyberObservableObjectSTIX struct {
 	BelongsToRef IdentifierTypeSTIX `json:"belongs_to_ref" bson:"belongs_to_ref"`
 }
 
-//EmailMessageCyberObservableObjectSTIX объект "Email Message", по терминалогии STIX, содержит экземпляр email сообщения
+// EmailMessageCyberObservableObjectSTIX объект "Email Message", по терминалогии STIX, содержит экземпляр email сообщения
 // IsMultipart - информирует содержит ли 'тело' email множественные MIME части (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // Date - время, в формате "2016-05-12T08:17:27.000Z", когда email сообщение было отправлено
 // ContentType - содержит содержимое 'Content-Type' заголовка email сообщения
@@ -532,10 +584,14 @@ type EmailAddressCyberObservableObjectSTIX struct {
 // Subject - содержит тему сообщения
 // ReceivedLines - содержит одно или несколько полей заголовка 'Received', которые могут быть включены в заголовки email
 // AdditionalHeaderFields - содержит любые другие поля заголовка (за исключением date, received_lines, content_type, from_ref,
-//  sender_ref, to_ref, cc_ref, bcc_refs и subject), найденные в сообщении электронной почты в виде словаря
+//
+//	sender_ref, to_ref, cc_ref, bcc_refs и subject), найденные в сообщении электронной почты в виде словаря
+//
 // Body - содержит тело сообщения
 // BodyMultipart - содержит адает список MIME-части, которые составляют тело email. Это свойство НЕ ДОЛЖНО использоваться, если
-//  is_multipart имеет значение false
+//
+//	is_multipart имеет значение false
+//
 // RawEmailRef - содержит 'сырое' бинарное содержимое email сообщения
 type EmailMessageCyberObservableObjectSTIX struct {
 	CommonPropertiesObjectSTIX
@@ -557,9 +613,11 @@ type EmailMessageCyberObservableObjectSTIX struct {
 	RawEmailRef            IdentifierTypeSTIX            `json:"raw_email_ref" bson:"raw_email_ref"`
 }
 
-//CommonFileCyberObservableObjectSTIX общий объект "File Object", по терминалогии STIX, содержит объект со свойствами файла
+// CommonFileCyberObservableObjectSTIX общий объект "File Object", по терминалогии STIX, содержит объект со свойствами файла
 // Extensions - определяет следующие расширения pdf-ext, archive-ext, ntfs-ext, raster-image-ext, windows-pebinary-ext. В дополнении к ним пользователь может создавать
-//  свои расширения. При этом ключ словаря должен однозначно идентифицировать тип расширения.
+//
+//	свои расширения. При этом ключ словаря должен однозначно идентифицировать тип расширения.
+//
 // Hashes - определяет словарь хешей для файла. При этом ДОЛЖНЫ использоватся ключи из открытого словаря hash-algorithm- ov.
 // Size - содержит размер файла в байтах
 // Name - содержит имя файла
@@ -586,13 +644,15 @@ type CommonFileCyberObservableObjectSTIX struct {
 	Mtime              time.Time                   `json:"mtime" bson:"mtime"`
 	Atime              time.Time                   `json:"atime" bson:"atime"`
 	ParentDirectoryRef IdentifierTypeSTIX          `json:"parent_directory_ref" bson:"parent_directory_ref"`
-	ContainsRefs       []*IdentifierTypeSTIX       `json:"contains_refs" bson:"contains_refs"`
+	ContainsRefs       []IdentifierTypeSTIX        `json:"contains_refs" bson:"contains_refs"`
 	ContentRef         IdentifierTypeSTIX          `json:"content_ref" bson:"content_ref"`
 }
 
-//FileCyberObservableObjectSTIX объект "File Object", по терминалогии STIX, последекодирования из JSON (основной, рабочий объект)
+// FileCyberObservableObjectSTIX объект "File Object", по терминалогии STIX, последекодирования из JSON (основной, рабочий объект)
 // Extensions - определяет следующие расширения pdf-ext, archive-ext, ntfs-ext, raster-image-ext, windows-pebinary-ext. В дополнении к ним пользователь может создавать
-//  свои расширения. При этом ключ словаря должен однозначно идентифицировать тип расширения.
+//
+//	свои расширения. При этом ключ словаря должен однозначно идентифицировать тип расширения.
+//
 // Hashes - определяет словарь хешей для файла. При этом ДОЛЖНЫ использоватся ключи из открытого словаря hash-algorithm- ov.
 // Size - содержит размер файла в байтах
 // Name - содержит имя файла
@@ -623,13 +683,18 @@ type FileCyberObservableObjectSTIX struct {
 	ContentRef         IdentifierTypeSTIX     `json:"content_ref" bson:"content_ref"`
 }
 
-//IPv4AddressCyberObservableObjectSTIX объект "IPv4 Address Object", по терминалогии STIX, содержит один или более IPv4 адресов, выраженных с помощью нотации CIDR.
+// IPv4AddressCyberObservableObjectSTIX объект "IPv4 Address Object", по терминалогии STIX, содержит один или более IPv4 адресов, выраженных с помощью нотации CIDR.
 // Value - указывает значения одного или нескольких IPv4-адресов, выраженные с помощью нотации CIDR. Если данный объект IPv4-адреса представляет собой один IPv4-адрес,
-//  суффикс CIDR /32 МОЖЕТ быть опущен. (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+//
+//	суффикс CIDR /32 МОЖЕТ быть опущен. (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+//
 // ResolvesToRefs - указывает список ссылок на один или несколько MAC-адресов управления доступом к носителям уровня 2, на которые разрешается IPv6-адрес. Объекты,
-//  на которые ссылается этот список, ДОЛЖНЫ иметь тип macaddr.
+//
+//	на которые ссылается этот список, ДОЛЖНЫ иметь тип macaddr.
+//
 // BelongsToRefs - указывает список ссылок на одну или несколько автономных систем (AS), к которым принадлежит IPv6-адрес. Объекты, на которые ссылается этот список,
-//  ДОЛЖНЫ быть типа autonomous-system.
+//
+//	ДОЛЖНЫ быть типа autonomous-system.
 type IPv4AddressCyberObservableObjectSTIX struct {
 	CommonPropertiesObjectSTIX
 	OptionalCommonPropertiesCyberObservableObjectSTIX
@@ -638,13 +703,18 @@ type IPv4AddressCyberObservableObjectSTIX struct {
 	BelongsToRefs  []IdentifierTypeSTIX `json:"belongs_to_refs" bson:"belongs_to_refs"`
 }
 
-//IPv6AddressCyberObservableObjectSTIX объект "IPv6 Address Object", по терминалогии STIX, содержит один или более IPv6 адресов, выраженных с помощью нотации CIDR.
+// IPv6AddressCyberObservableObjectSTIX объект "IPv6 Address Object", по терминалогии STIX, содержит один или более IPv6 адресов, выраженных с помощью нотации CIDR.
 // Value - указывает значения одного или нескольких IPv6-адресов, выраженные с помощью нотации CIDR. Если данный объект IPv6-адреса представляет собой один IPv6-адрес,
-//  суффикс CIDR /128 МОЖЕТ быть опущен. (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+//
+//	суффикс CIDR /128 МОЖЕТ быть опущен. (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+//
 // ResolvesToRefs - указывает список ссылок на один или несколько MAC-адресов управления доступом к носителям уровня 2, на которые разрешается IPv6-адрес. Объекты,
-//  на которые ссылается этот список, ДОЛЖНЫ иметь тип macaddr.
+//
+//	на которые ссылается этот список, ДОЛЖНЫ иметь тип macaddr.
+//
 // BelongsToRefs - указывает список ссылок на одну или несколько автономных систем (AS), к которым принадлежит IPv4-адрес. Объекты, на которые ссылается этот список,
-//  ДОЛЖНЫ быть типа autonomous-system.
+//
+//	ДОЛЖНЫ быть типа autonomous-system.
 type IPv6AddressCyberObservableObjectSTIX struct {
 	CommonPropertiesObjectSTIX
 	OptionalCommonPropertiesCyberObservableObjectSTIX
@@ -653,16 +723,17 @@ type IPv6AddressCyberObservableObjectSTIX struct {
 	BelongsToRefs  []IdentifierTypeSTIX `json:"belongs_to_refs" bson:"belongs_to_refs"`
 }
 
-//MACAddressCyberObservableObjectSTIX объект "MAC Address Object", по терминалогии STIX, содержит объект MAC-адрес, представляющий собой один адрес управления доступом к среде (MAC).
+// MACAddressCyberObservableObjectSTIX объект "MAC Address Object", по терминалогии STIX, содержит объект MAC-адрес, представляющий собой один адрес управления доступом к среде (MAC).
 // Value - Задает значение одного MAC-адреса. Значение MAC - адреса ДОЛЖНО быть представлено в виде одного строчного MAC-48 address, разделенного двоеточием,
-//  который ДОЛЖЕН включать начальные нули для каждого октета. Пример: 00:00:ab:cd:ef:01. (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+//
+//	который ДОЛЖЕН включать начальные нули для каждого октета. Пример: 00:00:ab:cd:ef:01. (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 type MACAddressCyberObservableObjectSTIX struct {
 	CommonPropertiesObjectSTIX
 	OptionalCommonPropertiesCyberObservableObjectSTIX
 	Value string `json:"value" bson:"value"`
 }
 
-//MutexCyberObservableObjectSTIX объект "Mutex Object", по терминалогии STIX, содержит свойства объекта взаимного исключения (mutex).
+// MutexCyberObservableObjectSTIX объект "Mutex Object", по терминалогии STIX, содержит свойства объекта взаимного исключения (mutex).
 // Name - указывает имя объекта мьютекса (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ).
 type MutexCyberObservableObjectSTIX struct {
 	CommonPropertiesObjectSTIX
@@ -670,17 +741,25 @@ type MutexCyberObservableObjectSTIX struct {
 	Name string `json:"name" bson:"name"`
 }
 
-//CommonNetworkTrafficCyberObservableObjectSTIX общий объект "Network Traffic Object", по терминалогии STIX, содержит объект Сетевого трафика представляющий собой произвольный сетевой трафик,
-//  который исходит из источника и адресуется адресату.
+// CommonNetworkTrafficCyberObservableObjectSTIX общий объект "Network Traffic Object", по терминалогии STIX, содержит объект Сетевого трафика представляющий собой произвольный сетевой трафик,
+//
+//	который исходит из источника и адресуется адресату.
+//
 // Extensions - объект Сетевого трафика определяет следующие расширения. В дополнение к ним производители МОГУТ создавать свои собственные. ключи словаря http-request-ext, cp-ext,
-//  icmp-ext, socket-ext ДОЛЖНЫ идентифицировать тип расширения по имени. Соответствующие значения словаря ДОЛЖНЫ содержать содержимое экземпляра расширения.
+//
+//	icmp-ext, socket-ext ДОЛЖНЫ идентифицировать тип расширения по имени. Соответствующие значения словаря ДОЛЖНЫ содержать содержимое экземпляра расширения.
+//
 // Start - время, в формате "2016-05-12T08:17:27.000Z", инициирования сетевого трафика, если он известен.
 // End - время, в формате "2016-05-12T08:17:27.000Z", окончания сетевого трафика, если он известен.
 // IsActive - указывает, продолжается ли сетевой трафик. Если задано свойство end, то это свойство ДОЛЖНО быть false.
 // SrcRef - указывает источник сетевого трафика в качестве ссылки на кибернаблюдаемый объект. Объект, на который ссылается ссылка, ДОЛЖЕН быть типа ipv4-addr, ipv6 - addr, mac-addr
-//  или domain-name (для случаев, когда IP-адрес для доменного имени неизвестен).
+//
+//	или domain-name (для случаев, когда IP-адрес для доменного имени неизвестен).
+//
 // DstRef - указывает место назначения сетевого трафика в качестве ссылки на кибернаблюдаемый объект. Объект, на который ссылается ссылка, ДОЛЖЕН быть типа ipv4-addr, ipv6 - addr,
-//  mac-addr или domain-name (для случаев, когда IP-адрес для доменного имени неизвестен).
+//
+//	mac-addr или domain-name (для случаев, когда IP-адрес для доменного имени неизвестен).
+//
 // SrcPort - задает исходный порт, используемый в сетевом трафике, в виде целого числа. Значение порта ДОЛЖНО находиться в диапазоне от 0 до 65535.
 // DstPort - задает порт назначения, используемый в сетевом трафике, в виде целого числа. Значение порта ДОЛЖНО находиться в диапазоне от 0 до 65535.
 // Protocols - указывает протоколы, наблюдаемые в сетевом трафике, а также их соответствующее состояние.
@@ -689,7 +768,9 @@ type MutexCyberObservableObjectSTIX struct {
 // SrcPackets - задает количество пакетов в виде положительного целого числа, отправленных от источника к месту назначения.
 // DstPackets - задает количество пакетов в виде положительного целого числа, отправленных от пункта назначения к источнику
 // IPFix - указывает любые данные Экспорта информации IP-потока [IPFIX] для трафика в виде словаря. Каждая пара ключ/значение в словаре представляет имя/значение одного элемента IPFIX.
-//  Соответственно, каждый ключ словаря ДОЛЖЕН быть сохраненной в регистре версией имени элемента IPFIX.
+//
+//	Соответственно, каждый ключ словаря ДОЛЖЕН быть сохраненной в регистре версией имени элемента IPFIX.
+//
 // SrcPayloadRef - указывает байты, отправленные из источника в пункт назначения. Объект, на который ссылается это свойство, ДОЛЖЕН иметь тип artifact.
 // DstPayloadRef - указывает байты, отправленные из пункта назначения в источник. Объект, на который ссылается это свойство, ДОЛЖЕН иметь тип artifact.
 // EncapsulatesRefs - ссылки на другие объекты, инкапсулированные этим объектом. Объекты, на которые ссылается это свойство, ДОЛЖНЫ иметь тип network-traffic.
@@ -717,16 +798,22 @@ type CommonNetworkTrafficCyberObservableObjectSTIX struct {
 	EncapsulatedByRef IdentifierTypeSTIX            `json:"encapsulated_by_ref" bson:"encapsulated_by_ref"`
 }
 
-//NetworkTrafficCyberObservableObjectSTIX объект "Network Traffic Object", по терминалогии STIX, содержит объект Сетевого трафика представляющий собой произвольный сетевой трафик,
-//  который исходит из источника и адресуется адресату.
+// NetworkTrafficCyberObservableObjectSTIX объект "Network Traffic Object", по терминалогии STIX, содержит объект Сетевого трафика представляющий собой произвольный сетевой трафик,
+//
+//	который исходит из источника и адресуется адресату.
+//
 // Extensions - объект Сетевого трафика определяет следующие расширения. В дополнение к ним производители МОГУТ создавать свои собственные. ключи словаря http-request-ext, cp-ext,
 // Start - время, в формате "2016-05-12T08:17:27.000Z", инициирования сетевого трафика, если он известен.
 // End - время, в формате "2016-05-12T08:17:27.000Z", окончания сетевого трафика, если он известен.
 // IsActive - указывает, продолжается ли сетевой трафик. Если задано свойство end, то это свойство ДОЛЖНО быть false.
 // SrcRef - указывает источник сетевого трафика в качестве ссылки на кибернаблюдаемый объект. Объект, на который ссылается ссылка, ДОЛЖЕН быть типа ipv4-addr, ipv6 - addr, mac-addr
-//  или domain-name (для случаев, когда IP-адрес для доменного имени неизвестен).
+//
+//	или domain-name (для случаев, когда IP-адрес для доменного имени неизвестен).
+//
 // DstRef - указывает место назначения сетевого трафика в качестве ссылки на кибернаблюдаемый объект. Объект, на который ссылается ссылка, ДОЛЖЕН быть типа ipv4-addr, ipv6 - addr,
-//  mac-addr или domain-name (для случаев, когда IP-адрес для доменного имени неизвестен).
+//
+//	mac-addr или domain-name (для случаев, когда IP-адрес для доменного имени неизвестен).
+//
 // SrcPort - задает исходный порт, используемый в сетевом трафике, в виде целого числа. Значение порта ДОЛЖНО находиться в диапазоне от 0 до 65535.
 // DstPort - задает порт назначения, используемый в сетевом трафике, в виде целого числа. Значение порта ДОЛЖНО находиться в диапазоне от 0 до 65535.
 // Protocols - указывает протоколы, наблюдаемые в сетевом трафике, а также их соответствующее состояние.
@@ -735,7 +822,9 @@ type CommonNetworkTrafficCyberObservableObjectSTIX struct {
 // SrcPackets - задает количество пакетов в виде положительного целого числа, отправленных от источника к месту назначения.
 // DstPackets - задает количество пакетов в виде положительного целого числа, отправленных от пункта назначения к источнику
 // IPFix - указывает любые данные Экспорта информации IP-потока [IPFIX] для трафика в виде словаря. Каждая пара ключ/значение в словаре представляет имя/значение одного элемента IPFIX.
-//  Соответственно, каждый ключ словаря ДОЛЖЕН быть сохраненной в регистре версией имени элемента IPFIX.
+//
+//	Соответственно, каждый ключ словаря ДОЛЖЕН быть сохраненной в регистре версией имени элемента IPFIX.
+//
 // SrcPayloadRef - указывает байты, отправленные из источника в пункт назначения. Объект, на который ссылается это свойство, ДОЛЖЕН иметь тип artifact.
 // DstPayloadRef - указывает байты, отправленные из пункта назначения в источник. Объект, на который ссылается это свойство, ДОЛЖЕН иметь тип artifact.
 // EncapsulatesRefs - ссылки на другие объекты, инкапсулированные этим объектом. Объекты, на которые ссылается это свойство, ДОЛЖНЫ иметь тип network-traffic.
@@ -763,10 +852,14 @@ type NetworkTrafficCyberObservableObjectSTIX struct {
 	EncapsulatedByRef IdentifierTypeSTIX            `json:"encapsulated_by_ref" bson:"encapsulated_by_ref"`
 }
 
-//CommonProcessCyberObservableObjectSTIX общий объект "Process Object", по терминологии STIX, содержит общие свойства экземпляра компьютерной программы,
-//  выполняемой в операционной системе. Объект процесса ДОЛЖЕН содержать хотя бы одно свойство (отличное от типа) этого объекта (или одного из его расширений).
+// CommonProcessCyberObservableObjectSTIX общий объект "Process Object", по терминологии STIX, содержит общие свойства экземпляра компьютерной программы,
+//
+//	выполняемой в операционной системе. Объект процесса ДОЛЖЕН содержать хотя бы одно свойство (отличное от типа) этого объекта (или одного из его расширений).
+//
 // Extensions - определяет расширения windows-process-exit или windows-service-ext. В дополнение к ним производители МОГУТ создавать свои собственные. ключи словаря windows-process-exit,
-//  windows-service-ext ДОЛЖНЫ идентифицировать тип расширения по имени. Соответствующие значения словаря ДОЛЖНЫ содержать содержимое экземпляра расширения.
+//
+//	windows-service-ext ДОЛЖНЫ идентифицировать тип расширения по имени. Соответствующие значения словаря ДОЛЖНЫ содержать содержимое экземпляра расширения.
+//
 // IsHidden - определяет является ли процесс скрытым.
 // PID - униальный идентификатор процесса.
 // CreatedTime - время, в формате "2016-05-12T08:17:27.000Z", создания процесса.
@@ -776,11 +869,16 @@ type NetworkTrafficCyberObservableObjectSTIX struct {
 // OpenedConnectionRefs - определяет список открытых, процессом, сетевых соединений ка одну или более ссылку на объект типа network-traffic.
 // CreatorUserRef - определяет что за пользователь создал объект, ссылка ДОЛЖНА ссылатся на объект типа user-account.
 // ImageRef - указывает исполняемый двоичный файл, который был выполнен как образ процесса, как ссылка на файловый объект. Объект, на который ссылается
-//  это свойство, ДОЛЖЕН иметь тип file.
+//
+//	это свойство, ДОЛЖЕН иметь тип file.
+//
 // ParentRef - указывает другой процесс, который породил (т. е. является родителем) этот процесс, как ссылку на объект процесса. Объект, на который
-//  ссылается это свойство, ДОЛЖЕН иметь тип process.
+//
+//	ссылается это свойство, ДОЛЖЕН иметь тип process.
+//
 // ChildRefs - указывает другие процессы, которые были порождены (т. е. дочерние) этим процессом, в качестве ссылки на один или несколько других
-//  объектов процесса. Объекты, на которые ссылается этот список, ДОЛЖНЫ иметь тип process.
+//
+//	объектов процесса. Объекты, на которые ссылается этот список, ДОЛЖНЫ иметь тип process.
 type CommonProcessCyberObservableObjectSTIX struct {
 	CommonPropertiesObjectSTIX
 	OptionalCommonPropertiesCyberObservableObjectSTIX
@@ -798,10 +896,14 @@ type CommonProcessCyberObservableObjectSTIX struct {
 	ChildRefs            []IdentifierTypeSTIX          `json:"child_refs" bson:"child_refs"`
 }
 
-//ProcessCyberObservableObjectSTIX объект "Process Object", по терминологии STIX, содержит общие свойства экземпляра компьютерной программы,
-//  выполняемой в операционной системе. Объект процесса ДОЛЖЕН содержать хотя бы одно свойство (отличное от типа) этого объекта (или одного из его расширений).
+// ProcessCyberObservableObjectSTIX объект "Process Object", по терминологии STIX, содержит общие свойства экземпляра компьютерной программы,
+//
+//	выполняемой в операционной системе. Объект процесса ДОЛЖЕН содержать хотя бы одно свойство (отличное от типа) этого объекта (или одного из его расширений).
+//
 // Extensions - определяет расширения windows-process-exit или windows-service-ext. В дополнение к ним производители МОГУТ создавать свои собственные. ключи словаря windows-process-exit,
-//  windows-service-ext ДОЛЖНЫ идентифицировать тип расширения по имени. Соответствующие значения словаря ДОЛЖНЫ содержать содержимое экземпляра расширения.
+//
+//	windows-service-ext ДОЛЖНЫ идентифицировать тип расширения по имени. Соответствующие значения словаря ДОЛЖНЫ содержать содержимое экземпляра расширения.
+//
 // IsHidden - определяет является ли процесс скрытым.
 // PID - униальный идентификатор процесса.
 // CreatedTime - время, в формате "2016-05-12T08:17:27.000Z", создания процесса.
@@ -811,11 +913,16 @@ type CommonProcessCyberObservableObjectSTIX struct {
 // OpenedConnectionRefs - определяет список открытых, процессом, сетевых соединений ка одну или более ссылку на объект типа network-traffic.
 // CreatorUserRef - определяет что за пользователь создал объект, ссылка ДОЛЖНА ссылатся на объект типа user-account.
 // ImageRef - указывает исполняемый двоичный файл, который был выполнен как образ процесса, как ссылка на файловый объект. Объект, на который ссылается
-//  это свойство, ДОЛЖЕН иметь тип file.
+//
+//	это свойство, ДОЛЖЕН иметь тип file.
+//
 // ParentRef - указывает другой процесс, который породил (т. е. является родителем) этот процесс, как ссылку на объект процесса. Объект, на который
-//  ссылается это свойство, ДОЛЖЕН иметь тип process.
+//
+//	ссылается это свойство, ДОЛЖЕН иметь тип process.
+//
 // ChildRefs - указывает другие процессы, которые были порождены (т. е. дочерние) этим процессом, в качестве ссылки на один или несколько других
-//  объектов процесса. Объекты, на которые ссылается этот список, ДОЛЖНЫ иметь тип process.
+//
+//	объектов процесса. Объекты, на которые ссылается этот список, ДОЛЖНЫ иметь тип process.
 type ProcessCyberObservableObjectSTIX struct {
 	CommonPropertiesObjectSTIX
 	OptionalCommonPropertiesCyberObservableObjectSTIX
@@ -833,12 +940,14 @@ type ProcessCyberObservableObjectSTIX struct {
 	ChildRefs            []IdentifierTypeSTIX          `json:"child_refs" bson:"child_refs"`
 }
 
-//SoftwareCyberObservableObjectSTIX объект "Software Object", по терминологии STIX, содержит свойства, связанные с программным обеспечением, включая программные продукты.
+// SoftwareCyberObservableObjectSTIX объект "Software Object", по терминологии STIX, содержит свойства, связанные с программным обеспечением, включая программные продукты.
 // Name - назвыание программного обеспечения
 // CPE - содержит запись Common Platform Enumeration (CPE) для программного обеспечения, если она доступна. Значение этого свойства должно быть значением
 // CPE v2.3 из официального словаря NVD CPE [NVD]
 // SwID - содержит запись Тегов Software Identification ID (SWID) [SWID] для программного обеспечения, если таковая имеется. SwID помеченный tagId, является
-//  глобально уникальным идентификатором и ДОЛЖЕН использоваться как полномочие для идентификации помеченного продукта
+//
+//	глобально уникальным идентификатором и ДОЛЖЕН использоваться как полномочие для идентификации помеченного продукта
+//
 // Languages -содержит языки, поддерживаемые программным обеспечением. Значение каждого елемента списка ДОЛЖНО быть кодом языка ISO 639-2
 // Vendor - содержит название производителя программного обеспечения
 // Version - содержит версию ПО
@@ -853,7 +962,7 @@ type SoftwareCyberObservableObjectSTIX struct {
 	Version   string   `json:"version" bson:"version"`
 }
 
-//URLCyberObservableObjectSTIX объект "URL Object", по терминологии STIX, содержит унифицированный указатель информационного ресурса (URL).
+// URLCyberObservableObjectSTIX объект "URL Object", по терминологии STIX, содержит унифицированный указатель информационного ресурса (URL).
 // Value - содержит унифицированный указатель информационного ресурса (URL).
 type URLCyberObservableObjectSTIX struct {
 	CommonPropertiesObjectSTIX
@@ -861,31 +970,47 @@ type URLCyberObservableObjectSTIX struct {
 	Value string `json:"value" bson:"value"`
 }
 
-//UserAccountCyberObservableObjectSTIX объект "User Account Object", по терминалогии STIX, содержит экземпляр любого типа учетной записи пользователя, включая,
+// UserAccountCyberObservableObjectSTIX объект "User Account Object", по терминалогии STIX, содержит экземпляр любого типа учетной записи пользователя, включая,
 // учетные записи операционной системы, устройства, службы обмена сообщениями и платформы социальных сетей и других прочих учетных записей
 // Поскольку все свойства этого объекта являются необязательными, по крайней мере одно из свойств, определенных ниже, ДОЛЖНО быть инициализировано
 // при использовании этого объекта
 // Extensions - содержит словарь расширяющий тип "User Account Object" одно из расширений "unix-account-ext", реализуется описанным ниже типом, UNIXAccountExtensionSTIX
-//  кроме этого производитель может созавать свои собственные типы расширений
-//  Ключи данного словаря идентифицируют тип расширения по имени, значения являются содержимым экземпляра расширения
+//
+//	кроме этого производитель может созавать свои собственные типы расширений
+//	Ключи данного словаря идентифицируют тип расширения по имени, значения являются содержимым экземпляра расширения
+//
 // UserID - содержит идентификатор учетной записи. Формат идентификатора зависит от системы в которой находится данная учетная запись пользователя,
-//  и может быть числовым идентификатором, идентификатором GUID, именем учетной записи, адресом электронной почты и т.д. Свойство  UserId должно
-//  быть заполнено любым значанием, являющимся уникальным идентификатором системы, членом которой является учетная запись. Например, в системах UNIX он
-//  будет заполнено значением UID
+//
+//	и может быть числовым идентификатором, идентификатором GUID, именем учетной записи, адресом электронной почты и т.д. Свойство  UserId должно
+//	быть заполнено любым значанием, являющимся уникальным идентификатором системы, членом которой является учетная запись. Например, в системах UNIX он
+//	будет заполнено значением UID
+//
 // Credential - содержит учетные данные пользователя в открытом виде. Предназначено только для закрытого применения при изучении метаданных вредоносных программ
-//  при их исследовании (например, жестко закодированный пароль администратора домена, который вредоносная программа пытается использовать реализации тактики для
-//	бокового (латерального) перемещения) и не должно применяться для совместного пользования PII
+//
+//	 при их исследовании (например, жестко закодированный пароль администратора домена, который вредоносная программа пытается использовать реализации тактики для
+//		бокового (латерального) перемещения) и не должно применяться для совместного пользования PII
+//
 // AccountLogin - содержит логин пользователя. Используется в тех случаях,когда свойство UserId указывает другие данные, чем то, что пользователь вводит
-//  при входе в систему
+//
+//	при входе в систему
+//
 // AccountType - содержит одно, из заранее определенных (предложенных) значений. Является типом аккаунта. Значения этого свойства берутся из множества
-//  закрепленного в открытом словаре, account-type-ov
+//
+//	закрепленного в открытом словаре, account-type-ov
+//
 // DisplayName - содержит отображаемое имя учетной записи, которое будет отображаться в пользовательских интерфейсах. В Unix, это равносильно полю gecos
-//  (gecos это поле учётной записи пользователя в файле /etc/passwd )
+//
+//	(gecos это поле учётной записи пользователя в файле /etc/passwd )
+//
 // IsServiceAccount - содержит индикатор, сигнализирующий что, учетная запись связана с сетевой службой или системным процессом (демоном), а не с конкретным человеком. (системный пользователь)
 // IsPrivileged - содержит индикатор, сигнализирующий что, учетная запись имеет повышенные привилегии (например, в случае root в Unix или учетной записи администратора
-//  Windows)
+//
+//	Windows)
+//
 // CanEscalatePrivs  - содержит индикатор, сигнализирующий что, учетная запись имеет возможность повышать привилегии (например, в случае sudo в Unix или учетной
-//  записи администратора домена Windows)
+//
+//	записи администратора домена Windows)
+//
 // IsDisabled  - содержит индикатор, сигнализирующий что, учетная запись отключена
 // AccountCreated - время, в формате "2016-05-12T08:17:27.000Z", создания аккаунта
 // AccountExpires - время, в формате "2016-05-12T08:17:27.000Z", истечения срока действия учетной записи.
@@ -912,11 +1037,15 @@ type UserAccountCyberObservableObjectSTIX struct {
 	AccountLastLogin      time.Time                           `json:"account_last_login" bson:"account_last_login"`
 }
 
-//WindowsRegistryKeyCyberObservableObjectSTIX объект "Windows Registry Key Object", по терминалогии STIX. Содержит описание значений полей раздела реестра Windows.
-//  Поскольку все свойства этого объекта являются необязательными, по крайней мере одно из свойств,определенных ниже, должно быть инициализировано при
-//  использовании этого объекта.
+// WindowsRegistryKeyCyberObservableObjectSTIX объект "Windows Registry Key Object", по терминалогии STIX. Содержит описание значений полей раздела реестра Windows.
+//
+//	Поскольку все свойства этого объекта являются необязательными, по крайней мере одно из свойств,определенных ниже, должно быть инициализировано при
+//	использовании этого объекта.
+//
 // Key - содержит полный путь к разделу реестра. Значение ключа,должно быть сохранено в регистре. В название ключа все сокращения должны быть раскрыты.
-//  Например, вместо HKLM следует использовать HKEY_LOCAL_MACHINE.
+//
+//	Например, вместо HKLM следует использовать HKEY_LOCAL_MACHINE.
+//
 // Values - содержит значения, найденные в разделе реестра.
 // ModifiedTime - время, в формате "2016-05-12T08:17:27.000Z", последнего изменения раздела реестра.
 // CreatorUserRef - содержит ссылку на учетную запись пользователя, из под которой создан раздел реестра. Объект, на который ссылается это свойство, должен иметь тип user-account.
@@ -931,11 +1060,15 @@ type WindowsRegistryKeyCyberObservableObjectSTIX struct {
 	NumberOfSubkeys int                            `json:"number_of_subkeys" bson:"number_of_subkeys"`
 }
 
-//X509CertificateCyberObservableObjectSTIX объект "X.509 Certificate Object", по терминологии STIX, представлет свойства сертификата X.509, определенные в рекомендациях
-//  ITU X.509 [X.509]. X.509  Certificate объект должен содержать по крайней мере одно cвойство специфичное для этого объекта (помимо type).
+// X509CertificateCyberObservableObjectSTIX объект "X.509 Certificate Object", по терминологии STIX, представлет свойства сертификата X.509, определенные в рекомендациях
+//
+//	ITU X.509 [X.509]. X.509  Certificate объект должен содержать по крайней мере одно cвойство специфичное для этого объекта (помимо type).
+//
 // IsSelfSigned - содержит индикатор, является ли сертификат самоподписным, то есть подписан ли он тем же субъектом, личность которого он удостоверяет.
 // Hashes - содержит любые хэши, которые были вычислены для всего содержимого сертификата. Является типом данных словар, значения ключей которого должны
-//  быть из открытого словаря hash-algorithm-ov.
+//
+//	быть из открытого словаря hash-algorithm-ov.
+//
 // Version- содержит версию закодированного сертификата
 // SerialNumber - содержит уникальный идентификатор сертификата, выданного конкретным Центром сертификации.
 // SignatureAlgorithm - содержит имя алгоритма, используемого для подписи сертификата.

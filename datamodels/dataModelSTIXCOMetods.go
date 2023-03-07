@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"regexp"
+	"strconv"
 	"time"
 
 	"ISEMS-MRSICT/commonlibs"
@@ -1572,21 +1573,36 @@ func (ntstix NetworkTrafficCyberObservableObjectSTIX) DecoderJSON(raw *json.RawM
 		DstByteCount: commonObject.DstByteCount,
 	}
 
-	if len(commonObject.Extensions) == 0 {
-		return ntstix, nil
-	}
+	if len(commonObject.Extensions) > 0 {
+		ext := map[string]interface{}{}
+		for key, value := range commonObject.Extensions {
+			e, err := decodingExtensionsSTIX(key, value)
+			if err != nil {
+				continue
+			}
 
-	ext := map[string]interface{}{}
-	for key, value := range commonObject.Extensions {
-		e, err := decodingExtensionsSTIX(key, value)
-		if err != nil {
-			continue
+			ext[key] = e
 		}
 
-		ext[key] = e
+		ntstix.Extensions = ext
 	}
 
-	ntstix.Extensions = ext
+	if len(commonObject.IPFix) > 0 {
+		ipfix := map[string]string{}
+		for key, value := range commonObject.IPFix {
+			switch e := value.(type) {
+			case string:
+				ipfix[key] = e
+			//case int, int16, int32, int64, float32, float64:
+			case int:
+				ipfix[key] = strconv.Itoa(e)
+			case float64:
+				ipfix[key] = strconv.Itoa(int(e))
+			}
+		}
+
+		ntstix.IPFix = ipfix
+	}
 
 	return ntstix, nil
 }
@@ -1656,8 +1672,30 @@ func (ntstix NetworkTrafficCyberObservableObjectSTIX) SanitizeStruct() NetworkTr
 	ntstix.OptionalCommonPropertiesCyberObservableObjectSTIX = ntstix.sanitizeStruct()
 
 	esize := len(ntstix.Extensions)
-	if esize == 0 {
-		return ntstix
+	if esize > 0 {
+		tmp := make(map[string]interface{}, esize)
+		for k, v := range ntstix.Extensions {
+			result := sanitizeExtensionsSTIX(v)
+			tmp[k] = result
+		}
+		ntstix.Extensions = tmp
+	}
+
+	if len(ntstix.IPFix) > 0 {
+		ipfix := map[string]string{}
+
+		for key, value := range ntstix.IPFix {
+			switch e := sanitizeExtensionsSTIX(value).(type) {
+			case string:
+				ipfix[key] = e
+			case int:
+				ipfix[key] = strconv.Itoa(e)
+			case float64:
+				ipfix[key] = strconv.Itoa(int(e))
+			}
+		}
+
+		ntstix.IPFix = ipfix
 	}
 
 	sizeProtocols := len(ntstix.Protocols)
@@ -1669,7 +1707,10 @@ func (ntstix NetworkTrafficCyberObservableObjectSTIX) SanitizeStruct() NetworkTr
 		ntstix.Protocols = tmp
 	}
 
-	sizeIPFix := len(ntstix.IPFix)
+	/*sizeIPFix := len(ntstix.IPFix)
+	if sizeIPFix == 0 {
+		return ntstix
+	}
 	if sizeIPFix > 0 {
 		tmp := make(map[string]DictionaryTypeSTIX, sizeIPFix)
 		for k, v := range ntstix.IPFix {
@@ -1683,12 +1724,12 @@ func (ntstix NetworkTrafficCyberObservableObjectSTIX) SanitizeStruct() NetworkTr
 		ntstix.IPFix = tmp
 	}
 
-	tmp := make(map[string]interface{}, esize)
-	for k, v := range ntstix.Extensions {
+	tmp := make(map[string]interface{}, sizeIPFix)
+	for k, v := range ntstix.IPFix {
 		result := sanitizeExtensionsSTIX(v)
 		tmp[k] = result
 	}
-	ntstix.Extensions = tmp
+	ntstix.IPFix = tmp*/
 
 	return ntstix
 }
@@ -1748,13 +1789,23 @@ func (ntstix NetworkTrafficCyberObservableObjectSTIX) ToStringBeautiful() string
 	str += fmt.Sprintf("dst_byte_count: '%d'\n", ntstix.DstByteCount)
 	str += fmt.Sprintf("src_packets: '%d'\n", ntstix.SrcPackets)
 	str += fmt.Sprintf("dst_packets: '%d'\n", ntstix.DstPackets)
-	str += fmt.Sprintf("ipfix: \n%v", func(l map[string]DictionaryTypeSTIX) string {
+	/*str += fmt.Sprintf("ipfix: \n%v", func(l map[string]DictionaryTypeSTIX) string {
+		var str string
+		for k, v := range l {
+			str += fmt.Sprintf("\t'%s': '%v'\n", k, v)
+		}
+		return str
+	}(ntstix.IPFix))*/
+	str += fmt.Sprintf("ipfix: \n%v", func(l map[string]string) string {
 		var str string
 		for k, v := range l {
 			str += fmt.Sprintf("\t'%s': '%v'\n", k, v)
 		}
 		return str
 	}(ntstix.IPFix))
+	/*for k, v := range ntstix.IPFix {
+		str += fmt.Sprintf("\t%s:\n%v\n", k, toStringBeautiful(v))
+	}*/
 	str += fmt.Sprintf("src_payload_ref: '%v'\n", ntstix.SrcPayloadRef)
 	str += fmt.Sprintf("dst_payload_ref: '%v'\n", ntstix.DstPayloadRef)
 	str += fmt.Sprintf("encapsulates_refs: \n%v", func(l []IdentifierTypeSTIX) string {

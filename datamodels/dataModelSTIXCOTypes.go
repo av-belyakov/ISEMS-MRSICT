@@ -778,24 +778,25 @@ type MutexCyberObservableObjectSTIX struct {
 type CommonNetworkTrafficCyberObservableObjectSTIX struct {
 	CommonPropertiesObjectSTIX
 	OptionalCommonPropertiesCyberObservableObjectSTIX
-	Extensions        map[string]*json.RawMessage   `json:"extensions" bson:"extensions"`
-	Start             time.Time                     `json:"start" bson:"start"`
-	End               time.Time                     `json:"end" bson:"end"`
-	IsActive          bool                          `json:"is_active" bson:"is_active"`
-	SrcRef            IdentifierTypeSTIX            `json:"src_ref" bson:"src_ref"`
-	DstRef            IdentifierTypeSTIX            `json:"dst_ref" bson:"dst_ref"`
-	SrcPort           int                           `json:"src_port" bson:"src_port"`
-	DstPort           int                           `json:"dst_port" bson:"dst_port"`
-	Protocols         []string                      `json:"protocols" bson:"protocols"`
-	SrcByteCount      uint64                        `json:"src_byte_count" bson:"src_byte_count"`
-	DstByteCount      uint64                        `json:"dst_byte_count" bson:"dst_byte_count"`
-	SrcPackets        int                           `json:"src_packets" bson:"src_packets"`
-	DstPackets        int                           `json:"dst_packets" bson:"dst_packets"`
-	IPFix             map[string]DictionaryTypeSTIX `json:"ipfix" bson:"ipfix"`
-	SrcPayloadRef     IdentifierTypeSTIX            `json:"src_payload_ref" bson:"src_payload_ref"`
-	DstPayloadRef     IdentifierTypeSTIX            `json:"dst_payload_ref" bson:"dst_payload_ref"`
-	EncapsulatesRefs  []IdentifierTypeSTIX          `json:"encapsulates_refs" bson:"encapsulates_refs"`
-	EncapsulatedByRef IdentifierTypeSTIX            `json:"encapsulated_by_ref" bson:"encapsulated_by_ref"`
+	Extensions   map[string]*json.RawMessage `json:"extensions" bson:"extensions"`
+	Start        time.Time                   `json:"start" bson:"start"`
+	End          time.Time                   `json:"end" bson:"end"`
+	IsActive     bool                        `json:"is_active" bson:"is_active"`
+	SrcRef       IdentifierTypeSTIX          `json:"src_ref" bson:"src_ref"`
+	DstRef       IdentifierTypeSTIX          `json:"dst_ref" bson:"dst_ref"`
+	SrcPort      int                         `json:"src_port" bson:"src_port"`
+	DstPort      int                         `json:"dst_port" bson:"dst_port"`
+	Protocols    []string                    `json:"protocols" bson:"protocols"`
+	SrcByteCount uint64                      `json:"src_byte_count" bson:"src_byte_count"`
+	DstByteCount uint64                      `json:"dst_byte_count" bson:"dst_byte_count"`
+	SrcPackets   int                         `json:"src_packets" bson:"src_packets"`
+	DstPackets   int                         `json:"dst_packets" bson:"dst_packets"`
+	//IPFix             map[string]DictionaryTypeSTIX `json:"ipfix" bson:"ipfix"`
+	IPFix             map[string]interface{} `json:"ipfix" bson:"ipfix"`
+	SrcPayloadRef     IdentifierTypeSTIX     `json:"src_payload_ref" bson:"src_payload_ref"`
+	DstPayloadRef     IdentifierTypeSTIX     `json:"dst_payload_ref" bson:"dst_payload_ref"`
+	EncapsulatesRefs  []IdentifierTypeSTIX   `json:"encapsulates_refs" bson:"encapsulates_refs"`
+	EncapsulatedByRef IdentifierTypeSTIX     `json:"encapsulated_by_ref" bson:"encapsulated_by_ref"`
 }
 
 // NetworkTrafficCyberObservableObjectSTIX объект "Network Traffic Object", по терминалогии STIX, содержит объект Сетевого трафика представляющий собой произвольный сетевой трафик,
@@ -832,24 +833,25 @@ type CommonNetworkTrafficCyberObservableObjectSTIX struct {
 type NetworkTrafficCyberObservableObjectSTIX struct {
 	CommonPropertiesObjectSTIX
 	OptionalCommonPropertiesCyberObservableObjectSTIX
-	Extensions        map[string]interface{}        `json:"extensions" bson:"extensions"`
-	Start             time.Time                     `json:"start" bson:"start"`
-	End               time.Time                     `json:"end" bson:"end"`
-	IsActive          bool                          `json:"is_active" bson:"is_active"`
-	SrcRef            IdentifierTypeSTIX            `json:"src_ref" bson:"src_ref"`
-	DstRef            IdentifierTypeSTIX            `json:"dst_ref" bson:"dst_ref"`
-	SrcPort           int                           `json:"src_port" bson:"src_port"`
-	DstPort           int                           `json:"dst_port" bson:"dst_port"`
-	Protocols         []string                      `json:"protocols" bson:"protocols"`
-	SrcByteCount      uint64                        `json:"src_byte_count" bson:"src_byte_count"`
-	DstByteCount      uint64                        `json:"dst_byte_count" bson:"dst_byte_count"`
-	SrcPackets        int                           `json:"src_packets" bson:"src_packets"`
-	DstPackets        int                           `json:"dst_packets" bson:"dst_packets"`
-	IPFix             map[string]DictionaryTypeSTIX `json:"ipfix" bson:"ipfix"`
-	SrcPayloadRef     IdentifierTypeSTIX            `json:"src_payload_ref" bson:"src_payload_ref"`
-	DstPayloadRef     IdentifierTypeSTIX            `json:"dst_payload_ref" bson:"dst_payload_ref"`
-	EncapsulatesRefs  []IdentifierTypeSTIX          `json:"encapsulates_refs" bson:"encapsulates_refs"`
-	EncapsulatedByRef IdentifierTypeSTIX            `json:"encapsulated_by_ref" bson:"encapsulated_by_ref"`
+	Extensions   map[string]interface{} `json:"extensions" bson:"extensions"`
+	Start        time.Time              `json:"start" bson:"start"`
+	End          time.Time              `json:"end" bson:"end"`
+	IsActive     bool                   `json:"is_active" bson:"is_active"`
+	SrcRef       IdentifierTypeSTIX     `json:"src_ref" bson:"src_ref"`
+	DstRef       IdentifierTypeSTIX     `json:"dst_ref" bson:"dst_ref"`
+	SrcPort      int                    `json:"src_port" bson:"src_port"`
+	DstPort      int                    `json:"dst_port" bson:"dst_port"`
+	Protocols    []string               `json:"protocols" bson:"protocols"`
+	SrcByteCount uint64                 `json:"src_byte_count" bson:"src_byte_count"`
+	DstByteCount uint64                 `json:"dst_byte_count" bson:"dst_byte_count"`
+	SrcPackets   int                    `json:"src_packets" bson:"src_packets"`
+	DstPackets   int                    `json:"dst_packets" bson:"dst_packets"`
+	//IPFix             map[string]DictionaryTypeSTIX `json:"ipfix" bson:"ipfix"`
+	IPFix             map[string]string    `json:"ipfix" bson:"ipfix"`
+	SrcPayloadRef     IdentifierTypeSTIX   `json:"src_payload_ref" bson:"src_payload_ref"`
+	DstPayloadRef     IdentifierTypeSTIX   `json:"dst_payload_ref" bson:"dst_payload_ref"`
+	EncapsulatesRefs  []IdentifierTypeSTIX `json:"encapsulates_refs" bson:"encapsulates_refs"`
+	EncapsulatedByRef IdentifierTypeSTIX   `json:"encapsulated_by_ref" bson:"encapsulated_by_ref"`
 }
 
 // CommonProcessCyberObservableObjectSTIX общий объект "Process Object", по терминологии STIX, содержит общие свойства экземпляра компьютерной программы,

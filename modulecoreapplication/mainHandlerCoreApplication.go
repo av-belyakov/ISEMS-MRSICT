@@ -25,7 +25,7 @@ func init() {
 	tst = memorytemporarystoragecommoninformation.NewTemporaryStorage()
 }
 
-//MainHandlerCoreApplication основной обработчик ядра приложения
+// MainHandlerCoreApplication основной обработчик ядра приложения
 func MainHandlerCoreApplication(chanSaveLog chan<- modulelogginginformationerrors.LogMessageType, appConfig *datamodels.AppConfig) {
 	funcName := "MainHandlerCoreApplication"
 
@@ -46,6 +46,7 @@ func MainHandlerCoreApplication(chanSaveLog chan<- modulelogginginformationerror
 	cdbi, err := moduledatabaseinteraction.MainHandlerDataBaseInteraction(chanSaveLog, &appConfig.ConnectionsDataBase, tst)
 	if err != nil {
 		fmt.Println("An error occurred while initializing the database connection module.")
+		fmt.Println("CONNECT DB ERROR, ", err)
 
 		return
 	}

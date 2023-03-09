@@ -2,10 +2,10 @@
     "connectionsDataBase": {
         "mongoDBSettings": {
             "isUseSocket": false,
-            "host": "test-uchet-db.cloud.gcm",
-            "port": 27017,
+            "host": "192.168.9.208",
+            "port": 37017,
             "user": "module-isems-mrsict",
-            "password": "vkL6Zn$jPmt1e1",
+            "password": "vkL6Znj$Pmt1e1",
             "nameDB": "isems-mrsict",
             "unixSocketPath": "../../../../tmp/mongodb.sock"
         },
@@ -18,8 +18,8 @@
     },
     "connectionsDataBase_comments": "настройки доступа к системам управления базами данных",
     "moduleAPIRequestProcessingSettings": {
-        "host": "192.168.13.201",
-        "port": 13000,
+        "host": "192.168.13.3",
+        "port": 13001,
         "users": [{
                 "clientName": "first_isems-ui",
                 "token": "14bb17070e252a0fbcb79c42a0bd7bc0"

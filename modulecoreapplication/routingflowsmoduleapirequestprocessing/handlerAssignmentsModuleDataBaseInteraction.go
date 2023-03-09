@@ -13,7 +13,7 @@ import (
 	"ISEMS-MRSICT/modulelogginginformationerrors"
 )
 
-//HandlerAssignmentsModuleDataBaseInteraction - обработчик ответов от модуля хранилища данных
+// HandlerAssignmentsModuleDataBaseInteraction - обработчик ответов от модуля хранилища данных
 // (описывает общие для всех типов обрабатываемх запросов действия)
 func HandlerAssignmentsModuleDataBaseInteraction(
 	chanSaveLog chan<- modulelogginginformationerrors.LogMessageType,
@@ -167,7 +167,7 @@ func HandlerAssignmentsModuleDataBaseInteraction(
 	}
 }
 
-//handlerDataBaseResponse - непосредственно обработчик ответов на запросы к сущиностям различных типов находящихся в хранилище,
+// handlerDataBaseResponse - непосредственно обработчик ответов на запросы к сущиностям различных типов находящихся в хранилище,
 // приходят от модуля хранилища
 func handlerDataBaseResponse(
 	chanResModAPI chan<- datamodels.ModuleReguestProcessingChannel,
@@ -218,7 +218,7 @@ func handlerDataBaseResponse(
 	return nil
 }
 
-//handlingRBRequest - обработчик запросов на операции с объектами справочниками
+// handlingRBRequest - обработчик запросов на операции с объектами справочниками
 func handlingRBRequests(
 	chanResModAPI chan<- datamodels.ModuleReguestProcessingChannel,
 	maxChunkSize int,
@@ -277,7 +277,7 @@ func handlingRBRequests(
 	return nil
 }
 
-//handlingSearchRequestsSTIXObject - обработчик ответов на запросы поиска по STIX объектам
+// handlingSearchRequestsSTIXObject - обработчик ответов на запросы поиска по STIX объектам
 func handlingSearchRequestsSTIXObject(
 	chanResModAPI chan<- datamodels.ModuleReguestProcessingChannel,
 	maxChunkSize int,
@@ -374,15 +374,13 @@ func handlingSearchRequestsSTIXObject(
 	return nil
 }
 
-//handlingSearchDifferencesObjectsCollection - обработчик ответов на запросы поиска по коллекции отслеживающей изменение объектов
+// handlingSearchDifferencesObjectsCollection - обработчик ответов на запросы поиска по коллекции отслеживающей изменение объектов
 func handlingSearchDifferencesObjectsCollection(
 	chanResModAPI chan<- datamodels.ModuleReguestProcessingChannel,
 	maxChunkSize int,
 	data datamodels.ModuleDataBaseInteractionChannel,
 	result *memorytemporarystoragecommoninformation.TemporaryStorageFoundInformation,
 	ti *memorytemporarystoragecommoninformation.TemporaryStorageTaskInDetailType) error {
-
-	fmt.Println("func 'handlingSearchDifferencesObjectsCollection', START...")
 
 	msgRes := datamodels.ModAPIRequestProcessingResJSON{
 		ModAPIRequestProcessingCommonJSON: datamodels.ModAPIRequestProcessingCommonJSON{
@@ -546,7 +544,7 @@ func handlingSearchDifferencesObjectsCollection(
 //return nil
 //}
 
-//handlingStatisticalRequestsSTIXObject - обработчик ответов на запросы статистичеких данных
+// handlingStatisticalRequestsSTIXObject - обработчик ответов на запросы статистичеких данных
 func handlingStatisticalRequestsSTIXObject(
 	chanResModAPI chan<- datamodels.ModuleReguestProcessingChannel,
 	data datamodels.ModuleDataBaseInteractionChannel,

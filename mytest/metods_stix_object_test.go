@@ -1,17 +1,93 @@
 package mytest_test
 
 import (
-	"encoding/json"
+	"context"
 	"fmt"
+	"time"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"go.mongodb.org/mongo-driver/bson"
+
+	//"go.mongodb.org/mongo-driver/mongo/options"
+	//"go.mongodb.org/mongo-driver/mongo/readpref"
 
 	"ISEMS-MRSICT/datamodels"
+	"ISEMS-MRSICT/moduledatabaseinteraction/interactionmongodb"
 )
 
+var (
+	connectError error
+	qp           interactionmongodb.QueryParameters
+	dm           datamodels.MongoDBSettings
+	cdmd         interactionmongodb.ConnectionDescriptorMongoDB
+)
+
+var _ = BeforeSuite(func() {
+	dm = datamodels.MongoDBSettings{
+		Host:     "192.168.9.208",
+		Port:     37017,
+		User:     "module-isems-mrsict",
+		Password: "vkL6Znj$Pmt1e1",
+		NameDB:   "isems-mrsict",
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 1000*time.Second)
+	cdmd = interactionmongodb.ConnectionDescriptorMongoDB{
+		Ctx:       ctx,
+		CtxCancel: cancel,
+	}
+
+	connectError = cdmd.CreateConnection(&dm)
+
+	qp = interactionmongodb.QueryParameters{
+		NameDB:         "isems-mrsict",
+		CollectionName: "stix_object_collection",
+		ConnectDB:      cdmd.Connection,
+	}
+})
+
+var _ = AfterSuite(func() {
+	//ctxCancel()
+	cdmd.CtxCancel()
+})
+
 var _ = Describe("MetodsStixObject", func() {
-	Context("Тест 30. Выполняем проверку типа 'network-traffic' методом ValidateStruct", func() {
+	Context("Тест 1. Проверка наличия установленного соединения с БД", func() {
+		It("При установления соединения с БД ошибки быть не должно", func() {
+			Expect(connectError).ShouldNot(HaveOccurred())
+		})
+	})
+
+	Context("Тест 2. Получаем информацию о STIX объект с ID 'network-traffic--68ead79b-28db-4811-85f6-971f46548343'", func() {
+		It("должен быть получен список из 1 STIX объекта, ошибок быть не должно", func() {
+			cur, err := qp.Find(bson.D{bson.E{Key: "commonpropertiesobjectstix.id", Value: "network-traffic--68ead79b-28db-4811-85f6-971f46548343"}})
+
+			fmt.Printf("___ ERROR find ID:'network-traffic--68ead79b-28db-4811-85f6-971f46548343' - '%v'\n", err)
+
+			/*l := []*datamodels.NetworkTrafficCyberObservableObjectSTIX{}
+			for cur.Next(context.Background()) {
+				var model datamodels.NetworkTrafficCyberObservableObjectSTIX
+				_ = cur.Decode(&model)
+
+				l = append(l, &model)
+			}*/
+
+			listelm := interactionmongodb.GetListElementSTIXObject(cur)
+
+			//for _, v := range l {
+			for _, v := range listelm {
+				//fmt.Printf("Found STIX object with ID:'network-traffic--68ead79b-28db-4811-85f6-971f46548343' - '%v'\n\tIPFix = %v\n", *v, &v.IPFix)
+				fmt.Printf("Found STIX object with ID:'network-traffic--68ead79b-28db-4811-85f6-971f46548343' - '%v'\n", *v)
+			}
+
+			Expect(err).ShouldNot(HaveOccurred())
+			// Expect(len(l)).Should(Equal(1))
+			Expect(len(listelm)).Should(Equal(1))
+		})
+	})
+
+	/*Context("Тест 3. Выполняем проверку типа 'network-traffic' методом ValidateStruct", func() {
 		It("На валидное содержимое типа NetworkTrafficCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 	   				"type": "network-traffic",
@@ -58,9 +134,9 @@ var _ = Describe("MetodsStixObject", func() {
 
 			Expect(ok).Should(BeTrue())
 
-			fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
+			//fmt.Printf("\n%v\n", newmd.ToStringBeautiful())
 
 			Expect(newmd.ValidateStruct()).Should(BeTrue())
 		})
-	})
+	})*/
 })

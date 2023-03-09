@@ -666,7 +666,7 @@ var _ = Describe("HandlerSearchSTIXColection", func() {
 			var results []bson.M
 			err = cur.All(context.TODO(), &results)
 
-			fmt.Printf("||| RESULT (decisions_made_computer_threat) |||\n'%v'\n", results)
+			//fmt.Printf("||| RESULT (decisions_made_computer_threat) |||\n'%v'\n", results)
 			for k, v := range results {
 				name, ok := v["_id"].(string)
 				if !ok {

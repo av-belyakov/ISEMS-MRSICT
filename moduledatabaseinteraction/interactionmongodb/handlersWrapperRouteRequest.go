@@ -13,7 +13,7 @@ import (
 	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
 )
 
-//searchSTIXObject обработчик поисковых запросов, связанных с поиском STIX объектов, по заданным пользователем параметрам
+// searchSTIXObject обработчик поисковых запросов, связанных с поиском STIX объектов, по заданным пользователем параметрам
 func searchSTIXObject(
 	appTaskID string,
 	qp QueryParameters,
@@ -95,7 +95,7 @@ func searchSTIXObject(
 	return fn, nil
 }
 
-//searchDifferencesObjectsCollection обработчик поисковых запросов, связанных с поиском информации в коллекции истории предыдущих состояний STIX объектов
+// searchDifferencesObjectsCollection обработчик поисковых запросов, связанных с поиском информации в коллекции истории предыдущих состояний STIX объектов
 func searchDifferencesObjectsCollection(
 	appTaskID string,
 	qp QueryParameters,
@@ -201,7 +201,7 @@ func searchDifferencesObjectsCollection(
 	return fn, err
 }
 
-//ResultStatisticalInformationSTIXObject содержит результат поиска статистической информации по STIX объектам
+// ResultStatisticalInformationSTIXObject содержит результат поиска статистической информации по STIX объектам
 // InformationType - тип статистической информации
 // ListComputerThreat - список статистической информации по компьютерным угрозам
 type ResultStatisticalInformationSTIXObject struct {
@@ -209,7 +209,7 @@ type ResultStatisticalInformationSTIXObject struct {
 	ListComputerThreat map[string]int32 `json:"list_computer_threat"`
 }
 
-//statisticalInformationSTIXObject обработчик поиска статистической информации о STIX объектах
+// statisticalInformationSTIXObject обработчик поиска статистической информации о STIX объектах
 func statisticalInformationSTIXObject(
 	parameters struct {
 		appTaskID                  string

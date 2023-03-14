@@ -2,6 +2,7 @@ package mytest_test
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -63,8 +64,7 @@ var _ = Describe("MetodsStixObject", func() {
 		It("должен быть получен список из 1 STIX объекта, ошибок быть не должно", func() {
 			cur, err := qp.Find(bson.D{bson.E{Key: "commonpropertiesobjectstix.id", Value: "network-traffic--68ead79b-28db-4811-85f6-971f46548343"}})
 
-			fmt.Printf("___ ERROR find ID:'network-traffic--68ead79b-28db-4811-85f6-971f46548343' - '%v'\n", err)
-
+			//fmt.Printf("___ ERROR find ID:'network-traffic--68ead79b-28db-4811-85f6-971f46548343' - '%v'\n", err)
 			/*l := []*datamodels.NetworkTrafficCyberObservableObjectSTIX{}
 			for cur.Next(context.Background()) {
 				var model datamodels.NetworkTrafficCyberObservableObjectSTIX
@@ -75,7 +75,6 @@ var _ = Describe("MetodsStixObject", func() {
 
 			listelm := interactionmongodb.GetListElementSTIXObject(cur)
 
-			//for _, v := range l {
 			for _, v := range listelm {
 				//fmt.Printf("Found STIX object with ID:'network-traffic--68ead79b-28db-4811-85f6-971f46548343' - '%v'\n\tIPFix = %v\n", *v, &v.IPFix)
 				fmt.Printf("Found STIX object with ID:'network-traffic--68ead79b-28db-4811-85f6-971f46548343' - '%v'\n", *v)
@@ -87,7 +86,7 @@ var _ = Describe("MetodsStixObject", func() {
 		})
 	})
 
-	/*Context("Тест 3. Выполняем проверку типа 'network-traffic' методом ValidateStruct", func() {
+	Context("Тест 3. Выполняем проверку типа 'network-traffic' методом ValidateStruct", func() {
 		It("На валидное содержимое типа NetworkTrafficCyberObservableObjectSTIX должно быть TRUE, ошибки при декодировании быть не должно", func() {
 			mdbyte := json.RawMessage([]byte(`{
 	   				"type": "network-traffic",
@@ -138,5 +137,5 @@ var _ = Describe("MetodsStixObject", func() {
 
 			Expect(newmd.ValidateStruct()).Should(BeTrue())
 		})
-	})*/
+	})
 })

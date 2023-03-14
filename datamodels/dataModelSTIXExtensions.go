@@ -7,7 +7,7 @@ import (
 	"ISEMS-MRSICT/commonlibs"
 )
 
-//decodingExtensionsSTIX декодирует следующие типы STIX расширений:
+// decodingExtensionsSTIX декодирует следующие типы STIX расширений:
 // - "archive-ext"
 // - "ntfs-ext"
 // - "pdf-ext"
@@ -88,7 +88,7 @@ func decodingExtensionsSTIX(extType string, rawMsg *json.RawMessage) (interface{
 	}
 }
 
-//checkingExtensionsSTIX выполняет проверку полей следующих типов STIX расширений:
+// checkingExtensionsSTIX выполняет проверку полей следующих типов STIX расширений:
 // - "archive-ext"
 // - "windows-pebinary-ext"
 // - "http-request-ext"
@@ -134,7 +134,7 @@ func checkingExtensionsSTIX(extType interface{}) bool {
 	return true
 }
 
-//sanitizeExtensionsSTIX для ряда полей следующих типов STIX расширений:
+// sanitizeExtensionsSTIX для ряда полей следующих типов STIX расширений:
 // - "archive-ext"
 // - "ntfs-ext"
 // - "pdf-ext"
@@ -248,10 +248,18 @@ func sanitizeExtensionsSTIX(extType interface{}) interface{} {
 
 	case HTTPRequestExtensionSTIX:
 		return HTTPRequestExtensionSTIX{
-			RequestMethod:      commonlibs.StringSanitize(et.RequestMethod),
-			RequestValue:       commonlibs.StringSanitize(et.RequestValue),
-			RequestVersion:     commonlibs.StringSanitize(et.RequestVersion),
-			RequestHeader:      sanitizeDictionaryList(et.RequestHeader),
+			RequestMethod:  commonlibs.StringSanitize(et.RequestMethod),
+			RequestValue:   commonlibs.StringSanitize(et.RequestValue),
+			RequestVersion: commonlibs.StringSanitize(et.RequestVersion),
+			//RequestHeader:      sanitizeDictionaryList(et.RequestHeader),
+			RequestHeader: func(rh map[string]string) map[string]string {
+				mapTmp := make(map[string]string, len(rh))
+				for k, v := range rh {
+					mapTmp[k] = commonlibs.StringSanitize(v)
+				}
+
+				return mapTmp
+			}(et.RequestHeader),
 			MessageBodyLength:  et.MessageBodyLength,
 			MessageBodyDataRef: et.MessageBodyDataRef,
 		}
@@ -330,7 +338,7 @@ func sanitizeExtensionsSTIX(extType interface{}) interface{} {
 	return extType
 }
 
-//toStringBeautiful выполняет красивое представление информации содержащейся в следующих типах
+// toStringBeautiful выполняет красивое представление информации содержащейся в следующих типах
 // - "archive-ext"
 // - "ntfs-ext"
 // - "pdf-ext"

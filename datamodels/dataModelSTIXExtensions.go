@@ -22,6 +22,9 @@ import (
 // - "unix-account-ext"
 func decodingExtensionsSTIX(extType string, rawMsg *json.RawMessage) (interface{}, error) {
 	var err error
+
+	//fmt.Printf("func 'decodingExtensionsSTIX', extType = %s, \n", extType)
+
 	switch extType {
 	case "archive-ext":
 		var archiveExt ArchiveFileExtensionSTIX
@@ -41,6 +44,8 @@ func decodingExtensionsSTIX(extType string, rawMsg *json.RawMessage) (interface{
 	case "raster-image-ext":
 		var rasterImageExt RasterImageFileExtensionSTIX
 		err = json.Unmarshal(*rawMsg, &rasterImageExt)
+
+		//fmt.Printf("func 'decodingExtensionsSTIX', rasterImageExt = %v, \n", rasterImageExt)
 
 		return rasterImageExt, err
 	case "windows-pebinary-ext":
@@ -149,24 +154,20 @@ func checkingExtensionsSTIX(extType interface{}) bool {
 // - "unix-account-ext"
 // выполняет замену некоторых специальных символов на их HTML код
 func sanitizeExtensionsSTIX(extType interface{}) interface{} {
-	sanitizeDictionaryList := func(l map[string]DictionaryTypeSTIX) map[string]DictionaryTypeSTIX {
-		size := len(l)
-
-		if size == 0 {
-			return map[string]DictionaryTypeSTIX{}
+	sanitizeList := func(rh map[string]string) map[string]string {
+		mapTmp := make(map[string]string, len(rh))
+		for k, v := range rh {
+			mapTmp[k] = commonlibs.StringSanitize(v)
 		}
 
-		tmp := make(map[string]DictionaryTypeSTIX, size)
-		for k, v := range l {
-			switch v := v.dictionary.(type) {
-			case string:
-				tmp[k] = DictionaryTypeSTIX{commonlibs.StringSanitize(string(v))}
-			default:
-				tmp[k] = DictionaryTypeSTIX{v}
-			}
-		}
+		return mapTmp
+	}
 
-		return tmp
+	sanitizeExifTags := func(et ExifTags) ExifTags {
+		et.Make = commonlibs.StringSanitize(et.Make)
+		et.Model = commonlibs.StringSanitize(et.Model)
+
+		return et
 	}
 
 	switch et := extType.(type) {
@@ -199,7 +200,7 @@ func sanitizeExtensionsSTIX(extType interface{}) interface{} {
 		return PDFFileExtensionSTIX{
 			Version:          commonlibs.StringSanitize(et.Version),
 			IsOptimized:      et.IsOptimized,
-			DocumentInfoDict: sanitizeDictionaryList(et.DocumentInfoDict),
+			DocumentInfoDict: sanitizeList(et.DocumentInfoDict),
 			Pdfid0:           commonlibs.StringSanitize(et.Pdfid0),
 			Pdfid1:           commonlibs.StringSanitize(et.Pdfid1),
 		}
@@ -209,7 +210,7 @@ func sanitizeExtensionsSTIX(extType interface{}) interface{} {
 			ImageHeight:  et.ImageHeight,
 			ImageWidth:   et.ImageWidth,
 			BitsPerPixel: et.BitsPerPixel,
-			ExifTags:     sanitizeDictionaryList(et.ExifTags),
+			ExifTags:     sanitizeExifTags(et.ExifTags),
 		}
 
 	case WindowsPEBinaryFileExtensionSTIX:
@@ -248,18 +249,10 @@ func sanitizeExtensionsSTIX(extType interface{}) interface{} {
 
 	case HTTPRequestExtensionSTIX:
 		return HTTPRequestExtensionSTIX{
-			RequestMethod:  commonlibs.StringSanitize(et.RequestMethod),
-			RequestValue:   commonlibs.StringSanitize(et.RequestValue),
-			RequestVersion: commonlibs.StringSanitize(et.RequestVersion),
-			//RequestHeader:      sanitizeDictionaryList(et.RequestHeader),
-			RequestHeader: func(rh map[string]string) map[string]string {
-				mapTmp := make(map[string]string, len(rh))
-				for k, v := range rh {
-					mapTmp[k] = commonlibs.StringSanitize(v)
-				}
-
-				return mapTmp
-			}(et.RequestHeader),
+			RequestMethod:      commonlibs.StringSanitize(et.RequestMethod),
+			RequestValue:       commonlibs.StringSanitize(et.RequestValue),
+			RequestVersion:     commonlibs.StringSanitize(et.RequestVersion),
+			RequestHeader:      sanitizeList(et.RequestHeader),
 			MessageBodyLength:  et.MessageBodyLength,
 			MessageBodyDataRef: et.MessageBodyDataRef,
 		}
@@ -275,7 +268,7 @@ func sanitizeExtensionsSTIX(extType interface{}) interface{} {
 			AddressFamily:    EnumTypeSTIX((commonlibs.StringSanitize(string(et.AddressFamily)))),
 			IsBlocking:       et.IsBlocking,
 			IsListening:      et.IsListening,
-			Options:          sanitizeDictionaryList(et.Options),
+			Options:          et.Options,
 			SocketType:       EnumTypeSTIX((commonlibs.StringSanitize(string(et.SocketType)))),
 			SocketDescriptor: et.SocketDescriptor,
 			SocketHandle:     et.SocketHandle,
@@ -294,7 +287,7 @@ func sanitizeExtensionsSTIX(extType interface{}) interface{} {
 			Priority:       commonlibs.StringSanitize(et.Priority),
 			OwnerSID:       commonlibs.StringSanitize(et.OwnerSID),
 			WindowTitle:    commonlibs.StringSanitize(et.WindowTitle),
-			StartupInfo:    sanitizeDictionaryList(et.StartupInfo),
+			StartupInfo:    sanitizeList(et.StartupInfo),
 			IntegrityLevel: EnumTypeSTIX(commonlibs.StringSanitize(string(et.IntegrityLevel))),
 		}
 
@@ -390,9 +383,10 @@ func toStringBeautiful(extType interface{}) string {
 		str += fmt.Sprintf("\t\timage_width: '%d'\n", et.ImageWidth)
 		str += fmt.Sprintf("\t\tbits_per_pixel: '%d'\n", et.BitsPerPixel)
 		str += fmt.Sprintln("\t\texif_tags:")
-		for k, v := range et.ExifTags {
-			str += fmt.Sprintf("\t\t\t'%s': '%v'\n", k, v)
-		}
+		str += fmt.Sprintf("\t\t\t'make': '%s'\n", et.ExifTags.Make)
+		str += fmt.Sprintf("\t\t\t'model': '%s'\n", et.ExifTags.Model)
+		str += fmt.Sprintf("\t\t\t'xResolution': '%d'\n", et.ExifTags.XResolution)
+		str += fmt.Sprintf("\t\t\t'yResolution': '%d'\n", et.ExifTags.YResolution)
 
 	case WindowsPEBinaryFileExtensionSTIX:
 		str += fmt.Sprintf("pe_type: '%v'\n", et.PeType)

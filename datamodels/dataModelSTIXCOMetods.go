@@ -44,24 +44,6 @@ func (ocpcstix *OptionalCommonPropertiesCyberObservableObjectSTIX) validateStruc
 	return true
 }
 
-/*func (ocpcstix OptionalCommonPropertiesCyberObservableObjectSTIX) sanitizeStruct() OptionalCommonPropertiesCyberObservableObjectSTIX {
-	//обработка содержимого списка поля Extensions
-	if len(ocpcstix.Extensions) > 0 {
-		ext := make(map[string]DictionaryTypeSTIX, len(ocpcstix.Extensions))
-		for k, v := range ocpcstix.Extensions {
-			switch v := v.dictionary.(type) {
-			case string:
-				ext[k] = DictionaryTypeSTIX{commonlibs.StringSanitize(string(v))}
-			default:
-				ext[k] = DictionaryTypeSTIX{v}
-			}
-		}
-		ocpcstix.Extensions = ext
-	}
-
-	return ocpcstix
-}*/
-
 func (ocpcstix OptionalCommonPropertiesCyberObservableObjectSTIX) ToStringBeautiful() string {
 	var str string
 	str += fmt.Sprintf("spec_version: '%s'\n", ocpcstix.SpecVersion)
@@ -89,13 +71,6 @@ func (ocpcstix OptionalCommonPropertiesCyberObservableObjectSTIX) ToStringBeauti
 		return str
 	}(ocpcstix.GranularMarkings))
 	str += fmt.Sprintf("defanged: '%v'\n", ocpcstix.Defanged)
-	/*str += fmt.Sprintf("extensions: \n%v", func(l map[string]DictionaryTypeSTIX) string {
-		var str string
-		for k, v := range l {
-			str += fmt.Sprintf("\t'%s': '%v'\n", k, v)
-		}
-		return str
-	}(ocpcstix.Extensions))*/
 
 	return str
 }
@@ -367,8 +342,6 @@ func (dstix DirectoryCyberObservableObjectSTIX) ValidateStruct() bool {
 
 // SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (dstix DirectoryCyberObservableObjectSTIX) SanitizeStruct() DirectoryCyberObservableObjectSTIX {
-	//dstix.OptionalCommonPropertiesCyberObservableObjectSTIX = dstix.sanitizeStruct()
-
 	dstix.PathEnc = commonlibs.StringSanitize(dstix.PathEnc)
 
 	return dstix
@@ -480,8 +453,6 @@ func (dnstix DomainNameCyberObservableObjectSTIX) ValidateStruct() bool {
 
 // SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (dnstix DomainNameCyberObservableObjectSTIX) SanitizeStruct() DomainNameCyberObservableObjectSTIX {
-	//dnstix.OptionalCommonPropertiesCyberObservableObjectSTIX = dnstix.sanitizeStruct()
-
 	return dnstix
 }
 
@@ -589,8 +560,6 @@ func (eastix EmailAddressCyberObservableObjectSTIX) ValidateStruct() bool {
 
 // SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (eastix EmailAddressCyberObservableObjectSTIX) SanitizeStruct() EmailAddressCyberObservableObjectSTIX {
-	//eastix.OptionalCommonPropertiesCyberObservableObjectSTIX = eastix.sanitizeStruct()
-
 	eastix.DisplayName = commonlibs.StringSanitize(eastix.DisplayName)
 
 	return eastix
@@ -731,8 +700,6 @@ func (emstix EmailMessageCyberObservableObjectSTIX) ValidateStruct() bool {
 
 // SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (emstix EmailMessageCyberObservableObjectSTIX) SanitizeStruct() EmailMessageCyberObservableObjectSTIX {
-	//emstix.OptionalCommonPropertiesCyberObservableObjectSTIX = emstix.sanitizeStruct()
-
 	emstix.ContentType = commonlibs.StringSanitize(emstix.ContentType)
 	emstix.MessageID = commonlibs.StringSanitize(emstix.MessageID)
 	emstix.Subject = commonlibs.StringSanitize(emstix.Subject)
@@ -913,6 +880,7 @@ func (fstix FileCyberObservableObjectSTIX) DecoderJSON(raw *json.RawMessage) (in
 	ext := map[string]interface{}{}
 	for key, value := range commonObject.Extensions {
 		e, err := decodingExtensionsSTIX(key, value)
+
 		if err != nil {
 			continue
 		}
@@ -969,6 +937,7 @@ func (fstix FileCyberObservableObjectSTIX) ValidateStruct() bool {
 
 	if len(fstix.Extensions) > 0 {
 		for _, v := range fstix.Extensions {
+
 			if !checkingExtensionsSTIX(v) {
 				return false
 			}
@@ -980,8 +949,6 @@ func (fstix FileCyberObservableObjectSTIX) ValidateStruct() bool {
 
 // SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (fstix FileCyberObservableObjectSTIX) SanitizeStruct() FileCyberObservableObjectSTIX {
-	//fstix.OptionalCommonPropertiesCyberObservableObjectSTIX = fstix.sanitizeStruct()
-
 	fstix.Name = commonlibs.StringSanitize(fstix.Name)
 	fstix.NameEnc = commonlibs.StringSanitize(fstix.NameEnc)
 	fstix.MagicNumberHex = commonlibs.StringSanitize(fstix.MagicNumberHex)
@@ -1281,8 +1248,6 @@ func (ip6stix IPv6AddressCyberObservableObjectSTIX) ValidateStruct() bool {
 
 // SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (ip6stix IPv6AddressCyberObservableObjectSTIX) SanitizeStruct() IPv6AddressCyberObservableObjectSTIX {
-	//ip6stix.OptionalCommonPropertiesCyberObservableObjectSTIX = ip6stix.sanitizeStruct()
-
 	return ip6stix
 }
 
@@ -1392,8 +1357,6 @@ func (macstix MACAddressCyberObservableObjectSTIX) ValidateStruct() bool {
 
 // SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (macstix MACAddressCyberObservableObjectSTIX) SanitizeStruct() MACAddressCyberObservableObjectSTIX {
-	//macstix.OptionalCommonPropertiesCyberObservableObjectSTIX = macstix.sanitizeStruct()
-
 	return macstix
 }
 
@@ -1576,19 +1539,6 @@ func (ntstix NetworkTrafficCyberObservableObjectSTIX) DecoderJSON(raw *json.RawM
 		EncapsulatedByRef: commonObject.EncapsulatedByRef,
 	}
 
-	/*
-			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		Надо подумать по поводу ntstix.Extensions, так как при загрузки объекта с заполненым
-		ntstix.Extensions данные для этого свойства не добавляются в него
-		Кроме того функция checkingExtensionsSTIX выполняет проверку полей следующих типов STIX расширений:
-		// - "archive-ext"
-		// - "windows-pebinary-ext"
-		// - "http-request-ext"
-		// - "windows-service-ext"
-		не пропустит данные в виде map[string]string
-			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	*/
-
 	if len(commonObject.Extensions) > 0 {
 		ext := map[string]interface{}{}
 		for key, value := range commonObject.Extensions {
@@ -1685,8 +1635,6 @@ func (ntstix NetworkTrafficCyberObservableObjectSTIX) ValidateStruct() bool {
 
 // SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (ntstix NetworkTrafficCyberObservableObjectSTIX) SanitizeStruct() NetworkTrafficCyberObservableObjectSTIX {
-	//ntstix.OptionalCommonPropertiesCyberObservableObjectSTIX = ntstix.sanitizeStruct()
-
 	esize := len(ntstix.Extensions)
 	if esize > 0 {
 		tmp := make(map[string]interface{}, esize)
@@ -1913,21 +1861,15 @@ func (pstix ProcessCyberObservableObjectSTIX) ValidateStruct() bool {
 
 // SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (pstix ProcessCyberObservableObjectSTIX) SanitizeStruct() ProcessCyberObservableObjectSTIX {
-	//pstix.OptionalCommonPropertiesCyberObservableObjectSTIX = pstix.sanitizeStruct()
-
 	pstix.Cwd = commonlibs.StringSanitize(pstix.Cwd)
 	pstix.CommandLine = commonlibs.StringSanitize(pstix.CommandLine)
 
 	sizeEnv := len(pstix.EnvironmentVariables)
 	if sizeEnv > 0 {
-		tmp := make(map[string]DictionaryTypeSTIX, sizeEnv)
+		//tmp := make(map[string]DictionaryTypeSTIX, sizeEnv)
+		tmp := make(map[string]string, sizeEnv)
 		for k, v := range pstix.EnvironmentVariables {
-			switch v := v.dictionary.(type) {
-			case string:
-				tmp[k] = DictionaryTypeSTIX{commonlibs.StringSanitize(string(v))}
-			default:
-				tmp[k] = DictionaryTypeSTIX{v}
-			}
+			tmp[k] = commonlibs.StringSanitize(string(v))
 		}
 		pstix.EnvironmentVariables = tmp
 	}
@@ -1985,13 +1927,10 @@ func (pstix ProcessCyberObservableObjectSTIX) ToStringBeautiful() string {
 	str += fmt.Sprintf("created_time: '%v'\n", pstix.CreatedTime)
 	str += fmt.Sprintf("cwd: '%s'\n", pstix.Cwd)
 	str += fmt.Sprintf("command_line: '%s'\n", pstix.CommandLine)
-	str += fmt.Sprintf("environment_variables: \n%v", func(l map[string]DictionaryTypeSTIX) string {
-		var str string
-		for k, v := range l {
-			str += fmt.Sprintf("\t'%s': '%v'\n", k, v)
-		}
-		return str
-	}(pstix.EnvironmentVariables))
+	str += fmt.Sprintln("environment_variables:")
+	for k, v := range pstix.EnvironmentVariables {
+		str += fmt.Sprintf("\t%s:%v\n", k, toStringBeautiful(v))
+	}
 	str += fmt.Sprintf("opened_connection_refs: \n%v", func(l []IdentifierTypeSTIX) string {
 		var str string
 		for k, v := range l {
@@ -2062,8 +2001,6 @@ func (sstix SoftwareCyberObservableObjectSTIX) ValidateStruct() bool {
 
 // SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (sstix SoftwareCyberObservableObjectSTIX) SanitizeStruct() SoftwareCyberObservableObjectSTIX {
-	//sstix.OptionalCommonPropertiesCyberObservableObjectSTIX = sstix.sanitizeStruct()
-
 	sstix.Name = commonlibs.StringSanitize(sstix.Name)
 	sstix.CPE = commonlibs.StringSanitize(sstix.CPE)
 	sstix.SwID = commonlibs.StringSanitize(sstix.SwID)
@@ -2187,8 +2124,6 @@ func (urlstix URLCyberObservableObjectSTIX) ValidateStruct() bool {
 
 // SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (urlstix URLCyberObservableObjectSTIX) SanitizeStruct() URLCyberObservableObjectSTIX {
-	//urlstix.OptionalCommonPropertiesCyberObservableObjectSTIX = urlstix.sanitizeStruct()
-
 	return urlstix
 }
 
@@ -2281,8 +2216,6 @@ func (uastix UserAccountCyberObservableObjectSTIX) ValidateStruct() bool {
 
 // SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (uastix UserAccountCyberObservableObjectSTIX) SanitizeStruct() UserAccountCyberObservableObjectSTIX {
-	//uastix.OptionalCommonPropertiesCyberObservableObjectSTIX = uastix.sanitizeStruct()
-
 	uastix.UserID = commonlibs.StringSanitize(uastix.UserID)
 	uastix.Credential = commonlibs.StringSanitize(uastix.Credential)
 	uastix.AccountLogin = commonlibs.StringSanitize(uastix.AccountLogin)
@@ -2406,8 +2339,6 @@ func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) ValidateStruct() bool
 
 // SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (wrkstix WindowsRegistryKeyCyberObservableObjectSTIX) SanitizeStruct() WindowsRegistryKeyCyberObservableObjectSTIX {
-	//wrkstix.OptionalCommonPropertiesCyberObservableObjectSTIX = wrkstix.sanitizeStruct()
-
 	wrkstix.Key = commonlibs.StringSanitize(wrkstix.Key)
 
 	sizev := len(wrkstix.Values)
@@ -2524,8 +2455,6 @@ func (x509sstix X509CertificateCyberObservableObjectSTIX) ValidateStruct() bool 
 
 // SanitizeStruct для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (x509sstix X509CertificateCyberObservableObjectSTIX) SanitizeStruct() X509CertificateCyberObservableObjectSTIX {
-	//x509sstix.OptionalCommonPropertiesCyberObservableObjectSTIX = x509sstix.sanitizeStruct()
-
 	x509sstix.Version = commonlibs.StringSanitize(x509sstix.Version)
 	x509sstix.SerialNumber = commonlibs.StringSanitize(x509sstix.SerialNumber)
 	x509sstix.SignatureAlgorithm = commonlibs.StringSanitize(x509sstix.SignatureAlgorithm)

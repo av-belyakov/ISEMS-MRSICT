@@ -6,6 +6,7 @@ import (
 	"net"
 	"regexp"
 	"strconv"
+	"strings"
 	"time"
 
 	"ISEMS-MRSICT/commonlibs"
@@ -285,7 +286,7 @@ func (asstix AutonomousSystemCyberObservableObjectSTIX) GeneratingDataForIndexin
 	}
 
 	if asstix.Name != "" {
-		dataForIndex["name"] = asstix.Name
+		dataForIndex["name"] = strings.ToUpper(asstix.Name)
 	}
 
 	return dataForIndex
@@ -513,7 +514,7 @@ func (dnstix DomainNameCyberObservableObjectSTIX) GeneratingDataForIndexing() ma
 	}
 
 	if dnstix.Value != "" {
-		dataForIndex["value"] = dnstix.Value
+		dataForIndex["value"] = strings.ToUpper(dnstix.Value)
 	}
 
 	return dataForIndex
@@ -617,7 +618,7 @@ func (eastix EmailAddressCyberObservableObjectSTIX) GeneratingDataForIndexing() 
 	}
 
 	if eastix.Value != "" {
-		dataForIndex["value"] = eastix.Value
+		dataForIndex["value"] = strings.ToUpper(eastix.Value)
 	}
 
 	return dataForIndex
@@ -1040,7 +1041,7 @@ func (fstix FileCyberObservableObjectSTIX) GeneratingDataForIndexing() map[strin
 	}
 
 	if fstix.Name != "" {
-		dataForIndex["name"] = fstix.Name
+		dataForIndex["name"] = strings.ToUpper(fstix.Name)
 	}
 
 	return dataForIndex
@@ -1503,7 +1504,7 @@ func (mstix MutexCyberObservableObjectSTIX) GeneratingDataForIndexing() map[stri
 	}
 
 	if mstix.Name != "" {
-		dataForIndex["name"] = mstix.Name
+		dataForIndex["name"] = strings.ToUpper(mstix.Name)
 	}
 
 	return dataForIndex
@@ -2081,7 +2082,7 @@ func (sstix SoftwareCyberObservableObjectSTIX) GeneratingDataForIndexing() map[s
 	}
 
 	if sstix.Name != "" {
-		dataForIndex["name"] = sstix.Name
+		dataForIndex["name"] = strings.ToUpper(sstix.Name)
 	}
 
 	return dataForIndex
@@ -2177,7 +2178,7 @@ func (urlstix URLCyberObservableObjectSTIX) GeneratingDataForIndexing() map[stri
 	}
 
 	if urlstix.Value != "" {
-		dataForIndex["value"] = urlstix.Value
+		dataForIndex["value"] = strings.ToUpper(urlstix.Value)
 	}
 
 	return dataForIndex

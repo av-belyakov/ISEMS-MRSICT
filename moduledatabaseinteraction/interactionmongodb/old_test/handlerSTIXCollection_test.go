@@ -11,7 +11,7 @@ import (
 	"reflect"
 	"time"
 
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -1573,12 +1573,12 @@ func ComparisonTypeCommonFields(before, after datamodels.CommonPropertiesDomainO
 	return isEqual, contrast, nil
 }
 
-//ComparasionListTypeSTIXObject содержит два списка STIX объектов, предназначенных для сравнения
+// ComparasionListTypeSTIXObject содержит два списка STIX объектов, предназначенных для сравнения
 type ComparasionListTypeSTIXObject struct {
 	OldList, NewList []datamodels.ElementSTIXObject
 }
 
-//ComparasionListSTIXObject выполняет сравнение двух списков STIX объектов, cписка STIX объектов, полученных из БД и принятых от клиента API
+// ComparasionListSTIXObject выполняет сравнение двух списков STIX объектов, cписка STIX объектов, полученных из БД и принятых от клиента API
 func ComparasionListSTIXObject(clt ComparasionListTypeSTIXObject) []datamodels.DifferentObjectType {
 	var (
 		listDifferentResult []datamodels.DifferentObjectType

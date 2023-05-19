@@ -8,6 +8,8 @@ import (
 	. "github.com/onsi/gomega"
 
 	"ISEMS-MRSICT/datamodels"
+
+	mstixo "github.com/av-belyakov/methodstixobjects"
 )
 
 var _ = Describe("MetodsStixObject", func() {
@@ -26,12 +28,12 @@ var _ = Describe("MetodsStixObject", func() {
 	   	"labels": ["__lable 1", "__lable 2", "__lable$ 3 <.'"],
 	   	"aliases": ["new ali&ase", "aliase <>", "Ali12$$"]
 	   }`))
-			var apo datamodels.AttackPatternDomainObjectsSTIX
-			apoTmp, err := apo.DecoderJSON(&apbyte)
+			var apo mstixo.AttackPatternDomainObjectsSTIX
+			apoTmp, err := apo.DecodeJSON(&apbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
-			newapo, ok := apoTmp.(datamodels.AttackPatternDomainObjectsSTIX)
+			newapo, ok := apoTmp.(mstixo.AttackPatternDomainObjectsSTIX)
 			apoIsTrue := newapo.ValidateStruct()
 			newapo = newapo.SanitizeStruct()
 

@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"path"
+	"path/filepath"
 
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
 	"github.com/RediSearch/redisearch-go/redisearch"
@@ -31,7 +33,7 @@ func readConfigApp(fileName string, appc *datamodels.AppConfig) error {
 	return err
 }
 
-var _ = Describe("AddIndexSTIXObject", func() {
+var _ = Describe("AddIndexSTIXObject", Ordered, func() {
 	var (
 		appConfig datamodels.AppConfig
 
@@ -45,9 +47,9 @@ var _ = Describe("AddIndexSTIXObject", func() {
 		listElementSTIX                []*datamodels.ElementSTIXObject
 	)
 
-	var _ = BeforeSuite(func() {
+	BeforeAll(func() {
 		errConnect = cdrdb.CreateConnection(&datamodels.RedisearchDBSettings{
-			Host: "test-uchet-db.cloud.gcm",
+			Host: "192.168.9.208",
 			Port: 6379,
 		})
 		//cdrdb.Connection.Drop()
@@ -61,13 +63,12 @@ var _ = Describe("AddIndexSTIXObject", func() {
 	})
 
 	Context("Test 0. Read config file", func() {
-		It("Должен быть успешно прочитан конфинурационный файл", func() {
-			//dir, errOne := filepath.Abs(filepath.Dir(os.Args[0]))
-			//Expect(errOne).ShouldNot(HaveOccurred())
-			dir := ""
+		It("Должен быть успешно прочитан конфигурационный файл", func() {
+			dir, errOne := filepath.Abs(filepath.Dir(os.Args[0]))
+			Expect(errOne).ShouldNot(HaveOccurred())
 
 			//читаем конфигурационный файл приложения
-			errTwo := readConfigApp(path.Join(dir, "/Users/user/go/src/ISEMS-MRSICT/config.json"), &appConfig)
+			errTwo := readConfigApp(path.Join(dir, "../../config.json"), &appConfig)
 			Expect(errTwo).ShouldNot(HaveOccurred())
 		})
 	})
@@ -143,7 +144,7 @@ var _ = Describe("AddIndexSTIXObject", func() {
 						continue
 					}
 
-					fmt.Printf("Key: %v, Value: %v\n", key, value)
+					//fmt.Printf("Key: %v, Value: %v\n", key, value)
 
 					tmp.Set(key, value)
 				}
@@ -294,7 +295,7 @@ var _ = Describe("AddIndexSTIXObject", func() {
 					},
 				))
 
-			fmt.Printf("______ docNum1: %d\n docList1: %v\n", docNum, docList)
+			fmt.Printf("______ docNum2: %d\n docList2: %v\n", docNum, docList)
 
 			Expect(err).ShouldNot(HaveOccurred())
 		})

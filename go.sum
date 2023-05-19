@@ -2,6 +2,8 @@ github.com/RediSearch/redisearch-go v1.1.1 h1:YElqguUO9lSqCYszrQcoTUoB9zBRyb2gkO
 github.com/RediSearch/redisearch-go v1.1.1/go.mod h1:vcSdla+ZmI3B9doZbLoUrwNJfuvJzRt+/FoE38JcMS8=
 github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 h1:DklsrG3dyBCFEj5IhUbnKptjxatkF07cF2ak3yi77so=
 github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2/go.mod h1:WaHUgvxTVq04UNunO+XhnAqY/wQc+bxr74GqbsZ/Jqw=
+github.com/av-belyakov/methodstixobjects v0.0.0-20230519074412-b0ea6b6f29c0 h1:cF+m2rhDbNvMl+2PM8jFVaiC0kigyRASTX17O6Hk2G8=
+github.com/av-belyakov/methodstixobjects v0.0.0-20230519074412-b0ea6b6f29c0/go.mod h1:L63TpDPb+utjU9X3LJG+I2OZSNNAqgd0+CyInp3JRk0=
 github.com/chzyer/logex v1.1.10/go.mod h1:+Ywpsq7O8HXn0nuIou7OrIPyXbp3wmkHB+jjWRnGsAI=
 github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e/go.mod h1:nSuG5e5PlCu98SY8svDHJxuZscDgtXS6KTTbou5AhLI=
 github.com/chzyer/test v0.0.0-20180213035817-a1ea475d72b1/go.mod h1:Q3SI9o4m/ZMnBNeIyt5eFwwo7qiLfzFZmjNmxjkiQlU=

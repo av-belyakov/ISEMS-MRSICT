@@ -3,9 +3,10 @@ package datamodels
 import (
 	"encoding/json"
 	"time"
+	//mstixo "github.com/av-belyakov/methodstixobjects"
 )
 
-//HandlerSTIXObject интерфейс реализующий обработчики для STIX объектов
+// HandlerSTIXObject интерфейс реализующий обработчики для STIX объектов
 type HandlerSTIXObject interface {
 	DecoderJSONObject
 	EncoderJSONObject
@@ -15,33 +16,33 @@ type HandlerSTIXObject interface {
 	IndexingSTIXObject
 }
 
-//DecoderJSONObject интерфейс реализующий обработчик для декодирования JSON объекта в STIX объект
+// DecoderJSONObject интерфейс реализующий обработчик для декодирования JSON объекта в STIX объект
 type DecoderJSONObject interface {
 	DecoderJSON(*json.RawMessage) (interface{}, error)
 }
 
-//EncoderJSONObject интерфейс реализующий обработчик для кодирования STIX объекта в JSON объект
+// EncoderJSONObject интерфейс реализующий обработчик для кодирования STIX объекта в JSON объект
 type EncoderJSONObject interface {
 	EncoderJSON(interface{}) (*[]byte, error)
 }
 
-//ValidatorJSONObject интерфейс реализующий обработчик для валидации STIX объектов
+// ValidatorJSONObject интерфейс реализующий обработчик для валидации STIX объектов
 type ValidatorJSONObject interface {
 	ValidateStruct() bool
 }
 
-//GetterParametersSTIXObject интерфейс реализующий обработчик для получения ID STIX объекта
+// GetterParametersSTIXObject интерфейс реализующий обработчик для получения ID STIX объекта
 type GetterParametersSTIXObject interface {
 	GetID() string
 	GetType() string
 }
 
-//ComparatorSTIXObject интерфейс реализующий обработчик для сравнения STIX объектов одного типа
+// ComparatorSTIXObject интерфейс реализующий обработчик для сравнения STIX объектов одного типа
 type ComparatorSTIXObject interface {
 	ComparisonTypeCommonFields(interface{}, string) (bool, DifferentObjectType, error)
 }
 
-//ToBeautifulOutputConverter интерфейс реализующий обработчик для красивого представления данных хранящихся в пользовательской структуре
+// ToBeautifulOutputConverter интерфейс реализующий обработчик для красивого представления данных хранящихся в пользовательской структуре
 type ToBeautifulOutputConverter interface {
 	ToStringBeautiful() string
 }
@@ -58,7 +59,7 @@ type IndexingSTIXObject interface {
 	GeneratingDataForIndexing() map[string]string
 }
 
-//ElementSTIXObject может содержать любой из STIX объектов с указанием его типа
+// ElementSTIXObject может содержать любой из STIX объектов с указанием его типа
 // DataType - тип STIX объекта
 // Data - непосредственно сам STIX объект
 type ElementSTIXObject struct {
@@ -66,7 +67,7 @@ type ElementSTIXObject struct {
 	Data     HandlerSTIXObject
 }
 
-//DifferentObjectType содержит перечисление полей и их значения, которые были изменены в произвольном типе
+// DifferentObjectType содержит перечисление полей и их значения, которые были изменены в произвольном типе
 // SourceReceivingChanges - источник от которого были получены изменения
 // ModifiedTime - время выполнения модификации
 // UserNameModifiedObject - пользователь выполнивший модификацию
@@ -82,7 +83,7 @@ type DifferentObjectType struct {
 	FieldList              []OldFieldValueObjectType `json:"field_list" bson:"field_list"`
 }
 
-//OldFieldValueObjectType содержит старое значение полей, до их модификации
+// OldFieldValueObjectType содержит старое значение полей, до их модификации
 // FeildType - тип поля
 // Path - полный путь к объекту подвергшемуся модификации
 // Value - предыдущее значение поля, которое подверглось модификации
@@ -92,7 +93,7 @@ type OldFieldValueObjectType struct {
 	Value     interface{} `json:"value" bson:"value"`
 }
 
-//ShortDescriptionElementComputerThreat содержит краткое описание элемента 'grouping' содержащего списки STIX объектов типа 'report' компьютерных
+// ShortDescriptionElementComputerThreat содержит краткое описание элемента 'grouping' содержащего списки STIX объектов типа 'report' компьютерных
 // угроз
 type ShortDescriptionElementGroupingComputerThreat struct {
 	ID              string `json:"id"`
@@ -104,7 +105,7 @@ type ShortDescriptionElementGroupingComputerThreat struct {
 
 /********** 			Domain Objects STIX			**********/
 
-//GetAttackPatternDomainObjectsSTIX возвращает объект STIX типа 'attack-pattern'
+// GetAttackPatternDomainObjectsSTIX возвращает объект STIX типа 'attack-pattern'
 func (estix *ElementSTIXObject) GetAttackPatternDomainObjectsSTIX() *AttackPatternDomainObjectsSTIX {
 	if result, ok := estix.Data.(AttackPatternDomainObjectsSTIX); ok {
 		return &result
@@ -113,7 +114,7 @@ func (estix *ElementSTIXObject) GetAttackPatternDomainObjectsSTIX() *AttackPatte
 	return nil
 }
 
-//GetCampaignDomainObjectsSTIX возвращает объект STIX типа 'campaign'
+// GetCampaignDomainObjectsSTIX возвращает объект STIX типа 'campaign'
 func (estix *ElementSTIXObject) GetCampaignDomainObjectsSTIX() *CampaignDomainObjectsSTIX {
 	if result, ok := estix.Data.(CampaignDomainObjectsSTIX); ok {
 		return &result
@@ -122,7 +123,7 @@ func (estix *ElementSTIXObject) GetCampaignDomainObjectsSTIX() *CampaignDomainOb
 	return nil
 }
 
-//GetCourseOfActionDomainObjectsSTIX возвращает объект STIX типа 'course-of-action'
+// GetCourseOfActionDomainObjectsSTIX возвращает объект STIX типа 'course-of-action'
 func (estix *ElementSTIXObject) GetCourseOfActionDomainObjectsSTIX() *CourseOfActionDomainObjectsSTIX {
 	if result, ok := estix.Data.(CourseOfActionDomainObjectsSTIX); ok {
 		return &result
@@ -131,7 +132,7 @@ func (estix *ElementSTIXObject) GetCourseOfActionDomainObjectsSTIX() *CourseOfAc
 	return nil
 }
 
-//GetGroupingDomainObjectsSTIX возвращает объект STIX типа 'grouping'
+// GetGroupingDomainObjectsSTIX возвращает объект STIX типа 'grouping'
 func (estix *ElementSTIXObject) GetGroupingDomainObjectsSTIX() *GroupingDomainObjectsSTIX {
 	if result, ok := estix.Data.(GroupingDomainObjectsSTIX); ok {
 		return &result
@@ -140,7 +141,7 @@ func (estix *ElementSTIXObject) GetGroupingDomainObjectsSTIX() *GroupingDomainOb
 	return nil
 }
 
-//GetIdentityDomainObjectsSTIX возвращает объект STIX типа 'identity'
+// GetIdentityDomainObjectsSTIX возвращает объект STIX типа 'identity'
 func (estix *ElementSTIXObject) GetIdentityDomainObjectsSTIX() *IdentityDomainObjectsSTIX {
 	if result, ok := estix.Data.(IdentityDomainObjectsSTIX); ok {
 		return &result
@@ -149,7 +150,7 @@ func (estix *ElementSTIXObject) GetIdentityDomainObjectsSTIX() *IdentityDomainOb
 	return nil
 }
 
-//GetIndicatorDomainObjectsSTIX возвращает объект STIX типа 'indicator'
+// GetIndicatorDomainObjectsSTIX возвращает объект STIX типа 'indicator'
 func (estix *ElementSTIXObject) GetIndicatorDomainObjectsSTIX() *IndicatorDomainObjectsSTIX {
 	if result, ok := estix.Data.(IndicatorDomainObjectsSTIX); ok {
 		return &result
@@ -158,7 +159,7 @@ func (estix *ElementSTIXObject) GetIndicatorDomainObjectsSTIX() *IndicatorDomain
 	return nil
 }
 
-//GetInfrastructureDomainObjectsSTIX возвращает объект STIX типа 'infrastructure'
+// GetInfrastructureDomainObjectsSTIX возвращает объект STIX типа 'infrastructure'
 func (estix *ElementSTIXObject) GetInfrastructureDomainObjectsSTIX() *InfrastructureDomainObjectsSTIX {
 	if result, ok := estix.Data.(InfrastructureDomainObjectsSTIX); ok {
 		return &result
@@ -167,7 +168,7 @@ func (estix *ElementSTIXObject) GetInfrastructureDomainObjectsSTIX() *Infrastruc
 	return nil
 }
 
-//GetIntrusionSetDomainObjectsSTIX возвращает объект STIX типа 'intrusion-set'
+// GetIntrusionSetDomainObjectsSTIX возвращает объект STIX типа 'intrusion-set'
 func (estix *ElementSTIXObject) GetIntrusionSetDomainObjectsSTIX() *IntrusionSetDomainObjectsSTIX {
 	if result, ok := estix.Data.(IntrusionSetDomainObjectsSTIX); ok {
 		return &result
@@ -176,7 +177,7 @@ func (estix *ElementSTIXObject) GetIntrusionSetDomainObjectsSTIX() *IntrusionSet
 	return nil
 }
 
-//GetLocationDomainObjectsSTIX возвращает объект STIX типа 'location'
+// GetLocationDomainObjectsSTIX возвращает объект STIX типа 'location'
 func (estix *ElementSTIXObject) GetLocationDomainObjectsSTIX() *LocationDomainObjectsSTIX {
 	if result, ok := estix.Data.(LocationDomainObjectsSTIX); ok {
 		return &result
@@ -185,7 +186,7 @@ func (estix *ElementSTIXObject) GetLocationDomainObjectsSTIX() *LocationDomainOb
 	return nil
 }
 
-//GetMalwareDomainObjectsSTIX возвращает объект STIX типа 'malware'
+// GetMalwareDomainObjectsSTIX возвращает объект STIX типа 'malware'
 func (estix *ElementSTIXObject) GetMalwareDomainObjectsSTIX() *MalwareDomainObjectsSTIX {
 	if result, ok := estix.Data.(MalwareDomainObjectsSTIX); ok {
 		return &result
@@ -194,7 +195,7 @@ func (estix *ElementSTIXObject) GetMalwareDomainObjectsSTIX() *MalwareDomainObje
 	return nil
 }
 
-//GetMalwareAnalysisDomainObjectsSTIX возвращает объект STIX типа 'malware-analysis'
+// GetMalwareAnalysisDomainObjectsSTIX возвращает объект STIX типа 'malware-analysis'
 func (estix *ElementSTIXObject) GetMalwareAnalysisDomainObjectsSTIX() *MalwareAnalysisDomainObjectsSTIX {
 	if result, ok := estix.Data.(MalwareAnalysisDomainObjectsSTIX); ok {
 		return &result
@@ -203,7 +204,7 @@ func (estix *ElementSTIXObject) GetMalwareAnalysisDomainObjectsSTIX() *MalwareAn
 	return nil
 }
 
-//GetNoteDomainObjectsSTIX возвращает объект STIX типа 'note'
+// GetNoteDomainObjectsSTIX возвращает объект STIX типа 'note'
 func (estix *ElementSTIXObject) GetNoteDomainObjectsSTIX() *NoteDomainObjectsSTIX {
 	if result, ok := estix.Data.(NoteDomainObjectsSTIX); ok {
 		return &result
@@ -212,7 +213,7 @@ func (estix *ElementSTIXObject) GetNoteDomainObjectsSTIX() *NoteDomainObjectsSTI
 	return nil
 }
 
-//GetObservedDataDomainObjectsSTIX возвращает объект STIX типа 'observed-data'
+// GetObservedDataDomainObjectsSTIX возвращает объект STIX типа 'observed-data'
 func (estix *ElementSTIXObject) GetObservedDataDomainObjectsSTIX() *ObservedDataDomainObjectsSTIX {
 	if result, ok := estix.Data.(ObservedDataDomainObjectsSTIX); ok {
 		return &result
@@ -221,7 +222,7 @@ func (estix *ElementSTIXObject) GetObservedDataDomainObjectsSTIX() *ObservedData
 	return nil
 }
 
-//GetOpinionDomainObjectsSTIX возвращает объект STIX типа 'opinion'
+// GetOpinionDomainObjectsSTIX возвращает объект STIX типа 'opinion'
 func (estix *ElementSTIXObject) GetOpinionDomainObjectsSTIX() *OpinionDomainObjectsSTIX {
 	if result, ok := estix.Data.(OpinionDomainObjectsSTIX); ok {
 		return &result
@@ -230,7 +231,7 @@ func (estix *ElementSTIXObject) GetOpinionDomainObjectsSTIX() *OpinionDomainObje
 	return nil
 }
 
-//GetReportDomainObjectsSTIX возвращает объект STIX типа 'report'
+// GetReportDomainObjectsSTIX возвращает объект STIX типа 'report'
 func (estix *ElementSTIXObject) GetReportDomainObjectsSTIX() *ReportDomainObjectsSTIX {
 	if result, ok := estix.Data.(ReportDomainObjectsSTIX); ok {
 		return &result
@@ -239,7 +240,7 @@ func (estix *ElementSTIXObject) GetReportDomainObjectsSTIX() *ReportDomainObject
 	return nil
 }
 
-//GetThreatActorDomainObjectsSTIX возвращает объект STIX типа 'threat-actor'
+// GetThreatActorDomainObjectsSTIX возвращает объект STIX типа 'threat-actor'
 func (estix *ElementSTIXObject) GetThreatActorDomainObjectsSTIX() *ThreatActorDomainObjectsSTIX {
 	if result, ok := estix.Data.(ThreatActorDomainObjectsSTIX); ok {
 		return &result
@@ -248,7 +249,7 @@ func (estix *ElementSTIXObject) GetThreatActorDomainObjectsSTIX() *ThreatActorDo
 	return nil
 }
 
-//GetToolDomainObjectsSTIX возвращает объект STIX типа 'tool'
+// GetToolDomainObjectsSTIX возвращает объект STIX типа 'tool'
 func (estix *ElementSTIXObject) GetToolDomainObjectsSTIX() *ToolDomainObjectsSTIX {
 	if result, ok := estix.Data.(ToolDomainObjectsSTIX); ok {
 		return &result
@@ -257,7 +258,7 @@ func (estix *ElementSTIXObject) GetToolDomainObjectsSTIX() *ToolDomainObjectsSTI
 	return nil
 }
 
-//GetVulnerabilityDomainObjectsSTIX возвращает объект STIX типа 'vulnerability'
+// GetVulnerabilityDomainObjectsSTIX возвращает объект STIX типа 'vulnerability'
 func (estix *ElementSTIXObject) GetVulnerabilityDomainObjectsSTIX() *VulnerabilityDomainObjectsSTIX {
 	if result, ok := estix.Data.(VulnerabilityDomainObjectsSTIX); ok {
 		return &result
@@ -268,7 +269,7 @@ func (estix *ElementSTIXObject) GetVulnerabilityDomainObjectsSTIX() *Vulnerabili
 
 /********** 			Relationship Objects STIX			**********/
 
-//GetRelationshipObjectSTIX возвращает объект STIX типа 'relationship'
+// GetRelationshipObjectSTIX возвращает объект STIX типа 'relationship'
 func (estix *ElementSTIXObject) GetRelationshipObjectSTIX() *RelationshipObjectSTIX {
 	if result, ok := estix.Data.(RelationshipObjectSTIX); ok {
 		return &result
@@ -277,7 +278,7 @@ func (estix *ElementSTIXObject) GetRelationshipObjectSTIX() *RelationshipObjectS
 	return nil
 }
 
-//GetSightingObjectSTIX возвращает объект STIX типа 'sighting'
+// GetSightingObjectSTIX возвращает объект STIX типа 'sighting'
 func (estix *ElementSTIXObject) GetSightingObjectSTIX() *SightingObjectSTIX {
 	if result, ok := estix.Data.(SightingObjectSTIX); ok {
 		return &result
@@ -288,7 +289,7 @@ func (estix *ElementSTIXObject) GetSightingObjectSTIX() *SightingObjectSTIX {
 
 /********** 			Cyber-observable Objects STIX			**********/
 
-//GetArtifactCyberObservableObjectSTIX возвращает объект STIX типа 'artifact'
+// GetArtifactCyberObservableObjectSTIX возвращает объект STIX типа 'artifact'
 func (estix *ElementSTIXObject) GetArtifactCyberObservableObjectSTIX() *ArtifactCyberObservableObjectSTIX {
 	if result, ok := estix.Data.(ArtifactCyberObservableObjectSTIX); ok {
 		return &result
@@ -297,7 +298,7 @@ func (estix *ElementSTIXObject) GetArtifactCyberObservableObjectSTIX() *Artifact
 	return nil
 }
 
-//GetAutonomousSystemCyberObservableObjectSTIX возвращает объект STIX типа 'autonomous-system'
+// GetAutonomousSystemCyberObservableObjectSTIX возвращает объект STIX типа 'autonomous-system'
 func (estix *ElementSTIXObject) GetAutonomousSystemCyberObservableObjectSTIX() *AutonomousSystemCyberObservableObjectSTIX {
 	if result, ok := estix.Data.(AutonomousSystemCyberObservableObjectSTIX); ok {
 		return &result
@@ -306,7 +307,7 @@ func (estix *ElementSTIXObject) GetAutonomousSystemCyberObservableObjectSTIX() *
 	return nil
 }
 
-//GetDirectoryCyberObservableObjectSTIX возвращает объект STIX типа 'directory'
+// GetDirectoryCyberObservableObjectSTIX возвращает объект STIX типа 'directory'
 func (estix *ElementSTIXObject) GetDirectoryCyberObservableObjectSTIX() *DirectoryCyberObservableObjectSTIX {
 	if result, ok := estix.Data.(DirectoryCyberObservableObjectSTIX); ok {
 		return &result
@@ -315,7 +316,7 @@ func (estix *ElementSTIXObject) GetDirectoryCyberObservableObjectSTIX() *Directo
 	return nil
 }
 
-//GetDomainNameCyberObservableObjectSTIX возвращает объект STIX типа 'domain-name'
+// GetDomainNameCyberObservableObjectSTIX возвращает объект STIX типа 'domain-name'
 func (estix *ElementSTIXObject) GetDomainNameCyberObservableObjectSTIX() *DomainNameCyberObservableObjectSTIX {
 	if result, ok := estix.Data.(DomainNameCyberObservableObjectSTIX); ok {
 		return &result
@@ -324,7 +325,7 @@ func (estix *ElementSTIXObject) GetDomainNameCyberObservableObjectSTIX() *Domain
 	return nil
 }
 
-//GetEmailAddressCyberObservableObjectSTIX возвращает объект STIX типа 'email-addr'
+// GetEmailAddressCyberObservableObjectSTIX возвращает объект STIX типа 'email-addr'
 func (estix *ElementSTIXObject) GetEmailAddressCyberObservableObjectSTIX() *EmailAddressCyberObservableObjectSTIX {
 	if result, ok := estix.Data.(EmailAddressCyberObservableObjectSTIX); ok {
 		return &result
@@ -333,7 +334,7 @@ func (estix *ElementSTIXObject) GetEmailAddressCyberObservableObjectSTIX() *Emai
 	return nil
 }
 
-//GetEmailMessageCyberObservableObjectSTIX возвращает объект STIX типа 'email-message'
+// GetEmailMessageCyberObservableObjectSTIX возвращает объект STIX типа 'email-message'
 func (estix *ElementSTIXObject) GetEmailMessageCyberObservableObjectSTIX() *EmailMessageCyberObservableObjectSTIX {
 	if result, ok := estix.Data.(EmailMessageCyberObservableObjectSTIX); ok {
 		return &result
@@ -342,7 +343,7 @@ func (estix *ElementSTIXObject) GetEmailMessageCyberObservableObjectSTIX() *Emai
 	return nil
 }
 
-//GetFileCyberObservableObjectSTIX возвращает объект STIX типа 'file'
+// GetFileCyberObservableObjectSTIX возвращает объект STIX типа 'file'
 func (estix *ElementSTIXObject) GetFileCyberObservableObjectSTIX() *FileCyberObservableObjectSTIX {
 	if result, ok := estix.Data.(FileCyberObservableObjectSTIX); ok {
 		return &result
@@ -351,7 +352,7 @@ func (estix *ElementSTIXObject) GetFileCyberObservableObjectSTIX() *FileCyberObs
 	return nil
 }
 
-//GetIPv4AddressCyberObservableObjectSTIX возвращает объект STIX типа 'ipv4-addr'
+// GetIPv4AddressCyberObservableObjectSTIX возвращает объект STIX типа 'ipv4-addr'
 func (estix *ElementSTIXObject) GetIPv4AddressCyberObservableObjectSTIX() *IPv4AddressCyberObservableObjectSTIX {
 	if result, ok := estix.Data.(IPv4AddressCyberObservableObjectSTIX); ok {
 		return &result
@@ -360,7 +361,7 @@ func (estix *ElementSTIXObject) GetIPv4AddressCyberObservableObjectSTIX() *IPv4A
 	return nil
 }
 
-//GetIPv6AddressCyberObservableObjectSTIX возвращает объект STIX типа 'ipv6-addr'
+// GetIPv6AddressCyberObservableObjectSTIX возвращает объект STIX типа 'ipv6-addr'
 func (estix *ElementSTIXObject) GetIPv6AddressCyberObservableObjectSTIX() *IPv6AddressCyberObservableObjectSTIX {
 	if result, ok := estix.Data.(IPv6AddressCyberObservableObjectSTIX); ok {
 		return &result
@@ -369,7 +370,7 @@ func (estix *ElementSTIXObject) GetIPv6AddressCyberObservableObjectSTIX() *IPv6A
 	return nil
 }
 
-//GetMACAddressCyberObservableObjectSTIX возвращает объект STIX типа 'mac-addr'
+// GetMACAddressCyberObservableObjectSTIX возвращает объект STIX типа 'mac-addr'
 func (estix *ElementSTIXObject) GetMACAddressCyberObservableObjectSTIX() *MACAddressCyberObservableObjectSTIX {
 	if result, ok := estix.Data.(MACAddressCyberObservableObjectSTIX); ok {
 		return &result
@@ -378,7 +379,7 @@ func (estix *ElementSTIXObject) GetMACAddressCyberObservableObjectSTIX() *MACAdd
 	return nil
 }
 
-//GetMutexCyberObservableObjectSTIX возвращает объект STIX типа 'mutex'
+// GetMutexCyberObservableObjectSTIX возвращает объект STIX типа 'mutex'
 func (estix *ElementSTIXObject) GetMutexCyberObservableObjectSTIX() *MutexCyberObservableObjectSTIX {
 	if result, ok := estix.Data.(MutexCyberObservableObjectSTIX); ok {
 		return &result
@@ -387,7 +388,7 @@ func (estix *ElementSTIXObject) GetMutexCyberObservableObjectSTIX() *MutexCyberO
 	return nil
 }
 
-//GetNetworkTrafficCyberObservableObjectSTIX возвращает объект STIX типа 'network-traffic'
+// GetNetworkTrafficCyberObservableObjectSTIX возвращает объект STIX типа 'network-traffic'
 func (estix *ElementSTIXObject) GetNetworkTrafficCyberObservableObjectSTIX() *NetworkTrafficCyberObservableObjectSTIX {
 	if result, ok := estix.Data.(NetworkTrafficCyberObservableObjectSTIX); ok {
 		return &result
@@ -396,7 +397,7 @@ func (estix *ElementSTIXObject) GetNetworkTrafficCyberObservableObjectSTIX() *Ne
 	return nil
 }
 
-//GetProcessCyberObservableObjectSTIX возвращает объект STIX типа 'process'
+// GetProcessCyberObservableObjectSTIX возвращает объект STIX типа 'process'
 func (estix *ElementSTIXObject) GetProcessCyberObservableObjectSTIX() *ProcessCyberObservableObjectSTIX {
 	if result, ok := estix.Data.(ProcessCyberObservableObjectSTIX); ok {
 		return &result
@@ -405,7 +406,7 @@ func (estix *ElementSTIXObject) GetProcessCyberObservableObjectSTIX() *ProcessCy
 	return nil
 }
 
-//GetSoftwareCyberObservableObjectSTIX возвращает объект STIX типа 'software'
+// GetSoftwareCyberObservableObjectSTIX возвращает объект STIX типа 'software'
 func (estix *ElementSTIXObject) GetSoftwareCyberObservableObjectSTIX() *SoftwareCyberObservableObjectSTIX {
 	if result, ok := estix.Data.(SoftwareCyberObservableObjectSTIX); ok {
 		return &result
@@ -414,7 +415,7 @@ func (estix *ElementSTIXObject) GetSoftwareCyberObservableObjectSTIX() *Software
 	return nil
 }
 
-//GetURLCyberObservableObjectSTIX возвращает объект STIX типа 'url'
+// GetURLCyberObservableObjectSTIX возвращает объект STIX типа 'url'
 func (estix *ElementSTIXObject) GetURLCyberObservableObjectSTIX() *URLCyberObservableObjectSTIX {
 	if result, ok := estix.Data.(URLCyberObservableObjectSTIX); ok {
 		return &result
@@ -423,7 +424,7 @@ func (estix *ElementSTIXObject) GetURLCyberObservableObjectSTIX() *URLCyberObser
 	return nil
 }
 
-//GetUserAccountCyberObservableObjectSTIX возвращает объект STIX типа 'user-account'
+// GetUserAccountCyberObservableObjectSTIX возвращает объект STIX типа 'user-account'
 func (estix *ElementSTIXObject) GetUserAccountCyberObservableObjectSTIX() *UserAccountCyberObservableObjectSTIX {
 	if result, ok := estix.Data.(UserAccountCyberObservableObjectSTIX); ok {
 		return &result
@@ -432,7 +433,7 @@ func (estix *ElementSTIXObject) GetUserAccountCyberObservableObjectSTIX() *UserA
 	return nil
 }
 
-//GetWindowsRegistryKeyCyberObservableObjectSTIX возвращает объект STIX типа 'windows-registry-key'
+// GetWindowsRegistryKeyCyberObservableObjectSTIX возвращает объект STIX типа 'windows-registry-key'
 func (estix *ElementSTIXObject) GetWindowsRegistryKeyCyberObservableObjectSTIX() *WindowsRegistryKeyCyberObservableObjectSTIX {
 	if result, ok := estix.Data.(WindowsRegistryKeyCyberObservableObjectSTIX); ok {
 		return &result
@@ -441,7 +442,7 @@ func (estix *ElementSTIXObject) GetWindowsRegistryKeyCyberObservableObjectSTIX()
 	return nil
 }
 
-//GetX509CertificateCyberObservableObjectSTIX возвращает объект STIX типа 'x509-certificate'
+// GetX509CertificateCyberObservableObjectSTIX возвращает объект STIX типа 'x509-certificate'
 func (estix *ElementSTIXObject) GetX509CertificateCyberObservableObjectSTIX() *X509CertificateCyberObservableObjectSTIX {
 	if result, ok := estix.Data.(X509CertificateCyberObservableObjectSTIX); ok {
 		return &result

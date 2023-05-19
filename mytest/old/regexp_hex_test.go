@@ -9,10 +9,10 @@ import (
 	"regexp"
 )
 
-//HashesTypeSTIX тип "hashes", по терминологии STIX, содержащий хеш значения, где <тип_хеша>:<хеш>
+// HashesTypeSTIX тип "hashes", по терминологии STIX, содержащий хеш значения, где <тип_хеша>:<хеш>
 type HashesTypeSTIX map[string]string
 
-//CheckHashesTypeSTIX выполняет проверку значений типа HashesTypeSTIX
+// CheckHashesTypeSTIX выполняет проверку значений типа HashesTypeSTIX
 func (htstix *HashesTypeSTIX) CheckHashesTypeSTIX() bool {
 	if len(*htstix) == 0 {
 		return true

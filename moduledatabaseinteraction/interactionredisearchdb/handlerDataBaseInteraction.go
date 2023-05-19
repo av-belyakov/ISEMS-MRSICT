@@ -10,14 +10,14 @@ import (
 	"github.com/RediSearch/redisearch-go/redisearch"
 )
 
-//ChannelsRedisearchInteraction содержит описание каналов для взаимодействия с БД Redisearch
+// ChannelsRedisearchInteraction содержит описание каналов для взаимодействия с БД Redisearch
 // InputModule - канал для ПРИЕМА данных, приходящих от ядра приложения
 // OutputModule - канал для ПЕРЕДАЧИ данных ядру приложения
 type ChannelsRedisearchInteraction struct {
 	InputModule, OutputModule chan datamodels.ModuleDataBaseInteractionChannel
 }
 
-//ConnectionDescriptorRedisearchDB дескриптор соединения с БД RedisearchB
+// ConnectionDescriptorRedisearchDB дескриптор соединения с БД RedisearchB
 // Connection - дескриптор соединения
 // CTX - контекст переносит крайний срок, сигнал отмены и другие значения через границы API
 type ConnectionDescriptorRedisearchDB struct {
@@ -73,7 +73,7 @@ func InteractionRedisearchDB(
 
 		Что нужно сделать:
 		+ 1. Обновить версию MRSICa но не в ДОКЕРАХ, а просто на хостовой тестовой системе и проверить
-		всю цепочку обнавления хотя бы одного STIX объекта. (проверил обнавление одного объекта, все работает)
+		всю цепочку обновления хотя бы одного STIX объекта. (проверил обнавление одного объекта, все работает)
 		2. Продумать и написать методы поиска индексов по заданным параметрам
 		в БД Redisearch, а также методы и алгоритмы передачи информации в
 		модуль который работает с БД Redisearch и приема из него

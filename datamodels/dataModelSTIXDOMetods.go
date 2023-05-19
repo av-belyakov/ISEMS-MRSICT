@@ -6,6 +6,7 @@ import (
 	"path"
 	"reflect"
 	"regexp"
+	"strings"
 	"time"
 
 	"ISEMS-MRSICT/commonlibs"
@@ -366,11 +367,11 @@ func (apstix AttackPatternDomainObjectsSTIX) GeneratingDataForIndexing() map[str
 	}
 
 	if apstix.Name != "" {
-		dataForIndex["name"] = apstix.Name
+		dataForIndex["name"] = strings.ToUpper(apstix.Name)
 	}
 
 	if apstix.Description != "" {
-		dataForIndex["description"] = apstix.Description
+		dataForIndex["description"] = strings.ToUpper(apstix.Description)
 	}
 
 	return dataForIndex
@@ -535,11 +536,11 @@ func (cstix CampaignDomainObjectsSTIX) GeneratingDataForIndexing() map[string]st
 	}
 
 	if cstix.Name != "" {
-		dataForIndex["name"] = cstix.Name
+		dataForIndex["name"] = strings.ToUpper(cstix.Name)
 	}
 
 	if cstix.Description != "" {
-		dataForIndex["description"] = cstix.Description
+		dataForIndex["description"] = strings.ToUpper(cstix.Description)
 	}
 
 	return dataForIndex
@@ -691,11 +692,11 @@ func (castix CourseOfActionDomainObjectsSTIX) GeneratingDataForIndexing() map[st
 	}
 
 	if castix.Name != "" {
-		dataForIndex["name"] = castix.Name
+		dataForIndex["name"] = strings.ToUpper(castix.Name)
 	}
 
 	if castix.Description != "" {
-		dataForIndex["description"] = castix.Description
+		dataForIndex["description"] = strings.ToUpper(castix.Description)
 	}
 
 	return dataForIndex
@@ -864,11 +865,11 @@ func (gstix GroupingDomainObjectsSTIX) GeneratingDataForIndexing() map[string]st
 	}
 
 	if gstix.Name != "" {
-		dataForIndex["name"] = gstix.Name
+		dataForIndex["name"] = strings.ToUpper(gstix.Name)
 	}
 
 	if gstix.Description != "" {
-		dataForIndex["description"] = gstix.Description
+		dataForIndex["description"] = strings.ToUpper(gstix.Description)
 	}
 
 	return dataForIndex
@@ -1056,11 +1057,11 @@ func (istix IdentityDomainObjectsSTIX) GeneratingDataForIndexing() map[string]st
 	}
 
 	if istix.Name != "" {
-		dataForIndex["name"] = istix.Name
+		dataForIndex["name"] = strings.ToUpper(istix.Name)
 	}
 
 	if istix.Description != "" {
-		dataForIndex["description"] = istix.Description
+		dataForIndex["description"] = strings.ToUpper(istix.Description)
 	}
 
 	return dataForIndex
@@ -1258,11 +1259,11 @@ func (istix IndicatorDomainObjectsSTIX) GeneratingDataForIndexing() map[string]s
 	}
 
 	if istix.Name != "" {
-		dataForIndex["name"] = istix.Name
+		dataForIndex["name"] = strings.ToUpper(istix.Name)
 	}
 
 	if istix.Description != "" {
-		dataForIndex["description"] = istix.Description
+		dataForIndex["description"] = strings.ToUpper(istix.Description)
 	}
 
 	return dataForIndex
@@ -1459,11 +1460,11 @@ func (istix InfrastructureDomainObjectsSTIX) GeneratingDataForIndexing() map[str
 	}
 
 	if istix.Name != "" {
-		dataForIndex["name"] = istix.Name
+		dataForIndex["name"] = strings.ToUpper(istix.Name)
 	}
 
 	if istix.Description != "" {
-		dataForIndex["description"] = istix.Description
+		dataForIndex["description"] = strings.ToUpper(istix.Description)
 	}
 
 	return dataForIndex
@@ -1671,11 +1672,11 @@ func (istix IntrusionSetDomainObjectsSTIX) GeneratingDataForIndexing() map[strin
 	}
 
 	if istix.Name != "" {
-		dataForIndex["name"] = istix.Name
+		dataForIndex["name"] = strings.ToUpper(istix.Name)
 	}
 
 	if istix.Description != "" {
-		dataForIndex["description"] = istix.Description
+		dataForIndex["description"] = strings.ToUpper(istix.Description)
 	}
 
 	return dataForIndex
@@ -1852,15 +1853,15 @@ func (lstix LocationDomainObjectsSTIX) GeneratingDataForIndexing() map[string]st
 	}
 
 	if lstix.Name != "" {
-		dataForIndex["name"] = lstix.Name
+		dataForIndex["name"] = strings.ToUpper(lstix.Name)
 	}
 
 	if lstix.Description != "" {
-		dataForIndex["description"] = lstix.Description
+		dataForIndex["description"] = strings.ToUpper(lstix.Description)
 	}
 
 	if lstix.StreetAddress != "" {
-		dataForIndex["street_address"] = lstix.StreetAddress
+		dataForIndex["street_address"] = strings.ToUpper(lstix.StreetAddress)
 	}
 
 	return dataForIndex
@@ -2135,11 +2136,11 @@ func (mstix MalwareDomainObjectsSTIX) GeneratingDataForIndexing() map[string]str
 	}
 
 	if mstix.Name != "" {
-		dataForIndex["name"] = mstix.Name
+		dataForIndex["name"] = strings.ToUpper(mstix.Name)
 	}
 
 	if mstix.Description != "" {
-		dataForIndex["description"] = mstix.Description
+		dataForIndex["description"] = strings.ToUpper(mstix.Description)
 	}
 
 	return dataForIndex
@@ -2545,11 +2546,20 @@ func (nstix NoteDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string
 	}
 
 	if nstix.Abstract != "" {
-		dataForIndex["abstract"] = nstix.Abstract
+		dataForIndex["abstract"] = strings.ToUpper(nstix.Abstract)
 	}
 
 	if nstix.Content != "" {
-		dataForIndex["content"] = nstix.Content
+		dataForIndex["content"] = strings.ToUpper(nstix.Content)
+	}
+
+	if len(nstix.Authors) > 0 {
+		str := ""
+		for _, v := range nstix.Authors {
+			str += fmt.Sprintf(" %s", v)
+		}
+
+		dataForIndex["authors"] = str
 	}
 
 	return dataForIndex
@@ -3078,11 +3088,11 @@ func (rstix ReportDomainObjectsSTIX) GeneratingDataForIndexing() map[string]stri
 	}
 
 	if rstix.Name != "" {
-		dataForIndex["name"] = rstix.Name
+		dataForIndex["name"] = strings.ToUpper(rstix.Name)
 	}
 
 	if rstix.Description != "" {
-		dataForIndex["description"] = rstix.Description
+		dataForIndex["description"] = strings.ToUpper(rstix.Description)
 	}
 
 	return dataForIndex
@@ -3342,11 +3352,11 @@ func (tastix ThreatActorDomainObjectsSTIX) GeneratingDataForIndexing() map[strin
 	}
 
 	if tastix.Name != "" {
-		dataForIndex["name"] = tastix.Name
+		dataForIndex["name"] = strings.ToUpper(tastix.Name)
 	}
 
 	if tastix.Description != "" {
-		dataForIndex["description"] = tastix.Description
+		dataForIndex["description"] = strings.ToUpper(tastix.Description)
 	}
 
 	return dataForIndex
@@ -3543,11 +3553,11 @@ func (tstix ToolDomainObjectsSTIX) GeneratingDataForIndexing() map[string]string
 	}
 
 	if tstix.Name != "" {
-		dataForIndex["name"] = tstix.Name
+		dataForIndex["name"] = strings.ToUpper(tstix.Name)
 	}
 
 	if tstix.Description != "" {
-		dataForIndex["description"] = tstix.Description
+		dataForIndex["description"] = strings.ToUpper(tstix.Description)
 	}
 
 	return dataForIndex
@@ -3700,11 +3710,11 @@ func (vstix VulnerabilityDomainObjectsSTIX) GeneratingDataForIndexing() map[stri
 	}
 
 	if vstix.Name != "" {
-		dataForIndex["name"] = vstix.Name
+		dataForIndex["name"] = strings.ToUpper(vstix.Name)
 	}
 
 	if vstix.Description != "" {
-		dataForIndex["description"] = vstix.Description
+		dataForIndex["description"] = strings.ToUpper(vstix.Description)
 	}
 
 	return dataForIndex

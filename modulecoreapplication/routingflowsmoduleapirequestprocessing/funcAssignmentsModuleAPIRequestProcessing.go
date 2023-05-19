@@ -14,9 +14,10 @@ import (
 	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
 
 	"github.com/asaskevich/govalidator"
+	//mstixo "github.com/av-belyakov/methodstixobjects"
 )
 
-//UnmarshalJSONObjectSTIXReq декодирует JSON документ, поступающий от модуля 'moduleapirequestprocessing', который содержит список объектов STIX
+// UnmarshalJSONObjectSTIXReq декодирует JSON документ, поступающий от модуля 'moduleapirequestprocessing', который содержит список объектов STIX
 func UnmarshalJSONObjectSTIXReq(msgReq datamodels.ModAPIRequestProcessingReqJSON) ([]*datamodels.ElementSTIXObject, error) {
 	var listSTIXObjectJSON []*json.RawMessage
 
@@ -32,7 +33,7 @@ func UnmarshalJSONObjectSTIXReq(msgReq datamodels.ModAPIRequestProcessingReqJSON
 	return listResults, nil
 }
 
-//UnmarshalJSONObjectReqSearchParameters декодирует JSON документ, поступающий от модуля 'moduleapirequestprocessing', который содержит параметры для
+// UnmarshalJSONObjectReqSearchParameters декодирует JSON документ, поступающий от модуля 'moduleapirequestprocessing', который содержит параметры для
 // выполнения поиска документов в коллекциях БД
 func UnmarshalJSONObjectReqSearchParameters(msgReq *json.RawMessage) (datamodels.ModAPIRequestProcessingResJSONSearchReqType, error) {
 	var result datamodels.ModAPIRequestProcessingResJSONSearchReqType
@@ -91,7 +92,7 @@ func UnmarshalJSONObjectReqSearchParameters(msgReq *json.RawMessage) (datamodels
 	return result, nil
 }
 
-//UnmarshalJSONReferenceBookReq декодирует JSON документ, поступающий от модуля 'moduleapirequestprocessing', который cодержит список действий со справочной информацией
+// UnmarshalJSONReferenceBookReq декодирует JSON документ, поступающий от модуля 'moduleapirequestprocessing', который cодержит список действий со справочной информацией
 // и данные необходитимые для выполнения данных действий
 func UnmarshalJSONRBookReq(reqDetails *json.RawMessage) (*datamodels.RBookReqParameters, error) {
 	var (
@@ -104,7 +105,7 @@ func UnmarshalJSONRBookReq(reqDetails *json.RawMessage) (*datamodels.RBookReqPar
 	return &resultReqDetails, err
 }
 
-//CheckSearchSTIXObject выполняет валидацию параметров запроса для поиска информации по STIX объектам
+// CheckSearchSTIXObject выполняет валидацию параметров запроса для поиска информации по STIX объектам
 func CheckSearchSTIXObject(req *datamodels.ModAPIRequestProcessingResJSONSearchReqType) (datamodels.ModAPIRequestProcessingResJSONSearchReqType, error) {
 	var sortableFieldIsOK bool
 	listSortableField := []string{
@@ -234,7 +235,7 @@ func CheckSearchSTIXObject(req *datamodels.ModAPIRequestProcessingResJSONSearchR
 	return *req, nil
 }
 
-//checkSearchFieldsValue выполняет проверку поля "Value" на соответствие одному из типов значений "domain-name", "email-addr", "ipv4-addr",
+// checkSearchFieldsValue выполняет проверку поля "Value" на соответствие одному из типов значений "domain-name", "email-addr", "ipv4-addr",
 // "ipv6-addr" или "url"
 func checkSearchFieldsValue(l []string) error {
 	for _, v := range l {
@@ -258,7 +259,7 @@ func checkSearchFieldsValue(l []string) error {
 	return nil
 }
 
-//CheckSTIXObjects выполняет валидацию списка STIX объектов
+// CheckSTIXObjects выполняет валидацию списка STIX объектов
 func CheckSTIXObjects(l []*datamodels.ElementSTIXObject) error {
 	for _, item := range l {
 		if item.Data.ValidateStruct() {
@@ -357,7 +358,7 @@ func VerifyOutsideSpecificationFields(
 	}
 }
 
-//SanitizeSTIXObject выполняем санитаризацию полученных STIX объектов
+// SanitizeSTIXObject выполняем санитаризацию полученных STIX объектов
 func SanitizeSTIXObject(l []*datamodels.ElementSTIXObject) []*datamodels.ElementSTIXObject {
 	var elem datamodels.HandlerSTIXObject
 	listElements := make([]*datamodels.ElementSTIXObject, 0, len(l))
@@ -366,6 +367,7 @@ func SanitizeSTIXObject(l []*datamodels.ElementSTIXObject) []*datamodels.Element
 
 		switch element := item.Data.(type) {
 		case datamodels.AttackPatternDomainObjectsSTIX:
+			//case mstixo.AttackPatternDomainObjectsSTIX:
 			elem = element.SanitizeStruct()
 
 		case datamodels.CampaignDomainObjectsSTIX:
@@ -494,7 +496,7 @@ func SanitizeSTIXObject(l []*datamodels.ElementSTIXObject) []*datamodels.Element
 	return listElements
 }
 
-//SanitizeReqRBObject выполняем санитаризацию запросов к объектам справочникам
+// SanitizeReqRBObject выполняем санитаризацию запросов к объектам справочникам
 func SanitizeReqRBObject(rbrs *datamodels.RBookReqParameters) *datamodels.RBookReqParameters {
 	rbrs.Sanitize()
 	return rbrs

@@ -6,14 +6,14 @@ import (
 	"io/ioutil"
 	"strings"
 
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
+
 	"ISEMS-MRSICT/datamodels"
 	"ISEMS-MRSICT/decoders"
-
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("DecoderFromJSONToSTIXObject", func() {
+var _ = Describe("DecoderFromJSONToSTIXObject", Ordered, func() {
 	var (
 		docJSON                        []byte
 		errso                          error
@@ -27,7 +27,7 @@ var _ = Describe("DecoderFromJSONToSTIXObject", func() {
 
 	countSTIXObj := map[string]int{}
 
-	var _ = BeforeSuite(func() {
+	BeforeAll(func() {
 		docJSON, errReadFile = ioutil.ReadFile("../mytest/test_resources/jsonSTIXExample.json")
 		errUnmarchalReq = json.Unmarshal(docJSON, &modAPIRequestProcessingReqJSON)
 		errUnmarchalList = json.Unmarshal(*modAPIRequestProcessingReqJSON.RequestDetails, &listSTIXObjectJSON)
@@ -46,146 +46,6 @@ var _ = Describe("DecoderFromJSONToSTIXObject", func() {
 			countSTIXObj[i.DataType] = n
 		}
 	})
-
-	/*
-				if fieldTypeSTIXObject.Type == "email-message" {
-				fmt.Println(resultDecodingSTIXObject)
-			}
-
-		Context("Тест 3. Выполняем приведение типов для объектов STIX", func() {
-			It("Должны быть успешно выполненны все приведения типов", func() {
-				var (
-					err error
-					num int
-				)
-
-				for k := range listResult {
-					if listResult[k].DataType == "domain object stix" {
-						switch (listResult[k].Data).(type) {
-						case datamodels.AttackPatternDomainObjectsSTIX:
-							num++
-						case datamodels.CampaignDomainObjectsSTIX:
-							num++
-						case datamodels.CourseOfActionDomainObjectsSTIX:
-							num++
-						case datamodels.GroupingDomainObjectsSTIX:
-							num++
-						case datamodels.IdentityDomainObjectsSTIX:
-							num++
-						case datamodels.IndicatorDomainObjectsSTIX:
-							num++
-						case datamodels.InfrastructureDomainObjectsSTIX:
-							num++
-						case datamodels.IntrusionSetDomainObjectsSTIX:
-							num++
-						case datamodels.LocationDomainObjectsSTIX:
-							num++
-						case datamodels.MalwareDomainObjectsSTIX:
-							num++
-						case datamodels.MalwareAnalysisDomainObjectsSTIX:
-							num++
-						case datamodels.NoteDomainObjectsSTIX:
-							num++
-						case datamodels.ObservedDataDomainObjectsSTIX:
-							num++
-						case datamodels.OpinionDomainObjectsSTIX:
-							num++
-						case datamodels.ReportDomainObjectsSTIX:
-							num++
-						case datamodels.ThreatActorDomainObjectsSTIX:
-							num++
-						case datamodels.ToolDomainObjectsSTIX:
-							num++
-						case datamodels.VulnerabilityDomainObjectsSTIX:
-							num++
-						}
-					} else if listResult[k].DataType == "cyber observable object stix" {
-						switch data := (listResult[k].Data).(type) {
-						case datamodels.ArtifactCyberObservableObjectSTIX:
-							num++
-						case datamodels.AutonomousSystemCyberObservableObjectSTIX:
-							num++
-						case datamodels.DirectoryCyberObservableObjectSTIX:
-							num++
-						case datamodels.DomainNameCyberObservableObjectSTIX:
-							num++
-						case datamodels.EmailAddressCyberObservableObjectSTIX:
-							num++
-						case datamodels.EmailMessageCyberObservableObjectSTIX:
-							fmt.Printf("STIX type object:'%s'\n", data.Type)
-							fmt.Println("AdditionalHeaderFields:")
-
-							for k, v := range data.AdditionalHeaderFields {
-								fmt.Printf("Key: '%s', Value: '%v'\n", k, v)
-							}
-
-							num++
-						case datamodels.FileCyberObservableObjectSTIX:
-							for k, v := range data.Extensions {
-								if k == "pdf-ext" {
-									fmt.Printf("STIX type object:'%s'\n", data.Type)
-									fmt.Printf("Extensions: '%s'\n", k)
-
-									list, ok := (*v).(map[string]string)
-									if !ok {
-										continue
-									}
-
-									for a, b := range list {
-										fmt.Printf("Name: '%s', Value: '%s'\n", a, b)
-									}
-								}
-							}
-
-							num++
-						case datamodels.IPv4AddressCyberObservableObjectSTIX:
-							num++
-						case datamodels.IPv6AddressCyberObservableObjectSTIX:
-							num++
-						case datamodels.MACAddressCyberObservableObjectSTIX:
-							num++
-						case datamodels.MutexCyberObservableObjectSTIX:
-							num++
-						case datamodels.NetworkTrafficCyberObservableObjectSTIX:
-							fmt.Printf("STIX type object:'%s'\n", data.Type)
-							fmt.Println("Extensions:")
-
-							for k, v := range data.Extensions {
-								fmt.Printf("Key: '%s', Value: '%v'\n", k, *v)
-							}
-
-							num++
-						case datamodels.ProcessCyberObservableObjectSTIX:
-							num++
-						case datamodels.SoftwareCyberObservableObjectSTIX:
-							num++
-						case datamodels.URLCyberObservableObjectSTIX:
-							num++
-						case datamodels.UserAccountCyberObservableObjectSTIX:
-							num++
-						case datamodels.WindowsRegistryKeyCyberObservableObjectSTIX:
-							num++
-						case datamodels.X509CertificateCyberObservableObjectSTIX:
-							num++
-						}
-					} else if listResult[k].DataType == "relationship object stix" {
-						switch (listResult[k].Data).(type) {
-						case datamodels.RelationshipObjectSTIX:
-							num++
-						case datamodels.SightingObjectSTIX:
-							num++
-						}
-					} else {
-						err = fmt.Errorf("Error, type object STIX not found")
-
-						break
-					}
-				}
-
-				Expect(err).ShouldNot(HaveOccurred())
-				Expect(num).Should(Equal(64))
-			})
-		})*/
 
 	Context("Тест 1. Чтение тестового файла", func() {
 		It("При чтении файла не должно быть ошибок", func() {
@@ -208,8 +68,8 @@ var _ = Describe("DecoderFromJSONToSTIXObject", func() {
 			Expect(errso).ShouldNot(HaveOccurred())
 		})
 
-		It("Должно быть получено определенное количество STIX объектов (64)", func() {
-			Expect(len(listSTIXObj)).Should(Equal(66))
+		It("Должно быть получено определенное количество STIX объектов", func() {
+			Expect(len(listSTIXObj)).Should(Equal(96))
 		})
 
 		It("Должен быть найден 1 объект типа 'relationship'", func() {

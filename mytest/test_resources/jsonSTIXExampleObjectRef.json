@@ -7,12 +7,65 @@
         {
             "type": "report",
             "spec_version": "2.1",
-            "id": "report--90e4d82a-13dd-2cf1-b4da-ccc1c556ab13",
+            "id": "report--10e4d67a-13dd-3dff-4fdd-aab2c437ab67",
             "created_by_ref": "identity--a463ffb3-1bd9-4d94-b02d-74e4f1658283",
             "created": "2015-12-21T19:59:11.000Z",
             "modified": "2015-12-21T21:13:15.000Z",
             "name": "New test report for testy object refs",
             "description": "PHP инъекция на подсистему управления",
+            "published": "2016-02-05T12:33:11.000Z",
+            "report_types": ["campaign"],
+            "external_references": [
+                {
+                    "source_name": "external references 1",
+                    "description": "common description external references 1 to read people",
+                    "url": "html://external-references-example-1.net/watch?v=BSoHDCWze7E",
+                    "hashes": {"md5": "dvyw7f37fggug8fg88g84fg8877e7fe", "sha256": "bcu48gc7g7848f48g88g85g8rfgh8rh84h8h8r8rh8rh8r"},
+                    "external_id": "ex-ref--vueueuf8egfurggrg7gd7fe"
+                },
+                {
+                    "source_name": "external references 2",
+                    "description": "common description external references 2 to read people",
+                    "url": "html://external-references-example-2222.net/watch?v=BSoHDCWze7E",
+                    "hashes": {"md5": "dvyw7f37fggug8fg88g84fg8877e7fe", "sha128": "nbeiuu37fg7g4f7g84g8gd8fg8eg8egf8e", "sha256": "bcu48gc7g7848f48g88g85g8rfgh8rh84h8h8r8rh8rh8r"},
+                    "external_id": "ex-ref--beg77e7fd3f377gr7eg7efg7"
+                },
+                {
+                    "source_name": "external references 3",
+                    "url": "html://external-references-example-2222.net/watch?v=BSoHDCWze7E",
+                    "external_id": "ex-ref--cbscvsvcvdvucvduvduvcduvbduv"
+                }
+            ],
+            "object_refs": [
+                "attack-pattern--3cd10f23-dc4a-4db0-82d7-cc345743d481",
+                "campaign--0bd1475b-02df-4f51-99db-e061b16a6956",
+                "course-of-action--2a8aa9ff-d7dd-4768-9877-cf571ae2226b",
+                "grouping--726421e5-7acf-4266-986d-8b747a3bce84",
+                "domain-name--95bc69b6-385e-40d8-9a15-72b1631ec1b7",
+                "email-addr--f53bb8aa-f08e-46b5-8b21-7bf1a415cfd4",
+                "file--fa4c163f-e7e2-42a2-a93e-d44f26f522ff",
+                "ipv4-addr--32731e5d-e558-416d-a6aa-9facabeea8b6",
+                "ipv6-addr--01ba0121-1c10-4092-93f4-232a7779a77e",
+                "mac-addr--29a95ae5-c26f-4ab2-bfe7-c3a6892eaf27",
+                "mutex--dfa9e733-c05d-4dac-a65f-f1e195381b9a",
+                "user-account--a2a4b272-f3b1-484a-9588-051675bf68a0",
+                "windows-registry-key--f9e0e5d5-f013-43c1-9bcd-83a8a2d96eab",
+                "x509-certificate--f7a53975-24b2-422d-822b-dbeb3d3b0d4c"
+            ],
+            "outside_specification": {
+                "decisions_made_computer_threat": "successfully implemented computer threat",
+                "computer_threat_type": "PHP-injection"
+            }
+        },
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--10e4d34a-abdd-3aff-b4da-aad2c556af45",
+            "created_by_ref": "identity--a463ffb3-1bd9-4d94-b02d-74e4f1658283",
+            "created": "2015-12-21T19:59:11.000Z",
+            "modified": "2015-12-21T21:13:15.000Z",
+            "name": "Отчет о выбросе неизвестного энергетического поля",
+            "description": "Выброс неизвестного энергетического поля произошел в Уральский горах. Лес вокруг эпицентра выброса был повален в диаметре 10 км.",
             "published": "2016-02-05T12:33:11.000Z",
             "report_types": ["campaign"],
             "external_references": [

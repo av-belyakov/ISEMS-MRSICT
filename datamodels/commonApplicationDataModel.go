@@ -3,7 +3,8 @@ package datamodels
 import (
 	"encoding/json"
 	"time"
-	//mstixo "github.com/av-belyakov/methodstixobjects"
+
+	mstixo "github.com/av-belyakov/methodstixobjects"
 )
 
 // HandlerSTIXObject интерфейс реализующий обработчики для STIX объектов
@@ -14,16 +15,18 @@ type HandlerSTIXObject interface {
 	GetterParametersSTIXObject
 	ComparatorSTIXObject
 	IndexingSTIXObject
+	GetterCurrentObject
+	ToBeautifulOutputConverter
 }
 
 // DecoderJSONObject интерфейс реализующий обработчик для декодирования JSON объекта в STIX объект
 type DecoderJSONObject interface {
-	DecoderJSON(*json.RawMessage) (interface{}, error)
+	DecodeJSON(*json.RawMessage) (interface{}, error)
 }
 
 // EncoderJSONObject интерфейс реализующий обработчик для кодирования STIX объекта в JSON объект
 type EncoderJSONObject interface {
-	EncoderJSON(interface{}) (*[]byte, error)
+	EncodeJSON(interface{}) (*[]byte, error)
 }
 
 // ValidatorJSONObject интерфейс реализующий обработчик для валидации STIX объектов
@@ -57,6 +60,10 @@ type GetFileCyberObservableObjectSTIX interface {
 
 type IndexingSTIXObject interface {
 	GeneratingDataForIndexing() map[string]string
+}
+
+type GetterCurrentObject interface {
+	GetCurrentObject() interface{}
 }
 
 // ElementSTIXObject может содержать любой из STIX объектов с указанием его типа
@@ -106,162 +113,162 @@ type ShortDescriptionElementGroupingComputerThreat struct {
 /********** 			Domain Objects STIX			**********/
 
 // GetAttackPatternDomainObjectsSTIX возвращает объект STIX типа 'attack-pattern'
-func (estix *ElementSTIXObject) GetAttackPatternDomainObjectsSTIX() *AttackPatternDomainObjectsSTIX {
+func (estix *ElementSTIXObject) GetAttackPatternDomainObjectsSTIX() *mstixo.AttackPatternDomainObjectsSTIX {
 	if result, ok := estix.Data.(AttackPatternDomainObjectsSTIX); ok {
-		return &result
+		return &result.AttackPatternDomainObjectsSTIX
 	}
 
 	return nil
 }
 
 // GetCampaignDomainObjectsSTIX возвращает объект STIX типа 'campaign'
-func (estix *ElementSTIXObject) GetCampaignDomainObjectsSTIX() *CampaignDomainObjectsSTIX {
+func (estix *ElementSTIXObject) GetCampaignDomainObjectsSTIX() *mstixo.CampaignDomainObjectsSTIX {
 	if result, ok := estix.Data.(CampaignDomainObjectsSTIX); ok {
-		return &result
+		return &result.CampaignDomainObjectsSTIX
 	}
 
 	return nil
 }
 
 // GetCourseOfActionDomainObjectsSTIX возвращает объект STIX типа 'course-of-action'
-func (estix *ElementSTIXObject) GetCourseOfActionDomainObjectsSTIX() *CourseOfActionDomainObjectsSTIX {
+func (estix *ElementSTIXObject) GetCourseOfActionDomainObjectsSTIX() *mstixo.CourseOfActionDomainObjectsSTIX {
 	if result, ok := estix.Data.(CourseOfActionDomainObjectsSTIX); ok {
-		return &result
+		return &result.CourseOfActionDomainObjectsSTIX
 	}
 
 	return nil
 }
 
 // GetGroupingDomainObjectsSTIX возвращает объект STIX типа 'grouping'
-func (estix *ElementSTIXObject) GetGroupingDomainObjectsSTIX() *GroupingDomainObjectsSTIX {
+func (estix *ElementSTIXObject) GetGroupingDomainObjectsSTIX() *mstixo.GroupingDomainObjectsSTIX {
 	if result, ok := estix.Data.(GroupingDomainObjectsSTIX); ok {
-		return &result
+		return &result.GroupingDomainObjectsSTIX
 	}
 
 	return nil
 }
 
 // GetIdentityDomainObjectsSTIX возвращает объект STIX типа 'identity'
-func (estix *ElementSTIXObject) GetIdentityDomainObjectsSTIX() *IdentityDomainObjectsSTIX {
+func (estix *ElementSTIXObject) GetIdentityDomainObjectsSTIX() *mstixo.IdentityDomainObjectsSTIX {
 	if result, ok := estix.Data.(IdentityDomainObjectsSTIX); ok {
-		return &result
+		return &result.IdentityDomainObjectsSTIX
 	}
 
 	return nil
 }
 
 // GetIndicatorDomainObjectsSTIX возвращает объект STIX типа 'indicator'
-func (estix *ElementSTIXObject) GetIndicatorDomainObjectsSTIX() *IndicatorDomainObjectsSTIX {
+func (estix *ElementSTIXObject) GetIndicatorDomainObjectsSTIX() *mstixo.IndicatorDomainObjectsSTIX {
 	if result, ok := estix.Data.(IndicatorDomainObjectsSTIX); ok {
-		return &result
+		return &result.IndicatorDomainObjectsSTIX
 	}
 
 	return nil
 }
 
 // GetInfrastructureDomainObjectsSTIX возвращает объект STIX типа 'infrastructure'
-func (estix *ElementSTIXObject) GetInfrastructureDomainObjectsSTIX() *InfrastructureDomainObjectsSTIX {
+func (estix *ElementSTIXObject) GetInfrastructureDomainObjectsSTIX() *mstixo.InfrastructureDomainObjectsSTIX {
 	if result, ok := estix.Data.(InfrastructureDomainObjectsSTIX); ok {
-		return &result
+		return &result.InfrastructureDomainObjectsSTIX
 	}
 
 	return nil
 }
 
 // GetIntrusionSetDomainObjectsSTIX возвращает объект STIX типа 'intrusion-set'
-func (estix *ElementSTIXObject) GetIntrusionSetDomainObjectsSTIX() *IntrusionSetDomainObjectsSTIX {
+func (estix *ElementSTIXObject) GetIntrusionSetDomainObjectsSTIX() *mstixo.IntrusionSetDomainObjectsSTIX {
 	if result, ok := estix.Data.(IntrusionSetDomainObjectsSTIX); ok {
-		return &result
+		return &result.IntrusionSetDomainObjectsSTIX
 	}
 
 	return nil
 }
 
 // GetLocationDomainObjectsSTIX возвращает объект STIX типа 'location'
-func (estix *ElementSTIXObject) GetLocationDomainObjectsSTIX() *LocationDomainObjectsSTIX {
+func (estix *ElementSTIXObject) GetLocationDomainObjectsSTIX() *mstixo.LocationDomainObjectsSTIX {
 	if result, ok := estix.Data.(LocationDomainObjectsSTIX); ok {
-		return &result
+		return &result.LocationDomainObjectsSTIX
 	}
 
 	return nil
 }
 
 // GetMalwareDomainObjectsSTIX возвращает объект STIX типа 'malware'
-func (estix *ElementSTIXObject) GetMalwareDomainObjectsSTIX() *MalwareDomainObjectsSTIX {
+func (estix *ElementSTIXObject) GetMalwareDomainObjectsSTIX() *mstixo.MalwareDomainObjectsSTIX {
 	if result, ok := estix.Data.(MalwareDomainObjectsSTIX); ok {
-		return &result
+		return &result.MalwareDomainObjectsSTIX
 	}
 
 	return nil
 }
 
 // GetMalwareAnalysisDomainObjectsSTIX возвращает объект STIX типа 'malware-analysis'
-func (estix *ElementSTIXObject) GetMalwareAnalysisDomainObjectsSTIX() *MalwareAnalysisDomainObjectsSTIX {
+func (estix *ElementSTIXObject) GetMalwareAnalysisDomainObjectsSTIX() *mstixo.MalwareAnalysisDomainObjectsSTIX {
 	if result, ok := estix.Data.(MalwareAnalysisDomainObjectsSTIX); ok {
-		return &result
+		return &result.MalwareAnalysisDomainObjectsSTIX
 	}
 
 	return nil
 }
 
 // GetNoteDomainObjectsSTIX возвращает объект STIX типа 'note'
-func (estix *ElementSTIXObject) GetNoteDomainObjectsSTIX() *NoteDomainObjectsSTIX {
+func (estix *ElementSTIXObject) GetNoteDomainObjectsSTIX() *mstixo.NoteDomainObjectsSTIX {
 	if result, ok := estix.Data.(NoteDomainObjectsSTIX); ok {
-		return &result
+		return &result.NoteDomainObjectsSTIX
 	}
 
 	return nil
 }
 
 // GetObservedDataDomainObjectsSTIX возвращает объект STIX типа 'observed-data'
-func (estix *ElementSTIXObject) GetObservedDataDomainObjectsSTIX() *ObservedDataDomainObjectsSTIX {
+func (estix *ElementSTIXObject) GetObservedDataDomainObjectsSTIX() *mstixo.ObservedDataDomainObjectsSTIX {
 	if result, ok := estix.Data.(ObservedDataDomainObjectsSTIX); ok {
-		return &result
+		return &result.ObservedDataDomainObjectsSTIX
 	}
 
 	return nil
 }
 
 // GetOpinionDomainObjectsSTIX возвращает объект STIX типа 'opinion'
-func (estix *ElementSTIXObject) GetOpinionDomainObjectsSTIX() *OpinionDomainObjectsSTIX {
+func (estix *ElementSTIXObject) GetOpinionDomainObjectsSTIX() *mstixo.OpinionDomainObjectsSTIX {
 	if result, ok := estix.Data.(OpinionDomainObjectsSTIX); ok {
-		return &result
+		return &result.OpinionDomainObjectsSTIX
 	}
 
 	return nil
 }
 
 // GetReportDomainObjectsSTIX возвращает объект STIX типа 'report'
-func (estix *ElementSTIXObject) GetReportDomainObjectsSTIX() *ReportDomainObjectsSTIX {
+func (estix *ElementSTIXObject) GetReportDomainObjectsSTIX() *mstixo.ReportDomainObjectsSTIX {
 	if result, ok := estix.Data.(ReportDomainObjectsSTIX); ok {
-		return &result
+		return &result.ReportDomainObjectsSTIX
 	}
 
 	return nil
 }
 
 // GetThreatActorDomainObjectsSTIX возвращает объект STIX типа 'threat-actor'
-func (estix *ElementSTIXObject) GetThreatActorDomainObjectsSTIX() *ThreatActorDomainObjectsSTIX {
+func (estix *ElementSTIXObject) GetThreatActorDomainObjectsSTIX() *mstixo.ThreatActorDomainObjectsSTIX {
 	if result, ok := estix.Data.(ThreatActorDomainObjectsSTIX); ok {
-		return &result
+		return &result.ThreatActorDomainObjectsSTIX
 	}
 
 	return nil
 }
 
 // GetToolDomainObjectsSTIX возвращает объект STIX типа 'tool'
-func (estix *ElementSTIXObject) GetToolDomainObjectsSTIX() *ToolDomainObjectsSTIX {
+func (estix *ElementSTIXObject) GetToolDomainObjectsSTIX() *mstixo.ToolDomainObjectsSTIX {
 	if result, ok := estix.Data.(ToolDomainObjectsSTIX); ok {
-		return &result
+		return &result.ToolDomainObjectsSTIX
 	}
 
 	return nil
 }
 
 // GetVulnerabilityDomainObjectsSTIX возвращает объект STIX типа 'vulnerability'
-func (estix *ElementSTIXObject) GetVulnerabilityDomainObjectsSTIX() *VulnerabilityDomainObjectsSTIX {
+func (estix *ElementSTIXObject) GetVulnerabilityDomainObjectsSTIX() *mstixo.VulnerabilityDomainObjectsSTIX {
 	if result, ok := estix.Data.(VulnerabilityDomainObjectsSTIX); ok {
-		return &result
+		return &result.VulnerabilityDomainObjectsSTIX
 	}
 
 	return nil

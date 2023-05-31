@@ -167,13 +167,15 @@ func HandlerAssignmentsModuleDataBaseInteraction(
 	}
 }
 
-// handlerDataBaseResponse - непосредственно обработчик ответов на запросы к сущиностям различных типов находящихся в хранилище,
+// handlerDataBaseResponse - непосредственно обработчик ответов на запросы к сущьностям различных типов находящихся в хранилище,
 // приходят от модуля хранилища
 func handlerDataBaseResponse(
 	chanResModAPI chan<- datamodels.ModuleReguestProcessingChannel,
 	data datamodels.ModuleDataBaseInteractionChannel,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
 	ti *memorytemporarystoragecommoninformation.TemporaryStorageTaskInDetailType) error {
+
+	fmt.Println("func 'handlerDataBaseResponse', START.............. data.Section: ", data.Section)
 
 	//размер части сообщения
 	const _maxChunkSize int = 100

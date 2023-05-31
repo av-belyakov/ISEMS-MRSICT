@@ -10,14 +10,14 @@ import (
 	"ISEMS-MRSICT/modulelogginginformationerrors"
 )
 
-//RoutingCoreApp обеспечивает маршрутизацию всех данных циркулирующих внутри приложения
+// RoutingCoreApp обеспечивает маршрутизацию всех данных циркулирующих внутри приложения
 func RoutingCoreApp(
 	chanSaveLog chan<- modulelogginginformationerrors.LogMessageType,
 	appConfig *datamodels.AppConfig,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
 	clim *moddatamodels.ChannelsListInteractingModules) {
 
-	log.Printf("Start application ISEMS-MRSICT, version '%q'\n", appConfig.VersionApp)
+	log.Printf("Start application ISEMS-MRSICT, version %q\n", appConfig.VersionApp)
 
 	for {
 		select {

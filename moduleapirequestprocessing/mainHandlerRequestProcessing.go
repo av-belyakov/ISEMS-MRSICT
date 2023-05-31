@@ -15,10 +15,9 @@ import (
 	"ISEMS-MRSICT/datamodels"
 	"ISEMS-MRSICT/moduleapirequestprocessing/temporarystorage"
 	"ISEMS-MRSICT/modulelogginginformationerrors"
-	//"ISEMS-MRSICT/moduletemporarymemorycommon"
 )
 
-//ChannelsModuleAPIRequestProcessing описание каналов передачи данных между ядром приложения и модулем обрабатывающем запросы с внешних источников
+// ChannelsModuleAPIRequestProcessing описание каналов передачи данных между ядром приложения и модулем обрабатывающем запросы с внешних источников
 type ChannelsModuleAPIRequestProcessing struct {
 	InputModule, OutputModule chan datamodels.ModuleReguestProcessingChannel
 }
@@ -41,7 +40,7 @@ func init() {
 	repositoryStorageUserParameters = temporarystorage.NewRepositoryStorageUserParameters()
 }
 
-//MainHandlerAPIReguestProcessing модуль инициализации обработчика запросов с внешних источников
+// MainHandlerAPIReguestProcessing модуль инициализации обработчика запросов с внешних источников
 func MainHandlerAPIReguestProcessing(
 	chanSaveLog chan<- modulelogginginformationerrors.LogMessageType,
 	mcs *datamodels.ModuleAPIRequestProcessingSetting,
@@ -80,6 +79,9 @@ func MainHandlerAPIReguestProcessing(
 	//маршрутизатор ответов поступающих от Ядра приложения
 	go func() {
 		for msg := range cmapirp.InputModule {
+
+			fmt.Printf("func '%s', msg: %v\n", funcName, msg)
+
 			if msg.ModuleReceiverMessage != "module api request processing" {
 				chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 					Description: "the name of the source module or the destination module does not correspond to certain values",
@@ -127,12 +129,12 @@ func MainHandlerAPIReguestProcessing(
 		}
 	}()
 
-	log.Printf("\tThe module's API for processing requests from external sources has been successfully activated. The following API parameters are set ip address:%v, port:%v\n", ssapi.host, ssapi.port)
+	log.Printf("The module's API for processing requests from external sources has been successfully activated. The following API parameters are set (%s:%s)\n", ssapi.host, ssapi.port)
 
 	return cmapirp
 }
 
-//HandlerRequest обработчик HTTPS запроса к "/"
+// HandlerRequest обработчик HTTPS запроса к "/"
 func (settingsServerAPI *settingsServerAPI) HandlerRequest(w http.ResponseWriter, req *http.Request) {
 	funcName := "HandlerRequest"
 

@@ -259,6 +259,8 @@ func HandlerValueField(listValue []string) bson.E {
 			//tl = append(tl, bson.A{bson.D{{Key: "url", Value: v}}, bson.D{{Key: "value", Value: v}}}...)
 			tl = append(tl, bson.D{{Key: "$or", Value: bson.A{bson.D{{Key: "url", Value: v}}, bson.D{{Key: "value", Value: v}}}}})
 		}
+
+		fmt.Println("func 'HandlerValueField', tl = ", tl)
 	}
 
 	//обработка только IPv4 или диапазонов IPv4

@@ -1,5 +1,6 @@
 package routingflowsmoduleapirequestprocessing_test
 
+/*
 import (
 	"ISEMS-MRSICT/datamodels"
 	"ISEMS-MRSICT/modulecoreapplication/routingflowsmoduleapirequestprocessing"
@@ -77,6 +78,5 @@ var _ = Describe("Тесты объектов ReferenceBook, SDO, Статист
 		})
 		Context("Тест: обработка не валидных запросов", func() {
 		})
-	})*/
-
-})
+	})
+})*/

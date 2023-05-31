@@ -11,6 +11,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+
+	mstixo "github.com/av-belyakov/methodstixobjects"
 )
 
 var errorMessage = datamodels.ModuleDataBaseInteractionChannel{
@@ -23,7 +25,7 @@ var errorMessage = datamodels.ModuleDataBaseInteractionChannel{
 	},
 }
 
-//wrapperFuncTypeHandlingSTIXObject набор обработчиков для работы с запросами, связанными со STIX объектами
+// wrapperFuncTypeHandlingSTIXObject набор обработчиков для работы с запросами, связанными со STIX объектами
 func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 	chanOutput chan<- datamodels.ModuleDataBaseInteractionChannel,
 	dataRequest datamodels.ModuleDataBaseInteractionChannel,
@@ -49,6 +51,8 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 		errorMessage.ErrorMessage.Error = fmt.Errorf("no information about the task by its id was found in the temporary storage")
 		chanOutput <- errorMessage
 
+		fmt.Println("func 'wrapperFuncTypeHandlingSTIXObject', 111 ERROR: ", err)
+
 		return
 	}
 
@@ -57,11 +61,15 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 		errorMessage.ErrorMessage.Error = fmt.Errorf("type conversion error")
 		chanOutput <- errorMessage
 
+		fmt.Println("func 'wrapperFuncTypeHandlingSTIXObject', 222 ERROR: ", errorMessage)
+
 		return
 	}
 
 	//получаем список ID STIX объектов предназначенных для добавление в БД
 	listID := commonhandlers.GetListIDFromListSTIXObjects(ti)
+
+	fmt.Println("func 'wrapperFuncTypeHandlingSTIXObject', listID: ", listID)
 
 	//выполняем запрос к БД, для получения полной информации об STIX объектах по их ID
 	listElemetSTIXObject, err := FindSTIXObjectByID(qp, listID)
@@ -69,7 +77,13 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 		errorMessage.ErrorMessage.Error = err
 		chanOutput <- errorMessage
 
+		fmt.Println("func 'wrapperFuncTypeHandlingSTIXObject', 333 ERROR: ", err)
+
 		return
+	}
+
+	for _, v := range listElemetSTIXObject {
+		fmt.Println("func 'wrapperFuncTypeHandlingSTIXObject', listElemetSTIXObject: ", v.DataType, " Data:", v.Data)
 	}
 
 	//выполняем сравнение объектов и ищем внесенные изменения для каждого из STIX объектов
@@ -79,7 +93,12 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 		NewList:        ti,
 	})
 
-	for k, _ := range listDifferentObject {
+	fmt.Println("func 'wrapperFuncTypeHandlingSTIXObject', выполняем сравнение объектов и ищем внесенные изменения для каждого из STIX объектов listDifferentObject: ", listDifferentObject)
+	for _, v := range listDifferentObject {
+		fmt.Println("---- ", v)
+	}
+
+	for k := range listDifferentObject {
 		listDifferentObject[k].UserNameModifiedObject = taskInfo.AdditionalClientName
 	}
 
@@ -106,6 +125,8 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 			errorMessage.ErrorMessage.Error = err
 			chanOutput <- errorMessage
 
+			fmt.Println("func 'wrapperFuncTypeHandlingSTIXObject', 444 ERROR: ", err)
+
 			return
 		}
 	}
@@ -116,6 +137,8 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 	if err = DeleteOldRelationshipSTIXObject(qp, ti); err != nil {
 		errorMessage.ErrorMessage.Error = err
 		chanOutput <- errorMessage
+
+		fmt.Println("func 'wrapperFuncTypeHandlingSTIXObject', 555 ERROR: ", err)
 
 		return
 	}
@@ -135,6 +158,8 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 		errorMessage.ErrorMessage.Error = err
 		chanOutput <- errorMessage
 
+		fmt.Println("func 'wrapperFuncTypeHandlingSTIXObject', 666 ERROR: ", err)
+
 		return
 	}
 
@@ -143,6 +168,8 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 	if err != nil {
 		errorMessage.ErrorMessage.Error = err
 		chanOutput <- errorMessage
+
+		fmt.Println("func 'wrapperFuncTypeHandlingSTIXObject', 777 ERROR: ", err)
 
 		return
 	}
@@ -161,7 +188,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingSTIXObject(
 	}
 }
 
-//wrapperFuncTypeHandlingManagingCollectionSTIXObjects набор обработчиков для работы с запросами, связанными с управлением STIX объектами
+// wrapperFuncTypeHandlingManagingCollectionSTIXObjects набор обработчиков для работы с запросами, связанными с управлением STIX объектами
 func (ws *wrappersSetting) wrapperFuncTypeHandlingManagingCollectionSTIXObjects(
 	chanOutput chan<- datamodels.ModuleDataBaseInteractionChannel,
 	dataRequest datamodels.ModuleDataBaseInteractionChannel,
@@ -211,7 +238,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingManagingCollectionSTIXObjects(
 			sl                    = map[string]struct {
 				targetRefsID   string
 				relationshipID string
-				listRefs       []datamodels.IdentifierTypeSTIX
+				listRefs       []mstixo.IdentifierTypeSTIX
 			}{}
 		)
 
@@ -253,7 +280,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingManagingCollectionSTIXObjects(
 				sl[v.Data.GetID()] = struct {
 					targetRefsID   string
 					relationshipID string
-					listRefs       []datamodels.IdentifierTypeSTIX
+					listRefs       []mstixo.IdentifierTypeSTIX
 				}{listRefs: element.ObjectRefs}
 			}
 
@@ -284,9 +311,9 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingManagingCollectionSTIXObjects(
 				listIDReporModify = append(listIDReporModify, targetID)
 
 				sl[string(obj.SourceRef)] = struct { // ID объекта типа 'gouping'
-					targetRefsID   string                          // объект 'report' на который ссылается какой либо объект из поля SourceRefs
-					relationshipID string                          // ID объекта типа 'relationship' который соединяет объекты 'grouping' и 'report' и который так же нужно удалить
-					listRefs       []datamodels.IdentifierTypeSTIX // список ID объектов который 'grouping' объединяет в группу и который нужно перенести
+					targetRefsID   string                      // объект 'report' на который ссылается какой либо объект из поля SourceRefs
+					relationshipID string                      // ID объекта типа 'relationship' который соединяет объекты 'grouping' и 'report' и который так же нужно удалить
+					listRefs       []mstixo.IdentifierTypeSTIX // список ID объектов который 'grouping' объединяет в группу и который нужно перенести
 					// в объект 'report' к которому принадлежит 'grouping' отмеченный для удаления
 				}{
 					targetRefsID:   targetID,
@@ -324,7 +351,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingManagingCollectionSTIXObjects(
 
 				//удаляем ID объекта 'grouping' из свойства ObjectRefs объекта 'report' и добавляем туда ссылки на ID объектов находящиеся
 				// в свойстве ObjectRefs удаляемого объекта 'grouping'
-				listTmp := []datamodels.IdentifierTypeSTIX{}
+				listTmp := []mstixo.IdentifierTypeSTIX{}
 				for _, v := range obj.ObjectRefs {
 					if string(v) == groupingID {
 						continue
@@ -364,7 +391,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingManagingCollectionSTIXObjects(
 	}
 }
 
-//wrapperFuncTypeHandlingSearchRequests набор обработчиков для работы с запросами, связанными с поиском информации
+// wrapperFuncTypeHandlingSearchRequests набор обработчиков для работы с запросами, связанными с поиском информации
 func (ws *wrappersSetting) wrapperFuncTypeHandlingSearchRequests(
 	chanOutput chan<- datamodels.ModuleDataBaseInteractionChannel,
 	dataRequest datamodels.ModuleDataBaseInteractionChannel,
@@ -529,7 +556,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingManagingDifferencesObjectsColl
 	}
 }
 
-//wrapperFuncTypeTechnicalPart набор обработчиков для осуществления задач, связанных с технической частью приложения: формирование документов БД
+// wrapperFuncTypeTechnicalPart набор обработчиков для осуществления задач, связанных с технической частью приложения: формирование документов БД
 // связанных с хранением технической информации или документов, учавствующих в посторении иерархии объектов типа STIX. Запись идентификаторов таких
 // объектов во временное хранилище и т.д.
 func (ws *wrappersSetting) wrapperFuncTypeTechnicalPart(
@@ -596,7 +623,7 @@ func (ws *wrappersSetting) wrapperFuncTypeTechnicalPart(
 	}
 }
 
-//wrapperFuncTypeHandlingStatisticalRequests набор обработчиков для обработки статистических запросов
+// wrapperFuncTypeHandlingStatisticalRequests набор обработчиков для обработки статистических запросов
 func (ws *wrappersSetting) wrapperFuncTypeHandlingStatisticalRequests(
 	chanOutput chan<- datamodels.ModuleDataBaseInteractionChannel,
 	dataRequest datamodels.ModuleDataBaseInteractionChannel,
@@ -696,7 +723,7 @@ func (ws *wrappersSetting) wrapperFuncTypeHandlingStatisticalRequests(
 	}
 }
 
-//wrapperFuncTypeHandlingReferenceBook набор обработчиков для работы с запросами к справочнику
+// wrapperFuncTypeHandlingReferenceBook набор обработчиков для работы с запросами к справочнику
 func (ws *wrappersSetting) wrapperFuncTypeHandlingReferenceBook(
 	chanOutput chan<- datamodels.ModuleDataBaseInteractionChannel,
 	dataRequest datamodels.ModuleDataBaseInteractionChannel,

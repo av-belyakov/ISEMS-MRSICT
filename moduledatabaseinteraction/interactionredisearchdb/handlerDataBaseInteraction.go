@@ -2,6 +2,7 @@ package interactionredisearchdb
 
 import (
 	"fmt"
+	"log"
 
 	"ISEMS-MRSICT/datamodels"
 	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
@@ -43,8 +44,6 @@ func InteractionRedisearchDB(
 	rdbs *datamodels.RedisearchDBSettings,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType) (ChannelsRedisearchInteraction, error) {
 
-	fmt.Println("func 'InteractionRedisearchDB', START...")
-
 	if err := cdrdb.CreateConnection(rdbs); err != nil {
 		chanSaveLog <- modulelogginginformationerrors.LogMessageType{
 			TypeMessage: "error",
@@ -55,45 +54,15 @@ func InteractionRedisearchDB(
 		return crdbi, err
 	}
 
-	/*
-		Сделал:
-		1. добавил в HandlerAssignmentsModuleAPIRequestProcessing Section "handling stix object" на
-		 ряду с отправкой на добавление списка STIX объектов к БД MongoDB еще и отправку запроса
-		 на создание индексов в БД RedisearchDB. При чем отправка запроса к RedisearchDB будет
-		 выполнятся первой, а обработка запросов в обоих БД будет вестись параллельно. Но я думаю
-		 что RedisearchDB отработает быстрее так как ей не надо выполнят допонительные запросы из
-		 БД и сравнение изменений в объектах. Так что за очередность обработки не стоит беспокоится.
-		2. Добавил функцию handlerDataBaseInteraction в mailHandlerModuleScheduler.
-		3. Написал функцию Routing состоящую из двух оберток wrapperFuncHandlingInsertIndex и написал
-		функцию wrapperFuncHandlingInsertIndex в wrapperRouteRequest. Там выполняется полная обработка
-		списка ElementSTIXObject и добавление индексов а БД RedisearchDB. Добавление индексов в БД
-		RedisearchDB проверялось в тестах (успешно), однако в совокупности вся сепочка обработки STIX
-		объектов не проверялась.
-		4. Изменил версию приложения так как добавился новый функционал.
-
-		Что нужно сделать:
-		+ 1. Обновить версию MRSICa но не в ДОКЕРАХ, а просто на хостовой тестовой системе и проверить
-		всю цепочку обновления хотя бы одного STIX объекта. (проверил обнавление одного объекта, все работает)
-		2. Продумать и написать методы поиска индексов по заданным параметрам
-		в БД Redisearch, а также методы и алгоритмы передачи информации в
-		модуль который работает с БД Redisearch и приема из него
-		3. Продумать и написать метод индексации тех STIX объектов которые,
-		возможно ранее не были проиндексированны или оказались не проиндексированны
-		по причине перезапуска БД Rediserch
-	*/
-
 	go Routing(crdbi.OutputModule, cdrdb, tst, crdbi.InputModule)
 
 	return crdbi, nil
 }
 
 func (cdrdb *ConnectionDescriptorRedisearchDB) CreateConnection(mdbs *datamodels.RedisearchDBSettings) error {
-	fmt.Println("func 'CreateConnection', Redisearch, START...")
-	fmt.Printf("RedisearchDBSettings: %v\n", mdbs)
-
 	cdrdb.Connection = redisearch.NewClient(fmt.Sprintf("%v:%v", mdbs.Host, mdbs.Port), "isems-index")
-	if _, err := cdrdb.Connection.Info(); err == nil {
-		return nil
+	if _, err := cdrdb.Connection.Info(); err != nil {
+		return err
 	}
 
 	sc := redisearch.NewSchema(redisearch.DefaultOptions).
@@ -104,20 +73,22 @@ func (cdrdb *ConnectionDescriptorRedisearchDB) CreateConnection(mdbs *datamodels
 		AddField(redisearch.NewTextField("street_address")).
 		//результат классификации или имя, присвоенное экземпляру вредоносного ПО инструментом анализа (сканером)
 		// используется в STIX объектах MalwareAnalysis
-		AddField(redisearch.NewTextField("result_name")).
+		//AddField(redisearch.NewTextField("result_name")).
 		//краткое изложение содержания записки используется в STIX объектах Node
 		AddField(redisearch.NewTextField("abstract")).
 		//основное содержание записки используется в STIX объектах Node
 		AddField(redisearch.NewTextField("content")).
-		AddField(redisearch.NewTextField("url")).
+		//AddField(redisearch.NewTextField("url")).
 		//параметр value может содержать в себе сетевое доменное имя,
 		// email адрес, ip адрес, url в STIX объектах DomainName, EmailAddress,
 		// IPv4Address, IPv6Address, URL
 		AddField(redisearch.NewTextField("value"))
 
+	log.Printf("Create connection with Redisearch (%s:%d)\n", mdbs.Host, mdbs.Port)
+
 	if err := cdrdb.Connection.CreateIndex(sc); err == nil {
-		return nil
+		return err
 	}
 
-	return fmt.Errorf("error connecting to the Research database or error creating indexes")
+	return nil
 }

@@ -6,20 +6,21 @@ import (
 	"regexp"
 	"time"
 
-	govalidator "github.com/asaskevich/govalidator"
-
 	"ISEMS-MRSICT/commonlibs"
+
+	govalidator "github.com/asaskevich/govalidator"
+	mstixo "github.com/av-belyakov/methodstixobjects"
 )
 
 /**********			 Некоторые примитивные типы STIX			 **********/
 
-//EnumTypeSTIX тип "enum", по терминологии STIX, является жестко заданным списком терминов, который представлен в виде строки
+// EnumTypeSTIX тип "enum", по терминологии STIX, является жестко заданным списком терминов, который представлен в виде строки
 type EnumTypeSTIX string
 
-//ExternalReferencesTypeSTIX тип "external-reference", по терминалогии STIX, является списком с информацией о внешних ссылках не относящихся к STIX информации
+// ExternalReferencesTypeSTIX тип "external-reference", по терминалогии STIX, является списком с информацией о внешних ссылках не относящихся к STIX информации
 type ExternalReferencesTypeSTIX []ExternalReferenceTypeElementSTIX
 
-//CheckExternalReferencesTypeSTIX выполняет проверку значений типа ExternalReferencesTypeSTIX
+// CheckExternalReferencesTypeSTIX выполняет проверку значений типа ExternalReferencesTypeSTIX
 func (ertstix *ExternalReferencesTypeSTIX) CheckExternalReferencesTypeSTIX() bool {
 	if len(*ertstix) == 0 {
 		return true
@@ -34,7 +35,7 @@ func (ertstix *ExternalReferencesTypeSTIX) CheckExternalReferencesTypeSTIX() boo
 	return true
 }
 
-//SanitizeStructExternalReferencesTypeSTIX для ряда полей, выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStructExternalReferencesTypeSTIX для ряда полей, выполняет замену некоторых специальных символов на их HTML код
 func (ertstix ExternalReferencesTypeSTIX) SanitizeStructExternalReferencesTypeSTIX() ExternalReferencesTypeSTIX {
 	size := len(ertstix)
 	if size == 0 {
@@ -50,7 +51,7 @@ func (ertstix ExternalReferencesTypeSTIX) SanitizeStructExternalReferencesTypeST
 	return ert
 }
 
-//ExternalReferenceTypeElementSTIX тип содержащий подробную информацию о внешних ссылках, таких как URL, ID и т.д.
+// ExternalReferenceTypeElementSTIX тип содержащий подробную информацию о внешних ссылках, таких как URL, ID и т.д.
 // SourceName - имя источника (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // Description - описание
 // URL - URL ссылка на внешних источниках
@@ -64,7 +65,7 @@ type ExternalReferenceTypeElementSTIX struct {
 	ExternalID  string         `json:"external_id" bson:"external_id"`
 }
 
-//CheckExternalReferenceTypeElementSTIX выполняет проверку значений типа ExternalReferenceTypeElementSTIX
+// CheckExternalReferenceTypeElementSTIX выполняет проверку значений типа ExternalReferenceTypeElementSTIX
 func (ertestix *ExternalReferenceTypeElementSTIX) CheckExternalReferenceTypeElementSTIX() bool {
 	if ertestix.URL != "" && !govalidator.IsURL(ertestix.URL) {
 		return false
@@ -73,7 +74,7 @@ func (ertestix *ExternalReferenceTypeElementSTIX) CheckExternalReferenceTypeElem
 	return true
 }
 
-//SanitizeStructExternalReferenceTypeElementSTIX выполняет проверку значений типа ExternalReferenceTypeElementSTIX
+// SanitizeStructExternalReferenceTypeElementSTIX выполняет проверку значений типа ExternalReferenceTypeElementSTIX
 func (ertestix ExternalReferenceTypeElementSTIX) SanitizeStructExternalReferenceTypeElementSTIX() ExternalReferenceTypeElementSTIX {
 	return ExternalReferenceTypeElementSTIX{
 		SourceName:  commonlibs.StringSanitize(ertestix.SourceName),
@@ -84,10 +85,10 @@ func (ertestix ExternalReferenceTypeElementSTIX) SanitizeStructExternalReference
 	}
 }
 
-//HashesTypeSTIX тип "hashes", по терминологии STIX, содержащий хеш значения, где <тип_хеша>:<хеш>
+// HashesTypeSTIX тип "hashes", по терминологии STIX, содержащий хеш значения, где <тип_хеша>:<хеш>
 type HashesTypeSTIX map[string]string
 
-//CheckHashesTypeSTIX выполняет проверку значений типа HashesTypeSTIX
+// CheckHashesTypeSTIX выполняет проверку значений типа HashesTypeSTIX
 func (htstix *HashesTypeSTIX) CheckHashesTypeSTIX() bool {
 	if len(*htstix) == 0 {
 		return true
@@ -107,29 +108,32 @@ func (htstix *HashesTypeSTIX) CheckHashesTypeSTIX() bool {
 	return true
 }
 
-//IdentifierTypeSTIX тип "identifier", по терминалогии STIX, содержащий уникальный идентификатор UUID, преимущественно версии 4 при этом ID должен
-//начинаться с наименования организации или программного обеспечения сгенерировавшего его. Например, <example-source--ff26c055-6336-5bc5-b98d-13d6226742dd> (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
-type IdentifierTypeSTIX string
+// IdentifierTypeSTIX тип "identifier", по терминалогии STIX, содержащий уникальный идентификатор UUID, преимущественно версии 4 при этом ID должен
+// начинаться с наименования организации или программного обеспечения сгенерировавшего его. Например, <example-source--ff26c055-6336-5bc5-b98d-13d6226742dd> (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
+// type IdentifierTypeSTIX string
+type IdentifierTypeSTIX struct {
+	mstixo.IdentifierTypeSTIX
+}
 
 //CheckIdentifierTypeSTIX выполняет проверку значения типа IdentifierTypeSTIX
-func (itstix *IdentifierTypeSTIX) CheckIdentifierTypeSTIX() bool {
-	if len(*itstix) == 0 {
+/*func (itstix IdentifierTypeSTIX) CheckIdentifierTypeSTIX() bool {
+	if len(itstix) == 0 {
 		return true
 	}
 
 	return regexp.MustCompile(`^[0-9a-zA-Z-_]+(--)[0-9a-f-]+$`).MatchString(fmt.Sprint(*itstix))
-}
+}*/
 
 //AddValue добавляет значение в тип IdentifierTypeSTIX
-func (itstix *IdentifierTypeSTIX) AddValue(str string) {
-	var i IdentifierTypeSTIX = IdentifierTypeSTIX(str)
+/*func (itstix *IdentifierTypeSTIX) AddValue(str string) {
+	var i IdentifierTypeSTIX = IdentifierTypeSTIX(mstixo.IdentifierTypeSTIX{str})
 	itstix = &i
-}
+}*/
 
-//KillChainPhasesTypeSTIX тип "kill-chain-phases", по терминалогии STIX, содержащий цепочки фактов, приведших к какому либо урону
+// KillChainPhasesTypeSTIX тип "kill-chain-phases", по терминалогии STIX, содержащий цепочки фактов, приведших к какому либо урону
 type KillChainPhasesTypeSTIX []KillChainPhasesTypeElementSTIX
 
-//SanitizeStructKillChainPhasesTypeSTIX выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStructKillChainPhasesTypeSTIX выполняет замену некоторых специальных символов на их HTML код
 func (kcptstix KillChainPhasesTypeSTIX) SanitizeStructKillChainPhasesTypeSTIX() KillChainPhasesTypeSTIX {
 	for k := range kcptstix {
 		kcptstix[k].SanitizeStructKillChainPhasesTypeElementSTIX()
@@ -138,7 +142,7 @@ func (kcptstix KillChainPhasesTypeSTIX) SanitizeStructKillChainPhasesTypeSTIX() 
 	return kcptstix
 }
 
-//KillChainPhasesTypeElementSTIX тип содержащий набор элементов цепочки фактов, приведших к какому либо урону
+// KillChainPhasesTypeElementSTIX тип содержащий набор элементов цепочки фактов, приведших к какому либо урону
 // KillChainName - имя цепочки (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // PhaseName - наименование фазы из спецификации STIX, например, "reconnaissance", "pre-attack" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 type KillChainPhasesTypeElementSTIX struct {
@@ -146,7 +150,7 @@ type KillChainPhasesTypeElementSTIX struct {
 	PhaseName     string `json:"phase_name" bson:"phase_name" required:"true"`
 }
 
-//SanitizeStructKillChainPhasesTypeElementSTIX выполлняет проверку значения типа KillChainPhasesTypeElementSTIX
+// SanitizeStructKillChainPhasesTypeElementSTIX выполлняет проверку значения типа KillChainPhasesTypeElementSTIX
 func (kcptestix KillChainPhasesTypeElementSTIX) SanitizeStructKillChainPhasesTypeElementSTIX() KillChainPhasesTypeElementSTIX {
 	if kcptestix.KillChainName == "" {
 		return kcptestix
@@ -162,20 +166,20 @@ func (kcptestix KillChainPhasesTypeElementSTIX) SanitizeStructKillChainPhasesTyp
 	return kcptestix
 }
 
-//OpenVocabTypeSTIX тип "open-vocab", по терминалогии STIX, содержащий заранее определенное (предложенное) значение
+// OpenVocabTypeSTIX тип "open-vocab", по терминалогии STIX, содержащий заранее определенное (предложенное) значение
 type OpenVocabTypeSTIX string
 
-//SanitizeStructOpenVocabTypeSTIX выполняет замену некоторых специальных символов на их HTML код
+// SanitizeStructOpenVocabTypeSTIX выполняет замену некоторых специальных символов на их HTML код
 func (ovtstix OpenVocabTypeSTIX) SanitizeStructOpenVocabTypeSTIX() OpenVocabTypeSTIX {
 	return OpenVocabTypeSTIX(commonlibs.StringSanitize(fmt.Sprint(ovtstix)))
 }
 
-//DictionaryTypeSTIX тип "dictionary", по терминалогии STIX, содержащий значения любых типов
+// DictionaryTypeSTIX тип "dictionary", по терминалогии STIX, содержащий значения любых типов
 type DictionaryTypeSTIX struct {
 	dictionary interface{}
 }
 
-//UnmarshalJSON дополнительный метод декодирования
+// UnmarshalJSON дополнительный метод декодирования
 func (dtstix *DictionaryTypeSTIX) UnmarshalJSON(data []byte) error {
 	var (
 		err       error
@@ -232,7 +236,7 @@ func (dtstix *DictionaryTypeSTIX) UnmarshalJSON(data []byte) error {
 
 /***	 			Language Content STIX 				***/
 
-//LanguageContentTypeSTIX тип "language content", по терминалогии STIX, представляет собой текстовое содержимое для
+// LanguageContentTypeSTIX тип "language content", по терминалогии STIX, представляет собой текстовое содержимое для
 // объектов STIX, представленных на языках, отличных от языка исходного объекта
 // Type - наименование типа объекта, для этого типа это поле ДОЛЖНО содержать "language-content" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // ID - уникальный идентификатор объекта (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
@@ -246,7 +250,9 @@ func (dtstix *DictionaryTypeSTIX) UnmarshalJSON(data []byte) error {
 // Revoked - вернуть к текущему состоянию
 // Labels - определяет набор терминов, используемых для описания данного объекта
 // Сonfidence - определяет уверенность создателя в правильности своих данных. Доверительное значение ДОЛЖНО быть числом
-//  в диапазоне 0-100. Если 0 - значение не определено.
+//
+//	в диапазоне 0-100. Если 0 - значение не определено.
+//
 // ExternalReferences - список внешних ссылок не относящихся к STIX информации
 // ObjectMarkingRefs - определяет список ID ссылающиеся на объект "marking-definition", по терминалогии STIX, в котором содержатся значения применяющиеся к этому объекту
 // GranularMarkings - определяет список "гранулярных меток" (granular_markings) относящихся к этому объекту
@@ -270,7 +276,7 @@ type LanguageContentTypeSTIX struct {
 
 /***	 			Data Markings STIX 				***/
 
-//CommonDataMarkingsTypeSTIX общие свойства меток данных
+// CommonDataMarkingsTypeSTIX общие свойства меток данных
 // SpecVersion - версия спецификации STIX используемая для представления текущего объекта (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // ID - уникальный идентификатор объекта (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // Created - время создания объекта, в формате "2016-05-12T08:17:27.000Z" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
@@ -280,7 +286,7 @@ type CommonDataMarkingsTypeSTIX struct {
 	Created     time.Time `json:"created" bson:"created" required:"true"`
 }
 
-//GranularMarkingsTypeSTIX тип "granular_markings", по терминалогии STIX, представляет собой набор маркеров ссылающихся на свойства "marking_ref" и "lang"
+// GranularMarkingsTypeSTIX тип "granular_markings", по терминалогии STIX, представляет собой набор маркеров ссылающихся на свойства "marking_ref" и "lang"
 // Lang - идентифицирует язык соответствующим маркером
 // MarkingRef - определяет идентификатор объекта "marking-definition"
 // Selectors - определяет список селекторов для содержимого объекта STIX, к которому применяется это свойство
@@ -309,17 +315,21 @@ func (gmtstix *GranularMarkingsTypeSTIX) CheckGranularMarkingsTypeSTIX() bool {
 	return true
 }
 
-//MarkingDefinitionObjectSTIX объект "marking-definition", по терминалогии STIX, содержит метки данных ссылающиеся на требования к обработке
+// MarkingDefinitionObjectSTIX объект "marking-definition", по терминалогии STIX, содержит метки данных ссылающиеся на требования к обработке
 // или совместному использованию данных
 // Type - наименование типа объекта, для этого типа это поле ДОЛЖНО содержать "marking-definition" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // Name - наименование маркера
 // DefinitionType - определение типа, должно содержать "statement" или "tlp"
 // Definition - содержит маркер в виде объекта вида или { "statement": "Copyright 2019, Example Corp" } или { "tlp": "white" }, где
-//  "white" может быть заменен на "green", "amber", "red"
+//
+//	"white" может быть заменен на "green", "amber", "red"
+//
 // CreatedByRef - содержит идентификатор источника создавшего данный объект
 // ExternalReferences - список внешних ссылок не относящихся к STIX информации
 // ObjectMarkingRefs - определяет список свойств идентификаторов объектов определения маркировки, которые применяются к этому объекту
-//  хотя оно и является списком типа IdentifierTypeSTIX, но тот в свою очередь ССЫЛАЕТСЯ на объект типа MarkingDefinitionObjectSTIX (marking-definition)
+//
+//	хотя оно и является списком типа IdentifierTypeSTIX, но тот в свою очередь ССЫЛАЕТСЯ на объект типа MarkingDefinitionObjectSTIX (marking-definition)
+//
 // GranularMarkings - определяет список "гранулярных меток" (granular_markings) относящихся к этому объекту
 type MarkingDefinitionObjectSTIX struct {
 	CommonDataMarkingsTypeSTIX
@@ -335,7 +345,7 @@ type MarkingDefinitionObjectSTIX struct {
 
 /********** 			Bundle Object STIX 			**********/
 
-//BundleObjectSTIX объект "bundle", по терминалогии STIX, содержит коллекцию произвольных STIX объектов сгруппированных вместе в единый контейнер. Подобная Связка
+// BundleObjectSTIX объект "bundle", по терминалогии STIX, содержит коллекцию произвольных STIX объектов сгруппированных вместе в единый контейнер. Подобная Связка
 // не имеет никакого семантического значения, и объекты, содержащиеся в Связке, не считаются связанными в силу того, что они находятся в одной Связке.
 // Type - наименование типа объекта, для этого типа это поле ДОЛЖНО содержать "bundle" (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
 // ID - уникальный идентификатор объекта (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
@@ -348,10 +358,12 @@ type BundleObjectSTIX struct {
 
 /********** 			Свойства общие, для всех объектов STIX 			**********/
 
-//CommonPropertiesObjectSTIX свойства общие, для всех объектов STIX
+// CommonPropertiesObjectSTIX свойства общие, для всех объектов STIX
 // Type - наименование типа шаблона (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
-//  Type должен содержать одно из следующих значений:
-//  1. Для Domain Objects STIX
+//
+//	Type должен содержать одно из следующих значений:
+//	1. Для Domain Objects STIX
+//
 // - "attack-pattern"
 // - "campaign"
 // - "course-of-action"
@@ -371,9 +383,11 @@ type BundleObjectSTIX struct {
 // - "tool"
 // - "vulnerability"
 //  2. Для Relationship Objects STIX
+//
 // - "relationship"
 // - "sighting"
 //  3. Для Cyber-observable Objects STIX
+//
 // - "artifact"
 // - "autonomous-system"
 // - "directory"
@@ -393,19 +407,19 @@ type BundleObjectSTIX struct {
 // - "windows-registry-key"
 // - "x509-certificate"
 // ID - уникальный идентификатор объекта (ОБЯЗАТЕЛЬНОЕ ЗНАЧЕНИЕ)
-type CommonPropertiesObjectSTIX struct {
+/*type CommonPropertiesObjectSTIX struct {
 	Type string `json:"type" bson:"type" required:"true"`
 	ID   string `json:"id" bson:"id" required:"true"`
 }
 
-//ToStringBeautiful выполняет красивое представление информации содержащейся в типе
+// ToStringBeautiful выполняет красивое представление информации содержащейся в типе
 func (cp CommonPropertiesObjectSTIX) ToStringBeautiful() string {
 	return fmt.Sprintf("type: '%s'\nid: '%s'\n", cp.Type, cp.ID)
-}
+}*/
 
 /********** 			Свойства не входящие в основную спецификацию STIX 2.0 (добавляемые ПО ISEMS-MRSICT) 			**********/
 
-//ReportOutsideSpecification свойства не входящие в основную спецификацию STIX 2.0 и расширяющие набор свойств объекта "Report"
+// ReportOutsideSpecification свойства не входящие в основную спецификацию STIX 2.0 и расширяющие набор свойств объекта "Report"
 // AdditionalName - дополнительное наименование
 // DecisionsMadeComputerThreat - принятые решения по компьютерной угрозе
 // ComputerThreatType - тип компьютерной угрозы

@@ -20,6 +20,78 @@ var errorMessage = datamodels.ModuleDataBaseInteractionChannel{
 	},
 }
 
+func getIndex(elem datamodels.ElementSTIXObject) datamodels.RedisearchIndexObject {
+	mt := elem.Data.GeneratingDataForIndexing()
+	indexObject := datamodels.RedisearchIndexObject{
+		Type: elem.DataType,
+	}
+
+	for k, v := range mt {
+		if k == "id" {
+			indexObject.ID = v
+		}
+
+		if k == "name" {
+			indexObject.Name = v
+		}
+
+		if k == "description" {
+			indexObject.Description = v
+		}
+
+		if k == "street_address" {
+			indexObject.StreetAddress = v
+		}
+
+		if k == "abstract" {
+			indexObject.Abstract = v
+		}
+
+		if k == "aliases" {
+			indexObject.Aliases = v
+		}
+
+		if k == "content" {
+			indexObject.Content = v
+		}
+
+		if k == "value" {
+			indexObject.Value = v
+		}
+	}
+
+	return indexObject
+}
+
+func getListIndex(listElem []*datamodels.ElementSTIXObject) []datamodels.RedisearchIndexObject {
+	listIndexObj := []datamodels.RedisearchIndexObject{}
+
+	for _, v := range listElem {
+		listIndexObj = append(listIndexObj, getIndex(*v))
+	}
+
+	return listIndexObj
+}
+
+func getRedisearchDocument(listIndex []datamodels.RedisearchIndexObject) []redisearch.Document {
+	redisearchDoc := make([]redisearch.Document, 0, len(listIndex))
+
+	for _, v := range listIndex {
+		tmp := redisearch.NewDocument(v.ID, 1.0)
+		tmp.Set("type", v.Type)
+		tmp.Set("name", v.Name)
+		tmp.Set("description", v.Description)
+		tmp.Set("street_address", v.StreetAddress)
+		tmp.Set("abstract", v.Abstract)
+		tmp.Set("content", v.Content)
+		tmp.Set("value", v.Value)
+
+		redisearchDoc = append(redisearchDoc, tmp)
+	}
+
+	return redisearchDoc
+}
+
 func wrapperFuncHandlingInsertIndex(
 	chanOutput chan<- datamodels.ModuleDataBaseInteractionChannel,
 	dataRequest datamodels.ModuleDataBaseInteractionChannel,
@@ -52,31 +124,12 @@ func wrapperFuncHandlingInsertIndex(
 		return
 	}
 
-	var newDocumentList = make([]redisearch.Document, 0, len(listElementSTIX))
-	for _, v := range listElementSTIX {
-		if v.DataType == "relationship" || v.DataType == "sighting" {
-			continue
-		}
-
-		vdata := v.Data.GeneratingDataForIndexing()
-		tmp := redisearch.NewDocument(vdata["id"], 1.0)
-
-		for key, value := range vdata {
-			if key == "id" {
-				continue
-			}
-
-			tmp.Set(key, value)
-		}
-
-		newDocumentList = append(newDocumentList, tmp)
-	}
-
+	listIndex := getListIndex(listElementSTIX)
 	if err := cdrdb.Connection.IndexOptions(
 		redisearch.IndexingOptions{
 			Replace: true,
 			Partial: true,
-		}, newDocumentList...); err != nil {
+		}, getRedisearchDocument(listIndex)...); err != nil {
 		errorMessage.ErrorMessage.Error = err
 		chanOutput <- errorMessage
 

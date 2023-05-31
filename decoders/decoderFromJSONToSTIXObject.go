@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	"ISEMS-MRSICT/datamodels"
+
+	mstixo "github.com/av-belyakov/methodstixobjects"
 )
 
 /*
@@ -100,7 +102,7 @@ import (
 
 func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ElementSTIXObject, error) {
 	var result []*datamodels.ElementSTIXObject = make([]*datamodels.ElementSTIXObject, 0, len(list))
-	var commonPropertiesObjectSTIX datamodels.CommonPropertiesObjectSTIX
+	var commonPropertiesObjectSTIX mstixo.CommonPropertiesObjectSTIX
 
 	for _, item := range list {
 		err := json.Unmarshal(*item, &commonPropertiesObjectSTIX)
@@ -112,669 +114,649 @@ func GetListSTIXObjectFromJSON(list []*json.RawMessage) ([]*datamodels.ElementST
 		/* *** Domain Objects STIX *** */
 		case "attack-pattern":
 			var ap datamodels.AttackPatternDomainObjectsSTIX
-			elem, err := ap.DecoderJSON(item)
+			elem, err := ap.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.AttackPatternDomainObjectsSTIX)
+			e, ok := elem.(mstixo.AttackPatternDomainObjectsSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'attack-pattern' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.AttackPatternDomainObjectsSTIX{AttackPatternDomainObjectsSTIX: e},
 			})
 		case "campaign":
 			var c datamodels.CampaignDomainObjectsSTIX
-			elem, err := c.DecoderJSON(item)
+			elem, err := c.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.CampaignDomainObjectsSTIX)
+			e, ok := elem.(mstixo.CampaignDomainObjectsSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'campaign' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.CampaignDomainObjectsSTIX{CampaignDomainObjectsSTIX: e},
 			})
 
 		case "course-of-action":
 			var ca datamodels.CourseOfActionDomainObjectsSTIX
-			elem, err := ca.DecoderJSON(item)
+			elem, err := ca.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.CourseOfActionDomainObjectsSTIX)
+			e, ok := elem.(mstixo.CourseOfActionDomainObjectsSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'course-of-action' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.CourseOfActionDomainObjectsSTIX{CourseOfActionDomainObjectsSTIX: e},
 			})
 
 		case "grouping":
 			var g datamodels.GroupingDomainObjectsSTIX
-			elem, err := g.DecoderJSON(item)
+			elem, err := g.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.GroupingDomainObjectsSTIX)
+			e, ok := elem.(mstixo.GroupingDomainObjectsSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'grouping' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.GroupingDomainObjectsSTIX{GroupingDomainObjectsSTIX: e},
 			})
 
 		case "identity":
 			var i datamodels.IdentityDomainObjectsSTIX
-			elem, err := i.DecoderJSON(item)
+			elem, err := i.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.IdentityDomainObjectsSTIX)
+			e, ok := elem.(mstixo.IdentityDomainObjectsSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'identity' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.IdentityDomainObjectsSTIX{IdentityDomainObjectsSTIX: e},
 			})
 
 		case "indicator":
 			var i datamodels.IndicatorDomainObjectsSTIX
-			elem, err := i.DecoderJSON(item)
+			elem, err := i.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.IndicatorDomainObjectsSTIX)
+			e, ok := elem.(mstixo.IndicatorDomainObjectsSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'indicator' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.IndicatorDomainObjectsSTIX{IndicatorDomainObjectsSTIX: e},
 			})
 
 		case "infrastructure":
 			var i datamodels.InfrastructureDomainObjectsSTIX
-			elem, err := i.DecoderJSON(item)
+			elem, err := i.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.InfrastructureDomainObjectsSTIX)
+			e, ok := elem.(mstixo.InfrastructureDomainObjectsSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'infrastructure' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.InfrastructureDomainObjectsSTIX{InfrastructureDomainObjectsSTIX: e},
 			})
 
 		case "intrusion-set":
 			var is datamodels.IntrusionSetDomainObjectsSTIX
-			elem, err := is.DecoderJSON(item)
+			elem, err := is.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.IntrusionSetDomainObjectsSTIX)
+			e, ok := elem.(mstixo.IntrusionSetDomainObjectsSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'intrusion-set' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.IntrusionSetDomainObjectsSTIX{IntrusionSetDomainObjectsSTIX: e},
 			})
 
 		case "location":
 			var l datamodels.LocationDomainObjectsSTIX
-			elem, err := l.DecoderJSON(item)
+			elem, err := l.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.LocationDomainObjectsSTIX)
+			e, ok := elem.(mstixo.LocationDomainObjectsSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'location' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.LocationDomainObjectsSTIX{LocationDomainObjectsSTIX: e},
 			})
 
 		case "malware":
 			var m datamodels.MalwareDomainObjectsSTIX
-			elem, err := m.DecoderJSON(item)
+			elem, err := m.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.MalwareDomainObjectsSTIX)
+			e, ok := elem.(mstixo.MalwareDomainObjectsSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'malware' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.MalwareDomainObjectsSTIX{MalwareDomainObjectsSTIX: e},
 			})
 
 		case "malware-analysis":
 			var ma datamodels.MalwareAnalysisDomainObjectsSTIX
-			elem, err := ma.DecoderJSON(item)
+			elem, err := ma.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.MalwareAnalysisDomainObjectsSTIX)
+			e, ok := elem.(mstixo.MalwareAnalysisDomainObjectsSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'malware-analysis' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.MalwareAnalysisDomainObjectsSTIX{MalwareAnalysisDomainObjectsSTIX: e},
 			})
 
 		case "note":
 			var n datamodels.NoteDomainObjectsSTIX
-			elem, err := n.DecoderJSON(item)
+			elem, err := n.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.NoteDomainObjectsSTIX)
+			e, ok := elem.(mstixo.NoteDomainObjectsSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'note' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.NoteDomainObjectsSTIX{NoteDomainObjectsSTIX: e},
 			})
 
 		case "observed-data":
 			var od datamodels.ObservedDataDomainObjectsSTIX
-			elem, err := od.DecoderJSON(item)
+			elem, err := od.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.ObservedDataDomainObjectsSTIX)
+			e, ok := elem.(mstixo.ObservedDataDomainObjectsSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'observed-data' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.ObservedDataDomainObjectsSTIX{ObservedDataDomainObjectsSTIX: e},
 			})
 
 		case "opinion":
 			var o datamodels.OpinionDomainObjectsSTIX
-			elem, err := o.DecoderJSON(item)
+			elem, err := o.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.OpinionDomainObjectsSTIX)
+			e, ok := elem.(mstixo.OpinionDomainObjectsSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'opinion' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.OpinionDomainObjectsSTIX{OpinionDomainObjectsSTIX: e},
 			})
 
 		case "report":
 			var r datamodels.ReportDomainObjectsSTIX
-			elem, err := r.DecoderJSON(item)
+			elem, err := r.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.ReportDomainObjectsSTIX)
+			e, ok := elem.(mstixo.ReportDomainObjectsSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'report' conversion error")
 			}
-
-			newreport := changeReportTypes(e)
-			/*
-				+ 1. Думаю здесь надо добавить обработку поля 'report_types' которое содержит списки типов SDO
-				получаемые из открытого словаря report-type-ov. Надо сделать что бы при добавлении или удалении
-				id объекта SDO в поле 'object_refs', аналогичный объект добавлялся или убирался и в поле 'report_types'
-
-				2. Свойство name заполнять основываясь на определенной логике, свойственной для полей name всех объектов STIX,
-				НО ТОЛЬКО если оно пустое и это должно делать ISEMS-UI
-
-				3. Нужно добавить два дополнительных поля в объект типа 'report'. Первое будет служить для учета статуса угрозы:
-				- подтвержденная успешная (successfully_implemented_computer_threat)
-				- подтвержденная безуспешная (unsuccessfully_computer_threat)
-				- отклоненная (false_positive)
-				- не определено (undefined)
-					Второе для типа угрозы. Оба этих типа должны иметь тип открытого словоря (open-vocab). Придется править секции
-				обработки STIX объектов и поиска данных по ним, а так же валидацию объектов 'report'. Но здесь, я думаю, для того что бы
-				сохранить обратную совместимость с ПО которое ничего не знает о дополнительных поля, если они пустые, то надо ставить
-				дефолтное значение.
-			*/
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     newreport,
+				Data:     changeReportTypes(datamodels.ReportDomainObjectsSTIX{ReportDomainObjectsSTIX: e}),
 			})
 
 		case "threat-actor":
 			var ta datamodels.ThreatActorDomainObjectsSTIX
-			elem, err := ta.DecoderJSON(item)
+			elem, err := ta.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.ThreatActorDomainObjectsSTIX)
+			e, ok := elem.(mstixo.ThreatActorDomainObjectsSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'threat-actor' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.ThreatActorDomainObjectsSTIX{ThreatActorDomainObjectsSTIX: e},
 			})
 
 		case "tool":
 			var t datamodels.ToolDomainObjectsSTIX
-			elem, err := t.DecoderJSON(item)
+			elem, err := t.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.ToolDomainObjectsSTIX)
+			e, ok := elem.(mstixo.ToolDomainObjectsSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'tool' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.ToolDomainObjectsSTIX{ToolDomainObjectsSTIX: e},
 			})
 
 		case "vulnerability":
 			var v datamodels.VulnerabilityDomainObjectsSTIX
-			elem, err := v.DecoderJSON(item)
+			elem, err := v.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.VulnerabilityDomainObjectsSTIX)
+			e, ok := elem.(mstixo.VulnerabilityDomainObjectsSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'vulnerability' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.VulnerabilityDomainObjectsSTIX{VulnerabilityDomainObjectsSTIX: e},
 			})
 
 		/* *** Relationship Objects *** */
 		case "relationship":
 			var r datamodels.RelationshipObjectSTIX
-			elem, err := r.DecoderJSON(item)
+			elem, err := r.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.RelationshipObjectSTIX)
+			e, ok := elem.(mstixo.RelationshipObjectSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'relationship' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.RelationshipObjectSTIX{RelationshipObjectSTIX: e},
 			})
 
 		case "sighting":
 			var s datamodels.SightingObjectSTIX
-			elem, err := s.DecoderJSON(item)
+			elem, err := s.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.SightingObjectSTIX)
+			e, ok := elem.(mstixo.SightingObjectSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'sighting' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.SightingObjectSTIX{SightingObjectSTIX: e},
 			})
 
 		/* *** Cyber-observable Objects STIX *** */
 		case "artifact":
 			var a datamodels.ArtifactCyberObservableObjectSTIX
-			elem, err := a.DecoderJSON(item)
+			elem, err := a.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.ArtifactCyberObservableObjectSTIX)
+			e, ok := elem.(mstixo.ArtifactCyberObservableObjectSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'artifact' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.ArtifactCyberObservableObjectSTIX{ArtifactCyberObservableObjectSTIX: e},
 			})
 
 		case "autonomous-system":
 			var as datamodels.AutonomousSystemCyberObservableObjectSTIX
-			elem, err := as.DecoderJSON(item)
+			elem, err := as.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.AutonomousSystemCyberObservableObjectSTIX)
+			e, ok := elem.(mstixo.AutonomousSystemCyberObservableObjectSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'autonomous-system' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.AutonomousSystemCyberObservableObjectSTIX{AutonomousSystemCyberObservableObjectSTIX: e},
 			})
 
 		case "directory":
 			var d datamodels.DirectoryCyberObservableObjectSTIX
-			elem, err := d.DecoderJSON(item)
+			elem, err := d.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.DirectoryCyberObservableObjectSTIX)
+			e, ok := elem.(mstixo.DirectoryCyberObservableObjectSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'directory' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.DirectoryCyberObservableObjectSTIX{DirectoryCyberObservableObjectSTIX: e},
 			})
 
 		case "domain-name":
 			var dn datamodels.DomainNameCyberObservableObjectSTIX
-			elem, err := dn.DecoderJSON(item)
+			elem, err := dn.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.DomainNameCyberObservableObjectSTIX)
+			e, ok := elem.(mstixo.DomainNameCyberObservableObjectSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'domain-name' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.DomainNameCyberObservableObjectSTIX{DomainNameCyberObservableObjectSTIX: e},
 			})
 
 		case "email-addr":
 			var ea datamodels.EmailAddressCyberObservableObjectSTIX
-			elem, err := ea.DecoderJSON(item)
+			elem, err := ea.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.EmailAddressCyberObservableObjectSTIX)
+			e, ok := elem.(mstixo.EmailAddressCyberObservableObjectSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'email-addr' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.EmailAddressCyberObservableObjectSTIX{EmailAddressCyberObservableObjectSTIX: e},
 			})
 
 		case "email-message":
 			var em datamodels.EmailMessageCyberObservableObjectSTIX
-			elem, err := em.DecoderJSON(item)
+			elem, err := em.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.EmailMessageCyberObservableObjectSTIX)
+			e, ok := elem.(mstixo.EmailMessageCyberObservableObjectSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'email-message' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.EmailMessageCyberObservableObjectSTIX{EmailMessageCyberObservableObjectSTIX: e},
 			})
 
 		case "file":
 			var f datamodels.FileCyberObservableObjectSTIX
-			elem, err := f.DecoderJSON(item)
+			elem, err := f.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.FileCyberObservableObjectSTIX)
+			e, ok := elem.(mstixo.FileCyberObservableObjectSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'file' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.FileCyberObservableObjectSTIX{FileCyberObservableObjectSTIX: e},
 			})
 
 		case "ipv4-addr":
 			var ip4 datamodels.IPv4AddressCyberObservableObjectSTIX
-			elem, err := ip4.DecoderJSON(item)
+			elem, err := ip4.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.IPv4AddressCyberObservableObjectSTIX)
+			e, ok := elem.(mstixo.IPv4AddressCyberObservableObjectSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'ipv4-addr' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.IPv4AddressCyberObservableObjectSTIX{IPv4AddressCyberObservableObjectSTIX: e},
 			})
 
 		case "ipv6-addr":
 			var ip6 datamodels.IPv6AddressCyberObservableObjectSTIX
-			elem, err := ip6.DecoderJSON(item)
+			elem, err := ip6.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.IPv6AddressCyberObservableObjectSTIX)
+			e, ok := elem.(mstixo.IPv6AddressCyberObservableObjectSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'ipv6-addr' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.IPv6AddressCyberObservableObjectSTIX{IPv6AddressCyberObservableObjectSTIX: e},
 			})
 
 		case "mac-addr":
 			var mac datamodels.MACAddressCyberObservableObjectSTIX
-			elem, err := mac.DecoderJSON(item)
+			elem, err := mac.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.MACAddressCyberObservableObjectSTIX)
+			e, ok := elem.(mstixo.MACAddressCyberObservableObjectSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'mac-addr' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.MACAddressCyberObservableObjectSTIX{MACAddressCyberObservableObjectSTIX: e},
 			})
 
 		case "mutex":
 			var m datamodels.MutexCyberObservableObjectSTIX
-			elem, err := m.DecoderJSON(item)
+			elem, err := m.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.MutexCyberObservableObjectSTIX)
+			e, ok := elem.(mstixo.MutexCyberObservableObjectSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'mutex' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.MutexCyberObservableObjectSTIX{MutexCyberObservableObjectSTIX: e},
 			})
 
 		case "network-traffic":
 			var nt datamodels.NetworkTrafficCyberObservableObjectSTIX
-			elem, err := nt.DecoderJSON(item)
+			elem, err := nt.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.NetworkTrafficCyberObservableObjectSTIX)
+			e, ok := elem.(mstixo.NetworkTrafficCyberObservableObjectSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'network-traffic' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.NetworkTrafficCyberObservableObjectSTIX{NetworkTrafficCyberObservableObjectSTIX: e},
 			})
 
 		case "process":
 			var p datamodels.ProcessCyberObservableObjectSTIX
-			elem, err := p.DecoderJSON(item)
+			elem, err := p.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.ProcessCyberObservableObjectSTIX)
+			e, ok := elem.(mstixo.ProcessCyberObservableObjectSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'process' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.ProcessCyberObservableObjectSTIX{ProcessCyberObservableObjectSTIX: e},
 			})
 
 		case "software":
 			var s datamodels.SoftwareCyberObservableObjectSTIX
-			elem, err := s.DecoderJSON(item)
+			elem, err := s.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.SoftwareCyberObservableObjectSTIX)
+			e, ok := elem.(mstixo.SoftwareCyberObservableObjectSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'software' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.SoftwareCyberObservableObjectSTIX{SoftwareCyberObservableObjectSTIX: e},
 			})
 
 		case "url":
 			var url datamodels.URLCyberObservableObjectSTIX
-			elem, err := url.DecoderJSON(item)
+			elem, err := url.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.URLCyberObservableObjectSTIX)
+			e, ok := elem.(mstixo.URLCyberObservableObjectSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'url' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.URLCyberObservableObjectSTIX{URLCyberObservableObjectSTIX: e},
 			})
 
 		case "user-account":
 			var ua datamodels.UserAccountCyberObservableObjectSTIX
-			elem, err := ua.DecoderJSON(item)
+			elem, err := ua.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.UserAccountCyberObservableObjectSTIX)
+			e, ok := elem.(mstixo.UserAccountCyberObservableObjectSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'user-account' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.UserAccountCyberObservableObjectSTIX{UserAccountCyberObservableObjectSTIX: e},
 			})
 
 		case "windows-registry-key":
 			var wrk datamodels.WindowsRegistryKeyCyberObservableObjectSTIX
-			elem, err := wrk.DecoderJSON(item)
+			elem, err := wrk.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.WindowsRegistryKeyCyberObservableObjectSTIX)
+			e, ok := elem.(mstixo.WindowsRegistryKeyCyberObservableObjectSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'windows-registry-key' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.WindowsRegistryKeyCyberObservableObjectSTIX{WindowsRegistryKeyCyberObservableObjectSTIX: e},
 			})
 
 		case "x509-certificate":
 			var x509 datamodels.X509CertificateCyberObservableObjectSTIX
-			elem, err := x509.DecoderJSON(item)
+			elem, err := x509.DecodeJSON(item)
 			if err != nil {
 				return result, err
 			}
 
-			e, ok := elem.(datamodels.X509CertificateCyberObservableObjectSTIX)
+			e, ok := elem.(mstixo.X509CertificateCyberObservableObjectSTIX)
 			if !ok {
-				return result, fmt.Errorf("error: type conversion error")
+				return result, fmt.Errorf("error: type 'x509-certificate' conversion error")
 			}
 
 			result = append(result, &datamodels.ElementSTIXObject{
 				DataType: commonPropertiesObjectSTIX.Type,
-				Data:     e,
+				Data:     datamodels.X509CertificateCyberObservableObjectSTIX{X509CertificateCyberObservableObjectSTIX: e},
 			})
 
 		}
@@ -799,12 +781,14 @@ func changeReportTypes(rdostix datamodels.ReportDomainObjectsSTIX) datamodels.Re
 	}
 
 	newrdostix := datamodels.ReportDomainObjectsSTIX{
-		CommonPropertiesObjectSTIX:       rdostix.CommonPropertiesObjectSTIX,
-		CommonPropertiesDomainObjectSTIX: rdostix.CommonPropertiesDomainObjectSTIX,
-		Name:                             rdostix.Name,
-		Description:                      rdostix.Description,
-		Published:                        rdostix.Published,
-		OutsideSpecification:             rdostix.OutsideSpecification,
+		ReportDomainObjectsSTIX: mstixo.ReportDomainObjectsSTIX{
+			CommonPropertiesObjectSTIX:       rdostix.CommonPropertiesObjectSTIX,
+			CommonPropertiesDomainObjectSTIX: rdostix.CommonPropertiesDomainObjectSTIX,
+			Name:                             rdostix.Name,
+			Description:                      rdostix.Description,
+			Published:                        rdostix.Published,
+			OutsideSpecification:             rdostix.OutsideSpecification,
+		},
 	}
 	newrdostix.ObjectRefs = append(newrdostix.ObjectRefs, rdostix.ObjectRefs...)
 
@@ -821,7 +805,7 @@ func changeReportTypes(rdostix datamodels.ReportDomainObjectsSTIX) datamodels.Re
 				}
 
 				if !isExist {
-					newrdostix.ReportTypes = append(newrdostix.ReportTypes, datamodels.OpenVocabTypeSTIX(typeName))
+					newrdostix.ReportTypes = append(newrdostix.ReportTypes, mstixo.OpenVocabTypeSTIX(typeName))
 				}
 			}
 		}

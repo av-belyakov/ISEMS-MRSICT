@@ -3,6 +3,7 @@ package interactionmongodb
 import (
 	"context"
 	"fmt"
+	"log"
 	"strconv"
 	"time"
 
@@ -15,14 +16,14 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-//ChannelsMongoDBInteraction содержит описание каналов для взаимодействия с БД MongoDB
+// ChannelsMongoDBInteraction содержит описание каналов для взаимодействия с БД MongoDB
 // InputModule - канал для ПРИЕМА данных, приходящих от ядра приложения
 // OutputModule - канал для ПЕРЕДАЧИ данных ядру приложения
 type ChannelsMongoDBInteraction struct {
 	InputModule, OutputModule chan datamodels.ModuleDataBaseInteractionChannel
 }
 
-//ConnectionDescriptorMongoDB дескриптор соединения с БД MongoDB
+// ConnectionDescriptorMongoDB дескриптор соединения с БД MongoDB
 // Connection - дескриптор соединения
 // CTX - контекст переносит крайний срок, сигнал отмены и другие значения через границы API
 type ConnectionDescriptorMongoDB struct {
@@ -48,7 +49,7 @@ func init() {
 	}
 }
 
-//InteractionMongoDB модуль взаимодействия с БД MongoDB
+// InteractionMongoDB модуль взаимодействия с БД MongoDB
 func InteractionMongoDB(
 	chanSaveLog chan<- modulelogginginformationerrors.LogMessageType,
 	mdbs *datamodels.MongoDBSettings,
@@ -97,10 +98,12 @@ func (cdmongodb *ConnectionDescriptorMongoDB) CreateConnection(mdbs *datamodels.
 
 	cdmongodb.Connection = client
 
+	log.Printf("Create connection with MongoDB (%s:%d)\n", mdbs.Host, mdbs.Port)
+
 	return nil
 }
 
-//GetConnection возвращает дескриптор соединения с БД MongoDB
+// GetConnection возвращает дескриптор соединения с БД MongoDB
 func (cdmongodb ConnectionDescriptorMongoDB) GetConnection() (*mongo.Client, context.Context) {
 	return cdmongodb.Connection, cdmongodb.Ctx
 }

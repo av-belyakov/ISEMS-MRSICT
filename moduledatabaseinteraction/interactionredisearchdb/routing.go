@@ -1,13 +1,11 @@
 package interactionredisearchdb
 
 import (
-	"fmt"
-
 	"ISEMS-MRSICT/datamodels"
 	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
 )
 
-//Routing обеспечивает маршрутизацию информации между базой данных RedisearchDB и ядром приложения
+// Routing обеспечивает маршрутизацию информации между базой данных RedisearchDB и ядром приложения
 // chanOutput - канал для ПЕРЕДАЧИ данных ядру приложения
 // cdrdb - дескриптор соединения с БД Redishearch
 // tst - общее хранилище временной информации
@@ -17,8 +15,6 @@ func Routing(
 	cdrdb ConnectionDescriptorRedisearchDB,
 	tst *memorytemporarystoragecommoninformation.TemporaryStorageType,
 	chanInput <-chan datamodels.ModuleDataBaseInteractionChannel) {
-
-	fmt.Printf("func 'Routing' Redisearch DB")
 
 	for data := range chanInput {
 		switch data.Section {

@@ -3,11 +3,11 @@ package decoders_test
 import (
 	"testing"
 
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 
-func TestCommonlibs(t *testing.T) {
+func TestDecoders(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Commonlibs Suite")
+	RunSpecs(t, "Decoders Suite")
 }

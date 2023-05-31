@@ -15,6 +15,8 @@ import (
 
 	"ISEMS-MRSICT/datamodels"
 	"ISEMS-MRSICT/moduledatabaseinteraction/interactionmongodb"
+
+	mstixo "github.com/av-belyakov/methodstixobjects"
 )
 
 var (
@@ -124,12 +126,12 @@ var _ = Describe("MetodsStixObject", func() {
 	   				}
 	   }`))
 			var md datamodels.NetworkTrafficCyberObservableObjectSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.NetworkTrafficCyberObservableObjectSTIX)
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.NetworkTrafficCyberObservableObjectSTIX{NetworkTrafficCyberObservableObjectSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -173,12 +175,12 @@ var _ = Describe("MetodsStixObject", func() {
 					}
 	   }`))
 			var md datamodels.FileCyberObservableObjectSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.FileCyberObservableObjectSTIX)
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.FileCyberObservableObjectSTIX{FileCyberObservableObjectSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -187,7 +189,7 @@ var _ = Describe("MetodsStixObject", func() {
 			Expect(newmd.ValidateStruct()).Should(BeTrue())
 
 			for _, v := range newmd.Extensions {
-				rie, ok := v.(datamodels.RasterImageFileExtensionSTIX)
+				rie, ok := v.(mstixo.RasterImageFileExtensionSTIX)
 
 				Expect(ok).Should(BeTrue())
 				Expect(rie.BitsPerPixel).Should(Equal(90))
@@ -232,12 +234,12 @@ var _ = Describe("MetodsStixObject", func() {
 			   }`))
 
 			var md datamodels.FileCyberObservableObjectSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.FileCyberObservableObjectSTIX)
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.FileCyberObservableObjectSTIX{FileCyberObservableObjectSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -246,7 +248,7 @@ var _ = Describe("MetodsStixObject", func() {
 			Expect(newmd.ValidateStruct()).Should(BeTrue())
 
 			for _, v := range newmd.Extensions {
-				pdffe, ok := v.(datamodels.PDFFileExtensionSTIX)
+				pdffe, ok := v.(mstixo.PDFFileExtensionSTIX)
 
 				Expect(ok).Should(BeTrue())
 				Expect(len(pdffe.DocumentInfoDict)).Should(Equal(5))
@@ -289,12 +291,12 @@ var _ = Describe("MetodsStixObject", func() {
 			}`))
 
 			var md datamodels.NetworkTrafficCyberObservableObjectSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.NetworkTrafficCyberObservableObjectSTIX)
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.NetworkTrafficCyberObservableObjectSTIX{NetworkTrafficCyberObservableObjectSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -303,7 +305,7 @@ var _ = Describe("MetodsStixObject", func() {
 			Expect(newmd.ValidateStruct()).Should(BeTrue())
 
 			for _, v := range newmd.Extensions {
-				pdnse, ok := v.(datamodels.NetworkSocketExtensionSTIX)
+				pdnse, ok := v.(mstixo.NetworkSocketExtensionSTIX)
 
 				Expect(ok).Should(BeTrue())
 				Expect(len(pdnse.Options)).Should(Equal(2))
@@ -337,12 +339,12 @@ var _ = Describe("MetodsStixObject", func() {
 			}`))
 
 			var md datamodels.ProcessCyberObservableObjectSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.ProcessCyberObservableObjectSTIX)
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.ProcessCyberObservableObjectSTIX{ProcessCyberObservableObjectSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -351,7 +353,7 @@ var _ = Describe("MetodsStixObject", func() {
 			Expect(newmd.ValidateStruct()).Should(BeTrue())
 
 			for _, v := range newmd.Extensions {
-				pdnse, ok := v.(datamodels.WindowsProcessExtensionSTIX)
+				pdnse, ok := v.(mstixo.WindowsProcessExtensionSTIX)
 
 				Expect(ok).Should(BeTrue())
 				Expect(pdnse.Priority).Should(Equal("HIGH_PRIORITY_CLASS"))
@@ -391,12 +393,12 @@ var _ = Describe("MetodsStixObject", func() {
 			}`))
 
 			var md datamodels.ProcessCyberObservableObjectSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.ProcessCyberObservableObjectSTIX)
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.ProcessCyberObservableObjectSTIX{ProcessCyberObservableObjectSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 

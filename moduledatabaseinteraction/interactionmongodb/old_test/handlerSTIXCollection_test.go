@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"path"
 	"path/filepath"
 	"reflect"
 	"time"
 
+	mstixo "github.com/av-belyakov/methodstixobjects"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"go.mongodb.org/mongo-driver/bson"
@@ -23,7 +23,7 @@ import (
 	"ISEMS-MRSICT/moduledatabaseinteraction/interactionmongodb"
 )
 
-func getListSettings(f string, appConfig *datamodels.AppConfig) (map[string]datamodels.StorageApplicationCommonListType, error) {
+/*func getListSettings(f string, appConfig *datamodels.AppConfig) (map[string]datamodels.StorageApplicationCommonListType, error) {
 	tmp := map[string]string{}
 	configFileSettings := map[string]datamodels.StorageApplicationCommonListType{}
 
@@ -43,7 +43,7 @@ func getListSettings(f string, appConfig *datamodels.AppConfig) (map[string]data
 	}
 
 	return configFileSettings, err
-}
+}*/
 
 var _ = Describe("HandlerSTIXCollection", func() {
 	var (
@@ -106,31 +106,31 @@ var _ = Describe("HandlerSTIXCollection", func() {
 		cdmdb.CtxCancel()
 	})
 
-	oldCommonPropertiesDomain := datamodels.CommonPropertiesDomainObjectSTIX{
+	oldCommonPropertiesDomain := mstixo.CommonPropertiesDomainObjectSTIX{
 		SpecVersion:  "12.3.4",
 		Created:      time.Now(),
 		Modified:     time.Now(),
-		CreatedByRef: datamodels.IdentifierTypeSTIX("ref_cubu8c3gf8g8g3f83"),
+		CreatedByRef: mstixo.IdentifierTypeSTIX("ref_cubu8c3gf8g8g3f83"),
 		Revoked:      false,
 		Labels:       []string{"lable_1", "lable_5", "lable_3"},
 		Lang:         "RU",
 		Сonfidence:   12,
-		ExternalReferences: datamodels.ExternalReferencesTypeSTIX{
-			datamodels.ExternalReferenceTypeElementSTIX{
+		ExternalReferences: mstixo.ExternalReferencesTypeSTIX{
+			mstixo.ExternalReferenceTypeElementSTIX{
 				SourceName:  "source_name_1",
 				Description: "just any descripton",
 				URL:         "http://any-site.org/example_one",
-				Hashes: datamodels.HashesTypeSTIX{
+				Hashes: mstixo.HashesTypeSTIX{
 					"SHA-1":   "dcubdub883g3838fgc83f",
 					"SHA-128": "cb8b38b8c38f83f888f844",
 				},
 				ExternalID: "12444_gddgdg",
 			},
-			datamodels.ExternalReferenceTypeElementSTIX{
+			mstixo.ExternalReferenceTypeElementSTIX{
 				SourceName:  "source_name_2",
 				Description: "just any descripton two",
 				URL:         "http://any-site.org/example_two",
-				Hashes: datamodels.HashesTypeSTIX{
+				Hashes: mstixo.HashesTypeSTIX{
 					"SHA-1":   "dcubdub883g3838fgc83f",
 					"SHA-128": "cb8b38b8c38f83f888f844",
 					"SHA-256": "bccw62f626fd63fd63f6f36",
@@ -138,10 +138,10 @@ var _ = Describe("HandlerSTIXCollection", func() {
 				ExternalID: "12444_gddgdg",
 			},
 		},
-		ObjectMarkingRefs: []datamodels.IdentifierTypeSTIX{
-			datamodels.IdentifierTypeSTIX("obj_mark_ref_odcfc22y2vr34u41udv"),
-			datamodels.IdentifierTypeSTIX("obj_mark_ref_ahvas223h23h2dh3h1h"),
-			datamodels.IdentifierTypeSTIX("obj_mark_ref_nivnbufuf74gf74gf7s"),
+		ObjectMarkingRefs: []mstixo.IdentifierTypeSTIX{
+			mstixo.IdentifierTypeSTIX("obj_mark_ref_odcfc22y2vr34u41udv"),
+			mstixo.IdentifierTypeSTIX("obj_mark_ref_ahvas223h23h2dh3h1h"),
+			mstixo.IdentifierTypeSTIX("obj_mark_ref_nivnbufuf74gf74gf7s"),
 		},
 		Defanged: false,
 		Extensions: map[string]string{
@@ -151,32 +151,32 @@ var _ = Describe("HandlerSTIXCollection", func() {
 		},
 	}
 
-	newCommonPropertiesDomain := datamodels.CommonPropertiesDomainObjectSTIX{
+	newCommonPropertiesDomain := mstixo.CommonPropertiesDomainObjectSTIX{
 		SpecVersion:  "12.3.5", //change
 		Created:      time.Now(),
 		Modified:     time.Now(),
-		CreatedByRef: datamodels.IdentifierTypeSTIX("ref_cubu8c3gf8g8g3f83"),
+		CreatedByRef: mstixo.IdentifierTypeSTIX("ref_cubu8c3gf8g8g3f83"),
 		Revoked:      false,
 		Labels:       []string{"lable_1", "lable_2", "lable_3"}, //change
 		Lang:         "RU",
 		Сonfidence:   111, //change
-		ExternalReferences: datamodels.ExternalReferencesTypeSTIX{
-			datamodels.ExternalReferenceTypeElementSTIX{
+		ExternalReferences: mstixo.ExternalReferencesTypeSTIX{
+			mstixo.ExternalReferenceTypeElementSTIX{
 				SourceName:  "source_name_1",
 				Description: "just any descripton",
 				URL:         "http://any-site.org/example_one",
-				Hashes: datamodels.HashesTypeSTIX{
+				Hashes: mstixo.HashesTypeSTIX{
 					"SHA-1":   "dcubdub883g3838fgc83f",
 					"SHA-128": "cb8b38b8c38f83f888f844",
 					"SHA-256": "cbudbcuf737fdv7f7ve7fv3f", //change
 				},
 				ExternalID: "12444_gddgdg",
 			},
-			datamodels.ExternalReferenceTypeElementSTIX{ //change
+			mstixo.ExternalReferenceTypeElementSTIX{ //change
 				SourceName:  "source_name_2",
 				Description: "just any descripton two",
 				URL:         "http://any-site.org/example_two",
-				Hashes: datamodels.HashesTypeSTIX{
+				Hashes: mstixo.HashesTypeSTIX{
 					"SHA-1":   "dcubdub883g3838fgc83f",
 					"SHA-128": "cb8b38b8c38f83fas88f844", //change
 					"SHA-256": "bccw62f626fd63fd63f6f36",
@@ -184,10 +184,10 @@ var _ = Describe("HandlerSTIXCollection", func() {
 				ExternalID: "12444_gddgdg",
 			},
 		},
-		ObjectMarkingRefs: []datamodels.IdentifierTypeSTIX{
-			datamodels.IdentifierTypeSTIX("obj_mark_ref_hcudcud-odcfc22y2vr34u41udv"), //change
-			datamodels.IdentifierTypeSTIX("obj_mark_ref_ahvas223h23h2dh3h1h"),
-			datamodels.IdentifierTypeSTIX("obj_mark_ref_nivnbufuf74gf74gf7s"),
+		ObjectMarkingRefs: []mstixo.IdentifierTypeSTIX{
+			mstixo.IdentifierTypeSTIX("obj_mark_ref_hcudcud-odcfc22y2vr34u41udv"), //change
+			mstixo.IdentifierTypeSTIX("obj_mark_ref_ahvas223h23h2dh3h1h"),
+			mstixo.IdentifierTypeSTIX("obj_mark_ref_nivnbufuf74gf74gf7s"),
 		},
 		Defanged: false,
 		Extensions: map[string]string{
@@ -319,112 +319,116 @@ var _ = Describe("HandlerSTIXCollection", func() {
 
 	Context("Тест 9. Проверяем возможность перебора значений содержащихся в пользовательском типе", func() {
 		It("При обработки тестовых значений не должно быть ошибок", func() {
-			bomr := []datamodels.IdentifierTypeSTIX{
-				datamodels.IdentifierTypeSTIX("obj_mark_ref_odcfc22y2vr34u41udv"),
-				datamodels.IdentifierTypeSTIX("obj_mark_ref_ahvas223h23h2dh3h1h"),
-				datamodels.IdentifierTypeSTIX("obj_mark_ref_nivnbufuf74gf74gf7s"),
+			bomr := []mstixo.IdentifierTypeSTIX{
+				mstixo.IdentifierTypeSTIX("obj_mark_ref_odcfc22y2vr34u41udv"),
+				mstixo.IdentifierTypeSTIX("obj_mark_ref_ahvas223h23h2dh3h1h"),
+				mstixo.IdentifierTypeSTIX("obj_mark_ref_nivnbufuf74gf74gf7s"),
 			}
 
 			before := datamodels.AttackPatternDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX: datamodels.CommonPropertiesObjectSTIX{
-					Type: "attack pattern",
-					ID:   "attack_pattern_vyw7d27dffd3ffd6f6fd6fw",
-				},
-				CommonPropertiesDomainObjectSTIX: datamodels.CommonPropertiesDomainObjectSTIX{
-					SpecVersion:  "12.3.4",
-					Created:      time.Now(),
-					Modified:     time.Now(),
-					CreatedByRef: datamodels.IdentifierTypeSTIX("ref_cubu8c3gf8g8g3f83"),
-					Revoked:      false,
-					Labels:       []string{"lable_1", "lable_5", "lable_3"},
-					Lang:         "RU",
-					Сonfidence:   12,
-					ExternalReferences: datamodels.ExternalReferencesTypeSTIX{
-						datamodels.ExternalReferenceTypeElementSTIX{
-							SourceName:  "source_name_1",
-							Description: "just any descripton",
-							URL:         "http://any-site.org/example_one",
-							Hashes: datamodels.HashesTypeSTIX{
-								"SHA-1":   "dcubdub883g3838fgc83f",
-								"SHA-128": "cb8b38b8c38f83f888f844",
+				AttackPatternDomainObjectsSTIX: mstixo.AttackPatternDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX: mstixo.CommonPropertiesObjectSTIX{
+						Type: "attack pattern",
+						ID:   "attack_pattern_vyw7d27dffd3ffd6f6fd6fw",
+					},
+					CommonPropertiesDomainObjectSTIX: mstixo.CommonPropertiesDomainObjectSTIX{
+						SpecVersion:  "12.3.4",
+						Created:      time.Now(),
+						Modified:     time.Now(),
+						CreatedByRef: mstixo.IdentifierTypeSTIX("ref_cubu8c3gf8g8g3f83"),
+						Revoked:      false,
+						Labels:       []string{"lable_1", "lable_5", "lable_3"},
+						Lang:         "RU",
+						Сonfidence:   12,
+						ExternalReferences: mstixo.ExternalReferencesTypeSTIX{
+							mstixo.ExternalReferenceTypeElementSTIX{
+								SourceName:  "source_name_1",
+								Description: "just any descripton",
+								URL:         "http://any-site.org/example_one",
+								Hashes: mstixo.HashesTypeSTIX{
+									"SHA-1":   "dcubdub883g3838fgc83f",
+									"SHA-128": "cb8b38b8c38f83f888f844",
+								},
+								ExternalID: "12444_gddgdg",
 							},
-							ExternalID: "12444_gddgdg",
+							mstixo.ExternalReferenceTypeElementSTIX{
+								SourceName:  "source_name_2",
+								Description: "just any descripton two",
+								URL:         "http://any-site.org/example_two",
+								Hashes: mstixo.HashesTypeSTIX{
+									"SHA-1":   "dcubdub883g3838fgc83f",
+									"SHA-128": "cb8b38b8c38f83f888f844",
+									"SHA-256": "bccw62f626fd63fd63f6f36",
+								},
+								ExternalID: "12444_gddgdg",
+							},
 						},
-						datamodels.ExternalReferenceTypeElementSTIX{
-							SourceName:  "source_name_2",
-							Description: "just any descripton two",
-							URL:         "http://any-site.org/example_two",
-							Hashes: datamodels.HashesTypeSTIX{
-								"SHA-1":   "dcubdub883g3838fgc83f",
-								"SHA-128": "cb8b38b8c38f83f888f844",
-								"SHA-256": "bccw62f626fd63fd63f6f36",
-							},
-							ExternalID: "12444_gddgdg",
+						ObjectMarkingRefs: bomr,
+						Defanged:          false,
+						Extensions: map[string]string{
+							"Key_1": "Value_1",
+							"Key_2": "Value_2",
+							"Key_3": "Value_3",
 						},
 					},
-					ObjectMarkingRefs: bomr,
-					Defanged:          false,
-					Extensions: map[string]string{
-						"Key_1": "Value_1",
-						"Key_2": "Value_2",
-						"Key_3": "Value_3",
-					},
+					Name:            "attack pattern name 1",
+					Description:     "test dscription name 443",
+					Aliases:         []string{"Alias attack pattern", "Alias only attack pattern"},
+					KillChainPhases: mstixo.KillChainPhasesTypeSTIX{},
 				},
-				Name:            "attack pattern name 1",
-				Description:     "test dscription name 443",
-				Aliases:         []string{"Alias attack pattern", "Alias only attack pattern"},
-				KillChainPhases: datamodels.KillChainPhasesTypeSTIX{},
 			}
 
 			after := datamodels.AttackPatternDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX: datamodels.CommonPropertiesObjectSTIX{
-					Type: "attack pattern",
-					ID:   "attack_pattern_vyw7d27dffd3ffd6f6fd6fw",
-				},
-				CommonPropertiesDomainObjectSTIX: datamodels.CommonPropertiesDomainObjectSTIX{
-					SpecVersion:  "", //change
-					Created:      time.Now(),
-					Modified:     time.Now(),
-					CreatedByRef: datamodels.IdentifierTypeSTIX("ref_cubu8c3gf8g8g3f83"),
-					Revoked:      false,
-					Labels:       []string{"lable_1", "lable_2", "lable_3"}, //change
-					Lang:         "RU",
-					Сonfidence:   3, //change
-					ExternalReferences: datamodels.ExternalReferencesTypeSTIX{
-						datamodels.ExternalReferenceTypeElementSTIX{
-							SourceName:  "source_name_1",
-							Description: "just any descripton",
-							URL:         "http://any-site.org/example_one",
-							Hashes: datamodels.HashesTypeSTIX{
-								"SHA-1":   "dcubdub883g3838fgc83f",
-								"SHA-128": "cb8b38b8c38f83f888f844",
+				AttackPatternDomainObjectsSTIX: mstixo.AttackPatternDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX: mstixo.CommonPropertiesObjectSTIX{
+						Type: "attack pattern",
+						ID:   "attack_pattern_vyw7d27dffd3ffd6f6fd6fw",
+					},
+					CommonPropertiesDomainObjectSTIX: mstixo.CommonPropertiesDomainObjectSTIX{
+						SpecVersion:  "", //change
+						Created:      time.Now(),
+						Modified:     time.Now(),
+						CreatedByRef: mstixo.IdentifierTypeSTIX("ref_cubu8c3gf8g8g3f83"),
+						Revoked:      false,
+						Labels:       []string{"lable_1", "lable_2", "lable_3"}, //change
+						Lang:         "RU",
+						Сonfidence:   3, //change
+						ExternalReferences: mstixo.ExternalReferencesTypeSTIX{
+							mstixo.ExternalReferenceTypeElementSTIX{
+								SourceName:  "source_name_1",
+								Description: "just any descripton",
+								URL:         "http://any-site.org/example_one",
+								Hashes: mstixo.HashesTypeSTIX{
+									"SHA-1":   "dcubdub883g3838fgc83f",
+									"SHA-128": "cb8b38b8c38f83f888f844",
+								},
+								ExternalID: "12444_gddgdg",
 							},
-							ExternalID: "12444_gddgdg",
+							mstixo.ExternalReferenceTypeElementSTIX{
+								SourceName:  "source_name_2",
+								Description: "just any descripton two",
+								URL:         "http://any-site.org/example_two",
+								Hashes: mstixo.HashesTypeSTIX{
+									"SHA-1":   "dcubdub883g3838fgc83f",
+									"SHA-128": "cb8b38b8c38f83f888f844",
+									"SHA-256": "bccw62f626fd63fd63f6f36",
+								},
+								ExternalID: "12444_gddgdg",
+							},
 						},
-						datamodels.ExternalReferenceTypeElementSTIX{
-							SourceName:  "source_name_2",
-							Description: "just any descripton two",
-							URL:         "http://any-site.org/example_two",
-							Hashes: datamodels.HashesTypeSTIX{
-								"SHA-1":   "dcubdub883g3838fgc83f",
-								"SHA-128": "cb8b38b8c38f83f888f844",
-								"SHA-256": "bccw62f626fd63fd63f6f36",
-							},
-							ExternalID: "12444_gddgdg",
+						ObjectMarkingRefs: bomr,
+						Defanged:          false,
+						Extensions: map[string]string{
+							"Key_1": "Value_1",
+							"Key_2": "Value_2",
+							"Key_3": "Value_3",
 						},
 					},
-					ObjectMarkingRefs: bomr,
-					Defanged:          false,
-					Extensions: map[string]string{
-						"Key_1": "Value_1",
-						"Key_2": "Value_2",
-						"Key_3": "Value_3",
-					},
+					Name:            "attack pattern name 1 diferent",
+					Description:     "test dscription name 443-124",
+					Aliases:         []string{"Alias attack pattern"},
+					KillChainPhases: mstixo.KillChainPhasesTypeSTIX{},
 				},
-				Name:            "attack pattern name 1 diferent",
-				Description:     "test dscription name 443-124",
-				Aliases:         []string{"Alias attack pattern"},
-				KillChainPhases: datamodels.KillChainPhasesTypeSTIX{},
 			}
 
 			isEqual, _, err := ComparisonTypeCommonFields(before.CommonPropertiesDomainObjectSTIX, after.CommonPropertiesDomainObjectSTIX)
@@ -443,27 +447,31 @@ var _ = Describe("HandlerSTIXCollection", func() {
 
 	Context("Тест 10. Проверяем возможность перебора значений содержащихся в пользовательском типе 'Attack-pattern'", func() {
 		It("При сравнении двух объектов типа 'Attack-pattern' содержащих некоторые разные данные переменная isEqual должна быть FALSE", func() {
-			cp := datamodels.CommonPropertiesObjectSTIX{
+			cp := mstixo.CommonPropertiesObjectSTIX{
 				Type: "attack pattern",
 				ID:   "attack-pattern--vyw7d27dffd3ffd6f6fd6fw",
 			}
 
 			apOld := datamodels.AttackPatternDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
-				Name:                             "attack pattern name 1",
-				Description:                      "test dscription name 443",
-				Aliases:                          []string{"Alias attack pattern", "Alias only attack pattern"},
-				KillChainPhases:                  datamodels.KillChainPhasesTypeSTIX{},
+				AttackPatternDomainObjectsSTIX: mstixo.AttackPatternDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
+					Name:                             "attack pattern name 1",
+					Description:                      "test dscription name 443",
+					Aliases:                          []string{"Alias attack pattern", "Alias only attack pattern"},
+					KillChainPhases:                  mstixo.KillChainPhasesTypeSTIX{},
+				},
 			}
 
 			isEqual, _ /*differentResult*/, err := apOld.ComparisonTypeCommonFields(&datamodels.AttackPatternDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
-				Name:                             "attack pattern name 1 //change", //change
-				Description:                      "test dscription name ",          //change
-				Aliases:                          []string{"Alias attack pattern", "Alias only attack pattern"},
-				KillChainPhases:                  datamodels.KillChainPhasesTypeSTIX{},
+				AttackPatternDomainObjectsSTIX: mstixo.AttackPatternDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
+					Name:                             "attack pattern name 1 //change", //change
+					Description:                      "test dscription name ",          //change
+					Aliases:                          []string{"Alias attack pattern", "Alias only attack pattern"},
+					KillChainPhases:                  mstixo.KillChainPhasesTypeSTIX{},
+				},
 			}, "test source")
 
 			/*
@@ -497,29 +505,33 @@ var _ = Describe("HandlerSTIXCollection", func() {
 
 	Context("Тест 11. Проверяем возможность перебора значений содержащихся в пользовательском типе 'Campaign'", func() {
 		It("При сравнении двух объектов типа 'Campaign' содержащих некоторые разные данные переменная isEqual должна быть FALSE", func() {
-			cp := datamodels.CommonPropertiesObjectSTIX{
+			cp := mstixo.CommonPropertiesObjectSTIX{
 				Type: "campaign",
 				ID:   "campaign--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
 			}
 
 			apOld := datamodels.CampaignDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
-				Name:                             "campaing name 1",
-				Description:                      "test dscription name 443",
-				Aliases:                          []string{"Alias campaing name", "Alias only campaing"},
-				FirstSeen:                        time.Now(),
-				Objective:                        "1",
+				CampaignDomainObjectsSTIX: mstixo.CampaignDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
+					Name:                             "campaing name 1",
+					Description:                      "test dscription name 443",
+					Aliases:                          []string{"Alias campaing name", "Alias only campaing"},
+					FirstSeen:                        time.Now(),
+					Objective:                        "1",
+				},
 			}
 
 			isEqual, _ /*differentResult*/, err := apOld.ComparisonTypeCommonFields(&datamodels.CampaignDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
-				Name:                             "attack pattern name 1 //change",                              //change
-				Description:                      "test dscription name ",                                       //change
-				Aliases:                          []string{"Alias attack pattern", "Alias only attack pattern"}, //change
-				FirstSeen:                        time.Now(),                                                    //change
-				Objective:                        "1 ndini cisicisivv",                                          //change
+				CampaignDomainObjectsSTIX: mstixo.CampaignDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
+					Name:                             "attack pattern name 1 //change",                              //change
+					Description:                      "test dscription name ",                                       //change
+					Aliases:                          []string{"Alias attack pattern", "Alias only attack pattern"}, //change
+					FirstSeen:                        time.Now(),                                                    //change
+					Objective:                        "1 ndini cisicisivv",                                          //change
+				},
 			}, "test source")
 
 			/*
@@ -538,23 +550,27 @@ var _ = Describe("HandlerSTIXCollection", func() {
 
 	Context("Тест 12. Проверяем возможность перебора значений содержащихся в пользовательском типе 'Course-of-action'", func() {
 		It("При сравнении двух объектов типа 'Course-of-action' содержащих некоторые разные данные переменная isEqual должна быть FALSE", func() {
-			cp := datamodels.CommonPropertiesObjectSTIX{
+			cp := mstixo.CommonPropertiesObjectSTIX{
 				Type: "course-of-action",
 				ID:   "course-of-action--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
 			}
 
 			apOld := datamodels.CourseOfActionDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
-				Name:                             "campaing name 1",
-				Description:                      "This is how to add a filter rule to block inbound access to TCP port 80 tothe existing UDP 1434 filter ...",
+				CourseOfActionDomainObjectsSTIX: mstixo.CourseOfActionDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
+					Name:                             "campaing name 1",
+					Description:                      "This is how to add a filter rule to block inbound access to TCP port 80 tothe existing UDP 1434 filter ...",
+				},
 			}
 
 			isEqual, _ /*differentResult*/, err := apOld.ComparisonTypeCommonFields(&datamodels.CourseOfActionDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
-				Name:                             "attack pattern name 1 //change", //change
-				Description:                      "test dscription name ",          //change
+				CourseOfActionDomainObjectsSTIX: mstixo.CourseOfActionDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
+					Name:                             "attack pattern name 1 //change", //change
+					Description:                      "test dscription name ",          //change
+				},
 			}, "test source")
 
 			/*
@@ -573,26 +589,30 @@ var _ = Describe("HandlerSTIXCollection", func() {
 
 	Context("Тест 13. Проверяем возможность перебора значений содержащихся в пользовательском типе 'Grouping'", func() {
 		It("При сравнении двух объектов типа 'Grouping' содержащих некоторые разные данные переменная isEqual должна быть FALSE", func() {
-			cp := datamodels.CommonPropertiesObjectSTIX{
+			cp := mstixo.CommonPropertiesObjectSTIX{
 				Type: "grouping",
 				ID:   "grouping--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
 			}
 
 			apOld := datamodels.GroupingDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
-				Name:                             "campaing name 1",
-				Description:                      "This is how to add a filter rule to block inbound access to TCP port 80 tothe existing UDP 1434 filter ...",
-				ObjectRefs:                       []datamodels.IdentifierTypeSTIX{"test string"},
+				GroupingDomainObjectsSTIX: mstixo.GroupingDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
+					Name:                             "campaing name 1",
+					Description:                      "This is how to add a filter rule to block inbound access to TCP port 80 tothe existing UDP 1434 filter ...",
+					ObjectRefs:                       []mstixo.IdentifierTypeSTIX{"test string"},
+				},
 			}
 
 			isEqual, _ /*differentResult*/, err := apOld.ComparisonTypeCommonFields(&datamodels.GroupingDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
-				Name:                             "attack pattern name 1 //change",                      //change
-				Description:                      "test dscription name ",                               //change
-				ObjectRefs:                       []datamodels.IdentifierTypeSTIX{"newwww test string"}, //change
-				Context:                          datamodels.OpenVocabTypeSTIX("open vocab string"),     //change
+				GroupingDomainObjectsSTIX: mstixo.GroupingDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
+					Name:                             "attack pattern name 1 //change",                  //change
+					Description:                      "test dscription name ",                           //change
+					ObjectRefs:                       []mstixo.IdentifierTypeSTIX{"newwww test string"}, //change
+					Context:                          mstixo.OpenVocabTypeSTIX("open vocab string"),     //change
+				},
 			}, "test source")
 
 			/*
@@ -611,32 +631,36 @@ var _ = Describe("HandlerSTIXCollection", func() {
 
 	Context("Тест 13. Проверяем возможность перебора значений содержащихся в пользовательском типе 'Identity'", func() {
 		It("При сравнении двух объектов типа 'Identity' содержащих некоторые разные данные переменная isEqual должна быть FALSE", func() {
-			cp := datamodels.CommonPropertiesObjectSTIX{
+			cp := mstixo.CommonPropertiesObjectSTIX{
 				Type: "identity",
 				ID:   "identity--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
 			}
 
 			apOld := datamodels.IdentityDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
-				Name:                             "campaing name 1",
-				Description:                      "This is how to add a filter rule to block inbound access to TCP port 80 tothe existing UDP 1434 filter ...",
-				Roles:                            []string{"role one", "role two"},
-				Sectors: []datamodels.OpenVocabTypeSTIX{
-					datamodels.OpenVocabTypeSTIX("1111 only"),
-					datamodels.OpenVocabTypeSTIX("two only"),
+				IdentityDomainObjectsSTIX: mstixo.IdentityDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
+					Name:                             "campaing name 1",
+					Description:                      "This is how to add a filter rule to block inbound access to TCP port 80 tothe existing UDP 1434 filter ...",
+					Roles:                            []string{"role one", "role two"},
+					Sectors: []mstixo.OpenVocabTypeSTIX{
+						mstixo.OpenVocabTypeSTIX("1111 only"),
+						mstixo.OpenVocabTypeSTIX("two only"),
+					},
+					ContactInformation: "City and Country",
 				},
-				ContactInformation: "City and Country",
 			}
 
 			isEqual, _ /*differentResult*/, err := apOld.ComparisonTypeCommonFields(&datamodels.IdentityDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
-				Name:                             "attack pattern name 1 //change",               //change
-				Description:                      "test dscription name ",                        //change
-				Roles:                            []string{"role one", "role two", "role three"}, //change
-				IdentityClass:                    datamodels.OpenVocabTypeSTIX("new value"),      //change
-				ContactInformation:               "104234 City and Country",                      //change
+				IdentityDomainObjectsSTIX: mstixo.IdentityDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
+					Name:                             "attack pattern name 1 //change",               //change
+					Description:                      "test dscription name ",                        //change
+					Roles:                            []string{"role one", "role two", "role three"}, //change
+					IdentityClass:                    mstixo.OpenVocabTypeSTIX("new value"),          //change
+					ContactInformation:               "104234 City and Country",                      //change
+				},
 			}, "test source")
 
 			/*
@@ -656,37 +680,40 @@ var _ = Describe("HandlerSTIXCollection", func() {
 
 	Context("Тест 14. Проверяем возможность перебора значений содержащихся в пользовательском типе 'Indicator'", func() {
 		It("При сравнении двух объектов типа 'Indicator' содержащих некоторые разные данные переменная isEqual должна быть FALSE", func() {
-			cp := datamodels.CommonPropertiesObjectSTIX{
+			cp := mstixo.CommonPropertiesObjectSTIX{
 				Type: "identity",
 				ID:   "identity--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
 			}
 
 			apOld := datamodels.IndicatorDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
-				Name:                             "campaing name 1",
-				Description:                      "This is how to add a filter rule to block inbound access to TCP port 80 tothe existing UDP 1434 filter ...",
-				IndicatorTypes:                   []datamodels.OpenVocabTypeSTIX{datamodels.OpenVocabTypeSTIX("hcscsbuc c")},
-				ValidFrom:                        time.Now(),
-				KillChainPhases: datamodels.KillChainPhasesTypeSTIX{datamodels.KillChainPhasesTypeElementSTIX{
-					KillChainName: "kill chain 111",
-					PhaseName:     "very good phase",
-				}},
+				IndicatorDomainObjectsSTIX: mstixo.IndicatorDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
+					Name:                             "campaing name 1",
+					Description:                      "This is how to add a filter rule to block inbound access to TCP port 80 tothe existing UDP 1434 filter ...",
+					IndicatorTypes:                   []mstixo.OpenVocabTypeSTIX{mstixo.OpenVocabTypeSTIX("hcscsbuc c")},
+					ValidFrom:                        time.Now(),
+					KillChainPhases: mstixo.KillChainPhasesTypeSTIX{mstixo.KillChainPhasesTypeElementSTIX{
+						KillChainName: "kill chain 111",
+						PhaseName:     "very good phase",
+					}},
+				},
 			}
 
 			isEqual, differentResult, err := apOld.ComparisonTypeCommonFields(&datamodels.IndicatorDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
-				Name:                             "attack pattern name 1 //change", //change
-				Description:                      "test dscription name ",          //change
-				IndicatorTypes: []datamodels.OpenVocabTypeSTIX{
-					datamodels.OpenVocabTypeSTIX("hcscsbuc c"),
-					datamodels.OpenVocabTypeSTIX("hcsc")}, //change
-				Pattern:        "pattern",                             //change
-				PatternType:    datamodels.OpenVocabTypeSTIX("ggggg"), //change
-				PatternVersion: "3.1",                                 //change
-				ValidFrom:      time.Now(),                            //change
-				//change
+				IndicatorDomainObjectsSTIX: mstixo.IndicatorDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
+					Name:                             "attack pattern name 1 //change", //change
+					Description:                      "test dscription name ",          //change
+					IndicatorTypes: []mstixo.OpenVocabTypeSTIX{
+						mstixo.OpenVocabTypeSTIX("hcscsbuc c"),
+						mstixo.OpenVocabTypeSTIX("hcsc")}, //change
+					Pattern:        "pattern",                         //change
+					PatternType:    mstixo.OpenVocabTypeSTIX("ggggg"), //change
+					PatternVersion: "3.1",                             //change
+					ValidFrom:      time.Now(),                        //change
+				},
 			}, "test source")
 
 			/*
@@ -706,32 +733,33 @@ var _ = Describe("HandlerSTIXCollection", func() {
 
 	Context("Тест 15. Проверяем возможность перебора значений содержащихся в пользовательском типе 'Infrastructure'", func() {
 		It("При сравнении двух объектов типа 'Infrastructure' содержащих некоторые разные данные переменная isEqual должна быть FALSE", func() {
-			cp := datamodels.CommonPropertiesObjectSTIX{
+			cp := mstixo.CommonPropertiesObjectSTIX{
 				Type: "infrastructure",
 				ID:   "infrastructure--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
 			}
 
 			apOld := datamodels.InfrastructureDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
-				Name:                             "campaing name 1",
-				Description:                      "This is how to add a filter rule to block inbound access to TCP port 80 tothe existing UDP 1434 filter ...",
-				InfrastructureTypes:              []datamodels.OpenVocabTypeSTIX{"gssds dcc"},
-				Aliases:                          []string{"aliase_11", "aliase_22"},
-				KillChainPhases: datamodels.KillChainPhasesTypeSTIX{datamodels.KillChainPhasesTypeElementSTIX{
-					KillChainName: "kill chain 111",
-					PhaseName:     "very good phase",
-				}},
+				InfrastructureDomainObjectsSTIX: mstixo.InfrastructureDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
+					Name:                             "campaing name 1",
+					Description:                      "This is how to add a filter rule to block inbound access to TCP port 80 tothe existing UDP 1434 filter ...",
+					InfrastructureTypes:              []mstixo.OpenVocabTypeSTIX{"gssds dcc"},
+					Aliases:                          []string{"aliase_11", "aliase_22"},
+					KillChainPhases: mstixo.KillChainPhasesTypeSTIX{mstixo.KillChainPhasesTypeElementSTIX{
+						KillChainName: "kill chain 111",
+						PhaseName:     "very good phase",
+					}},
+				},
 			}
 
 			isEqual, differentResult, err := apOld.ComparisonTypeCommonFields(&datamodels.InfrastructureDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
-				Name:                             "attack pattern name 1 //change", //change
-				Description:                      "test dscription name ",          //change
-				//change
-				//change
-				//change
+				InfrastructureDomainObjectsSTIX: mstixo.InfrastructureDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
+					Name:                             "attack pattern name 1 //change", //change
+					Description:                      "test dscription name ",          //change
+				},
 			}, "test source")
 
 			/*
@@ -751,36 +779,37 @@ var _ = Describe("HandlerSTIXCollection", func() {
 
 	Context("Тест 15. Проверяем возможность перебора значений содержащихся в пользовательском типе 'IntrusionSet'", func() {
 		It("При сравнении двух объектов типа 'IntrusionSet' содержащих некоторые разные данные переменная isEqual должна быть FALSE", func() {
-			cp := datamodels.CommonPropertiesObjectSTIX{
+			cp := mstixo.CommonPropertiesObjectSTIX{
 				Type: "intrusion-set",
 				ID:   "intrusion-set--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
 			}
 
 			apOld := datamodels.IntrusionSetDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
-				Name:                             "campaing name 1",
-				Description:                      "This is how to add a filter rule to block inbound access to TCP port 80 tothe existing UDP 1434 filter ...",
-				Aliases:                          []string{"aliase_11", "aliase_22"},
-				FirstSeen:                        time.Now(),
-				LastSeen:                         time.Now(),
-				Goals:                            []string{"cbcd", "dfffbf"},
-				ResourceLevel:                    datamodels.OpenVocabTypeSTIX("asssss"),
-				SecondaryMotivations:             []datamodels.OpenVocabTypeSTIX{"xxsdsc", "cvc2e2"},
+				IntrusionSetDomainObjectsSTIX: mstixo.IntrusionSetDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
+					Name:                             "campaing name 1",
+					Description:                      "This is how to add a filter rule to block inbound access to TCP port 80 tothe existing UDP 1434 filter ...",
+					Aliases:                          []string{"aliase_11", "aliase_22"},
+					FirstSeen:                        time.Now(),
+					LastSeen:                         time.Now(),
+					Goals:                            []string{"cbcd", "dfffbf"},
+					ResourceLevel:                    mstixo.OpenVocabTypeSTIX("asssss"),
+					SecondaryMotivations:             []mstixo.OpenVocabTypeSTIX{"xxsdsc", "cvc2e2"},
+				},
 			}
 
 			isEqual, differentResult, err := apOld.ComparisonTypeCommonFields(&datamodels.IntrusionSetDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
-				Name:                             "attack pattern name 1 //change",   //change
-				Description:                      "test dscription name ",            //change
-				Aliases:                          []string{"aliase_11", "aliase_23"}, //change
-				FirstSeen:                        time.Now(),                         //change
-				LastSeen:                         time.Now(),                         //change
-				//change
-				//change
-				PrimaryMotivation: datamodels.OpenVocabTypeSTIX("ccvf"), //change
-				//change
+				IntrusionSetDomainObjectsSTIX: mstixo.IntrusionSetDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
+					Name:                             "attack pattern name 1 //change",   //change
+					Description:                      "test dscription name ",            //change
+					Aliases:                          []string{"aliase_11", "aliase_23"}, //change
+					FirstSeen:                        time.Now(),                         //change
+					LastSeen:                         time.Now(),                         //change
+					PrimaryMotivation:                mstixo.OpenVocabTypeSTIX("ccvf"),   //change
+				},
 			}, "test source")
 
 			/*
@@ -800,41 +829,45 @@ var _ = Describe("HandlerSTIXCollection", func() {
 
 	Context("Тест 16. Проверяем возможность перебора значений содержащихся в пользовательском типе 'Location'", func() {
 		It("При сравнении двух объектов типа 'Location' содержащих некоторые разные данные переменная isEqual должна быть FALSE", func() {
-			cp := datamodels.CommonPropertiesObjectSTIX{
+			cp := mstixo.CommonPropertiesObjectSTIX{
 				Type: "location",
 				ID:   "location--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
 			}
 
 			apOld := datamodels.LocationDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
-				Name:                             "campaing name 1",
-				Description:                      "This is how to add a filter rule to block inbound access to TCP port 80 tothe existing UDP 1434 filter ...",
-				Latitude:                         8.23,
-				Longitude:                        23.44,
-				Precision:                        12.34,
-				Region:                           datamodels.OpenVocabTypeSTIX("cbhdbhd"),
-				Country:                          "EU",
-				AdministrativeArea:               "contry name",
-				City:                             "St. Petersburg",
-				StreetAddress:                    "123322 M, dsfd",
-				PostalCode:                       "234343",
+				LocationDomainObjectsSTIX: mstixo.LocationDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
+					Name:                             "campaing name 1",
+					Description:                      "This is how to add a filter rule to block inbound access to TCP port 80 tothe existing UDP 1434 filter ...",
+					Latitude:                         8.23,
+					Longitude:                        23.44,
+					Precision:                        12.34,
+					Region:                           mstixo.OpenVocabTypeSTIX("cbhdbhd"),
+					Country:                          "EU",
+					AdministrativeArea:               "contry name",
+					City:                             "St. Petersburg",
+					StreetAddress:                    "123322 M, dsfd",
+					PostalCode:                       "234343",
+				},
 			}
 
 			isEqual, differentResult, err := apOld.ComparisonTypeCommonFields(&datamodels.LocationDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
-				Name:                             "attack pattern name 1 //change",       //change
-				Description:                      "test dscription name ",                //change
-				Latitude:                         21.2,                                   //change
-				Longitude:                        3.14,                                   //change
-				Precision:                        32.1224,                                //change
-				Region:                           datamodels.OpenVocabTypeSTIX("ccvdvd"), //change
-				Country:                          "RU",                                   //change
-				AdministrativeArea:               "contry name and city",                 //change
-				City:                             "Moscow",                               //change
-				StreetAddress:                    "244311 Moscow, dsfd",                  //change
-				PostalCode:                       "125235",                               //change
+				LocationDomainObjectsSTIX: mstixo.LocationDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
+					Name:                             "attack pattern name 1 //change",   //change
+					Description:                      "test dscription name ",            //change
+					Latitude:                         21.2,                               //change
+					Longitude:                        3.14,                               //change
+					Precision:                        32.1224,                            //change
+					Region:                           mstixo.OpenVocabTypeSTIX("ccvdvd"), //change
+					Country:                          "RU",                               //change
+					AdministrativeArea:               "contry name and city",             //change
+					City:                             "Moscow",                           //change
+					StreetAddress:                    "244311 Moscow, dsfd",              //change
+					PostalCode:                       "125235",                           //change
+				},
 			}, "test source")
 
 			/*
@@ -854,34 +887,37 @@ var _ = Describe("HandlerSTIXCollection", func() {
 
 	Context("Тест 17. Проверяем возможность перебора значений содержащихся в пользовательском типе 'Malware'", func() {
 		It("При сравнении двух объектов типа 'Malware' содержащих некоторые разные данные переменная isEqual должна быть FALSE", func() {
-			cp := datamodels.CommonPropertiesObjectSTIX{
+			cp := mstixo.CommonPropertiesObjectSTIX{
 				Type: "malware",
 				ID:   "malware--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
 			}
 
 			apOld := datamodels.MalwareDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
-				Name:                             "campaing name 1",
-				Description:                      "This is how to add a filter rule to block inbound access to TCP port 80 tothe existing UDP 1434 filter ...",
-				MalwareTypes:                     []datamodels.OpenVocabTypeSTIX{datamodels.OpenVocabTypeSTIX("bbcc777bbcx")},
-				Aliases:                          []string{"1", "2", "3"},
-				FirstSeen:                        time.Now(),
-				OperatingSystemRefs:              []datamodels.IdentifierTypeSTIX{datamodels.IdentifierTypeSTIX("qwe")},
+				MalwareDomainObjectsSTIX: mstixo.MalwareDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
+					Name:                             "campaing name 1",
+					Description:                      "This is how to add a filter rule to block inbound access to TCP port 80 tothe existing UDP 1434 filter ...",
+					MalwareTypes:                     []mstixo.OpenVocabTypeSTIX{mstixo.OpenVocabTypeSTIX("bbcc777bbcx")},
+					Aliases:                          []string{"1", "2", "3"},
+					FirstSeen:                        time.Now(),
+					OperatingSystemRefs:              []mstixo.IdentifierTypeSTIX{mstixo.IdentifierTypeSTIX("qwe")},
+				},
 			}
 
 			isEqual, differentResult, err := apOld.ComparisonTypeCommonFields(&datamodels.MalwareDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
-				Name:                             "attack pattern name 1 //change", //change
-				Description:                      "test dscription name ",          //change
-				//change
-				IsFamily:  true,                         //change
-				Aliases:   []string{"1", "2", "4", "5"}, //change
-				FirstSeen: time.Now(),                   //change
-				OperatingSystemRefs: []datamodels.IdentifierTypeSTIX{
-					datamodels.IdentifierTypeSTIX("qwe"),
-					datamodels.IdentifierTypeSTIX("zxvbbb"), //change
+				MalwareDomainObjectsSTIX: mstixo.MalwareDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
+					Name:                             "attack pattern name 1 //change", //change
+					Description:                      "test dscription name ",          //change
+					IsFamily:                         true,                             //change
+					Aliases:                          []string{"1", "2", "4", "5"},     //change
+					FirstSeen:                        time.Now(),                       //change
+					OperatingSystemRefs: []mstixo.IdentifierTypeSTIX{
+						mstixo.IdentifierTypeSTIX("qwe"),
+						mstixo.IdentifierTypeSTIX("zxvbbb"), //change
+					},
 				},
 			}, "test source")
 
@@ -902,44 +938,46 @@ var _ = Describe("HandlerSTIXCollection", func() {
 
 	Context("Тест 18. Проверяем возможность перебора значений содержащихся в пользовательском типе 'Malware-analysis'", func() {
 		It("При сравнении двух объектов типа 'Malware-analysis' содержащих некоторые разные данные переменная isEqual должна быть FALSE", func() {
-			cp := datamodels.CommonPropertiesObjectSTIX{
+			cp := mstixo.CommonPropertiesObjectSTIX{
 				Type: "malware-analysis",
 				ID:   "malware-analysis--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
 			}
 
 			apOld := datamodels.MalwareAnalysisDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
-				Product:                          "Application Soft",
-				Version:                          "1.23.1",
-				HostVMRef:                        datamodels.IdentifierTypeSTIX("2sss 33"),
-				OperatingSystemRef:               datamodels.IdentifierTypeSTIX("bbv nccn hh"),
-				ConfigurationVersion:             "v12.1",
-				Modules:                          []string{"x1", "x2"},
-				AnalysisEngineVersion:            "eng version 12.3",
-				AnalysisDefinitionVersion:        "def version 65.1",
-				Submitted:                        time.Now(),
-				AnalysisStarted:                  time.Now(),
-				AnalysisEnded:                    time.Now(),
-				ResultName:                       "mgjas",
+				MalwareAnalysisDomainObjectsSTIX: mstixo.MalwareAnalysisDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
+					Product:                          "Application Soft",
+					Version:                          "1.23.1",
+					HostVMRef:                        mstixo.IdentifierTypeSTIX("2sss 33"),
+					OperatingSystemRef:               mstixo.IdentifierTypeSTIX("bbv nccn hh"),
+					ConfigurationVersion:             "v12.1",
+					Modules:                          []string{"x1", "x2"},
+					AnalysisEngineVersion:            "eng version 12.3",
+					AnalysisDefinitionVersion:        "def version 65.1",
+					Submitted:                        time.Now(),
+					AnalysisStarted:                  time.Now(),
+					AnalysisEnded:                    time.Now(),
+					ResultName:                       "mgjas",
+				},
 			}
 
 			isEqual, differentResult, err := apOld.ComparisonTypeCommonFields(&datamodels.MalwareAnalysisDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
-				Product:                          "App Soft",                           //change
-				Version:                          "1.24.56",                            //change
-				HostVMRef:                        datamodels.IdentifierTypeSTIX("cv5"), //change
-				//change
-				ConfigurationVersion:      "v12.61",                          //change
-				Modules:                   []string{"x1", "x2", "v3", "v12"}, //change
-				AnalysisEngineVersion:     "rus version 12.3",                //change
-				AnalysisDefinitionVersion: "def version 65.111",              //change
-				Submitted:                 time.Now(),                        //change
-				AnalysisStarted:           time.Now(),                        //change
-				AnalysisEnded:             time.Now(),                        //change
-				//change
-				AnalysisScoRefs: []datamodels.IdentifierTypeSTIX{datamodels.IdentifierTypeSTIX("bbbb")}, //change
+				MalwareAnalysisDomainObjectsSTIX: mstixo.MalwareAnalysisDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
+					Product:                          "App Soft",                                                     //change
+					Version:                          "1.24.56",                                                      //change
+					HostVMRef:                        mstixo.IdentifierTypeSTIX("cv5"),                               //change
+					ConfigurationVersion:             "v12.61",                                                       //change
+					Modules:                          []string{"x1", "x2", "v3", "v12"},                              //change
+					AnalysisEngineVersion:            "rus version 12.3",                                             //change
+					AnalysisDefinitionVersion:        "def version 65.111",                                           //change
+					Submitted:                        time.Now(),                                                     //change
+					AnalysisStarted:                  time.Now(),                                                     //change
+					AnalysisEnded:                    time.Now(),                                                     //change
+					AnalysisScoRefs:                  []mstixo.IdentifierTypeSTIX{mstixo.IdentifierTypeSTIX("bbbb")}, //change
+				},
 			}, "test source")
 
 			/*
@@ -959,31 +997,35 @@ var _ = Describe("HandlerSTIXCollection", func() {
 
 	Context("Тест 19. Проверяем возможность перебора значений содержащихся в пользовательском типе 'Note'", func() {
 		It("При сравнении двух объектов типа 'Note' содержащих некоторые разные данные переменная isEqual должна быть FALSE", func() {
-			cp := datamodels.CommonPropertiesObjectSTIX{
+			cp := mstixo.CommonPropertiesObjectSTIX{
 				Type: "note",
 				ID:   "note--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
 			}
 
 			apOld := datamodels.NoteDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
-				Abstract:                         "ever never talk",
-				Content:                          "nnb vvn",
-				Authors:                          []string{"nnm", "cvb"},
-				ObjectRefs:                       []datamodels.IdentifierTypeSTIX{datamodels.IdentifierTypeSTIX("mongodb")},
+				NoteDomainObjectsSTIX: mstixo.NoteDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
+					Abstract:                         "ever never talk",
+					Content:                          "nnb vvn",
+					Authors:                          []string{"nnm", "cvb"},
+					ObjectRefs:                       []mstixo.IdentifierTypeSTIX{mstixo.IdentifierTypeSTIX("mongodb")},
+				},
 			}
 
 			isEqual, differentResult, err := apOld.ComparisonTypeCommonFields(&datamodels.NoteDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
-				Abstract:                         "only close",                  //change
-				Content:                          "c",                           //change
-				Authors:                          []string{"nnm", "cvb", "yyy"}, //change
-				ObjectRefs: []datamodels.IdentifierTypeSTIX{
-					datamodels.IdentifierTypeSTIX("mongodb"),
-					datamodels.IdentifierTypeSTIX("react"),
-					datamodels.IdentifierTypeSTIX("angular"),
-				}, //change
+				NoteDomainObjectsSTIX: mstixo.NoteDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
+					Abstract:                         "only close",                  //change
+					Content:                          "c",                           //change
+					Authors:                          []string{"nnm", "cvb", "yyy"}, //change
+					ObjectRefs: []mstixo.IdentifierTypeSTIX{
+						mstixo.IdentifierTypeSTIX("mongodb"),
+						mstixo.IdentifierTypeSTIX("react"),
+						mstixo.IdentifierTypeSTIX("angular"),
+					}, //change
+				},
 			}, "test source")
 
 			/*
@@ -1003,29 +1045,33 @@ var _ = Describe("HandlerSTIXCollection", func() {
 
 	Context("Тест 20. Проверяем возможность перебора значений содержащихся в пользовательском типе 'Observed-data'", func() {
 		It("При сравнении двух объектов типа 'Observed-data' содержащих некоторые разные данные переменная isEqual должна быть FALSE", func() {
-			cp := datamodels.CommonPropertiesObjectSTIX{
+			cp := mstixo.CommonPropertiesObjectSTIX{
 				Type: "observed-data",
 				ID:   "observed-data--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
 			}
 
 			apOld := datamodels.ObservedDataDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
-				NumberObserved:                   90,
-				ObjectRefs:                       []datamodels.IdentifierTypeSTIX{datamodels.IdentifierTypeSTIX("mongodb")},
+				ObservedDataDomainObjectsSTIX: mstixo.ObservedDataDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
+					NumberObserved:                   90,
+					ObjectRefs:                       []mstixo.IdentifierTypeSTIX{mstixo.IdentifierTypeSTIX("mongodb")},
+				},
 			}
 
 			isEqual, differentResult, err := apOld.ComparisonTypeCommonFields(&datamodels.ObservedDataDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
-				FirstObserved:                    time.Now(), //change
-				LastObserved:                     time.Now(), //change
-				NumberObserved:                   92,         //change
-				ObjectRefs: []datamodels.IdentifierTypeSTIX{
-					datamodels.IdentifierTypeSTIX("mongodb"),
-					datamodels.IdentifierTypeSTIX("react"),
-					datamodels.IdentifierTypeSTIX("angular"),
-				}, //change
+				ObservedDataDomainObjectsSTIX: mstixo.ObservedDataDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
+					FirstObserved:                    time.Now(), //change
+					LastObserved:                     time.Now(), //change
+					NumberObserved:                   92,         //change
+					ObjectRefs: []mstixo.IdentifierTypeSTIX{
+						mstixo.IdentifierTypeSTIX("mongodb"),
+						mstixo.IdentifierTypeSTIX("react"),
+						mstixo.IdentifierTypeSTIX("angular"),
+					}, //change
+				},
 			}, "test source")
 
 			/*
@@ -1045,27 +1091,30 @@ var _ = Describe("HandlerSTIXCollection", func() {
 
 	Context("Тест 21. Проверяем возможность перебора значений содержащихся в пользовательском типе 'Opinion'", func() {
 		It("При сравнении двух объектов типа 'Opinion' содержащих некоторые разные данные переменная isEqual должна быть FALSE", func() {
-			cp := datamodels.CommonPropertiesObjectSTIX{
+			cp := mstixo.CommonPropertiesObjectSTIX{
 				Type: "opinion",
 				ID:   "opinion--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
 			}
 
 			apOld := datamodels.OpinionDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
-				Explanation:                      "notes",
-				Authors:                          []string{"authors_5", "authors_3"},
-				Opinion:                          datamodels.EnumTypeSTIX("vbbb"),
-				ObjectRefs:                       []datamodels.IdentifierTypeSTIX{datamodels.IdentifierTypeSTIX("mongodb")},
+				OpinionDomainObjectsSTIX: mstixo.OpinionDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
+					Explanation:                      "notes",
+					Authors:                          []string{"authors_5", "authors_3"},
+					Opinion:                          mstixo.EnumTypeSTIX("vbbb"),
+					ObjectRefs:                       []mstixo.IdentifierTypeSTIX{mstixo.IdentifierTypeSTIX("mongodb")},
+				},
 			}
 
 			isEqual, differentResult, err := apOld.ComparisonTypeCommonFields(&datamodels.OpinionDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
-				Explanation:                      "notes ddd",                        //change
-				Authors:                          []string{"authors_3"},              //change
-				Opinion:                          datamodels.EnumTypeSTIX("11 vbbb"), //change
-				//change
+				OpinionDomainObjectsSTIX: mstixo.OpinionDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
+					Explanation:                      "notes ddd",                    //change
+					Authors:                          []string{"authors_3"},          //change
+					Opinion:                          mstixo.EnumTypeSTIX("11 vbbb"), //change
+				},
 			}, "test source")
 
 			/*
@@ -1085,27 +1134,31 @@ var _ = Describe("HandlerSTIXCollection", func() {
 
 	Context("Тест 22. Проверяем возможность перебора значений содержащихся в пользовательском типе 'Report'", func() {
 		It("При сравнении двух объектов типа 'Report' содержащих некоторые разные данные переменная isEqual должна быть FALSE", func() {
-			cp := datamodels.CommonPropertiesObjectSTIX{
+			cp := mstixo.CommonPropertiesObjectSTIX{
 				Type: "report",
 				ID:   "report--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
 			}
 
 			apOld := datamodels.ReportDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
-				Name:                             "new name 1",
-				Description:                      "new description 1",
-				Published:                        time.Now(),
-				ObjectRefs:                       []datamodels.IdentifierTypeSTIX{datamodels.IdentifierTypeSTIX("mongodb")},
+				ReportDomainObjectsSTIX: mstixo.ReportDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
+					Name:                             "new name 1",
+					Description:                      "new description 1",
+					Published:                        time.Now(),
+					ObjectRefs:                       []mstixo.IdentifierTypeSTIX{mstixo.IdentifierTypeSTIX("mongodb")},
+				},
 			}
 
 			isEqual, differentResult, err := apOld.ComparisonTypeCommonFields(&datamodels.ReportDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
-				Name:                             "new name 122",                                                                 //change
-				Description:                      "new description 1333",                                                         //change
-				Published:                        time.Now(),                                                                     //change
-				ObjectRefs:                       []datamodels.IdentifierTypeSTIX{datamodels.IdentifierTypeSTIX("mongodb 1111")}, //change
+				ReportDomainObjectsSTIX: mstixo.ReportDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
+					Name:                             "new name 122",                                                         //change
+					Description:                      "new description 1333",                                                 //change
+					Published:                        time.Now(),                                                             //change
+					ObjectRefs:                       []mstixo.IdentifierTypeSTIX{mstixo.IdentifierTypeSTIX("mongodb 1111")}, //change
+				},
 			}, "test source")
 
 			/*
@@ -1125,37 +1178,41 @@ var _ = Describe("HandlerSTIXCollection", func() {
 
 	Context("Тест 23. Проверяем возможность перебора значений содержащихся в пользовательском типе 'Threat-actor'", func() {
 		It("При сравнении двух объектов типа 'Threat-actor' содержащих некоторые разные данные переменная isEqual должна быть FALSE", func() {
-			cp := datamodels.CommonPropertiesObjectSTIX{
+			cp := mstixo.CommonPropertiesObjectSTIX{
 				Type: "threat-actor",
 				ID:   "threat-actor--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
 			}
 
 			apOld := datamodels.ThreatActorDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
-				Name:                             "new name 1",
-				Description:                      "new description 1",
-				ThreatActorTypes: []datamodels.OpenVocabTypeSTIX{
-					datamodels.OpenVocabTypeSTIX("bbnd d"),
-					datamodels.OpenVocabTypeSTIX("mnbfdd"),
+				ThreatActorDomainObjectsSTIX: mstixo.ThreatActorDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
+					Name:                             "new name 1",
+					Description:                      "new description 1",
+					ThreatActorTypes: []mstixo.OpenVocabTypeSTIX{
+						mstixo.OpenVocabTypeSTIX("bbnd d"),
+						mstixo.OpenVocabTypeSTIX("mnbfdd"),
+					},
+					Aliases:   []string{"cvvv", "vbbb"},
+					FirstSeen: time.Now(),
+					Roles:     []mstixo.OpenVocabTypeSTIX{mstixo.OpenVocabTypeSTIX("mmm")},
+					Goals:     []string{"1cc1", "22sc"},
 				},
-				Aliases:   []string{"cvvv", "vbbb"},
-				FirstSeen: time.Now(),
-				Roles:     []datamodels.OpenVocabTypeSTIX{datamodels.OpenVocabTypeSTIX("mmm")},
-				Goals:     []string{"1cc1", "22sc"},
 			}
 
 			isEqual, differentResult, err := apOld.ComparisonTypeCommonFields(&datamodels.ThreatActorDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
-				Name:                             "new name 122",                                                         //change
-				Description:                      "new description 1333",                                                 //change
-				ThreatActorTypes:                 []datamodels.OpenVocabTypeSTIX{datamodels.OpenVocabTypeSTIX("mnbfdd")}, //change
-				Aliases:                          []string{"cvvv", "vbbb", "vvvv"},                                       //change
-				FirstSeen:                        time.Now(),                                                             //change
-				LastSeen:                         time.Now(),                                                             //change
-				Roles:                            []datamodels.OpenVocabTypeSTIX{datamodels.OpenVocabTypeSTIX("m000m")},  //change
-				Goals:                            []string{"1cc1"},                                                       //change
+				ThreatActorDomainObjectsSTIX: mstixo.ThreatActorDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
+					Name:                             "new name 122",                                                 //change
+					Description:                      "new description 1333",                                         //change
+					ThreatActorTypes:                 []mstixo.OpenVocabTypeSTIX{mstixo.OpenVocabTypeSTIX("mnbfdd")}, //change
+					Aliases:                          []string{"cvvv", "vbbb", "vvvv"},                               //change
+					FirstSeen:                        time.Now(),                                                     //change
+					LastSeen:                         time.Now(),                                                     //change
+					Roles:                            []mstixo.OpenVocabTypeSTIX{mstixo.OpenVocabTypeSTIX("m000m")},  //change
+					Goals:                            []string{"1cc1"},
+				}, //change
 			}, "test source")
 
 			/*
@@ -1175,33 +1232,37 @@ var _ = Describe("HandlerSTIXCollection", func() {
 
 	Context("Тест 23. Проверяем возможность перебора значений содержащихся в пользовательском типе 'Tool'", func() {
 		It("При сравнении двух объектов типа 'Tool' содержащих некоторые разные данные переменная isEqual должна быть FALSE", func() {
-			cp := datamodels.CommonPropertiesObjectSTIX{
+			cp := mstixo.CommonPropertiesObjectSTIX{
 				Type: "tool",
 				ID:   "tool--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
 			}
 
 			apOld := datamodels.ToolDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
-				Name:                             "new name 1",
-				Description:                      "new description 1",
-				Aliases:                          []string{"cvvv", "vbbb"},
-				ToolVersion:                      "v23.1",
-				ToolTypes:                        []datamodels.OpenVocabTypeSTIX{datamodels.OpenVocabTypeSTIX("ikk")},
+				ToolDomainObjectsSTIX: mstixo.ToolDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
+					Name:                             "new name 1",
+					Description:                      "new description 1",
+					Aliases:                          []string{"cvvv", "vbbb"},
+					ToolVersion:                      "v23.1",
+					ToolTypes:                        []mstixo.OpenVocabTypeSTIX{mstixo.OpenVocabTypeSTIX("ikk")},
+				},
 			}
 
 			isEqual, differentResult, err := apOld.ComparisonTypeCommonFields(&datamodels.ToolDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
-				Name:                             "new name 122",                   //change
-				Description:                      "new description 1333",           //change
-				Aliases:                          []string{"cvvv", "vbbb", "vvvv"}, //change
-				ToolVersion:                      "v30.23",                         //change
-				ToolTypes: []datamodels.OpenVocabTypeSTIX{
-					datamodels.OpenVocabTypeSTIX("ikk"),
-					datamodels.OpenVocabTypeSTIX("iopp"),
-					datamodels.OpenVocabTypeSTIX("yyu"),
-				}, //change
+				ToolDomainObjectsSTIX: mstixo.ToolDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
+					Name:                             "new name 122",                   //change
+					Description:                      "new description 1333",           //change
+					Aliases:                          []string{"cvvv", "vbbb", "vvvv"}, //change
+					ToolVersion:                      "v30.23",                         //change
+					ToolTypes: []mstixo.OpenVocabTypeSTIX{
+						mstixo.OpenVocabTypeSTIX("ikk"),
+						mstixo.OpenVocabTypeSTIX("iopp"),
+						mstixo.OpenVocabTypeSTIX("yyu"),
+					}, //change
+				},
 			}, "test source")
 
 			/*
@@ -1221,23 +1282,27 @@ var _ = Describe("HandlerSTIXCollection", func() {
 
 	Context("Тест 24. Проверяем возможность перебора значений содержащихся в пользовательском типе 'Vulnerability'", func() {
 		It("При сравнении двух объектов типа 'Vulnerability' содержащих некоторые разные данные переменная isEqual должна быть FALSE", func() {
-			cp := datamodels.CommonPropertiesObjectSTIX{
+			cp := mstixo.CommonPropertiesObjectSTIX{
 				Type: "vulnerability",
 				ID:   "vulnerability--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
 			}
 
 			apOld := datamodels.VulnerabilityDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
-				Name:                             "new name 1",
-				Description:                      "new description 1",
+				VulnerabilityDomainObjectsSTIX: mstixo.VulnerabilityDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
+					Name:                             "new name 1",
+					Description:                      "new description 1",
+				},
 			}
 
 			isEqual, differentResult, err := apOld.ComparisonTypeCommonFields(&datamodels.VulnerabilityDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX:       cp,
-				CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
-				Name:                             "new name 122",         //change
-				Description:                      "new description 1333", //change
+				VulnerabilityDomainObjectsSTIX: mstixo.VulnerabilityDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX:       cp,
+					CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
+					Name:                             "new name 122",         //change
+					Description:                      "new description 1333", //change
+				},
 			}, "test source")
 
 			/*
@@ -1261,48 +1326,54 @@ var _ = Describe("HandlerSTIXCollection", func() {
 				{
 					DataType: "tool",
 					Data: datamodels.ToolDomainObjectsSTIX{
-						CommonPropertiesObjectSTIX: datamodels.CommonPropertiesObjectSTIX{
-							Type: "tool",
-							ID:   "tool--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
+						ToolDomainObjectsSTIX: mstixo.ToolDomainObjectsSTIX{
+							CommonPropertiesObjectSTIX: mstixo.CommonPropertiesObjectSTIX{
+								Type: "tool",
+								ID:   "tool--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
+							},
+							CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
+							Name:                             "new name 1",
+							Description:                      "new description 1",
+							Aliases:                          []string{"cvvv", "vbbb"},
+							ToolVersion:                      "v23.1",
+							ToolTypes:                        []mstixo.OpenVocabTypeSTIX{mstixo.OpenVocabTypeSTIX("ikk")},
 						},
-						CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
-						Name:                             "new name 1",
-						Description:                      "new description 1",
-						Aliases:                          []string{"cvvv", "vbbb"},
-						ToolVersion:                      "v23.1",
-						ToolTypes:                        []datamodels.OpenVocabTypeSTIX{datamodels.OpenVocabTypeSTIX("ikk")},
 					},
 				}, {
 					DataType: "threat-actor",
 					Data: datamodels.ThreatActorDomainObjectsSTIX{
-						CommonPropertiesObjectSTIX: datamodels.CommonPropertiesObjectSTIX{
-							Type: "threat-actor",
-							ID:   "threat-actor--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
+						ThreatActorDomainObjectsSTIX: mstixo.ThreatActorDomainObjectsSTIX{
+							CommonPropertiesObjectSTIX: mstixo.CommonPropertiesObjectSTIX{
+								Type: "threat-actor",
+								ID:   "threat-actor--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
+							},
+							CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
+							Name:                             "new name 1",
+							Description:                      "new description 1",
+							ThreatActorTypes: []mstixo.OpenVocabTypeSTIX{
+								mstixo.OpenVocabTypeSTIX("bbnd d"),
+								mstixo.OpenVocabTypeSTIX("mnbfdd"),
+							},
+							Aliases:   []string{"cvvv", "vbbb"},
+							FirstSeen: time.Now(),
+							Roles:     []mstixo.OpenVocabTypeSTIX{mstixo.OpenVocabTypeSTIX("mmm")},
+							Goals:     []string{"1cc1", "22sc"},
 						},
-						CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
-						Name:                             "new name 1",
-						Description:                      "new description 1",
-						ThreatActorTypes: []datamodels.OpenVocabTypeSTIX{
-							datamodels.OpenVocabTypeSTIX("bbnd d"),
-							datamodels.OpenVocabTypeSTIX("mnbfdd"),
-						},
-						Aliases:   []string{"cvvv", "vbbb"},
-						FirstSeen: time.Now(),
-						Roles:     []datamodels.OpenVocabTypeSTIX{datamodels.OpenVocabTypeSTIX("mmm")},
-						Goals:     []string{"1cc1", "22sc"},
 					},
 				}, {
 					DataType: "opinion",
 					Data: datamodels.OpinionDomainObjectsSTIX{
-						CommonPropertiesObjectSTIX: datamodels.CommonPropertiesObjectSTIX{
-							Type: "opinion",
-							ID:   "opinion--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
+						OpinionDomainObjectsSTIX: mstixo.OpinionDomainObjectsSTIX{
+							CommonPropertiesObjectSTIX: mstixo.CommonPropertiesObjectSTIX{
+								Type: "opinion",
+								ID:   "opinion--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
+							},
+							CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
+							Explanation:                      "notes",
+							Authors:                          []string{"authors_5", "authors_3"},
+							Opinion:                          mstixo.EnumTypeSTIX("vbbb"),
+							ObjectRefs:                       []mstixo.IdentifierTypeSTIX{mstixo.IdentifierTypeSTIX("mongodb")},
 						},
-						CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
-						Explanation:                      "notes",
-						Authors:                          []string{"authors_5", "authors_3"},
-						Opinion:                          datamodels.EnumTypeSTIX("vbbb"),
-						ObjectRefs:                       []datamodels.IdentifierTypeSTIX{datamodels.IdentifierTypeSTIX("mongodb")},
 					},
 				},
 			}
@@ -1311,70 +1382,76 @@ var _ = Describe("HandlerSTIXCollection", func() {
 				{
 					DataType: "opinion",
 					Data: datamodels.OpinionDomainObjectsSTIX{
-						CommonPropertiesObjectSTIX: datamodels.CommonPropertiesObjectSTIX{
-							Type: "opinion",
-							ID:   "opinion--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
+						OpinionDomainObjectsSTIX: mstixo.OpinionDomainObjectsSTIX{
+							CommonPropertiesObjectSTIX: mstixo.CommonPropertiesObjectSTIX{
+								Type: "opinion",
+								ID:   "opinion--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
+							},
+							CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
+							Explanation:                      "notes ddd",                    //change
+							Authors:                          []string{"authors_3"},          //change
+							Opinion:                          mstixo.EnumTypeSTIX("11 vbbb"), //change
 						},
-						CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
-						Explanation:                      "notes ddd",                        //change
-						Authors:                          []string{"authors_3"},              //change
-						Opinion:                          datamodels.EnumTypeSTIX("11 vbbb"), //change
 					},
 				}, {
 					DataType: "threat-actor",
 					Data: datamodels.ThreatActorDomainObjectsSTIX{
-						CommonPropertiesObjectSTIX: datamodels.CommonPropertiesObjectSTIX{
-							Type: "threat-actor",
-							ID:   "threat-actor--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
-						},
-						CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
-						Name:                             "new name 122",                                                         //change
-						Description:                      "new description 1333",                                                 //change
-						ThreatActorTypes:                 []datamodels.OpenVocabTypeSTIX{datamodels.OpenVocabTypeSTIX("mnbfdd")}, //change
-						Aliases:                          []string{"cvvv", "vbbb", "vvvv"},                                       //change
-						FirstSeen:                        time.Now(),                                                             //change
-						LastSeen:                         time.Now(),                                                             //change
-						Roles:                            []datamodels.OpenVocabTypeSTIX{datamodels.OpenVocabTypeSTIX("m000m")},  //change
-						Goals:                            []string{"1cc1"},                                                       //change
+						ThreatActorDomainObjectsSTIX: mstixo.ThreatActorDomainObjectsSTIX{
+							CommonPropertiesObjectSTIX: mstixo.CommonPropertiesObjectSTIX{
+								Type: "threat-actor",
+								ID:   "threat-actor--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
+							},
+							CommonPropertiesDomainObjectSTIX: oldCommonPropertiesDomain,
+							Name:                             "new name 122",                                                 //change
+							Description:                      "new description 1333",                                         //change
+							ThreatActorTypes:                 []mstixo.OpenVocabTypeSTIX{mstixo.OpenVocabTypeSTIX("mnbfdd")}, //change
+							Aliases:                          []string{"cvvv", "vbbb", "vvvv"},                               //change
+							FirstSeen:                        time.Now(),                                                     //change
+							LastSeen:                         time.Now(),                                                     //change
+							Roles:                            []mstixo.OpenVocabTypeSTIX{mstixo.OpenVocabTypeSTIX("m000m")},  //change
+							Goals:                            []string{"1cc1"},
+						}, //change
 					},
 				}, {
 					DataType: "tool",
 					Data: datamodels.ToolDomainObjectsSTIX{
-						CommonPropertiesObjectSTIX: datamodels.CommonPropertiesObjectSTIX{
-							Type: "tool",
-							ID:   "tool--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
+						ToolDomainObjectsSTIX: mstixo.ToolDomainObjectsSTIX{
+							CommonPropertiesObjectSTIX: mstixo.CommonPropertiesObjectSTIX{
+								Type: "tool",
+								ID:   "tool--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
+							},
+							Name:        "new name 122",                   //change
+							Description: "new description 1333",           //change
+							Aliases:     []string{"cvvv", "vbbb", "vvvv"}, //change
+							ToolVersion: "v30.23",                         //change
+							ToolTypes: []mstixo.OpenVocabTypeSTIX{
+								mstixo.OpenVocabTypeSTIX("ikk"),
+								mstixo.OpenVocabTypeSTIX("iopp"),
+								mstixo.OpenVocabTypeSTIX("yyu"),
+							}, //change
 						},
-						Name:        "new name 122",                   //change
-						Description: "new description 1333",           //change
-						Aliases:     []string{"cvvv", "vbbb", "vvvv"}, //change
-						ToolVersion: "v30.23",                         //change
-						ToolTypes: []datamodels.OpenVocabTypeSTIX{
-							datamodels.OpenVocabTypeSTIX("ikk"),
-							datamodels.OpenVocabTypeSTIX("iopp"),
-							datamodels.OpenVocabTypeSTIX("yyu"),
-						}, //change
 					},
 				}, {
 					DataType: "malware-analysis",
 					Data: datamodels.MalwareAnalysisDomainObjectsSTIX{
-						CommonPropertiesObjectSTIX: datamodels.CommonPropertiesObjectSTIX{
-							Type: "malware-analysis",
-							ID:   "malware-analysis--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
+						MalwareAnalysisDomainObjectsSTIX: mstixo.MalwareAnalysisDomainObjectsSTIX{
+							CommonPropertiesObjectSTIX: mstixo.CommonPropertiesObjectSTIX{
+								Type: "malware-analysis",
+								ID:   "malware-analysis--bcbdd-vyw7d27dffd3ffd6f6fd6fw",
+							},
+							CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
+							Product:                          "App Soft",                                                     //change
+							Version:                          "1.24.56",                                                      //change
+							HostVMRef:                        mstixo.IdentifierTypeSTIX("cv5"),                               //change
+							ConfigurationVersion:             "v12.61",                                                       //change
+							Modules:                          []string{"x1", "x2", "v3", "v12"},                              //change
+							AnalysisEngineVersion:            "rus version 12.3",                                             //change
+							AnalysisDefinitionVersion:        "def version 65.111",                                           //change
+							Submitted:                        time.Now(),                                                     //change
+							AnalysisStarted:                  time.Now(),                                                     //change
+							AnalysisEnded:                    time.Now(),                                                     //change
+							AnalysisScoRefs:                  []mstixo.IdentifierTypeSTIX{mstixo.IdentifierTypeSTIX("bbbb")}, //change
 						},
-						CommonPropertiesDomainObjectSTIX: newCommonPropertiesDomain,
-						Product:                          "App Soft",                           //change
-						Version:                          "1.24.56",                            //change
-						HostVMRef:                        datamodels.IdentifierTypeSTIX("cv5"), //change
-						//change
-						ConfigurationVersion:      "v12.61",                          //change
-						Modules:                   []string{"x1", "x2", "v3", "v12"}, //change
-						AnalysisEngineVersion:     "rus version 12.3",                //change
-						AnalysisDefinitionVersion: "def version 65.111",              //change
-						Submitted:                 time.Now(),                        //change
-						AnalysisStarted:           time.Now(),                        //change
-						AnalysisEnded:             time.Now(),                        //change
-						//change
-						AnalysisScoRefs: []datamodels.IdentifierTypeSTIX{datamodels.IdentifierTypeSTIX("bbbb")}, //change
 					},
 				},
 			}
@@ -1534,7 +1611,7 @@ var _ = Describe("HandlerSTIXCollection", func() {
         65. id: 'attack-pattern--7e33a43e-e34b-40ec-89da-36c9bb2cacd5'
 */
 
-func ComparisonTypeCommonFields(before, after datamodels.CommonPropertiesDomainObjectSTIX) (bool, datamodels.DifferentObjectType, error) {
+func ComparisonTypeCommonFields(before, after mstixo.CommonPropertiesDomainObjectSTIX) (bool, datamodels.DifferentObjectType, error) {
 	var isEqual bool = true
 	tmpOne := reflect.ValueOf(before)
 	typeOfSOne := tmpOne.Type()

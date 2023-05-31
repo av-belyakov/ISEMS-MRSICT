@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"time"
 
+	mstixo "github.com/av-belyakov/methodstixobjects"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"go.mongodb.org/mongo-driver/bson"
@@ -84,7 +85,7 @@ func deleteObjTypeGrouping(cdmdb interactionmongodb.ConnectionDescriptorMongoDB,
 	sl := map[string]struct {
 		targetRefsID   string
 		relationshipID string
-		listRefs       []datamodels.IdentifierTypeSTIX
+		listRefs       []mstixo.IdentifierTypeSTIX
 	}{}
 
 	//получаем все объекты предназначенные для удаления (проверка типа объекта, удаление возможно только объектов типа 'grouping' или
@@ -111,7 +112,7 @@ func deleteObjTypeGrouping(cdmdb interactionmongodb.ConnectionDescriptorMongoDB,
 			sl[v.Data.GetID()] = struct {
 				targetRefsID   string
 				relationshipID string
-				listRefs       []datamodels.IdentifierTypeSTIX
+				listRefs       []mstixo.IdentifierTypeSTIX
 			}{listRefs: element.ObjectRefs}
 		}
 
@@ -139,9 +140,9 @@ func deleteObjTypeGrouping(cdmdb interactionmongodb.ConnectionDescriptorMongoDB,
 			listIDReporModify = append(listIDReporModify, targetID)
 
 			sl[string(obj.SourceRef)] = struct { // ID объекта типа 'gouping'
-				targetRefsID   string                          // объект 'report' на который ссылается какой либо объект из поля SourceRefs
-				relationshipID string                          // ID объекта типа 'relationship' который соединяет объекты 'grouping' и 'report' и который так же нужно удалить
-				listRefs       []datamodels.IdentifierTypeSTIX // список ID объектов который 'grouping' объединяет в группу и который нужно перенести
+				targetRefsID   string                      // объект 'report' на который ссылается какой либо объект из поля SourceRefs
+				relationshipID string                      // ID объекта типа 'relationship' который соединяет объекты 'grouping' и 'report' и который так же нужно удалить
+				listRefs       []mstixo.IdentifierTypeSTIX // список ID объектов который 'grouping' объединяет в группу и который нужно перенести
 				// в объект 'report' к которому принадлежит 'grouping' отмеченный для удаления
 			}{
 				targetRefsID:   targetID,
@@ -176,7 +177,7 @@ func deleteObjTypeGrouping(cdmdb interactionmongodb.ConnectionDescriptorMongoDB,
 
 			//удаляем ID объекта 'grouping' из свойства ObjectRefs объекта 'report' и добавляем туда ссылки на ID объектов находящиеся
 			// в свойстве ObjectRefs удаляемого объекта 'grouping'
-			listTmp := []datamodels.IdentifierTypeSTIX{}
+			listTmp := []mstixo.IdentifierTypeSTIX{}
 			for _, v := range obj.ObjectRefs {
 				if string(v) == groupingID {
 					continue

@@ -11,6 +11,7 @@ import (
 	"ISEMS-MRSICT/datamodels"
 
 	"github.com/asaskevich/govalidator"
+	mstixo "github.com/av-belyakov/methodstixobjects"
 	"github.com/google/uuid"
 	ipv4conv "github.com/signalsciences/ipv4"
 	"go.mongodb.org/mongo-driver/bson"
@@ -147,23 +148,30 @@ func SavingAdditionalNameListSTIXObject(currentList, addedList []*datamodels.Ele
 }
 
 type definingTypeSTIXObject struct {
-	datamodels.CommonPropertiesObjectSTIX
+	mstixo.CommonPropertiesObjectSTIX
 }
 
 // GetListElementSTIXObject возвращает, из БД, список STIX объектов
 func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject {
 	elements := []*datamodels.ElementSTIXObject{}
 
+	//fmt.Println("func 'GetListElementSTIXObject', START...")
+
 	for cur.Next(context.Background()) {
 		var modelType definingTypeSTIXObject
 		if err := cur.Decode(&modelType); err != nil {
+
+			//fmt.Println("func 'GetListElementSTIXObject', cur.Decode(&modelType), CONTINUE")
+
 			continue
 		}
+
+		//fmt.Println("func 'GetListElementSTIXObject', modelType.Type:", modelType)
 
 		switch modelType.Type {
 		/* *** Domain Objects STIX *** */
 		case "attack-pattern":
-			tmpObj := datamodels.AttackPatternDomainObjectsSTIX{}
+			tmpObj := mstixo.AttackPatternDomainObjectsSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -171,10 +179,10 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.AttackPatternDomainObjectsSTIX{AttackPatternDomainObjectsSTIX: tmpObj},
 			})
 		case "campaign":
-			tmpObj := datamodels.CampaignDomainObjectsSTIX{}
+			tmpObj := mstixo.CampaignDomainObjectsSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -182,11 +190,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.CampaignDomainObjectsSTIX{CampaignDomainObjectsSTIX: tmpObj},
 			})
 
 		case "course-of-action":
-			tmpObj := datamodels.CourseOfActionDomainObjectsSTIX{}
+			tmpObj := mstixo.CourseOfActionDomainObjectsSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -194,11 +202,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.CourseOfActionDomainObjectsSTIX{CourseOfActionDomainObjectsSTIX: tmpObj},
 			})
 
 		case "grouping":
-			tmpObj := datamodels.GroupingDomainObjectsSTIX{}
+			tmpObj := mstixo.GroupingDomainObjectsSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -206,11 +214,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.GroupingDomainObjectsSTIX{GroupingDomainObjectsSTIX: tmpObj},
 			})
 
 		case "identity":
-			tmpObj := datamodels.IdentityDomainObjectsSTIX{}
+			tmpObj := mstixo.IdentityDomainObjectsSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -218,11 +226,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.IdentityDomainObjectsSTIX{IdentityDomainObjectsSTIX: tmpObj},
 			})
 
 		case "indicator":
-			tmpObj := datamodels.IndicatorDomainObjectsSTIX{}
+			tmpObj := mstixo.IndicatorDomainObjectsSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -230,11 +238,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.IndicatorDomainObjectsSTIX{IndicatorDomainObjectsSTIX: tmpObj},
 			})
 
 		case "infrastructure":
-			tmpObj := datamodels.InfrastructureDomainObjectsSTIX{}
+			tmpObj := mstixo.InfrastructureDomainObjectsSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -242,11 +250,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.InfrastructureDomainObjectsSTIX{InfrastructureDomainObjectsSTIX: tmpObj},
 			})
 
 		case "intrusion-set":
-			tmpObj := datamodels.IntrusionSetDomainObjectsSTIX{}
+			tmpObj := mstixo.IntrusionSetDomainObjectsSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -254,11 +262,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.IntrusionSetDomainObjectsSTIX{IntrusionSetDomainObjectsSTIX: tmpObj},
 			})
 
 		case "location":
-			tmpObj := datamodels.LocationDomainObjectsSTIX{}
+			tmpObj := mstixo.LocationDomainObjectsSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -266,11 +274,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.LocationDomainObjectsSTIX{LocationDomainObjectsSTIX: tmpObj},
 			})
 
 		case "malware":
-			tmpObj := datamodels.MalwareDomainObjectsSTIX{}
+			tmpObj := mstixo.MalwareDomainObjectsSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -278,11 +286,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.MalwareDomainObjectsSTIX{MalwareDomainObjectsSTIX: tmpObj},
 			})
 
 		case "malware-analysis":
-			tmpObj := datamodels.MalwareAnalysisDomainObjectsSTIX{}
+			tmpObj := mstixo.MalwareAnalysisDomainObjectsSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -290,11 +298,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.MalwareAnalysisDomainObjectsSTIX{MalwareAnalysisDomainObjectsSTIX: tmpObj},
 			})
 
 		case "note":
-			tmpObj := datamodels.NoteDomainObjectsSTIX{}
+			tmpObj := mstixo.NoteDomainObjectsSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -302,11 +310,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.NoteDomainObjectsSTIX{NoteDomainObjectsSTIX: tmpObj},
 			})
 
 		case "observed-data":
-			tmpObj := datamodels.ObservedDataDomainObjectsSTIX{}
+			tmpObj := mstixo.ObservedDataDomainObjectsSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -314,11 +322,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.ObservedDataDomainObjectsSTIX{ObservedDataDomainObjectsSTIX: tmpObj},
 			})
 
 		case "opinion":
-			tmpObj := datamodels.OpinionDomainObjectsSTIX{}
+			tmpObj := mstixo.OpinionDomainObjectsSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -326,11 +334,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.OpinionDomainObjectsSTIX{OpinionDomainObjectsSTIX: tmpObj},
 			})
 
 		case "report":
-			tmpObj := datamodels.ReportDomainObjectsSTIX{}
+			tmpObj := mstixo.ReportDomainObjectsSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -338,11 +346,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.ReportDomainObjectsSTIX{ReportDomainObjectsSTIX: tmpObj},
 			})
 
 		case "threat-actor":
-			tmpObj := datamodels.ThreatActorDomainObjectsSTIX{}
+			tmpObj := mstixo.ThreatActorDomainObjectsSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -350,11 +358,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.ThreatActorDomainObjectsSTIX{ThreatActorDomainObjectsSTIX: tmpObj},
 			})
 
 		case "tool":
-			tmpObj := datamodels.ToolDomainObjectsSTIX{}
+			tmpObj := mstixo.ToolDomainObjectsSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -362,11 +370,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.ToolDomainObjectsSTIX{ToolDomainObjectsSTIX: tmpObj},
 			})
 
 		case "vulnerability":
-			tmpObj := datamodels.VulnerabilityDomainObjectsSTIX{}
+			tmpObj := mstixo.VulnerabilityDomainObjectsSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -374,12 +382,12 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.VulnerabilityDomainObjectsSTIX{VulnerabilityDomainObjectsSTIX: tmpObj},
 			})
 
 		/* *** Relationship Objects *** */
 		case "relationship":
-			tmpObj := datamodels.RelationshipObjectSTIX{}
+			tmpObj := mstixo.RelationshipObjectSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -387,11 +395,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.RelationshipObjectSTIX{RelationshipObjectSTIX: tmpObj},
 			})
 
 		case "sighting":
-			tmpObj := datamodels.SightingObjectSTIX{}
+			tmpObj := mstixo.SightingObjectSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -399,12 +407,12 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.SightingObjectSTIX{SightingObjectSTIX: tmpObj},
 			})
 
 		/* *** Cyber-observable Objects STIX *** */
 		case "artifact":
-			tmpObj := datamodels.ArtifactCyberObservableObjectSTIX{}
+			tmpObj := mstixo.ArtifactCyberObservableObjectSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -412,11 +420,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.ArtifactCyberObservableObjectSTIX{ArtifactCyberObservableObjectSTIX: tmpObj},
 			})
 
 		case "autonomous-system":
-			tmpObj := datamodels.AutonomousSystemCyberObservableObjectSTIX{}
+			tmpObj := mstixo.AutonomousSystemCyberObservableObjectSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -424,11 +432,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.AutonomousSystemCyberObservableObjectSTIX{AutonomousSystemCyberObservableObjectSTIX: tmpObj},
 			})
 
 		case "directory":
-			tmpObj := datamodels.DirectoryCyberObservableObjectSTIX{}
+			tmpObj := mstixo.DirectoryCyberObservableObjectSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -436,11 +444,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.DirectoryCyberObservableObjectSTIX{DirectoryCyberObservableObjectSTIX: tmpObj},
 			})
 
 		case "domain-name":
-			tmpObj := datamodels.DomainNameCyberObservableObjectSTIX{}
+			tmpObj := mstixo.DomainNameCyberObservableObjectSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -448,11 +456,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.DomainNameCyberObservableObjectSTIX{DomainNameCyberObservableObjectSTIX: tmpObj},
 			})
 
 		case "email-addr":
-			tmpObj := datamodels.EmailAddressCyberObservableObjectSTIX{}
+			tmpObj := mstixo.EmailAddressCyberObservableObjectSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -460,11 +468,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.EmailAddressCyberObservableObjectSTIX{EmailAddressCyberObservableObjectSTIX: tmpObj},
 			})
 
 		case "email-message":
-			tmpObj := datamodels.EmailMessageCyberObservableObjectSTIX{}
+			tmpObj := mstixo.EmailMessageCyberObservableObjectSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -472,11 +480,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.EmailMessageCyberObservableObjectSTIX{EmailMessageCyberObservableObjectSTIX: tmpObj},
 			})
 
 		case "file":
-			tmpObj := datamodels.FileCyberObservableObjectSTIX{}
+			tmpObj := mstixo.FileCyberObservableObjectSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -484,7 +492,7 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.FileCyberObservableObjectSTIX{FileCyberObservableObjectSTIX: tmpObj},
 			})
 
 		case "ipv4-addr":
@@ -495,19 +503,57 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 				break
 			}
 
+			/*resolvesToRefs := make([]mstixo.IdentifierTypeSTIX, 0, len(tmpObj.ResolvesToRefs))
+			for _, v := range tmpObj.ResolvesToRefs {
+				resolvesToRefs = append(resolvesToRefs, v)
+			}*/
+
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
 				Data: datamodels.IPv4AddressCyberObservableObjectSTIX{
-					CommonPropertiesObjectSTIX:                        tmpObj.CommonPropertiesObjectSTIX,
-					OptionalCommonPropertiesCyberObservableObjectSTIX: tmpObj.OptionalCommonPropertiesCyberObservableObjectSTIX,
-					Value:          tmpObj.Value,
-					ResolvesToRefs: tmpObj.ResolvesToRefs,
-					BelongsToRefs:  tmpObj.BelongsToRefs,
+					IPv4AddressCyberObservableObjectSTIX: mstixo.IPv4AddressCyberObservableObjectSTIX{
+						CommonPropertiesObjectSTIX: mstixo.CommonPropertiesObjectSTIX{
+							Type: tmpObj.CommonPropertiesObjectSTIX.Type,
+							ID:   tmpObj.CommonPropertiesObjectSTIX.ID,
+						},
+						OptionalCommonPropertiesCyberObservableObjectSTIX: mstixo.OptionalCommonPropertiesCyberObservableObjectSTIX{
+							SpecVersion:       tmpObj.OptionalCommonPropertiesCyberObservableObjectSTIX.SpecVersion,
+							ObjectMarkingRefs: tmpObj.OptionalCommonPropertiesCyberObservableObjectSTIX.ObjectMarkingRefs,
+							GranularMarkings:  tmpObj.OptionalCommonPropertiesCyberObservableObjectSTIX.GranularMarkings,
+							Defanged:          tmpObj.OptionalCommonPropertiesCyberObservableObjectSTIX.Defanged,
+						},
+						Value:          tmpObj.Value,
+						ResolvesToRefs: tmpObj.ResolvesToRefs,
+						BelongsToRefs:  tmpObj.BelongsToRefs,
+					},
 				},
 			})
 
+			/*
+				elements = append(elements, &datamodels.ElementSTIXObject{
+					DataType: modelType.Type,
+					Data: datamodels.IPv4AddressCyberObservableObjectSTIX{
+						mstixo.IPv4AddressCyberObservableObjectSTIX{
+							CommonPropertiesObjectSTIX: mstixo.CommonPropertiesObjectSTIX{
+								Type: tmpObj.CommonPropertiesObjectSTIX.Type,
+								ID:   tmpObj.CommonPropertiesObjectSTIX.ID,
+							},
+							OptionalCommonPropertiesCyberObservableObjectSTIX: mstixo.OptionalCommonPropertiesCyberObservableObjectSTIX{
+								SpecVersion:       tmpObj.OptionalCommonPropertiesCyberObservableObjectSTIX.SpecVersion,
+								ObjectMarkingRefs: tmpObj.OptionalCommonPropertiesCyberObservableObjectSTIX.ObjectMarkingRefs,
+								GranularMarkings:  tmpObj.OptionalCommonPropertiesCyberObservableObjectSTIX.GranularMarkings,
+								Defanged:          tmpObj.OptionalCommonPropertiesCyberObservableObjectSTIX.Defanged,
+							},
+							Value:          tmpObj.Value,
+							ResolvesToRefs: tmpObj.ResolvesToRefs,
+							BelongsToRefs:  tmpObj.BelongsToRefs,
+						},
+					},
+				})
+			*/
+
 		case "ipv6-addr":
-			tmpObj := datamodels.IPv6AddressCyberObservableObjectSTIX{}
+			tmpObj := mstixo.IPv6AddressCyberObservableObjectSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -515,11 +561,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.IPv6AddressCyberObservableObjectSTIX{IPv6AddressCyberObservableObjectSTIX: tmpObj},
 			})
 
 		case "mac-addr":
-			tmpObj := datamodels.MACAddressCyberObservableObjectSTIX{}
+			tmpObj := mstixo.MACAddressCyberObservableObjectSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -527,11 +573,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.MACAddressCyberObservableObjectSTIX{MACAddressCyberObservableObjectSTIX: tmpObj},
 			})
 
 		case "mutex":
-			tmpObj := datamodels.MutexCyberObservableObjectSTIX{}
+			tmpObj := mstixo.MutexCyberObservableObjectSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -539,11 +585,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.MutexCyberObservableObjectSTIX{MutexCyberObservableObjectSTIX: tmpObj},
 			})
 
 		case "network-traffic":
-			tmpObj := datamodels.NetworkTrafficCyberObservableObjectSTIX{}
+			tmpObj := mstixo.NetworkTrafficCyberObservableObjectSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -551,11 +597,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.NetworkTrafficCyberObservableObjectSTIX{NetworkTrafficCyberObservableObjectSTIX: tmpObj},
 			})
 
 		case "process":
-			tmpObj := datamodels.ProcessCyberObservableObjectSTIX{}
+			tmpObj := mstixo.ProcessCyberObservableObjectSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -563,11 +609,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.ProcessCyberObservableObjectSTIX{ProcessCyberObservableObjectSTIX: tmpObj},
 			})
 
 		case "software":
-			tmpObj := datamodels.SoftwareCyberObservableObjectSTIX{}
+			tmpObj := mstixo.SoftwareCyberObservableObjectSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -575,11 +621,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.SoftwareCyberObservableObjectSTIX{SoftwareCyberObservableObjectSTIX: tmpObj},
 			})
 
 		case "url":
-			tmpObj := datamodels.URLCyberObservableObjectSTIX{}
+			tmpObj := mstixo.URLCyberObservableObjectSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -587,11 +633,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.URLCyberObservableObjectSTIX{URLCyberObservableObjectSTIX: tmpObj},
 			})
 
 		case "user-account":
-			tmpObj := datamodels.UserAccountCyberObservableObjectSTIX{}
+			tmpObj := mstixo.UserAccountCyberObservableObjectSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -599,11 +645,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.UserAccountCyberObservableObjectSTIX{UserAccountCyberObservableObjectSTIX: tmpObj},
 			})
 
 		case "windows-registry-key":
-			tmpObj := datamodels.WindowsRegistryKeyCyberObservableObjectSTIX{}
+			tmpObj := mstixo.WindowsRegistryKeyCyberObservableObjectSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -611,11 +657,11 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.WindowsRegistryKeyCyberObservableObjectSTIX{WindowsRegistryKeyCyberObservableObjectSTIX: tmpObj},
 			})
 
 		case "x509-certificate":
-			tmpObj := datamodels.X509CertificateCyberObservableObjectSTIX{}
+			tmpObj := mstixo.X509CertificateCyberObservableObjectSTIX{}
 			err := cur.Decode(&tmpObj)
 			if err != nil {
 				break
@@ -623,10 +669,12 @@ func GetListElementSTIXObject(cur *mongo.Cursor) []*datamodels.ElementSTIXObject
 
 			elements = append(elements, &datamodels.ElementSTIXObject{
 				DataType: modelType.Type,
-				Data:     tmpObj,
+				Data:     datamodels.X509CertificateCyberObservableObjectSTIX{X509CertificateCyberObservableObjectSTIX: tmpObj},
 			})
 		}
 	}
+
+	//fmt.Println("func 'GetListElementSTIXObject' STOP elements ", elements)
 
 	return elements
 }
@@ -709,7 +757,7 @@ func ReplacementElementsSTIXObject(qp QueryParameters, l []*datamodels.ElementST
 				ip = ipv6.To16().String()
 			}
 
-			listObj = append(listObj, datamodels.IPv6AddressCyberObservableObjectSTIX{
+			listObj = append(listObj, mstixo.IPv6AddressCyberObservableObjectSTIX{
 				CommonPropertiesObjectSTIX:                        ipv6addr.CommonPropertiesObjectSTIX,
 				OptionalCommonPropertiesCyberObservableObjectSTIX: ipv6addr.OptionalCommonPropertiesCyberObservableObjectSTIX,
 				Value:          ip,
@@ -720,7 +768,11 @@ func ReplacementElementsSTIXObject(qp QueryParameters, l []*datamodels.ElementST
 			continue
 		}
 
-		listObj = append(listObj, v.Data)
+		listObj = append(listObj, v.Data.GetCurrentObject())
+
+		/*if v.DataType == "report" {
+			fmt.Printf("func 'ReplacementElementsSTIXObject', DataType:%s, v.Data.GetCurrentObject():%v \n", v.DataType, v.Data.GetCurrentObject())
+		}*/
 	}
 
 	_, err := qp.DeleteManyData(bson.D{{Key: "commonpropertiesobjectstix.id", Value: bson.D{{Key: "$in", Value: reqDeleteID}}}}, options.Delete())
@@ -818,26 +870,28 @@ func GetIDGroupingObjectSTIX(qp QueryParameters, listSearch map[string]datamodel
 			}
 		}
 
-		context := datamodels.OpenVocabTypeSTIX("suspicious-activity")
+		context := mstixo.OpenVocabTypeSTIX("suspicious-activity")
 		if !isTrue {
 			id := uuid.NewString()
 			if (ko == "successfully implemented computer threat") || (ko == "unsuccessfully computer threat") || (ko == "false positive") {
-				context = datamodels.OpenVocabTypeSTIX(ko)
+				context = mstixo.OpenVocabTypeSTIX(ko)
 			}
 
 			listInsert = append(listInsert, datamodels.GroupingDomainObjectsSTIX{
-				CommonPropertiesObjectSTIX: datamodels.CommonPropertiesObjectSTIX{
-					Type: "grouping",
-					ID:   fmt.Sprintf("grouping--%s", id),
+				GroupingDomainObjectsSTIX: mstixo.GroupingDomainObjectsSTIX{
+					CommonPropertiesObjectSTIX: mstixo.CommonPropertiesObjectSTIX{
+						Type: "grouping",
+						ID:   fmt.Sprintf("grouping--%s", id),
+					},
+					CommonPropertiesDomainObjectSTIX: mstixo.CommonPropertiesDomainObjectSTIX{
+						SpecVersion: "2.1",
+						Created:     time.Now(),
+					},
+					Name:        ko,
+					Description: vo.Description,
+					Context:     context,
+					ObjectRefs:  []mstixo.IdentifierTypeSTIX{},
 				},
-				CommonPropertiesDomainObjectSTIX: datamodels.CommonPropertiesDomainObjectSTIX{
-					SpecVersion: "2.1",
-					Created:     time.Now(),
-				},
-				Name:        ko,
-				Description: vo.Description,
-				Context:     context,
-				ObjectRefs:  []datamodels.IdentifierTypeSTIX{},
 			})
 
 			listID[ko] = datamodels.StorageApplicationCommonListType{
@@ -923,10 +977,11 @@ func GetListGroupingComputerThreat(cur *mongo.Cursor) []datamodels.ShortDescript
 	return listComputerThreat
 }
 
-// getPropertyObjectRefs вспомогоательная функция для получения списка идентификаторов объектов STIX содержащихся с свойстве 'object_refs' некоторых
-// объектов STIX
-func getPropertyObjectRefs(element *datamodels.ElementSTIXObject) ([]datamodels.IdentifierTypeSTIX, error) {
-	var or []datamodels.IdentifierTypeSTIX
+// getPropertyObjectRefs вспомогоательная функция для получения списка идентификаторов объектов STIX содержащихся с свойстве 'object_refs'
+// некоторых объектов STIX
+func getPropertyObjectRefs(element *datamodels.ElementSTIXObject) ([]mstixo.IdentifierTypeSTIX /*[]datamodels.IdentifierTypeSTIX*/, error) {
+	//var or []datamodels.IdentifierTypeSTIX
+	var or []mstixo.IdentifierTypeSTIX
 
 	switch element.DataType {
 	case "grouping":
@@ -984,7 +1039,7 @@ func CreatingAdditionalRelationshipSTIXObject(qp QueryParameters, l []*datamodel
 		createListRelationshipSTIXObject = []datamodels.RelationshipObjectSTIX{}
 		listFoundRelationshipSTIXObject  = []datamodels.RelationshipObjectSTIX{}
 		listTrueSTIXObject               = map[string]struct {
-			ObjectRefs []datamodels.IdentifierTypeSTIX
+			ObjectRefs []mstixo.IdentifierTypeSTIX
 		}{}
 	)
 
@@ -1007,7 +1062,7 @@ func CreatingAdditionalRelationshipSTIXObject(qp QueryParameters, l []*datamodel
 				}
 
 				listTrueSTIXObject[v.Data.GetID()] = struct {
-					ObjectRefs []datamodels.IdentifierTypeSTIX
+					ObjectRefs []mstixo.IdentifierTypeSTIX
 				}{ObjectRefs: or}
 				listIDTargetRef = append(listIDTargetRef, v.Data.GetID())
 
@@ -1040,24 +1095,26 @@ func CreatingAdditionalRelationshipSTIXObject(qp QueryParameters, l []*datamodel
 	for id, objRef := range listTrueSTIXObject {
 		for _, idor := range objRef.ObjectRefs {
 			tmpRelationship := datamodels.RelationshipObjectSTIX{
-				CommonPropertiesObjectSTIX: datamodels.CommonPropertiesObjectSTIX{
-					Type: "relationship",
-					ID:   fmt.Sprintf("relationship--%s", uuid.NewString()),
+				RelationshipObjectSTIX: mstixo.RelationshipObjectSTIX{
+					CommonPropertiesObjectSTIX: mstixo.CommonPropertiesObjectSTIX{
+						Type: "relationship",
+						ID:   fmt.Sprintf("relationship--%s", uuid.NewString()),
+					},
+					OptionalCommonPropertiesRelationshipObjectSTIX: mstixo.OptionalCommonPropertiesRelationshipObjectSTIX{
+						SpecVersion: "2.1",
+						Created:     time.Now(),
+						Modified:    time.Now(),
+					},
+					Description: "an automatically created object for establishing feedbacks",
+					SourceRef:   idor,
+					TargetRef:   mstixo.IdentifierTypeSTIX(id),
 				},
-				OptionalCommonPropertiesRelationshipObjectSTIX: datamodels.OptionalCommonPropertiesRelationshipObjectSTIX{
-					SpecVersion: "2.1",
-					Created:     time.Now(),
-					Modified:    time.Now(),
-				},
-				Description: "an automatically created object for establishing feedbacks",
-				SourceRef:   idor,
-				TargetRef:   datamodels.IdentifierTypeSTIX(id),
 			}
 
 			//поиск по списку объектов типа 'relationship' полученных от пользователя
 			if len(listRelationshipSTIXObject) != 0 {
 				for _, v := range listRelationshipSTIXObject {
-					if (v.SourceRef == idor) && (v.TargetRef == datamodels.IdentifierTypeSTIX(id)) {
+					if (v.SourceRef == idor) && (v.TargetRef == mstixo.IdentifierTypeSTIX(id)) {
 						tmpRelationship = datamodels.RelationshipObjectSTIX{}
 
 						break
@@ -1103,7 +1160,7 @@ func DeleteOldRelationshipSTIXObject(qp QueryParameters, l []*datamodels.Element
 		listIDTargetRef      = []string{}
 		listSearchParameters bson.A
 		listTrueSTIXObject   = map[string]struct {
-			ObjectRefs []datamodels.IdentifierTypeSTIX
+			ObjectRefs []mstixo.IdentifierTypeSTIX
 		}{}
 		listIDDelRelationshipSTIXObject = []struct {
 			SourceRef, TargetRef string
@@ -1121,7 +1178,7 @@ func DeleteOldRelationshipSTIXObject(qp QueryParameters, l []*datamodels.Element
 				}
 
 				listTrueSTIXObject[v.Data.GetID()] = struct {
-					ObjectRefs []datamodels.IdentifierTypeSTIX
+					ObjectRefs []mstixo.IdentifierTypeSTIX
 				}{ObjectRefs: or}
 				listIDTargetRef = append(listIDTargetRef, v.Data.GetID())
 
@@ -1142,7 +1199,7 @@ func DeleteOldRelationshipSTIXObject(qp QueryParameters, l []*datamodels.Element
 				continue
 			}
 
-			var listObjectRefs []datamodels.IdentifierTypeSTIX
+			var listObjectRefs []mstixo.IdentifierTypeSTIX
 
 			switch v.DataType {
 			case "grouping":

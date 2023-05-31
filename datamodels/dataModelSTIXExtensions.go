@@ -1,12 +1,5 @@
 package datamodels
 
-import (
-	"encoding/json"
-	"fmt"
-
-	"ISEMS-MRSICT/commonlibs"
-)
-
 // decodingExtensionsSTIX декодирует следующие типы STIX расширений:
 // - "archive-ext"
 // - "ntfs-ext"
@@ -20,71 +13,71 @@ import (
 // - "windows-process-ext"
 // - "windows-service-ext"
 // - "unix-account-ext"
-func decodingExtensionsSTIX(extType string, rawMsg *json.RawMessage) (interface{}, error) {
+/*func decodingExtensionsSTIX(extType string, rawMsg *json.RawMessage) (interface{}, error) {
 	var err error
 
 	//fmt.Printf("func 'decodingExtensionsSTIX', extType = %s, \n", extType)
 
 	switch extType {
 	case "archive-ext":
-		var archiveExt ArchiveFileExtensionSTIX
+		var archiveExt mstixo.ArchiveFileExtensionSTIX
 		err = json.Unmarshal(*rawMsg, &archiveExt)
 
 		return archiveExt, err
 	case "ntfs-ext":
-		var ntfsExt NTFSFileExtensionSTIX
+		var ntfsExt mstixo.NTFSFileExtensionSTIX
 		err = json.Unmarshal(*rawMsg, &ntfsExt)
 
 		return ntfsExt, err
 	case "pdf-ext":
-		var pdfExt PDFFileExtensionSTIX
+		var pdfExt mstixo.PDFFileExtensionSTIX
 		err = json.Unmarshal(*rawMsg, &pdfExt)
 
 		return pdfExt, err
 	case "raster-image-ext":
-		var rasterImageExt RasterImageFileExtensionSTIX
+		var rasterImageExt mstixo.RasterImageFileExtensionSTIX
 		err = json.Unmarshal(*rawMsg, &rasterImageExt)
 
 		//fmt.Printf("func 'decodingExtensionsSTIX', rasterImageExt = %v, \n", rasterImageExt)
 
 		return rasterImageExt, err
 	case "windows-pebinary-ext":
-		var windowsPebinaryExt WindowsPEBinaryFileExtensionSTIX
+		var windowsPebinaryExt mstixo.WindowsPEBinaryFileExtensionSTIX
 		err = json.Unmarshal(*rawMsg, &windowsPebinaryExt)
 
 		return windowsPebinaryExt, err
 	case "http-request-ext":
-		var httpRequestExt HTTPRequestExtensionSTIX
+		var httpRequestExt mstixo.HTTPRequestExtensionSTIX
 		err = json.Unmarshal(*rawMsg, &httpRequestExt)
 
 		return httpRequestExt, err
 	case "icmp-ext":
-		var icmpExt ICMPExtensionSTIX
+		var icmpExt mstixo.ICMPExtensionSTIX
 		err := json.Unmarshal(*rawMsg, &icmpExt)
 
 		return icmpExt, err
 	case "socket-ext":
-		var socketExt NetworkSocketExtensionSTIX
+		var socketExt mstixo.NetworkSocketExtensionSTIX
 		err := json.Unmarshal(*rawMsg, &socketExt)
 
 		return socketExt, err
 	case "tcp-ext":
-		var tcpExt TCPExtensionSTIX
+		var tcpExt mstixo.TCPExtensionSTIX
 		err := json.Unmarshal(*rawMsg, &tcpExt)
 
 		return tcpExt, err
 	case "windows-process-ext":
-		var windowsProcessExt WindowsProcessExtensionSTIX
+		var windowsProcessExt mstixo.WindowsProcessExtensionSTIX
 		err := json.Unmarshal(*rawMsg, &windowsProcessExt)
 
 		return windowsProcessExt, err
 	case "windows-service-ext":
-		var windowsServiceExt WindowsServiceExtensionSTIX
+		var windowsServiceExt mstixo.WindowsServiceExtensionSTIX
 		err := json.Unmarshal(*rawMsg, &windowsServiceExt)
 
 		return windowsServiceExt, err
 	case "unix-account-ext":
-		var unixAccountExt UNIXAccountExtensionSTIX
+		var unixAccountExt mstixo.UNIXAccountExtensionSTIX
 		err := json.Unmarshal(*rawMsg, &unixAccountExt)
 
 		return unixAccountExt, err
@@ -100,14 +93,14 @@ func decodingExtensionsSTIX(extType string, rawMsg *json.RawMessage) (interface{
 // - "windows-service-ext"
 func checkingExtensionsSTIX(extType interface{}) bool {
 	switch et := extType.(type) {
-	case ArchiveFileExtensionSTIX:
+	case mstixo.ArchiveFileExtensionSTIX:
 		for _, v := range et.ContainsRefs {
 			if !v.CheckIdentifierTypeSTIX() {
 				return false
 			}
 		}
 
-	case NTFSFileExtensionSTIX:
+	case mstixo.NTFSFileExtensionSTIX:
 		if len(et.AlternateDataStreams) == 0 {
 			return true
 		}
@@ -118,17 +111,17 @@ func checkingExtensionsSTIX(extType interface{}) bool {
 			}
 		}
 
-	case WindowsPEBinaryFileExtensionSTIX:
+	case mstixo.WindowsPEBinaryFileExtensionSTIX:
 		if !et.FileHeaderHashes.CheckHashesTypeSTIX() {
 			return false
 		}
 
-	case HTTPRequestExtensionSTIX:
+	case mstixo.HTTPRequestExtensionSTIX:
 		if !et.MessageBodyDataRef.CheckIdentifierTypeSTIX() {
 			return false
 		}
 
-	case WindowsServiceExtensionSTIX:
+	case mstixo.WindowsServiceExtensionSTIX:
 		for _, v := range et.ServiceDllRefs {
 			if !v.CheckIdentifierTypeSTIX() {
 				return false
@@ -163,7 +156,7 @@ func sanitizeExtensionsSTIX(extType interface{}) interface{} {
 		return mapTmp
 	}
 
-	sanitizeExifTags := func(et ExifTags) ExifTags {
+	sanitizeExifTags := func(et mstixo.ExifTags) mstixo.ExifTags {
 		et.Make = commonlibs.StringSanitize(et.Make)
 		et.Model = commonlibs.StringSanitize(et.Model)
 
@@ -171,11 +164,11 @@ func sanitizeExtensionsSTIX(extType interface{}) interface{} {
 	}
 
 	switch et := extType.(type) {
-	case ArchiveFileExtensionSTIX:
+	case mstixo.ArchiveFileExtensionSTIX:
 		return commonlibs.StringSanitize(et.Comment)
 
-	case NTFSFileExtensionSTIX:
-		var tmpType NTFSFileExtensionSTIX
+	case mstixo.NTFSFileExtensionSTIX:
+		var tmpType mstixo.NTFSFileExtensionSTIX
 		tmpType.SID = commonlibs.StringSanitize(et.SID)
 
 		size := len(et.AlternateDataStreams)
@@ -184,9 +177,9 @@ func sanitizeExtensionsSTIX(extType interface{}) interface{} {
 			return tmpType
 		}
 
-		ads := make([]AlternateDataStreamTypeSTIX, 0, size)
+		ads := make([]mstixo.AlternateDataStreamTypeSTIX, 0, size)
 		for _, v := range et.AlternateDataStreams {
-			ads = append(ads, AlternateDataStreamTypeSTIX{
+			ads = append(ads, mstixo.AlternateDataStreamTypeSTIX{
 				Name:   commonlibs.StringSanitize(v.Name),
 				Hashes: v.Hashes,
 				Size:   v.Size,
@@ -196,8 +189,8 @@ func sanitizeExtensionsSTIX(extType interface{}) interface{} {
 
 		return tmpType
 
-	case PDFFileExtensionSTIX:
-		return PDFFileExtensionSTIX{
+	case mstixo.PDFFileExtensionSTIX:
+		return mstixo.PDFFileExtensionSTIX{
 			Version:          commonlibs.StringSanitize(et.Version),
 			IsOptimized:      et.IsOptimized,
 			DocumentInfoDict: sanitizeList(et.DocumentInfoDict),
@@ -205,17 +198,17 @@ func sanitizeExtensionsSTIX(extType interface{}) interface{} {
 			Pdfid1:           commonlibs.StringSanitize(et.Pdfid1),
 		}
 
-	case RasterImageFileExtensionSTIX:
-		return RasterImageFileExtensionSTIX{
+	case mstixo.RasterImageFileExtensionSTIX:
+		return mstixo.RasterImageFileExtensionSTIX{
 			ImageHeight:  et.ImageHeight,
 			ImageWidth:   et.ImageWidth,
 			BitsPerPixel: et.BitsPerPixel,
 			ExifTags:     sanitizeExifTags(et.ExifTags),
 		}
 
-	case WindowsPEBinaryFileExtensionSTIX:
+	case mstixo.WindowsPEBinaryFileExtensionSTIX:
 		ssize := len(et.Sections)
-		ns := make([]WindowsPESectionTypeSTIX, 0, ssize)
+		ns := make([]mstixo.WindowsPESectionTypeSTIX, 0, ssize)
 		if ssize > 0 {
 			for _, v := range et.Sections {
 				tmp := v.SanitizeStructWindowsPESectionTypeSTIX()
@@ -224,7 +217,7 @@ func sanitizeExtensionsSTIX(extType interface{}) interface{} {
 			et.Sections = ns
 		}
 
-		return WindowsPEBinaryFileExtensionSTIX{
+		return mstixo.WindowsPEBinaryFileExtensionSTIX{
 			PeType:                  et.PeType.SanitizeStructOpenVocabTypeSTIX(),
 			Imphash:                 commonlibs.StringSanitize(et.Imphash),
 			MachineHex:              commonlibs.StringSanitize(et.MachineHex),
@@ -234,8 +227,8 @@ func sanitizeExtensionsSTIX(extType interface{}) interface{} {
 			NumberOfSymbols:         et.NumberOfSymbols,
 			SizeOfOptionalHeader:    et.SizeOfOptionalHeader,
 			CharacteristicsHex:      commonlibs.StringSanitize(et.CharacteristicsHex),
-			FileHeaderHashes: func(l HashesTypeSTIX) HashesTypeSTIX {
-				fhh := make(HashesTypeSTIX, len(l))
+			FileHeaderHashes: func(l mstixo.HashesTypeSTIX) mstixo.HashesTypeSTIX {
+				fhh := make(mstixo.HashesTypeSTIX, len(l))
 
 				for k, v := range l {
 					fhh[k] = commonlibs.StringSanitize(string(v))
@@ -247,8 +240,8 @@ func sanitizeExtensionsSTIX(extType interface{}) interface{} {
 			Sections:       ns,
 		}
 
-	case HTTPRequestExtensionSTIX:
-		return HTTPRequestExtensionSTIX{
+	case mstixo.HTTPRequestExtensionSTIX:
+		return mstixo.HTTPRequestExtensionSTIX{
 			RequestMethod:      commonlibs.StringSanitize(et.RequestMethod),
 			RequestValue:       commonlibs.StringSanitize(et.RequestValue),
 			RequestVersion:     commonlibs.StringSanitize(et.RequestVersion),
@@ -257,42 +250,42 @@ func sanitizeExtensionsSTIX(extType interface{}) interface{} {
 			MessageBodyDataRef: et.MessageBodyDataRef,
 		}
 
-	case ICMPExtensionSTIX:
-		return ICMPExtensionSTIX{
+	case mstixo.ICMPExtensionSTIX:
+		return mstixo.ICMPExtensionSTIX{
 			ICMPTypeHex: commonlibs.StringSanitize(et.ICMPTypeHex),
 			ICMPCodeHex: commonlibs.StringSanitize(et.ICMPCodeHex),
 		}
 
-	case NetworkSocketExtensionSTIX:
-		return NetworkSocketExtensionSTIX{
-			AddressFamily:    EnumTypeSTIX((commonlibs.StringSanitize(string(et.AddressFamily)))),
+	case mstixo.NetworkSocketExtensionSTIX:
+		return mstixo.NetworkSocketExtensionSTIX{
+			AddressFamily:    mstixo.EnumTypeSTIX((commonlibs.StringSanitize(string(et.AddressFamily)))),
 			IsBlocking:       et.IsBlocking,
 			IsListening:      et.IsListening,
 			Options:          et.Options,
-			SocketType:       EnumTypeSTIX((commonlibs.StringSanitize(string(et.SocketType)))),
+			SocketType:       mstixo.EnumTypeSTIX((commonlibs.StringSanitize(string(et.SocketType)))),
 			SocketDescriptor: et.SocketDescriptor,
 			SocketHandle:     et.SocketHandle,
 		}
 
-	case TCPExtensionSTIX:
-		return TCPExtensionSTIX{
+	case mstixo.TCPExtensionSTIX:
+		return mstixo.TCPExtensionSTIX{
 			SrcFlagsHex: commonlibs.StringSanitize(et.SrcFlagsHex),
 			DstFlagsHex: commonlibs.StringSanitize(et.DstFlagsHex),
 		}
 
-	case WindowsProcessExtensionSTIX:
-		return WindowsProcessExtensionSTIX{
+	case mstixo.WindowsProcessExtensionSTIX:
+		return mstixo.WindowsProcessExtensionSTIX{
 			ASLREnabled:    et.ASLREnabled,
 			DEPEnabled:     et.DEPEnabled,
 			Priority:       commonlibs.StringSanitize(et.Priority),
 			OwnerSID:       commonlibs.StringSanitize(et.OwnerSID),
 			WindowTitle:    commonlibs.StringSanitize(et.WindowTitle),
 			StartupInfo:    sanitizeList(et.StartupInfo),
-			IntegrityLevel: EnumTypeSTIX(commonlibs.StringSanitize(string(et.IntegrityLevel))),
+			IntegrityLevel: mstixo.EnumTypeSTIX(commonlibs.StringSanitize(string(et.IntegrityLevel))),
 		}
 
-	case WindowsServiceExtensionSTIX:
-		return WindowsServiceExtensionSTIX{
+	case mstixo.WindowsServiceExtensionSTIX:
+		return mstixo.WindowsServiceExtensionSTIX{
 			ServiceName: commonlibs.StringSanitize(et.ServiceName),
 			Descriptions: func(l []string) []string {
 				size := len(l)
@@ -305,14 +298,14 @@ func sanitizeExtensionsSTIX(extType interface{}) interface{} {
 			}(et.Descriptions),
 			DisplayName:    commonlibs.StringSanitize(et.DisplayName),
 			GroupName:      commonlibs.StringSanitize(et.GroupName),
-			StartType:      EnumTypeSTIX(commonlibs.StringSanitize(string(et.StartType))),
+			StartType:      mstixo.EnumTypeSTIX(commonlibs.StringSanitize(string(et.StartType))),
 			ServiceDllRefs: et.ServiceDllRefs,
-			ServiceType:    EnumTypeSTIX(commonlibs.StringSanitize(string(et.ServiceType))),
-			ServiceStatus:  EnumTypeSTIX(commonlibs.StringSanitize(string(et.ServiceStatus))),
+			ServiceType:    mstixo.EnumTypeSTIX(commonlibs.StringSanitize(string(et.ServiceType))),
+			ServiceStatus:  mstixo.EnumTypeSTIX(commonlibs.StringSanitize(string(et.ServiceStatus))),
 		}
 
-	case UNIXAccountExtensionSTIX:
-		return UNIXAccountExtensionSTIX{
+	case mstixo.UNIXAccountExtensionSTIX:
+		return mstixo.UNIXAccountExtensionSTIX{
 			GID: et.GID,
 			Groups: func(l []string) []string {
 				size := len(l)
@@ -348,14 +341,14 @@ func toStringBeautiful(extType interface{}) string {
 	str := "\t\t"
 
 	switch et := extType.(type) {
-	case ArchiveFileExtensionSTIX:
+	case mstixo.ArchiveFileExtensionSTIX:
 		str += fmt.Sprintln("contains_refs:")
 		for k, v := range et.ContainsRefs {
 			str += fmt.Sprintf("\t\t\tcontains_ref '%d': '%v'", k, v)
 		}
 		str += fmt.Sprintf("\t\tcomment: '%v'\n", et.Comment)
 
-	case NTFSFileExtensionSTIX:
+	case mstixo.NTFSFileExtensionSTIX:
 		str += fmt.Sprintf("sid: '%s'\n", et.SID)
 		str += fmt.Sprintln("\t\talternate_data_streams:")
 		for k, v := range et.AlternateDataStreams {
@@ -368,7 +361,7 @@ func toStringBeautiful(extType interface{}) string {
 			str += fmt.Sprintf("\t\t\t\tsize: '%d'\n", v.Size)
 		}
 
-	case PDFFileExtensionSTIX:
+	case mstixo.PDFFileExtensionSTIX:
 		str += fmt.Sprintf("version: '%s'\n", et.Version)
 		str += fmt.Sprintf("\t\tis_optimized: '%v'\n", et.IsOptimized)
 		str += fmt.Sprintln("\t\tdocument_info_dict:")
@@ -378,7 +371,7 @@ func toStringBeautiful(extType interface{}) string {
 		str += fmt.Sprintf("\t\tpdfid0: '%s'\n", et.Pdfid0)
 		str += fmt.Sprintf("\t\tpdfid1: '%s'\n", et.Pdfid1)
 
-	case RasterImageFileExtensionSTIX:
+	case mstixo.RasterImageFileExtensionSTIX:
 		str += fmt.Sprintf("image_height: '%d'\n", et.ImageHeight)
 		str += fmt.Sprintf("\t\timage_width: '%d'\n", et.ImageWidth)
 		str += fmt.Sprintf("\t\tbits_per_pixel: '%d'\n", et.BitsPerPixel)
@@ -388,7 +381,7 @@ func toStringBeautiful(extType interface{}) string {
 		str += fmt.Sprintf("\t\t\t'xResolution': '%d'\n", et.ExifTags.XResolution)
 		str += fmt.Sprintf("\t\t\t'yResolution': '%d'\n", et.ExifTags.YResolution)
 
-	case WindowsPEBinaryFileExtensionSTIX:
+	case mstixo.WindowsPEBinaryFileExtensionSTIX:
 		str += fmt.Sprintf("pe_type: '%v'\n", et.PeType)
 		str += fmt.Sprintf("\t\timphash: '%s'\n", et.Imphash)
 		str += fmt.Sprintf("\t\tmachine_hex: '%s'\n", et.MachineHex)
@@ -448,7 +441,7 @@ func toStringBeautiful(extType interface{}) string {
 			}
 		}
 
-	case HTTPRequestExtensionSTIX:
+	case mstixo.HTTPRequestExtensionSTIX:
 		str += fmt.Sprintf("request_method: '%s'\n", et.RequestMethod)
 		str += fmt.Sprintf("\t\trequest_value: '%s'\n", et.RequestValue)
 		str += fmt.Sprintf("\t\trequest_version: '%s'\n", et.RequestVersion)
@@ -459,11 +452,11 @@ func toStringBeautiful(extType interface{}) string {
 		str += fmt.Sprintf("\t\tmessage_body_length: '%d'\n", et.MessageBodyLength)
 		str += fmt.Sprintf("\t\tmessage_body_data_ref: '%v'\n", et.MessageBodyDataRef)
 
-	case ICMPExtensionSTIX:
+	case mstixo.ICMPExtensionSTIX:
 		str += fmt.Sprintf("icmp_type_hex: '%s'\n", et.ICMPTypeHex)
 		str += fmt.Sprintf("\t\ticmp_code_hex: '%s'\n", et.ICMPCodeHex)
 
-	case NetworkSocketExtensionSTIX:
+	case mstixo.NetworkSocketExtensionSTIX:
 		str += fmt.Sprintf("address_family: '%v'\n", et.AddressFamily)
 		str += fmt.Sprintf("\t\tis_blocking: '%v'\n", et.IsBlocking)
 		str += fmt.Sprintf("\t\tis_listening: '%v'\n", et.IsListening)
@@ -475,11 +468,11 @@ func toStringBeautiful(extType interface{}) string {
 		str += fmt.Sprintf("\t\tsocket_descriptor: '%d'\n", et.SocketDescriptor)
 		str += fmt.Sprintf("\t\tsocket_handle: '%d'\n", et.SocketHandle)
 
-	case TCPExtensionSTIX:
+	case mstixo.TCPExtensionSTIX:
 		str += fmt.Sprintf("src_flags_hex: '%v'\n", et.SrcFlagsHex)
 		str += fmt.Sprintf("\t\tdst_flags_hex: '%v'\n", et.DstFlagsHex)
 
-	case WindowsProcessExtensionSTIX:
+	case mstixo.WindowsProcessExtensionSTIX:
 		str += fmt.Sprintf("aslr_enabled: '%v'\n", et.ASLREnabled)
 		str += fmt.Sprintf("\t\tdep_enabled: '%v'\n", et.DEPEnabled)
 		str += fmt.Sprintf("\t\tpriority: '%s'\n", et.Priority)
@@ -491,7 +484,7 @@ func toStringBeautiful(extType interface{}) string {
 		}
 		str += fmt.Sprintf("\t\tintegrity_level: '%v'\n", et.IntegrityLevel)
 
-	case WindowsServiceExtensionSTIX:
+	case mstixo.WindowsServiceExtensionSTIX:
 		str += fmt.Sprintf("service_name: '%s'\n", et.ServiceName)
 		str += fmt.Sprintln("\t\tdescriptions:")
 		for k, v := range et.Descriptions {
@@ -507,7 +500,7 @@ func toStringBeautiful(extType interface{}) string {
 		str += fmt.Sprintf("\t\tservice_type: '%v'\n", et.ServiceType)
 		str += fmt.Sprintf("\t\tservice_status: '%v'\n", et.ServiceStatus)
 
-	case UNIXAccountExtensionSTIX:
+	case mstixo.UNIXAccountExtensionSTIX:
 		str += fmt.Sprintf("gid: '%d'\n", et.GID)
 		str += fmt.Sprintln("\t\tgroups:")
 		for k, v := range et.Groups {
@@ -522,4 +515,4 @@ func toStringBeautiful(extType interface{}) string {
 	}
 
 	return str
-}
+}*/

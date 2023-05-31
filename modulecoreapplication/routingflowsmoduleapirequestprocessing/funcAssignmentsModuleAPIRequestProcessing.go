@@ -14,7 +14,7 @@ import (
 	"ISEMS-MRSICT/memorytemporarystoragecommoninformation"
 
 	"github.com/asaskevich/govalidator"
-	//mstixo "github.com/av-belyakov/methodstixobjects"
+	mstixo "github.com/av-belyakov/methodstixobjects"
 )
 
 // UnmarshalJSONObjectSTIXReq декодирует JSON документ, поступающий от модуля 'moduleapirequestprocessing', который содержит список объектов STIX
@@ -344,7 +344,7 @@ func VerifyOutsideSpecificationFields(
 
 			salt := fmt.Sprint(rand.Intn(10000))
 
-			e.OutsideSpecification = datamodels.ReportOutsideSpecification{
+			e.OutsideSpecification = mstixo.ReportOutsideSpecification{
 				AdditionalName:              fmt.Sprintf("report--%s-%v.%v", clientName, time.Now().Unix(), salt),
 				DecisionsMadeComputerThreat: verifyDecisionsMadeComputerThreat(e.OutsideSpecification.DecisionsMadeComputerThreat),
 				ComputerThreatType:          verifyComputerThreatType(e.OutsideSpecification.ComputerThreatType),
@@ -364,10 +364,137 @@ func SanitizeSTIXObject(l []*datamodels.ElementSTIXObject) []*datamodels.Element
 	listElements := make([]*datamodels.ElementSTIXObject, 0, len(l))
 
 	for _, item := range l {
-
 		switch element := item.Data.(type) {
 		case datamodels.AttackPatternDomainObjectsSTIX:
-			//case mstixo.AttackPatternDomainObjectsSTIX:
+			elem = datamodels.AttackPatternDomainObjectsSTIX{AttackPatternDomainObjectsSTIX: element.SanitizeStruct()}
+
+		case datamodels.CampaignDomainObjectsSTIX:
+			elem = datamodels.CampaignDomainObjectsSTIX{CampaignDomainObjectsSTIX: element.SanitizeStruct()}
+
+		case datamodels.CourseOfActionDomainObjectsSTIX:
+			elem = datamodels.CourseOfActionDomainObjectsSTIX{CourseOfActionDomainObjectsSTIX: element.SanitizeStruct()}
+
+		case datamodels.GroupingDomainObjectsSTIX:
+			elem = datamodels.GroupingDomainObjectsSTIX{GroupingDomainObjectsSTIX: element.SanitizeStruct()}
+
+		case datamodels.IdentityDomainObjectsSTIX:
+			elem = datamodels.IdentityDomainObjectsSTIX{IdentityDomainObjectsSTIX: element.SanitizeStruct()}
+
+		case datamodels.IndicatorDomainObjectsSTIX:
+			elem = datamodels.IndicatorDomainObjectsSTIX{IndicatorDomainObjectsSTIX: element.SanitizeStruct()}
+
+		case datamodels.InfrastructureDomainObjectsSTIX:
+			elem = datamodels.InfrastructureDomainObjectsSTIX{InfrastructureDomainObjectsSTIX: element.SanitizeStruct()}
+
+		case datamodels.IntrusionSetDomainObjectsSTIX:
+			elem = datamodels.IntrusionSetDomainObjectsSTIX{IntrusionSetDomainObjectsSTIX: element.SanitizeStruct()}
+
+		case datamodels.LocationDomainObjectsSTIX:
+			elem = datamodels.LocationDomainObjectsSTIX{LocationDomainObjectsSTIX: element.SanitizeStruct()}
+
+		case datamodels.MalwareDomainObjectsSTIX:
+			elem = datamodels.MalwareDomainObjectsSTIX{MalwareDomainObjectsSTIX: element.SanitizeStruct()}
+
+		case datamodels.MalwareAnalysisDomainObjectsSTIX:
+			elem = datamodels.MalwareAnalysisDomainObjectsSTIX{MalwareAnalysisDomainObjectsSTIX: element.SanitizeStruct()}
+
+		case datamodels.NoteDomainObjectsSTIX:
+			elem = datamodels.NoteDomainObjectsSTIX{NoteDomainObjectsSTIX: element.SanitizeStruct()}
+
+		case datamodels.ObservedDataDomainObjectsSTIX:
+			elem = datamodels.ObservedDataDomainObjectsSTIX{ObservedDataDomainObjectsSTIX: element.SanitizeStruct()}
+
+		case datamodels.OpinionDomainObjectsSTIX:
+			elem = datamodels.OpinionDomainObjectsSTIX{OpinionDomainObjectsSTIX: element.SanitizeStruct()}
+
+		case datamodels.ReportDomainObjectsSTIX:
+			elem = datamodels.ReportDomainObjectsSTIX{ReportDomainObjectsSTIX: element.SanitizeStruct()}
+
+		case datamodels.ThreatActorDomainObjectsSTIX:
+			elem = datamodels.ThreatActorDomainObjectsSTIX{ThreatActorDomainObjectsSTIX: element.SanitizeStruct()}
+
+		case datamodels.ToolDomainObjectsSTIX:
+			elem = datamodels.ToolDomainObjectsSTIX{ToolDomainObjectsSTIX: element.SanitizeStruct()}
+
+		case datamodels.VulnerabilityDomainObjectsSTIX:
+			elem = datamodels.VulnerabilityDomainObjectsSTIX{VulnerabilityDomainObjectsSTIX: element.SanitizeStruct()}
+
+		case datamodels.RelationshipObjectSTIX:
+			elem = datamodels.RelationshipObjectSTIX{RelationshipObjectSTIX: element.SanitizeStruct()}
+
+		case datamodels.SightingObjectSTIX:
+			elem = datamodels.SightingObjectSTIX{SightingObjectSTIX: element.SanitizeStruct()}
+
+		case datamodels.ArtifactCyberObservableObjectSTIX:
+			elem = datamodels.ArtifactCyberObservableObjectSTIX{ArtifactCyberObservableObjectSTIX: element.SanitizeStruct()}
+
+		case datamodels.AutonomousSystemCyberObservableObjectSTIX:
+			elem = datamodels.AutonomousSystemCyberObservableObjectSTIX{AutonomousSystemCyberObservableObjectSTIX: element.SanitizeStruct()}
+
+		case datamodels.DirectoryCyberObservableObjectSTIX:
+			elem = datamodels.DirectoryCyberObservableObjectSTIX{DirectoryCyberObservableObjectSTIX: element.SanitizeStruct()}
+
+		case datamodels.DomainNameCyberObservableObjectSTIX:
+			elem = datamodels.DomainNameCyberObservableObjectSTIX{DomainNameCyberObservableObjectSTIX: element.SanitizeStruct()}
+
+		case datamodels.EmailAddressCyberObservableObjectSTIX:
+			elem = datamodels.EmailAddressCyberObservableObjectSTIX{EmailAddressCyberObservableObjectSTIX: element.SanitizeStruct()}
+
+		case datamodels.EmailMessageCyberObservableObjectSTIX:
+			elem = datamodels.EmailMessageCyberObservableObjectSTIX{EmailMessageCyberObservableObjectSTIX: element.SanitizeStruct()}
+
+		case datamodels.FileCyberObservableObjectSTIX:
+			elem = datamodels.FileCyberObservableObjectSTIX{FileCyberObservableObjectSTIX: element.SanitizeStruct()}
+
+		case datamodels.IPv4AddressCyberObservableObjectSTIX:
+			elem = datamodels.IPv4AddressCyberObservableObjectSTIX{IPv4AddressCyberObservableObjectSTIX: element.SanitizeStruct()}
+
+		case datamodels.IPv6AddressCyberObservableObjectSTIX:
+			elem = datamodels.IPv6AddressCyberObservableObjectSTIX{IPv6AddressCyberObservableObjectSTIX: element.SanitizeStruct()}
+
+		case datamodels.MACAddressCyberObservableObjectSTIX:
+			elem = datamodels.MACAddressCyberObservableObjectSTIX{MACAddressCyberObservableObjectSTIX: element.SanitizeStruct()}
+
+		case datamodels.MutexCyberObservableObjectSTIX:
+			elem = datamodels.MutexCyberObservableObjectSTIX{MutexCyberObservableObjectSTIX: element.SanitizeStruct()}
+
+		case datamodels.NetworkTrafficCyberObservableObjectSTIX:
+			elem = datamodels.NetworkTrafficCyberObservableObjectSTIX{NetworkTrafficCyberObservableObjectSTIX: element.SanitizeStruct()}
+
+		case datamodels.ProcessCyberObservableObjectSTIX:
+			elem = datamodels.ProcessCyberObservableObjectSTIX{ProcessCyberObservableObjectSTIX: element.SanitizeStruct()}
+
+		case datamodels.SoftwareCyberObservableObjectSTIX:
+			elem = datamodels.SoftwareCyberObservableObjectSTIX{SoftwareCyberObservableObjectSTIX: element.SanitizeStruct()}
+
+		case datamodels.URLCyberObservableObjectSTIX:
+			elem = datamodels.URLCyberObservableObjectSTIX{URLCyberObservableObjectSTIX: element.SanitizeStruct()}
+
+		case datamodels.UserAccountCyberObservableObjectSTIX:
+			elem = datamodels.UserAccountCyberObservableObjectSTIX{UserAccountCyberObservableObjectSTIX: element.SanitizeStruct()}
+
+		case datamodels.WindowsRegistryKeyCyberObservableObjectSTIX:
+			elem = datamodels.WindowsRegistryKeyCyberObservableObjectSTIX{WindowsRegistryKeyCyberObservableObjectSTIX: element.SanitizeStruct()}
+
+		case datamodels.X509CertificateCyberObservableObjectSTIX:
+			elem = datamodels.X509CertificateCyberObservableObjectSTIX{X509CertificateCyberObservableObjectSTIX: element.SanitizeStruct()}
+
+		}
+
+		if elem == nil {
+			continue
+		}
+
+		listElements = append(listElements, &datamodels.ElementSTIXObject{
+			DataType: item.DataType,
+			Data:     elem,
+		})
+	}
+
+	/*for _, item := range l {
+		switch element := item.Data.(type) {
+		case datamodels.AttackPatternDomainObjectsSTIX:
+			//e := element.
 			elem = element.SanitizeStruct()
 
 		case datamodels.CampaignDomainObjectsSTIX:
@@ -491,7 +618,7 @@ func SanitizeSTIXObject(l []*datamodels.ElementSTIXObject) []*datamodels.Element
 			DataType: item.DataType,
 			Data:     elem,
 		})
-	}
+	}*/
 
 	return listElements
 }

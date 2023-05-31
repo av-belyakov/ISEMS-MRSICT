@@ -2,6 +2,7 @@ package interactionmongodb
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -176,6 +177,8 @@ func (qp QueryParameters) FindAllWithLimit(elem interface{}, opt *FindAllWithLim
 	}
 
 	options := options.Find().SetAllowDiskUse(true).SetSort(bson.D{{Key: sortField, Value: sortOrder}, {Key: "commonpropertiesobjectstix.id", Value: sortOrder}}).SetSkip(offset).SetLimit(opt.LimitMaxSize)
+
+	fmt.Println("func 'FindAllWithLimit', SEARCH REGUEST:", elem)
 
 	//return collection.Find(context.TODO(), elem, options)
 	return collection.Find(ctx, elem, options)

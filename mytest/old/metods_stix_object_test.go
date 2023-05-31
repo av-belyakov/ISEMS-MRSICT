@@ -60,13 +60,13 @@ var _ = Describe("MetodsStixObject", func() {
 	   				"objective": "Example objectiv<e!"
 	   }`))
 			var co datamodels.CampaignDomainObjectsSTIX
-			coTmp, err := co.DecoderJSON(&cobyte)
+			coTmp, err := co.DecodeJSON(&cobyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newco, ok := coTmp.(datamodels.CampaignDomainObjectsSTIX)
 			coIsTrue := newco.ValidateStruct()
-			newco = newco.SanitizeStruct()
+			newco = datamodels.CampaignDomainObjectsSTIX{CampaignDomainObjectsSTIX: newco.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -89,13 +89,13 @@ var _ = Describe("MetodsStixObject", func() {
 	   				"description": "This is how to add a filter rule to block inbound access to TCP port 80 tothe existing UDP 1434 filter ..."
 	   }`))
 			var ca datamodels.CourseOfActionDomainObjectsSTIX
-			caTmp, err := ca.DecoderJSON(&cabyte)
+			caTmp, err := ca.DecodeJSON(&cabyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newca, ok := caTmp.(datamodels.CourseOfActionDomainObjectsSTIX)
 			coIsTrue := newca.ValidateStruct()
-			newca = newca.SanitizeStruct()
+			newca = datamodels.CourseOfActionDomainObjectsSTIX{CourseOfActionDomainObjectsSTIX: newca.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -125,13 +125,13 @@ var _ = Describe("MetodsStixObject", func() {
 	   					]
 	   }`))
 			var gd datamodels.GroupingDomainObjectsSTIX
-			gdTmp, err := gd.DecoderJSON(&gdbyte)
+			gdTmp, err := gd.DecodeJSON(&gdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newgd, ok := gdTmp.(datamodels.GroupingDomainObjectsSTIX)
 			coIsTrue := newgd.ValidateStruct()
-			newgd = newgd.SanitizeStruct()
+			newgd = datamodels.GroupingDomainObjectsSTIX{GroupingDomainObjectsSTIX: newgd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -154,13 +154,13 @@ var _ = Describe("MetodsStixObject", func() {
 	   				"identity_class": "individual"
 	   }`))
 			var id datamodels.IdentityDomainObjectsSTIX
-			idTmp, err := id.DecoderJSON(&idbyte)
+			idTmp, err := id.DecodeJSON(&idbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newid, ok := idTmp.(datamodels.IdentityDomainObjectsSTIX)
 			coIsTrue := newid.ValidateStruct()
-			newid = newid.SanitizeStruct()
+			newid = datamodels.IdentityDomainObjectsSTIX{IdentityDomainObjectsSTIX: newid.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -187,13 +187,13 @@ var _ = Describe("MetodsStixObject", func() {
 	   				"valid_from": "2016-01-01T00:00:00Z"
 	   }`))
 			var id datamodels.IndicatorDomainObjectsSTIX
-			idTmp, err := id.DecoderJSON(&idbyte)
+			idTmp, err := id.DecodeJSON(&idbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newid, ok := idTmp.(datamodels.IndicatorDomainObjectsSTIX)
 			coIsTrue := newid.ValidateStruct()
-			newid = newid.SanitizeStruct()
+			newid = datamodels.IndicatorDomainObjectsSTIX{IndicatorDomainObjectsSTIX: newid.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -215,13 +215,13 @@ var _ = Describe("MetodsStixObject", func() {
 	   				"infrastructure_types": ["command-and-control"]
 	   }`))
 			var id datamodels.InfrastructureDomainObjectsSTIX
-			idTmp, err := id.DecoderJSON(&idbyte)
+			idTmp, err := id.DecodeJSON(&idbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newid, ok := idTmp.(datamodels.InfrastructureDomainObjectsSTIX)
 			coIsTrue := newid.ValidateStruct()
-			newid = newid.SanitizeStruct()
+			newid = datamodels.InfrastructureDomainObjectsSTIX{InfrastructureDomainObjectsSTIX: newid.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -246,13 +246,13 @@ var _ = Describe("MetodsStixObject", func() {
 	   				"goals": ["acquisition-theft", "harassment", "damage"]
 	   }`))
 			var isd datamodels.IntrusionSetDomainObjectsSTIX
-			isdTmp, err := isd.DecoderJSON(&isdbyte)
+			isdTmp, err := isd.DecodeJSON(&isdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newisd, ok := isdTmp.(datamodels.IntrusionSetDomainObjectsSTIX)
 			coIsTrue := newisd.ValidateStruct()
-			newisd = newisd.SanitizeStruct()
+			newisd = datamodels.IntrusionSetDomainObjectsSTIX{IntrusionSetDomainObjectsSTIX: newisd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -279,13 +279,13 @@ var _ = Describe("MetodsStixObject", func() {
 	   				"postal_code": "63170"
 	   }`))
 			var ld datamodels.LocationDomainObjectsSTIX
-			ldTmp, err := ld.DecoderJSON(&ldbyte)
+			ldTmp, err := ld.DecodeJSON(&ldbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newld, ok := ldTmp.(datamodels.LocationDomainObjectsSTIX)
 			coIsTrue := newld.ValidateStruct()
-			newld = newld.SanitizeStruct()
+			newld = datamodels.LocationDomainObjectsSTIX{LocationDomainObjectsSTIX: newld.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -309,13 +309,13 @@ var _ = Describe("MetodsStixObject", func() {
 	   				"is_family": false
 	   }`))
 			var md datamodels.MalwareDomainObjectsSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.MalwareDomainObjectsSTIX)
 			coIsTrue := newmd.ValidateStruct()
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.MalwareDomainObjectsSTIX{MalwareDomainObjectsSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -341,13 +341,13 @@ var _ = Describe("MetodsStixObject", func() {
 	   				"av_result": "malicious"
 	   }`))
 			var md datamodels.MalwareAnalysisDomainObjectsSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.MalwareAnalysisDomainObjectsSTIX)
 			coIsTrue := newmd.ValidateStruct()
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.MalwareAnalysisDomainObjectsSTIX{MalwareAnalysisDomainObjectsSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -377,13 +377,13 @@ var _ = Describe("MetodsStixObject", func() {
 	   				"object_refs": ["campaign--8e2e2d2b-17d4-4cbf-938f-98ee46b3cd3f"]
 	   }`))
 			var md datamodels.NoteDomainObjectsSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.NoteDomainObjectsSTIX)
 			coIsTrue := newmd.ValidateStruct()
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.NoteDomainObjectsSTIX{NoteDomainObjectsSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -411,13 +411,13 @@ var _ = Describe("MetodsStixObject", func() {
 	   				]
 	   }`))
 			var md datamodels.ObservedDataDomainObjectsSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.ObservedDataDomainObjectsSTIX)
 			coIsTrue := newmd.ValidateStruct()
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.ObservedDataDomainObjectsSTIX{ObservedDataDomainObjectsSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -441,13 +441,13 @@ var _ = Describe("MetodsStixObject", func() {
 	   				"explanation": "This doesn't seem like it is feasible. We've seen how PandaCat has attacked Spanish infrastructure over the last 3 years, so this change in targeting seems too great to be viable. The methods used are more commonly associated with the FlameDragonCrew."
 	   }`))
 			var md datamodels.OpinionDomainObjectsSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.OpinionDomainObjectsSTIX)
 			coIsTrue := newmd.ValidateStruct()
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.OpinionDomainObjectsSTIX{OpinionDomainObjectsSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -477,13 +477,13 @@ var _ = Describe("MetodsStixObject", func() {
 	   				]
 	   }`))
 			var md datamodels.ReportDomainObjectsSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.ReportDomainObjectsSTIX)
 			coIsTrue := newmd.ValidateStruct()
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.ReportDomainObjectsSTIX{ReportDomainObjectsSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -513,13 +513,13 @@ var _ = Describe("MetodsStixObject", func() {
 	   				"primary_motivation": "organizational-gain"
 	   }`))
 			var md datamodels.ThreatActorDomainObjectsSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.ThreatActorDomainObjectsSTIX)
 			coIsTrue := newmd.ValidateStruct()
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.ThreatActorDomainObjectsSTIX{ThreatActorDomainObjectsSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -542,13 +542,13 @@ var _ = Describe("MetodsStixObject", func() {
 	   				"name": "VNC"
 	   }`))
 			var md datamodels.ToolDomainObjectsSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.ToolDomainObjectsSTIX)
 			coIsTrue := newmd.ValidateStruct()
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.ToolDomainObjectsSTIX{ToolDomainObjectsSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -576,13 +576,13 @@ var _ = Describe("MetodsStixObject", func() {
 	   				]
 	   }`))
 			var md datamodels.VulnerabilityDomainObjectsSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.VulnerabilityDomainObjectsSTIX)
 			coIsTrue := newmd.ValidateStruct()
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.VulnerabilityDomainObjectsSTIX{VulnerabilityDomainObjectsSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -605,13 +605,13 @@ var _ = Describe("MetodsStixObject", func() {
 	   				"target_ref": "attack-pattern--7e33a43e-e34b-40ec-89da-36c9bb2cacd5"
 	   }`))
 			var md datamodels.RelationshipObjectSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.RelationshipObjectSTIX)
 			coIsTrue := newmd.ValidateStruct()
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.RelationshipObjectSTIX{RelationshipObjectSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -638,13 +638,13 @@ var _ = Describe("MetodsStixObject", func() {
 	   				"where_sighted_refs": ["identity--b67d30ff-02ac-498a-92f9-32f845f448ff"]
 	   }`))
 			var md datamodels.SightingObjectSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.SightingObjectSTIX)
 			coIsTrue := newmd.ValidateStruct()
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.SightingObjectSTIX{SightingObjectSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -667,12 +667,12 @@ var _ = Describe("MetodsStixObject", func() {
 	   				"decryption_key": "My voice is my passport"
 	   }`))
 			var md datamodels.ArtifactCyberObservableObjectSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.ArtifactCyberObservableObjectSTIX)
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.ArtifactCyberObservableObjectSTIX{ArtifactCyberObservableObjectSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -693,12 +693,12 @@ var _ = Describe("MetodsStixObject", func() {
 	   				"rir": "ARIN"
 	   }`))
 			var md datamodels.AutonomousSystemCyberObservableObjectSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.AutonomousSystemCyberObservableObjectSTIX)
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.AutonomousSystemCyberObservableObjectSTIX{AutonomousSystemCyberObservableObjectSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -717,12 +717,12 @@ var _ = Describe("MetodsStixObject", func() {
 	   				"path": "C:\\Windows\\System32"
 	   }`))
 			var md datamodels.DirectoryCyberObservableObjectSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.DirectoryCyberObservableObjectSTIX)
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.DirectoryCyberObservableObjectSTIX{DirectoryCyberObservableObjectSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -742,12 +742,12 @@ var _ = Describe("MetodsStixObject", func() {
 	   				"resolves_to_refs": ["ipv4-addr--ff26c055-6336-5bc5-b98d-13d6226742dd"]
 	   }`))
 			var md datamodels.DomainNameCyberObservableObjectSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.DomainNameCyberObservableObjectSTIX)
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.DomainNameCyberObservableObjectSTIX{DomainNameCyberObservableObjectSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -767,12 +767,12 @@ var _ = Describe("MetodsStixObject", func() {
 	   				"display_name": "John Doe"
 	   }`))
 			var md datamodels.EmailAddressCyberObservableObjectSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.EmailAddressCyberObservableObjectSTIX)
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.EmailAddressCyberObservableObjectSTIX{EmailAddressCyberObservableObjectSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -822,12 +822,12 @@ var _ = Describe("MetodsStixObject", func() {
 	   				]
 	   }`))
 			var md datamodels.EmailMessageCyberObservableObjectSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.EmailMessageCyberObservableObjectSTIX)
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.EmailMessageCyberObservableObjectSTIX{EmailMessageCyberObservableObjectSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -908,12 +908,12 @@ var _ = Describe("MetodsStixObject", func() {
 	   				}
 	   }`))
 			var md datamodels.FileCyberObservableObjectSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.FileCyberObservableObjectSTIX)
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.FileCyberObservableObjectSTIX{FileCyberObservableObjectSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -932,12 +932,12 @@ var _ = Describe("MetodsStixObject", func() {
 	   				"value": "198.51.100.0/24"
 	   }`))
 			var md datamodels.IPv4AddressCyberObservableObjectSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.IPv4AddressCyberObservableObjectSTIX)
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.IPv4AddressCyberObservableObjectSTIX{IPv4AddressCyberObservableObjectSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -956,12 +956,12 @@ var _ = Describe("MetodsStixObject", func() {
 	   				"value": "2001:0db8::/96"
 	   }`))
 			var md datamodels.IPv6AddressCyberObservableObjectSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.IPv6AddressCyberObservableObjectSTIX)
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.IPv6AddressCyberObservableObjectSTIX{IPv6AddressCyberObservableObjectSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -980,12 +980,12 @@ var _ = Describe("MetodsStixObject", func() {
 	   				"value": "d2:fb:49:24:37:18"
 	   }`))
 			var md datamodels.MACAddressCyberObservableObjectSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.MACAddressCyberObservableObjectSTIX)
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.MACAddressCyberObservableObjectSTIX{MACAddressCyberObservableObjectSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -1004,12 +1004,12 @@ var _ = Describe("MetodsStixObject", func() {
 	   				"name": "__CLEANSWEEP__"
 	   }`))
 			var md datamodels.MutexCyberObservableObjectSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.MutexCyberObservableObjectSTIX)
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.MutexCyberObservableObjectSTIX{MutexCyberObservableObjectSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -1057,12 +1057,12 @@ var _ = Describe("MetodsStixObject", func() {
 	   				}
 	   }`))
 			var md datamodels.NetworkTrafficCyberObservableObjectSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.NetworkTrafficCyberObservableObjectSTIX)
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.NetworkTrafficCyberObservableObjectSTIX{NetworkTrafficCyberObservableObjectSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -1092,12 +1092,12 @@ var _ = Describe("MetodsStixObject", func() {
 				}
 }`))
 			var md datamodels.ProcessCyberObservableObjectSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.ProcessCyberObservableObjectSTIX)
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.ProcessCyberObservableObjectSTIX{ProcessCyberObservableObjectSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -1119,12 +1119,12 @@ var _ = Describe("MetodsStixObject", func() {
 					"vendor": "Microsoft"
 	}`))
 			var md datamodels.SoftwareCyberObservableObjectSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.SoftwareCyberObservableObjectSTIX)
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.SoftwareCyberObservableObjectSTIX{SoftwareCyberObservableObjectSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -1143,12 +1143,12 @@ var _ = Describe("MetodsStixObject", func() {
 					"value": "https://example.com/research/index.html"
 	}`))
 			var md datamodels.URLCyberObservableObjectSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.URLCyberObservableObjectSTIX)
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.URLCyberObservableObjectSTIX{URLCyberObservableObjectSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -1185,12 +1185,12 @@ var _ = Describe("MetodsStixObject", func() {
 					}
 	}`))
 			var md datamodels.UserAccountCyberObservableObjectSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.UserAccountCyberObservableObjectSTIX)
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.UserAccountCyberObservableObjectSTIX{UserAccountCyberObservableObjectSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -1221,12 +1221,12 @@ var _ = Describe("MetodsStixObject", func() {
 					]
 	}`))
 			var md datamodels.WindowsRegistryKeyCyberObservableObjectSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.WindowsRegistryKeyCyberObservableObjectSTIX)
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.WindowsRegistryKeyCyberObservableObjectSTIX{WindowsRegistryKeyCyberObservableObjectSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 
@@ -1265,12 +1265,12 @@ var _ = Describe("MetodsStixObject", func() {
 					}
 	}`))
 			var md datamodels.X509CertificateCyberObservableObjectSTIX
-			mdTmp, err := md.DecoderJSON(&mdbyte)
+			mdTmp, err := md.DecodeJSON(&mdbyte)
 
 			Expect(err).ShouldNot(HaveOccurred())
 
 			newmd, ok := mdTmp.(datamodels.X509CertificateCyberObservableObjectSTIX)
-			newmd = newmd.SanitizeStruct()
+			newmd = datamodels.X509CertificateCyberObservableObjectSTIX{X509CertificateCyberObservableObjectSTIX: newmd.SanitizeStruct()}
 
 			Expect(ok).Should(BeTrue())
 

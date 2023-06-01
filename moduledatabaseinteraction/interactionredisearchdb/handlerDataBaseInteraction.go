@@ -35,7 +35,6 @@ func init() {
 	}
 
 	//	ctx, cancel := context.WithTimeout(context.Background(), 1000*time.Second)
-
 	cdrdb = ConnectionDescriptorRedisearchDB{}
 }
 
@@ -61,9 +60,6 @@ func InteractionRedisearchDB(
 
 func (cdrdb *ConnectionDescriptorRedisearchDB) CreateConnection(mdbs *datamodels.RedisearchDBSettings) error {
 	cdrdb.Connection = redisearch.NewClient(fmt.Sprintf("%v:%v", mdbs.Host, mdbs.Port), "isems-index")
-	if _, err := cdrdb.Connection.Info(); err != nil {
-		return err
-	}
 
 	sc := redisearch.NewSchema(redisearch.DefaultOptions).
 		AddField(redisearch.NewTextField("type")).
@@ -89,6 +85,10 @@ func (cdrdb *ConnectionDescriptorRedisearchDB) CreateConnection(mdbs *datamodels
 	if err := cdrdb.Connection.CreateIndex(sc); err == nil {
 		return err
 	}
+
+	//if _, err := cdrdb.Connection.Info(); err != nil {
+	//	return err
+	//}
 
 	return nil
 }

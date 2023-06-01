@@ -6,9 +6,10 @@ import (
 	"ISEMS-MRSICT/moduledatabaseinteraction/interactionmongodb"
 	"ISEMS-MRSICT/moduledatabaseinteraction/interactionredisearchdb"
 	"ISEMS-MRSICT/modulelogginginformationerrors"
+	"fmt"
 )
 
-//ChannelsModuleDataBaseInteraction описание каналов передачи данных между ядром приложения и модулем взаимодействия с базами данных
+// ChannelsModuleDataBaseInteraction описание каналов передачи данных между ядром приложения и модулем взаимодействия с базами данных
 type ChannelsModuleDataBaseInteraction struct {
 	ChannelsMongoDB      interactionmongodb.ChannelsMongoDBInteraction
 	ChannelsRedisearchDB interactionredisearchdb.ChannelsRedisearchInteraction
@@ -20,7 +21,7 @@ func init() {
 	cmdbi = ChannelsModuleDataBaseInteraction{}
 }
 
-//MainHandlerDataBaseInteraction модуль инициализации обработчиков для взаимодействия с базами данных
+// MainHandlerDataBaseInteraction модуль инициализации обработчиков для взаимодействия с базами данных
 func MainHandlerDataBaseInteraction(
 	chanSaveLog chan<- modulelogginginformationerrors.LogMessageType,
 	cdb *datamodels.ConnectionsDataBase,
@@ -29,14 +30,14 @@ func MainHandlerDataBaseInteraction(
 	//инициализируем модуль для взаимодействия с БД MongoDB
 	chanMongoDB, err := interactionmongodb.InteractionMongoDB(chanSaveLog, &cdb.MongoDBSettings, tst)
 	if err != nil {
-		return cmdbi, err
+		return cmdbi, fmt.Errorf("error MongoDB: %v", err)
 	}
 	cmdbi.ChannelsMongoDB = chanMongoDB
 
 	//инициализируем модуль для взаимодействия с БД Redisearch
 	chanRedisearchDB, err := interactionredisearchdb.InteractionRedisearchDB(chanSaveLog, &cdb.RedisearchDBSettings, tst)
 	if err != nil {
-		return cmdbi, err
+		return cmdbi, fmt.Errorf("error Redisearch: %v", err)
 	}
 	cmdbi.ChannelsRedisearchDB = chanRedisearchDB
 

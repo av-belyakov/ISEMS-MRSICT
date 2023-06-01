@@ -46,7 +46,7 @@ func MainHandlerCoreApplication(chanSaveLog chan<- modulelogginginformationerror
 	cdbi, err := moduledatabaseinteraction.MainHandlerDataBaseInteraction(chanSaveLog, &appConfig.ConnectionsDataBase, tst)
 	if err != nil {
 		fmt.Println("An error occurred while initializing the database connection module.")
-		fmt.Println("CONNECT DB ERROR, ", err)
+		fmt.Println(err)
 
 		return
 	}

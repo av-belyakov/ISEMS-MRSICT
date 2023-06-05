@@ -229,6 +229,19 @@ func statisticalInformationSTIXObject(
 		}
 	)
 
+	fmt.Println("func 'statisticalInformationSTIXObject', parameters.TypeStatisticalInformation: ", parameters.TypeStatisticalInformation)
+	fmt.Println("_________________________________________________________")
+
+	/*
+		!!!!
+			Надо написать обработчик запроса статистики где parameters.TypeStatisticalInformation == "count statuses 'domain object' types"
+			запрос "count statuses 'domain object' types" до сюда уже доходит, проверял.
+			По этому запросу нужно возвращать статистику кол-ва объектов по их типам относящимся к DO STIX.
+			Что то похожее я делаю в тесте 'Тест 8. Тестируем поиск STIX DO типа 'report' как опубликованные так и нет'
+			тест файла interactionmongodb_test.go
+		!!!!
+	*/
+
 	if parameters.TypeStatisticalInformation == "types computer threat" {
 		outsideSpecificationField = "computer_threat_type"
 		rsiSTIXObject.InformationType = "computer_threat_type"

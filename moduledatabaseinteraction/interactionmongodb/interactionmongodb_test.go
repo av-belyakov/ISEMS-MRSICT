@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"time"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -109,13 +109,11 @@ var _ = Describe("Interactionmongodb", Ordered, func() {
 
 			elemSTIXObj := interactionmongodb.GetListElementSTIXObject(cur)
 
-			//
 			//fmt.Println("SEARCH ELEMENTS = ", len(elemSTIXObj))
 			//fmt.Println("____ should be 38 elements ___")
 			//for k, v := range elemSTIXObj {
 			//	fmt.Printf("\t%d. id: '%s'\n", k+1, v.Data.GetID())
 			//}
-			//
 
 			Expect(errfl).ShouldNot(HaveOccurred())
 			Expect(int64(len(elemSTIXObj))).Should(Equal(int64(38)))
@@ -357,7 +355,7 @@ var _ = Describe("Interactionmongodb", Ordered, func() {
 				configFileSettings := map[string]datamodels.StorageApplicationCommonListType{}
 
 				//проверяем наличие файлов с дефолтными настройками приложения
-				row, err := ioutil.ReadFile("../../defaultsettingsfiles/settingsStatusesDecisionsMadeComputerThreats.json")
+				row, err := os.ReadFile("../../defaultsettingsfiles/settingsStatusesDecisionsMadeComputerThreats.json")
 				Expect(err).ShouldNot(HaveOccurred())
 
 				err = json.Unmarshal(row, &tmp)
@@ -411,7 +409,7 @@ var _ = Describe("Interactionmongodb", Ordered, func() {
 			configFileSettings := map[string]datamodels.StorageApplicationCommonListType{}
 
 			//проверяем наличие файлов с дефолтными настройками приложения
-			row, err := ioutil.ReadFile("../../defaultsettingsfiles/settingsComputerThreatTypes.json")
+			row, err := os.ReadFile("../../defaultsettingsfiles/settingsComputerThreatTypes.json")
 			Expect(err).ShouldNot(HaveOccurred())
 
 			err = json.Unmarshal(row, &tmp)

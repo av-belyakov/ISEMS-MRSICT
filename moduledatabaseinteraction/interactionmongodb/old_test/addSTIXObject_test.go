@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path"
 	"time"
 
@@ -26,7 +26,7 @@ func getListSettings(f string, appConfig *datamodels.AppConfig) (map[string]data
 	configFileSettings := map[string]datamodels.StorageApplicationCommonListType{}
 
 	//проверяем наличие файлов с дефолтными настройками приложения
-	row, err := ioutil.ReadFile(path.Join(appConfig.RootDir, f))
+	row, err := os.ReadFile(path.Join(appConfig.RootDir, f))
 	if err != nil {
 		return configFileSettings, fmt.Errorf("Error! The file '%s' with default settings not found.", f)
 	}
@@ -79,7 +79,7 @@ var _ = Describe("AddSTIXObject", Ordered, func() {
 
 		qp.ConnectDB = cdmdb.Connection
 
-		docJSON, errReadFile = ioutil.ReadFile("../../mytest/test_resources/jsonSTIXExampleObjectRef.json")
+		docJSON, errReadFile = os.ReadFile("../../mytest/test_resources/jsonSTIXExampleObjectRef.json")
 		errUnmarchalReq = json.Unmarshal(docJSON, &modAPIRequestProcessingReqJSON)
 		l, errUnmarchalToSTIX = routingflowsmoduleapirequestprocessing.UnmarshalJSONObjectSTIXReq(modAPIRequestProcessingReqJSON)
 

@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"compress/gzip"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path"
@@ -13,7 +12,7 @@ import (
 	"time"
 )
 
-//commonInformationLoggingFiles содержит общую информацию о логирующих файлах
+// commonInformationLoggingFiles содержит общую информацию о логирующих файлах
 // locationLogDirectory - путь по которому находится основная директория для хранения лог-файлов приложения
 // nameLogDirectory - название директории в которой хранятся лог-файлы приложения
 // maxSizeLogFile - максимальный размер лог-файла (в БАЙТАХ), при превышении которого выполняется архивация текущего файла и создание нового
@@ -28,7 +27,7 @@ type commonInformationLoggingFiles struct {
 	fileDescriptor       map[string]*os.File
 }
 
-//MainHandlerLoggingParameters основные параметры для конструктора mainHandlerLogging
+// MainHandlerLoggingParameters основные параметры для конструктора mainHandlerLogging
 // LocationLogDirectory - путь по которому находится основная директория для хранения лог-файлов приложения
 // NameLogDirectory - название директории в которой хранятся лог-файлы приложения
 // MaxSizeLogFile - максимальный размер лог-файла (в Мб), при превышении которого выполняется архивация текущего файла и создание нового
@@ -38,12 +37,12 @@ type MainHandlerLoggingParameters struct {
 	MaxSizeLogFile       int
 }
 
-//LogMessageType описание типа для записи логов
+// LogMessageType описание типа для записи логов
 type LogMessageType struct {
 	TypeMessage, Description, FuncName string
 }
 
-//New конструктор для огранизации записи лог-файлов
+// New конструктор для огранизации записи лог-файлов
 func New(mhltp *MainHandlerLoggingParameters) (chan LogMessageType, error) {
 	chanLogMessage := make(chan LogMessageType)
 	cilf := commonInformationLoggingFiles{
@@ -94,9 +93,6 @@ func New(mhltp *MainHandlerLoggingParameters) (chan LogMessageType, error) {
 				continue
 			}
 
-			//fmt.Printf("func 'mainHandlerLogging', fileInfo: '%v'\n", fi)
-			//fmt.Printf("func 'mainHandlerLogging', commonInformationLoggingFiles: '%v'\n", cilf)
-
 			if fi.Size() > cilf.maxSizeLogFile {
 				cilf.fileDescriptor[msg.TypeMessage].Close()
 
@@ -115,7 +111,7 @@ func New(mhltp *MainHandlerLoggingParameters) (chan LogMessageType, error) {
 }
 
 func (cilf *commonInformationLoggingFiles) createLogsDirectory() error {
-	files, err := ioutil.ReadDir(cilf.locationLogDirectory)
+	files, err := os.ReadDir(cilf.locationLogDirectory)
 	if err != nil {
 		return err
 	}
@@ -167,7 +163,7 @@ func (cilf *commonInformationLoggingFiles) compressFile(tm string) {
 	zw := gzip.NewWriter(fileIn)
 	zw.Name = fn
 
-	fileOut, err := ioutil.ReadFile(path.Join(cilf.locationLogDirectory, cilf.nameLogDirectory, cilf.fileNameType[tm]))
+	fileOut, err := os.ReadFile(path.Join(cilf.locationLogDirectory, cilf.nameLogDirectory, cilf.fileNameType[tm]))
 	if err != nil {
 		return
 	}

@@ -3,7 +3,7 @@ package decoders_test
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strings"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -28,7 +28,7 @@ var _ = Describe("DecoderFromJSONToSTIXObject", Ordered, func() {
 	countSTIXObj := map[string]int{}
 
 	BeforeAll(func() {
-		docJSON, errReadFile = ioutil.ReadFile("../mytest/test_resources/jsonSTIXExample.json")
+		docJSON, errReadFile = os.ReadFile("../mytest/test_resources/jsonSTIXExample.json")
 		errUnmarchalReq = json.Unmarshal(docJSON, &modAPIRequestProcessingReqJSON)
 		errUnmarchalList = json.Unmarshal(*modAPIRequestProcessingReqJSON.RequestDetails, &listSTIXObjectJSON)
 

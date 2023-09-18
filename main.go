@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path"
@@ -19,10 +18,10 @@ import (
 var appConfig datamodels.AppConfig
 var chanSaveLog chan modulelogginginformationerrors.LogMessageType
 
-//ReadConfig читает конфигурационный файл и сохраняет данные в appConfig
+// ReadConfig читает конфигурационный файл и сохраняет данные в appConfig
 func readConfigApp(fileName string, appc *datamodels.AppConfig) error {
 	var err error
-	row, err := ioutil.ReadFile(fileName)
+	row, err := os.ReadFile(fileName)
 	if err != nil {
 		return err
 	}
@@ -35,10 +34,10 @@ func readConfigApp(fileName string, appc *datamodels.AppConfig) error {
 	return err
 }
 
-//getVersionApp получает версию приложения из файла README.md
+// getVersionApp получает версию приложения из файла README.md
 func getVersionApp(appc *datamodels.AppConfig) error {
 	failureMessage := "version not found"
-	content, err := ioutil.ReadFile(appc.RootDir + "README.md")
+	content, err := os.ReadFile(appc.RootDir + "README.md")
 	if err != nil {
 		return err
 	}

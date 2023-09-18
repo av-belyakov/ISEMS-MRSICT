@@ -3,7 +3,6 @@ package interactionredisearchdb_test
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
@@ -20,7 +19,7 @@ import (
 
 func readConfigApp(fileName string, appc *datamodels.AppConfig) error {
 	var err error
-	row, err := ioutil.ReadFile(fileName)
+	row, err := os.ReadFile(fileName)
 	if err != nil {
 		return err
 	}
@@ -54,7 +53,7 @@ var _ = Describe("AddIndexSTIXObject", Ordered, func() {
 		})
 		//cdrdb.Connection.Drop()
 
-		docJSON, errReadFile = ioutil.ReadFile("../../mytest/test_resources/jsonSTIXExample.json")
+		docJSON, errReadFile = os.ReadFile("../../mytest/test_resources/jsonSTIXExample.json")
 		if errUnmarchalReq = json.Unmarshal(docJSON, &modAPIRequestProcessingReqJSON); errUnmarchalReq != nil {
 			fmt.Printf("ERROR pre unmarsgal: %v\n", errUnmarchalReq)
 		}

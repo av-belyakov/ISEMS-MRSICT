@@ -3,8 +3,8 @@ package modulecoreapplication
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
+	"os"
 	"path"
 
 	"ISEMS-MRSICT/datamodels"
@@ -80,9 +80,9 @@ func getListSettings(f string, appConfig *datamodels.AppConfig) (map[string]data
 	configFileSettings := map[string]datamodels.StorageApplicationCommonListType{}
 
 	//проверяем наличие файлов с дефолтными настройками приложения
-	row, err := ioutil.ReadFile(path.Join(appConfig.RootDir, f))
+	row, err := os.ReadFile(path.Join(appConfig.RootDir, f))
 	if err != nil {
-		return configFileSettings, fmt.Errorf("Error! The file '%s' with default settings not found.", f)
+		return configFileSettings, fmt.Errorf("the file '%s' with default settings not found", f)
 	}
 
 	err = json.Unmarshal(row, &tmp)

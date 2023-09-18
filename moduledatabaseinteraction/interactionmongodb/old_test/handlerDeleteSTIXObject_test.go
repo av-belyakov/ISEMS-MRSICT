@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"time"
 
 	mstixo "github.com/av-belyakov/methodstixobjects"
@@ -21,7 +21,7 @@ import (
 func addListTestSTIXObject(cdmdb interactionmongodb.ConnectionDescriptorMongoDB, qp interactionmongodb.QueryParameters) error {
 	var modAPIRequestProcessingReqJSON datamodels.ModAPIRequestProcessingReqJSON
 
-	docJSON, err := ioutil.ReadFile("../../mytest/test_resources/jsonSTIXExample_1.json")
+	docJSON, err := os.ReadFile("../../mytest/test_resources/jsonSTIXExample_1.json")
 	if err != nil {
 		return err
 	}
@@ -45,7 +45,7 @@ func addListTestSTIXObject(cdmdb interactionmongodb.ConnectionDescriptorMongoDB,
 func delListTestSTIXObject(cdmdb interactionmongodb.ConnectionDescriptorMongoDB, qp interactionmongodb.QueryParameters, listID []string) error {
 	/*var modAPIRequestProcessingReqJSON datamodels.ModAPIRequestProcessingReqJSON
 
-	docJSON, err := ioutil.ReadFile("../../mytest/test_resources/jsonSTIXExample_1.json")
+	docJSON, err := os.ReadFile("../../mytest/test_resources/jsonSTIXExample_1.json")
 	if err != nil {
 		return err
 	}

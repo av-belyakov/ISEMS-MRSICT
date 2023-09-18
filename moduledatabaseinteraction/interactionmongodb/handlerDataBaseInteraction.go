@@ -49,7 +49,7 @@ func init() {
 	}
 }
 
-// InteractionMongoDB модуль взаимодействия с БД MongoDB
+// InteractionMongoDB модуль взаимодействия с базой данных MongoDB
 func InteractionMongoDB(
 	chanSaveLog chan<- modulelogginginformationerrors.LogMessageType,
 	mdbs *datamodels.MongoDBSettings,

@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"time"
 
 	. "github.com/onsi/ginkgo"
@@ -45,7 +45,7 @@ func addListTestSTIXObject1(cdmdb interactionmongodb.ConnectionDescriptorMongoDB
 
 	var modAPIRequestProcessingReqJSON datamodels.ModAPIRequestProcessingReqJSON
 
-	docJSON, err := ioutil.ReadFile("../../mytest/test_resources/jsonSTIXExample_2.json")
+	docJSON, err := os.ReadFile("../../mytest/test_resources/jsonSTIXExample_2.json")
 	if err != nil {
 		return err
 	}
@@ -127,7 +127,7 @@ func delListTestSTIXObject1(cdmdb interactionmongodb.ConnectionDescriptorMongoDB
 
 	var modAPIRequestProcessingReqJSON datamodels.ModAPIRequestProcessingReqJSON
 
-	docJSON, err := ioutil.ReadFile("../../mytest/test_resources/jsonSTIXExample_3.json")
+	docJSON, err := os.ReadFile("../../mytest/test_resources/jsonSTIXExample_3.json")
 	if err != nil {
 		return err
 	}
